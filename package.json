@@ -10,8 +10,7 @@
   },
   "scripts": {
     "dev": "stencil build --dev --watch --serve",
-    "build": "npm run lint && stencil build --docs --no-cache && npm run build:copy",
-    "build:copy": "copyfiles -E -u 3 ./node_modules/@ptp-us/power-the-polls-form/**/* ../dist/www/assets/scripts/",
+    "build": "npm run clean && stencil build --no-cache --prerender",
     "clean": "rimraf dist/www",
     "start": "npm run dev",
     "fix": "npm run prettier:fix && npm run lint:fix",

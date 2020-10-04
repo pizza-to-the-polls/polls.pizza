@@ -1,4 +1,4 @@
-import { PrerenderConfig } from '@stencil/core';
+import { PrerenderConfig } from "@stencil/core";
 
 export const config: PrerenderConfig = {
   hydrateOptions(url) {

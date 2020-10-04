@@ -1,7 +1,7 @@
 $border: $blue2;
 
 .hero {
-  background-image: url('/images/bg.png');
+  background-image: url("/images/bg.png");
   background-size: 400px;
   background-color: $yellow;
   background-attachment: fixed;
@@ -81,7 +81,7 @@ $border: $blue2;
 
 .dashboard-bg {
   background-color: $blue2;
-  background-image: url('/images/bg2.png');
+  background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
   width: 100%;
@@ -162,7 +162,7 @@ $border: $blue2;
 
 .stat__number {
   font-size: 24px;
-  font-family: 'Fredoka One', cursive;
+  font-family: "Fredoka One", cursive;
 
   @media screen and (min-width: 600px) {
     font-size: 32px;

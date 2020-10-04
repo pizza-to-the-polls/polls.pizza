@@ -49,13 +49,13 @@
     position: relative;
     color: $blue2;
     &:after {
-      content: '|';
+      content: "|";
       position: absolute;
       top: 0;
       right: -15px;
     }
     &:last-child:after {
-      content: '';
+      content: "";
     }
   }
 
@@ -101,7 +101,7 @@
 }
 
 body {
-  font-family: 'Work Sans', sans-serif;
+  font-family: "Work Sans", sans-serif;
 }
 
 a {
@@ -138,12 +138,12 @@ img {
 }
 
 .display {
-  font-family: 'Fredoka One';
+  font-family: "Fredoka One";
   font-weight: normal;
 }
 
 .clearfix:after {
-  content: '';
+  content: "";
   display: table;
   clear: both;
 }
@@ -158,7 +158,7 @@ img {
   bottom: 0;
   left: 0;
   right: 0;
-  background: url('/images/bg.png');
+  background: url("/images/bg.png");
   background-size: 400px;
   z-index: 1;
 }
@@ -186,7 +186,7 @@ legend {
 
 input,
 textarea {
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   width: 100%;
   margin-bottom: 0.5em;
   border-radius: 4px;
@@ -195,7 +195,7 @@ textarea {
   overflow: hidden;
 }
 
-input[type='submit'],
+input[type="submit"],
 .submit {
   transition: background-color 0.1s ease-in;
   display: block;
@@ -210,7 +210,7 @@ input[type='submit'],
   border-radius: 0 0 4px 4px;
 }
 
-input[type='submit']:hover,
+input[type="submit"]:hover,
 .submit:hover {
   background: #35a8ae;
 }
@@ -233,7 +233,7 @@ section {
 
 .report {
   background-color: $blue2;
-  background-image: url('/images/bg2.png');
+  background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
   color: $white;
@@ -248,7 +248,7 @@ section {
 .donate {
   background-color: $red;
   color: #fff;
-  background-image: url('/images/bg2.png');
+  background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
 
@@ -296,7 +296,7 @@ fieldset li {
   margin: 0;
 }
 
-input[type='radio'] {
+input[type="radio"] {
   position: absolute !important;
   top: auto;
   left: -9999px !important;
@@ -335,8 +335,8 @@ input[type='radio'] {
   margin: 0 10px 0 0;
 }
 
-input[type='radio']:checked + label,
-input[type='radio']:focus + label {
+input[type="radio"]:checked + label,
+input[type="radio"]:focus + label {
   background-color: $blue2;
   color: $white;
 }
@@ -393,14 +393,14 @@ footer a {
   color: #fff;
 }
 
-footer input[type='email'] {
+footer input[type="email"] {
   width: calc(100% - 140px);
   float: left;
   border: 2px solid #fff;
   border-radius: 4px 0 0 4px;
 }
 
-footer input[type='submit'] {
+footer input[type="submit"] {
   float: left;
   width: 140px;
   border: 2px solid #fff;
