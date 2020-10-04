@@ -14,7 +14,7 @@ $border: $blue2;
     font-size: 22px;
     margin-top: 0;
     display: block;
-    max-width: 500px;
+    max-width: 80%;
     margin: 0 auto 30px;
     font-weight: bold;
     text-align: center;
@@ -109,19 +109,14 @@ $border: $blue2;
 }
 
 .stats {
-  padding: 20px;
+  padding: 40px;
   background: $white;
   color: $blue2;
   position: relative;
   z-index: 100;
   border-radius: 10px;
   box-shadow: 0 10px 40px 0 rgba($blue2, 0.3);
-
-  a {
-    color: inherit;
-    text-decoration: underline;
-    display: inline-block;
-  }
+  text-align: center;
 
   h2 {
     font-size: 24px;
@@ -129,6 +124,11 @@ $border: $blue2;
     @media screen and (min-width: 600px) {
       font-size: 32px;
     }
+  }
+
+  .button {
+    width: 100%;
+    max-width: 400px;
   }
 }
 
@@ -173,42 +173,10 @@ $border: $blue2;
   display: block;
 }
 
-.locations {
-  text-align: left;
-
-  h3 {
-    margin: 0 0 10px;
-  }
-
-  ul {
-    list-style-type: none;
-    margin: 0;
-    margin-bottom: 40px;
-    max-height: 240px;
-    overflow-y: scroll;
-    background: rgba($blue2, 0.1);
-    padding: 10px;
-  }
-
-  li {
-    font-size: 14px;
-
-    a {
-      padding: 5px 10px;
-      margin-bottom: 5px;
-      text-decoration: none;
-      display: block;
-      border-bottom: 1px solid rgba($white, 0.8);
-
-      &:hover {
-        border-left: 4px solid $yellow;
-      }
-    }
-  }
-}
-
-.locations__list {
-  width: 100%;
+.stat__link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
 }
 
 @media (min-width: 600px) {
@@ -241,19 +209,6 @@ $border: $blue2;
   .hero {
     p {
       font-size: 24px;
-    }
-  }
-
-  .locations ul {
-    height: 240px;
-  }
-
-  .locations__list {
-    width: 50%;
-    padding: 0 10px;
-
-    ul {
-      margin-bottom: 0;
     }
   }
 }

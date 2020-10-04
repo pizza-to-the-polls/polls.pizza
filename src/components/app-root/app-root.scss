@@ -8,25 +8,10 @@
   top: 0;
   z-index: 1000;
   padding: 20px 5px;
-
-  h1 {
-    margin: 0;
-    font-size: 32px;
-    vertical-align: middle;
-
-    a,
-    stencil-route-link {
-      color: $blue;
-      text-decoration: none;
-    }
-
-    @media (min-width: 769px) {
-      font-size: 48px;
-    }
-  }
+  text-align: center;
 
   img {
-    width: 50px;
+    width: 400px;
     vertical-align: middle;
   }
 }
@@ -73,14 +58,6 @@
     position: relative;
     padding-left: 0;
     padding-right: 0;
-
-    img {
-      width: 100px;
-    }
-
-    h1 {
-      font-size: 36px;
-    }
   }
 
   .menu {
@@ -105,11 +82,12 @@ body {
 }
 
 a {
-  color: $red;
+  color: $blue;
   text-decoration: none;
+  transition: color 0.1s ease-in-out;
 
   &:hover {
-    color: $blue;
+    color: $blue2;
   }
 }
 
@@ -441,4 +419,24 @@ footer input[type="submit"] {
 
 #payment-request-button {
   margin-top: 18px;
+}
+
+.button {
+  padding: 15px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+  transition: box-shadow 0.2s ease-in-out;
+
+  &.primary {
+    background: $blue;
+    color: #fff;
+
+    &:hover,
+    &:active,
+    &:focus {
+      box-shadow: 0 0 0px 4px $yellow;
+    }
+  }
 }

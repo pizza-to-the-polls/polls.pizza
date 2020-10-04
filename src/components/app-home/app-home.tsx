@@ -18,6 +18,8 @@ export class AppHome {
               <div class="stats">
                 <h2 class="display">2020 Election Totals</h2>
                 <div class="stats__row"></div>
+                <a href="/report" class="button primary">Report a line</a>
+                <a href="/activity" class="stat__link">View recent deliveries</a>
               </div>
             </div>
           </section>

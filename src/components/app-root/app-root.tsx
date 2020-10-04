@@ -9,13 +9,9 @@ export class AppRoot {
     return (
       <Host>
         <header class="header">
-          <h1 class="display">
-            <stencil-route-link url="/">
-              Pizza to
-              <img src="/images/logo.png" />
-              the Polls
-            </stencil-route-link>
-          </h1>
+          <stencil-route-link url="/">
+            <img src="/images/lockup.png" alt="Pizza to the Polls" />
+          </stencil-route-link>
           <ul class="menu" id="menu">
             <li>
               <stencil-route-link url="/report">Report</stencil-route-link>
