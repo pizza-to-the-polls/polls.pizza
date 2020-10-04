@@ -11,15 +11,13 @@ $border: $blue2;
 
 .intro {
   p {
-    font-size: 18px;
+    font-size: 22px;
     margin-top: 0;
-
-    a {
-      text-align: center;
-      color: $white;
-      text-decoration: underline;
-      display: block;
-    }
+    display: block;
+    max-width: 500px;
+    margin: 0 auto 30px;
+    font-weight: bold;
+    text-align: center;
   }
 }
 

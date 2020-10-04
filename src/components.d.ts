@@ -5,13 +5,10 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
-import { MatchResults } from '@stencil/router';
 export namespace Components {
   interface AppHome {}
-  interface AppProfile {
-    match?: MatchResults;
-  }
   interface AppRoot {}
+  interface PageAbout {}
 }
 declare global {
   interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {}
@@ -19,32 +16,30 @@ declare global {
     prototype: HTMLAppHomeElement;
     new (): HTMLAppHomeElement;
   };
-  interface HTMLAppProfileElement extends Components.AppProfile, HTMLStencilElement {}
-  var HTMLAppProfileElement: {
-    prototype: HTMLAppProfileElement;
-    new (): HTMLAppProfileElement;
-  };
   interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {}
   var HTMLAppRootElement: {
     prototype: HTMLAppRootElement;
     new (): HTMLAppRootElement;
   };
+  interface HTMLPageAboutElement extends Components.PageAbout, HTMLStencilElement {}
+  var HTMLPageAboutElement: {
+    prototype: HTMLPageAboutElement;
+    new (): HTMLPageAboutElement;
+  };
   interface HTMLElementTagNameMap {
     'app-home': HTMLAppHomeElement;
-    'app-profile': HTMLAppProfileElement;
     'app-root': HTMLAppRootElement;
+    'page-about': HTMLPageAboutElement;
   }
 }
 declare namespace LocalJSX {
   interface AppHome {}
-  interface AppProfile {
-    match?: MatchResults;
-  }
   interface AppRoot {}
+  interface PageAbout {}
   interface IntrinsicElements {
     'app-home': AppHome;
-    'app-profile': AppProfile;
     'app-root': AppRoot;
+    'page-about': PageAbout;
   }
 }
 export { LocalJSX as JSX };
@@ -52,8 +47,8 @@ declare module '@stencil/core' {
   export namespace JSX {
     interface IntrinsicElements {
       'app-home': LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
-      'app-profile': LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
       'app-root': LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+      'page-about': LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
     }
   }
 }

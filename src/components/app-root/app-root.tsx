@@ -1,4 +1,4 @@
-import { Component, h } from "@stencil/core";
+import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "app-root",
@@ -7,7 +7,7 @@ import { Component, h } from "@stencil/core";
 export class AppRoot {
   public render() {
     return (
-      <div>
+      <Host>
         <header class="header">
           <h1 class="display">
             <stencil-route-link url="/">
@@ -16,12 +16,15 @@ export class AppRoot {
               the Polls
             </stencil-route-link>
           </h1>
-          <ul class="menu" id="menu" style={{ display: "none" }}>
+          <ul class="menu" id="menu">
             <li>
-              <a href="/#report">Report a line</a>
+              <stencil-route-link url="/report">Report</stencil-route-link>
             </li>
             <li>
-              <a href="/#donate">Donate</a>
+              <stencil-route-link url="/donate">Donate</stencil-route-link>
+            </li>
+            <li>
+              <stencil-route-link url="/about">About</stencil-route-link>
             </li>
           </ul>
         </header>
@@ -30,7 +33,9 @@ export class AppRoot {
           <stencil-router>
             <stencil-route-switch scrollTopOffset={0}>
               <stencil-route url="/" component="app-home" exact={true} />
-              <stencil-route url="/profile/:name" component="app-profile" />
+              <stencil-route url="/donate" component="page-donate" />
+              <stencil-route url="/report" component="page-report" />
+              <stencil-route url="/about" component="page-about" />
             </stencil-route-switch>
           </stencil-router>
         </main>
@@ -84,7 +89,7 @@ export class AppRoot {
             </div>
           </div>
         </footer>
-      </div>
+      </Host>
     );
   }
 }

@@ -10,14 +10,17 @@ export class AppHome {
       <section class="hero">
         <div class="container">
           <div class="intro">
-            <p>
-              Waiting in line for hours to vote? Tummies grumblin? Pizza to the Polls is here to help. Send us reports of long lines and we'll send in the delicious reinforcements.
-            </p>
-            <p>
-              <stencil-route-link url="/about">Learn all about it.</stencil-route-link>
-            </p>
-            .
+            <p>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</p>
+            <p>Send us reports of long lines and we'll send in the delicious reinforcements.</p>
           </div>
+          <section class="dashboard">
+            <div class="container">
+              <div class="stats">
+                <h2 class="display">2020 Election Totals</h2>
+                <div class="stats__row"></div>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
     );

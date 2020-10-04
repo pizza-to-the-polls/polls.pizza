@@ -17,6 +17,7 @@
     a,
     stencil-route-link {
       color: $blue;
+      text-decoration: none;
     }
 
     @media (min-width: 769px) {
@@ -41,25 +42,28 @@
 
   li {
     display: inline-block;
-    padding-bottom: 10px;
-    font-size: 18px;
+    font-size: 26px;
     font-weight: bold;
     padding: 0 10px;
-    width: 49%;
+    margin: 0 10px;
+    position: relative;
+    color: $blue2;
+    &:after {
+      content: '|';
+      position: absolute;
+      top: 0;
+      right: -15px;
+    }
+    &:last-child:after {
+      content: '';
+    }
   }
 
   a,
   stencil-route-link {
     text-decoration: none;
-    background: $red;
-    color: #fff;
-    padding: 10px 15px;
-    border-radius: 10px;
+    color: $red;
     display: block;
-
-    &:hover {
-      background: #c10228;
-    }
   }
 }
 
@@ -87,13 +91,7 @@
 
     li {
       display: inline-block;
-      padding: 20px 30px 0 30px;
       width: auto;
-    }
-
-    a,
-    stencil-route-link {
-      width: 180px;
     }
   }
 }
@@ -133,10 +131,6 @@ form {
 p,
 li {
   line-height: 1.5;
-}
-
-header h1 a {
-  text-decoration: none;
 }
 
 img {
