@@ -1,0 +1,261 @@
+$border: $blue2;
+
+.hero {
+  background-image: url('/images/bg.png');
+  background-size: 400px;
+  background-color: $yellow;
+  background-attachment: fixed;
+  color: $white;
+  padding: 20px 0 0 0;
+}
+
+.intro {
+  p {
+    font-size: 18px;
+    margin-top: 0;
+
+    a {
+      text-align: center;
+      color: $white;
+      text-decoration: underline;
+      display: block;
+    }
+  }
+}
+
+.dashboard.launching {
+  .stats {
+    background-color: $blue2;
+  }
+  h2,
+  p {
+    color: $white;
+  }
+  p {
+    font-size: 1.33rem;
+  }
+  h2 {
+    border-bottom-color: $white;
+  }
+  .programs {
+    a {
+      font-size: 1.85rem;
+      display: block;
+      margin: 60px auto;
+      max-width: 72%;
+      text-decoration: none;
+      p {
+        font-weight: normal;
+        line-height: 1.25rem;
+      }
+      span {
+        font-weight: bold;
+      }
+      div {
+        background-color: $white;
+        padding: 14px 30px;
+        border-radius: 4px;
+      }
+      p,
+      &,
+      &:visited,
+      &:active {
+        color: $blue;
+      }
+      &:hover {
+        p,
+        & {
+          color: $white;
+        }
+        div {
+          background-color: $blue;
+        }
+        span {
+          text-decoration: underline;
+        }
+      }
+      p {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+.dashboard-bg {
+  background-color: $blue2;
+  background-image: url('/images/bg2.png');
+  background-attachment: fixed;
+  background-size: 400px;
+  width: 100%;
+  height: 53%;
+  position: absolute;
+  bottom: 0;
+  z-index: 0;
+}
+
+.dashboard {
+  color: $blue2;
+  text-align: center;
+  position: relative;
+  padding: 0 0 20px 0;
+
+  h2 {
+    position: relative;
+    display: block;
+    padding: 0 0 20px 0;
+    margin: 0;
+    z-index: 101;
+    border-bottom: 4px solid $blue2;
+    font-size: 32px;
+  }
+}
+
+.stats {
+  padding: 20px;
+  background: $white;
+  color: $blue2;
+  position: relative;
+  z-index: 100;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px 0 rgba($blue2, 0.3);
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    display: inline-block;
+  }
+
+  h2 {
+    font-size: 24px;
+
+    @media screen and (min-width: 600px) {
+      font-size: 32px;
+    }
+  }
+}
+
+.stats__row {
+  padding-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+
+  &:first-of-type {
+    padding: 20px 0;
+    border-bottom: 4px solid $blue2;
+    margin-bottom: 40px;
+  }
+}
+
+.stat__info {
+  display: block;
+  text-align: center;
+  font-size: 0.8em;
+}
+
+.stat {
+  text-align: center;
+  padding: 10px;
+  width: 50%;
+}
+
+.stat:last-of-type {
+  border-bottom: none;
+}
+
+.stat__number {
+  font-size: 24px;
+  font-family: 'Fredoka One', cursive;
+
+  @media screen and (min-width: 600px) {
+    font-size: 32px;
+  }
+}
+
+.stat__label {
+  display: block;
+}
+
+.locations {
+  text-align: left;
+
+  h3 {
+    margin: 0 0 10px;
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    margin-bottom: 40px;
+    max-height: 240px;
+    overflow-y: scroll;
+    background: rgba($blue2, 0.1);
+    padding: 10px;
+  }
+
+  li {
+    font-size: 14px;
+
+    a {
+      padding: 5px 10px;
+      margin-bottom: 5px;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid rgba($white, 0.8);
+
+      &:hover {
+        border-left: 4px solid $yellow;
+      }
+    }
+  }
+}
+
+.locations__list {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .stats__row {
+    display: flex;
+  }
+
+  .stat {
+    display: table-cell;
+    width: 33%;
+    text-align: center;
+    padding: 20px;
+    border-bottom: none;
+    margin-right: 2px;
+  }
+
+  .stat:last-of-type {
+    border-right: none;
+  }
+  .stat__info {
+    text-align: right;
+  }
+}
+
+@media (min-width: 769px) {
+  .intro {
+    padding: 20px 0;
+  }
+
+  .hero {
+    p {
+      font-size: 24px;
+    }
+  }
+
+  .locations ul {
+    height: 240px;
+  }
+
+  .locations__list {
+    width: 50%;
+    padding: 0 10px;
+
+    ul {
+      margin-bottom: 0;
+    }
+  }
+}
