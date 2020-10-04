@@ -362,6 +362,7 @@ input[type="radio"]:focus + label {
 
 footer {
   background: $blue2;
+  border-top: 5px solid $red;
   color: #fff;
   padding: 40px 0;
   text-align: center;
@@ -438,5 +439,10 @@ footer input[type="submit"] {
     &:focus {
       box-shadow: 0 0 0px 4px $yellow;
     }
+  }
+
+  &.secondary {
+    background: $red;
+    color: #fff;
   }
 }

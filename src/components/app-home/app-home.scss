@@ -212,3 +212,58 @@ $border: $blue2;
     }
   }
 }
+
+.home-secondary {
+  background: $blue2;
+  background-image: url("/images/bg2.png");
+  background-attachment: fixed;
+  background-size: 400px;
+  text-align: center;
+}
+
+.cards {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  padding: 40px 0;
+}
+
+.card {
+  background: #fff;
+  color: $blue2;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+  margin-bottom: 20px;
+
+  p {
+    font-size: 16px;
+  }
+
+  img {
+    border-radius: 10px;
+  }
+
+  a {
+    color: $blue;
+    font-weight: bold;
+  }
+
+  h3 {
+    border-bottom: 3px solid $yellow;
+    padding-bottom: 10px;
+    margin: 0 0 20px 0;
+  }
+}
+
+@media (min-width: 600px) {
+  .cards {
+    flex-wrap: nowrap;
+    flex-direction: row;
+  }
+
+  .card {
+    width: calc(50% - 20px);
+    margin-bottom: 0;
+  }
+}
