@@ -33,6 +33,7 @@ export class AppRoot {
               <stencil-route url="/report" component="page-report" />
               <stencil-route url="/about" component="page-about" />
               <stencil-route url="/trucks" component="page-trucks" />
+              <stencil-route url="/partners" component="page-partners" />
             </stencil-route-switch>
           </stencil-router>
         </main>

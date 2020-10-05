@@ -12,6 +12,8 @@ export namespace Components {
     }
     interface PageAbout {
     }
+    interface PagePartners {
+    }
     interface PageTrucks {
     }
 }
@@ -34,6 +36,12 @@ declare global {
         prototype: HTMLPageAboutElement;
         new (): HTMLPageAboutElement;
     };
+    interface HTMLPagePartnersElement extends Components.PagePartners, HTMLStencilElement {
+    }
+    var HTMLPagePartnersElement: {
+        prototype: HTMLPagePartnersElement;
+        new (): HTMLPagePartnersElement;
+    };
     interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
     }
     var HTMLPageTrucksElement: {
@@ -44,6 +52,7 @@ declare global {
         "app-home": HTMLAppHomeElement;
         "app-root": HTMLAppRootElement;
         "page-about": HTMLPageAboutElement;
+        "page-partners": HTMLPagePartnersElement;
         "page-trucks": HTMLPageTrucksElement;
     }
 }
@@ -54,12 +63,15 @@ declare namespace LocalJSX {
     }
     interface PageAbout {
     }
+    interface PagePartners {
+    }
     interface PageTrucks {
     }
     interface IntrinsicElements {
         "app-home": AppHome;
         "app-root": AppRoot;
         "page-about": PageAbout;
+        "page-partners": PagePartners;
         "page-trucks": PageTrucks;
     }
 }
@@ -70,6 +82,7 @@ declare module "@stencil/core" {
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
+            "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
         }
     }
