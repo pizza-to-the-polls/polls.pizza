@@ -28,7 +28,7 @@ export class AppRoot {
         <main>
           <stencil-router>
             <stencil-route-switch scrollTopOffset={0}>
-              <stencil-route url="/" component="app-home" exact={true} />
+              <stencil-route url="/" component="page-home" exact={true} />
               <stencil-route url="/donate" component="page-donate" />
               <stencil-route url="/report" component="page-report" />
               <stencil-route url="/about" component="page-about" />
@@ -37,6 +37,7 @@ export class AppRoot {
               <stencil-route url="/on-demand" component="page-on-demand" />
               <stencil-route url="/covid" component="page-covid" />
               <stencil-route url="/press" component="page-press" />
+              <stencil-route url="/activity" component="page-activity" />
             </stencil-route-switch>
           </stencil-router>
         </main>
