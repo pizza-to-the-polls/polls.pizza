@@ -11,7 +11,7 @@ export class PageTrucks {
         <section id="trucks" class="page">
           <div class="container">
             <h1>Food Trucks</h1>
-            <img src="/images/truck.jpg" alt="Food truck" />
+            <img src="/images/truck.jpg" alt="Food truck" class="photo" />
             <p>
               For the 2020 election season, Pizza to the Polls is launching a food truck program in partnership with Uber Eats and restaurant partners like Milk Bar, Shake Shack,
               and more. We’ll be sending out food trucks in 25 cities, delivering treats to polling locations with long lines throughout early voting and Election Day.

@@ -10,7 +10,7 @@ export class PageOnDemand {
         <section id="on-demand" class="page">
           <div class="container">
             <h1>On-demand</h1>
-            <img src="/images/pics/photo_5.jpg" alt="Pizzas at a polling place" />
+            <img src="/images/pics/photo_5.jpg" alt="Pizzas at a polling place" class="photo" />
             <h2>How to help</h2>
             <h3>1. Report a crowd</h3>
             <p>

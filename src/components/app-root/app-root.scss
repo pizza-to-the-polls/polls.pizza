@@ -350,11 +350,32 @@ input[type="radio"]:focus + label {
 .page {
   background-color: $gray1;
   color: $blue2;
+  padding-bottom: 40px;
+
+  .photo {
+    border-radius: 10px;
+  }
 
   h1 {
     text-align: left;
     font-size: 2em;
     color: $blue2;
+  }
+
+  p + h2 {
+    margin-top: 2em;
+  }
+
+  h3 {
+    margin-bottom: 0;
+  }
+
+  h3 + p {
+    margin-top: 0;
+  }
+
+  p + h3 {
+    margin-top: 1.5em;
   }
 
   img {
@@ -379,6 +400,7 @@ input[type="radio"]:focus + label {
   img {
     width: 24%;
     height: auto;
+    border-radius: 10px;
   }
 }
 
