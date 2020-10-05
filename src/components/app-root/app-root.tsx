@@ -9,13 +9,9 @@ export class AppRoot {
     return (
       <Host>
         <header class="header">
-          <h1 class="display">
-            <stencil-route-link url="/">
-              Pizza to
-              <img src="/images/logo.png" />
-              the Polls
-            </stencil-route-link>
-          </h1>
+          <stencil-route-link url="/">
+            <img src="/images/lockup.png" alt="Pizza to the Polls" />
+          </stencil-route-link>
           <ul class="menu" id="menu">
             <li>
               <stencil-route-link url="/report">Report</stencil-route-link>
@@ -36,30 +32,24 @@ export class AppRoot {
               <stencil-route url="/donate" component="page-donate" />
               <stencil-route url="/report" component="page-report" />
               <stencil-route url="/about" component="page-about" />
+              <stencil-route url="/trucks" component="page-trucks" />
+              <stencil-route url="/partners" component="page-partners" />
+              <stencil-route url="/on-demand" component="page-on-demand" />
+              <stencil-route url="/covid" component="page-covid" />
+              <stencil-route url="/press" component="page-press" />
             </stencil-route-switch>
           </stencil-router>
         </main>
 
         <footer>
           <div class="container">
-            <ul class="utility-nav">
-              <li>
-                <stencil-route-link url="/press">Press</stencil-route-link>
-              </li>
-              <li>
-                <stencil-route-link url="/about">About</stencil-route-link>
-              </li>
-              <li>
-                <a href="mailto:morequestions@polls.pizza">Contact</a>
-              </li>
-            </ul>
             <div
               id="mc_embed_signup"
               class="clearfix"
               style={{
                 clear: "left",
                 width: "100%",
-                maxWidth: "600px",
+                maxWidth: "500px",
                 margin: "0 auto 40px auto",
               }}
             >
@@ -73,7 +63,7 @@ export class AppRoot {
                 noValidate
               >
                 <div id="mc_embed_signup_scroll">
-                  <label htmlFor="mce-EMAIL">Sign up for updates from Pizza to the Polls</label>
+                  <label htmlFor="mce-EMAIL">Sign up for updates</label>
                   <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required />
                   <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button" />
                   <div style={{ position: "absolute", left: "-5000px" }} aria-hidden="true">
@@ -82,10 +72,37 @@ export class AppRoot {
                 </div>
               </form>
             </div>
-
-            <div class="clearfix">
-              <a href="mailto:morequestions@polls.pizza">morequestions@polls.pizza</a> |<a href="https://twitter.com/PizzaToThePolls">@PizzaToThePolls</a> |
-              <a href="https://facebook.com/PizzaToThePolls">On Facebook</a> |<a href="https://instagram.com/PizzaToThePolls">On Instagram</a>
+            <div class="footer-nav">
+              <ul>
+                <li>
+                  <stencil-route-link url="/about">About</stencil-route-link>
+                </li>
+                <li>
+                  <stencil-route-link url="/partners">Partners</stencil-route-link>
+                </li>
+                <li>
+                  <stencil-route-link url="/press">Press</stencil-route-link>
+                </li>
+                <li>
+                  <a href="mailto:morequestions@polls.pizza">Contact us</a>
+                </li>
+              </ul>
+              <ul>
+                <li>
+                  <stencil-route-link url="/trucks">Food trucks</stencil-route-link>
+                </li>
+                <li>
+                  <stencil-route-link url="/on-demand">On-demand delivery</stencil-route-link>
+                </li>
+                <li>
+                  <stencil-route-link url="/covid">COVID safety</stencil-route-link>
+                </li>
+              </ul>
+              <ul class="social">
+                <li><a class="twitter" href="https://twitter.com/pizzatothepolls" target="blank"><img alt="Twitter" src="/images/twitter.svg" /></a></li>
+                <li><a class="facebook" href="https://facebook.com/pizzatothepolls" target="blank"><img alt="Facebook" src="/images/facebook.svg" /></a></li>
+                <li><a class="instagram" href="https://www.instagram.com/pizzatothepolls/" target="blank"><img alt="Instagram" src="/images/instagram.svg" /></a></li>
+              </ul>
             </div>
           </div>
         </footer>
