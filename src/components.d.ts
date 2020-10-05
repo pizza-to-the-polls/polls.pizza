@@ -6,21 +6,17 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-  interface AppHome {}
   interface AppRoot {}
   interface PageAbout {}
+  interface PageActivity {}
   interface PageCovid {}
+  interface PageHome {}
   interface PageOnDemand {}
   interface PagePartners {}
   interface PagePress {}
   interface PageTrucks {}
 }
 declare global {
-  interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {}
-  var HTMLAppHomeElement: {
-    prototype: HTMLAppHomeElement;
-    new (): HTMLAppHomeElement;
-  };
   interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {}
   var HTMLAppRootElement: {
     prototype: HTMLAppRootElement;
@@ -31,10 +27,20 @@ declare global {
     prototype: HTMLPageAboutElement;
     new (): HTMLPageAboutElement;
   };
+  interface HTMLPageActivityElement extends Components.PageActivity, HTMLStencilElement {}
+  var HTMLPageActivityElement: {
+    prototype: HTMLPageActivityElement;
+    new (): HTMLPageActivityElement;
+  };
   interface HTMLPageCovidElement extends Components.PageCovid, HTMLStencilElement {}
   var HTMLPageCovidElement: {
     prototype: HTMLPageCovidElement;
     new (): HTMLPageCovidElement;
+  };
+  interface HTMLPageHomeElement extends Components.PageHome, HTMLStencilElement {}
+  var HTMLPageHomeElement: {
+    prototype: HTMLPageHomeElement;
+    new (): HTMLPageHomeElement;
   };
   interface HTMLPageOnDemandElement extends Components.PageOnDemand, HTMLStencilElement {}
   var HTMLPageOnDemandElement: {
@@ -57,10 +63,11 @@ declare global {
     new (): HTMLPageTrucksElement;
   };
   interface HTMLElementTagNameMap {
-    "app-home": HTMLAppHomeElement;
     "app-root": HTMLAppRootElement;
     "page-about": HTMLPageAboutElement;
+    "page-activity": HTMLPageActivityElement;
     "page-covid": HTMLPageCovidElement;
+    "page-home": HTMLPageHomeElement;
     "page-on-demand": HTMLPageOnDemandElement;
     "page-partners": HTMLPagePartnersElement;
     "page-press": HTMLPagePressElement;
@@ -68,19 +75,21 @@ declare global {
   }
 }
 declare namespace LocalJSX {
-  interface AppHome {}
   interface AppRoot {}
   interface PageAbout {}
+  interface PageActivity {}
   interface PageCovid {}
+  interface PageHome {}
   interface PageOnDemand {}
   interface PagePartners {}
   interface PagePress {}
   interface PageTrucks {}
   interface IntrinsicElements {
-    "app-home": AppHome;
     "app-root": AppRoot;
     "page-about": PageAbout;
+    "page-activity": PageActivity;
     "page-covid": PageCovid;
+    "page-home": PageHome;
     "page-on-demand": PageOnDemand;
     "page-partners": PagePartners;
     "page-press": PagePress;
@@ -91,10 +100,11 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
   export namespace JSX {
     interface IntrinsicElements {
-      "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
       "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
       "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
+      "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
       "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
+      "page-home": LocalJSX.PageHome & JSXBase.HTMLAttributes<HTMLPageHomeElement>;
       "page-on-demand": LocalJSX.PageOnDemand & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
       "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
       "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;

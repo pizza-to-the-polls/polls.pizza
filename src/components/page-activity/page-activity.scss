@@ -1,0 +1,31 @@
+page-activity {
+  ul {
+    list-style-type: none;
+    margin: 0;
+    margin-bottom: 40px;
+    overflow-y: scroll;
+    background: rgba($blue2, 0.1);
+    padding: 10px;
+  }
+
+  .locations li {
+    font-size: 18px;
+
+    a {
+      padding: 5px 10px;
+      margin-bottom: 5px;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid rgba($white, 0.8);
+
+      &,
+      &:hover {
+        color: black;
+      }
+
+      &:hover {
+        border-left: 4px solid $yellow;
+      }
+    }
+  }
+}
