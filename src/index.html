@@ -15,7 +15,6 @@
     <script type="module" src="/build/app.esm.js"></script>
     <script nomodule src="/build/app.js"></script>
     <link href="/build/app.css" rel="stylesheet" />
-    <link rel="manifest" href="/manifest.json" />
 
     <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-icon-60x60.png" />
@@ -30,7 +29,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png" />
-    <link rel="manifest" href="/manifest.json" />
+
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="msapplication-TileImage" content="/images/favicons/ms-icon-144x144.png" />
     <meta name="theme-color" content="#ffffff" />
@@ -76,5 +75,11 @@
       ga("create", "UA-86946159-1", "auto");
       ga("send", "pageview");
     </script>
+
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="/js/tinyxhr.js"></script>
+    <script src="/js/main.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb_IhCGGA3lt72lYpPy5rhQycPBKFDssw&libraries=places&callback=initAutocomplete&sensor=false"></script>
   </body>
 </html>
