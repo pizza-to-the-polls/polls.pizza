@@ -87,7 +87,7 @@ a {
   transition: color 0.1s ease-in-out;
 
   &:hover {
-    color: $blue2;
+    color: darken($blue, 10%);
   }
 }
 
@@ -428,7 +428,7 @@ footer input[type="submit"] {
   font-weight: bold;
   text-decoration: none;
   display: inline-block;
-  transition: box-shadow 0.2s ease-in-out;
+  transition: background-color 0.1s ease-in-out;
 
   &.primary {
     background: $blue;
@@ -437,12 +437,18 @@ footer input[type="submit"] {
     &:hover,
     &:active,
     &:focus {
-      box-shadow: 0 0 0px 4px $yellow;
+      background-color: darken($blue, 10%);
     }
   }
 
   &.secondary {
     background: $red;
     color: #fff;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: darken($red, 10%);
+    }
   }
 }

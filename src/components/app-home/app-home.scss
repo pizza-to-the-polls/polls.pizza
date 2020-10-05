@@ -219,6 +219,18 @@ $border: $blue2;
   background-attachment: fixed;
   background-size: 400px;
   text-align: center;
+
+  p {
+    color: #fff;
+    font-size: 24px;
+    max-width: 600px;
+    margin: 0 auto 20px;
+  }
+
+  .button {
+    width: 100%;
+    max-width: 400px;
+  }
 }
 
 .cards {
@@ -230,7 +242,6 @@ $border: $blue2;
 
 .card {
   background: #fff;
-  color: $blue2;
   padding: 20px;
   border-radius: 10px;
   text-align: left;
@@ -238,10 +249,12 @@ $border: $blue2;
 
   p {
     font-size: 16px;
+    color: $blue2;
   }
 
   img {
     border-radius: 10px;
+    margin-bottom: 20px;
   }
 
   a {
@@ -253,6 +266,8 @@ $border: $blue2;
     border-bottom: 3px solid $yellow;
     padding-bottom: 10px;
     margin: 0 0 20px 0;
+    text-align: center;
+    color: $blue2;
   }
 }
 
