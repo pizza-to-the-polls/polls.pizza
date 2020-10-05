@@ -11,6 +11,7 @@ export class PageOnDemand {
         <section id="on-demand" class="page">
           <div class="container">
             <h1>On-demand delivery</h1>
+            <img src="/images/pics/photo_5.jpg" alt="Pizzas at a polling place" />
             <h2>How to help</h2>
             <h3>1. Report a crowd</h3>
             <p>If you’re at a crowded polling place that could use some snacks, let us know! Just <a href="/report">report the address and give us a bit of info</a> and we’ll get to work finding a restaurant that can deliver the goods.</p>
