@@ -35,7 +35,7 @@ export class PageOnDemand {
               If you’re not actually at the crowded polling place, you can still report the line. Just note that we’re prioritizing deliveries to places where someone can help make
               sure the food gets received and handed out safely.
             </p>
-            <a class="button primary">Report a line</a>
+            <a class="button primary" href="/report">Report a line</a>
           </div>
         </section>
       </Host>

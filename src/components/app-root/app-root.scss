@@ -398,7 +398,7 @@ input[type="radio"]:focus + label {
   justify-content: space-between;
   flex-direction: row;
   align-items: flex-start;
-  
+
   img {
     width: 24%;
     height: auto;
@@ -511,6 +511,7 @@ footer input[type="submit"] {
     &:active,
     &:focus {
       background-color: darken($blue, 10%);
+      color: #fff;
     }
   }
 
@@ -522,6 +523,7 @@ footer input[type="submit"] {
     &:active,
     &:focus {
       background-color: darken($red, 10%);
+      color: #fff;
     }
   }
 }
