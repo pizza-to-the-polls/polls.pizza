@@ -12,6 +12,8 @@ export namespace Components {
     }
     interface PageAbout {
     }
+    interface PageCovid {
+    }
     interface PageOnDemand {
     }
     interface PagePartners {
@@ -38,6 +40,12 @@ declare global {
         prototype: HTMLPageAboutElement;
         new (): HTMLPageAboutElement;
     };
+    interface HTMLPageCovidElement extends Components.PageCovid, HTMLStencilElement {
+    }
+    var HTMLPageCovidElement: {
+        prototype: HTMLPageCovidElement;
+        new (): HTMLPageCovidElement;
+    };
     interface HTMLPageOnDemandElement extends Components.PageOnDemand, HTMLStencilElement {
     }
     var HTMLPageOnDemandElement: {
@@ -60,6 +68,7 @@ declare global {
         "app-home": HTMLAppHomeElement;
         "app-root": HTMLAppRootElement;
         "page-about": HTMLPageAboutElement;
+        "page-covid": HTMLPageCovidElement;
         "page-on-demand": HTMLPageOnDemandElement;
         "page-partners": HTMLPagePartnersElement;
         "page-trucks": HTMLPageTrucksElement;
@@ -72,6 +81,8 @@ declare namespace LocalJSX {
     }
     interface PageAbout {
     }
+    interface PageCovid {
+    }
     interface PageOnDemand {
     }
     interface PagePartners {
@@ -82,6 +93,7 @@ declare namespace LocalJSX {
         "app-home": AppHome;
         "app-root": AppRoot;
         "page-about": PageAbout;
+        "page-covid": PageCovid;
         "page-on-demand": PageOnDemand;
         "page-partners": PagePartners;
         "page-trucks": PageTrucks;
@@ -94,6 +106,7 @@ declare module "@stencil/core" {
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
+            "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
             "page-on-demand": LocalJSX.PageOnDemand & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
