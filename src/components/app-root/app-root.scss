@@ -51,10 +51,17 @@
     text-decoration: none;
     color: $red;
     display: block;
+    transition: color 0.1s ease-in-out;
+
+    &:hover,
+    &:focus {
+      color: $blue;
+    }
   }
 
+  a:active,
   .link-active {
-    color: $blue2;
+    color: $blue;
   }
 }
 
@@ -373,12 +380,6 @@ input[type="radio"]:focus + label {
     width: 24%;
     height: auto;
   }
-}
-
-.about h2 {
-  color: #333;
-  border-bottom: 4px solid #333;
-  padding-bottom: 8px;
 }
 
 footer {
