@@ -36,6 +36,7 @@ export class AppRoot {
               <stencil-route url="/partners" component="page-partners" />
               <stencil-route url="/on-demand" component="page-on-demand" />
               <stencil-route url="/covid" component="page-covid" />
+              <stencil-route url="/press" component="page-press" />
             </stencil-route-switch>
           </stencil-router>
         </main>

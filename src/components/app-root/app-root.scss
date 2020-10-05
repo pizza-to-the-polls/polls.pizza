@@ -346,6 +346,16 @@ input[type="radio"]:focus + label {
   img {
     max-width: 100%;
   }
+
+  a {
+    color: $red;
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: darken($red, 10%);
+    }
+  }
 }
 
 .photo-grid {

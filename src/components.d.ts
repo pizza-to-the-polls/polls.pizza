@@ -18,6 +18,8 @@ export namespace Components {
     }
     interface PagePartners {
     }
+    interface PagePress {
+    }
     interface PageTrucks {
     }
 }
@@ -58,6 +60,12 @@ declare global {
         prototype: HTMLPagePartnersElement;
         new (): HTMLPagePartnersElement;
     };
+    interface HTMLPagePressElement extends Components.PagePress, HTMLStencilElement {
+    }
+    var HTMLPagePressElement: {
+        prototype: HTMLPagePressElement;
+        new (): HTMLPagePressElement;
+    };
     interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
     }
     var HTMLPageTrucksElement: {
@@ -71,6 +79,7 @@ declare global {
         "page-covid": HTMLPageCovidElement;
         "page-on-demand": HTMLPageOnDemandElement;
         "page-partners": HTMLPagePartnersElement;
+        "page-press": HTMLPagePressElement;
         "page-trucks": HTMLPageTrucksElement;
     }
 }
@@ -87,6 +96,8 @@ declare namespace LocalJSX {
     }
     interface PagePartners {
     }
+    interface PagePress {
+    }
     interface PageTrucks {
     }
     interface IntrinsicElements {
@@ -96,6 +107,7 @@ declare namespace LocalJSX {
         "page-covid": PageCovid;
         "page-on-demand": PageOnDemand;
         "page-partners": PagePartners;
+        "page-press": PagePress;
         "page-trucks": PageTrucks;
     }
 }
@@ -109,6 +121,7 @@ declare module "@stencil/core" {
             "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
             "page-on-demand": LocalJSX.PageOnDemand & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
+            "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
         }
     }
