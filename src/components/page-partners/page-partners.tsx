@@ -41,6 +41,9 @@ const rest = [
   styleUrl: "page-partners.scss",
 })
 export class PagePartners {
+  public componentWillLoad() {
+    document.title = `Partners | Pizza to the Polls`
+  }
   public render() {
     return (
       <Host>

@@ -4,6 +4,9 @@ import { Component, h, Host } from "@stencil/core";
   tag: "page-press",
 })
 export class PagePress {
+  public componentWillLoad() {
+    document.title = `Press | Pizza to the Polls`
+  }
   public render() {
     return (
       <Host>

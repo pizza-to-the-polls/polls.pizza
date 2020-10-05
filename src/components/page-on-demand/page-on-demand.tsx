@@ -4,6 +4,9 @@ import { Component, h, Host } from "@stencil/core";
   tag: "page-on-demand",
 })
 export class PageOnDemand {
+  public componentWillLoad() {
+    document.title = `On-demand | Pizza to the Polls`
+  }
   public render() {
     return (
       <Host>

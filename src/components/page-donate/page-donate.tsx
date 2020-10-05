@@ -5,6 +5,9 @@ import { Component, h, Host } from "@stencil/core";
   styleUrl: "page-donate.scss",
 })
 export class PageDonate {
+  public componentWillLoad() {
+    document.title = `Donate | Pizza to the Polls`
+  }
   public render() {
     return (
       <Host>
