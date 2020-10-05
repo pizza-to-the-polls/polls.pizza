@@ -4,10 +4,12 @@ const top = [
   {
     slug: "ubereats",
     name: "Uber Eats",
+    url: "https://www.ubereats.com/",
   },
   {
     slug: "slice",
     name: "Slice",
+    url: "https://slicelife.com/",
   },
 ];
 
@@ -15,20 +17,24 @@ const rest = [
   {
     slug: "daybreaker",
     name: "Daybreaker",
+    url: "https://www.daybreaker.com/",
   },
   {
     slug: "just",
     name: "Just",
+    url: "https://justwater.com/",
   },
   {
     slug: "pipcorn",
     name: "Pipcorn",
+    url: "https://www.pipsnacks.com/",
   },
   {
     slug: "stickys",
     name: "Sticky's",
+    url: "https://www.stickys.com/",
   },
-]
+];
 
 @Component({
   tag: "page-partners",
@@ -46,7 +52,9 @@ export class PagePartners {
               {top.map(l => {
                 return (
                   <li>
-                    <img src={`/images/logos/${l.slug}.png`} alt={l.name} />
+                    <a href={l.url} target="blank">
+                      <img src={`/images/logos/${l.slug}.png`} alt={l.name} />
+                    </a>
                   </li>
                 );
               })}
@@ -55,7 +63,9 @@ export class PagePartners {
               {rest.map(l => {
                 return (
                   <li>
-                    <img src={`/images/logos/${l.slug}.png`} alt={l.name} />
+                    <a href={l.url} target="blank">
+                      <img src={`/images/logos/${l.slug}.png`} alt={l.name} />
+                    </a>
                   </li>
                 );
               })}
