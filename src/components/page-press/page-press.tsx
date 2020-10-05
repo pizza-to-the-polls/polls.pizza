@@ -13,6 +13,9 @@ export class PagePress {
         <section id="trucks" class="page">
           <div class="container">
             <h1>Press</h1>
+            <h3>
+              <a href="/press-release.pdf">Press release for our 2020 work.</a>
+            </h3>
             <p>
               If you’d like to get in touch with us for a story send an email to <a href="mailto:press@polls.pizza">press@polls.pizza</a>.
             </p>
