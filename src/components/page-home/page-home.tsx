@@ -13,7 +13,7 @@ export class PageHome {
   @State() public raised: string = "";
 
   public async componentWillLoad() {
-    document.title = `Home | Pizza to the Polls`
+    document.title = `Home | Pizza to the Polls`;
 
     const { pizzas, locations, states, raised } = await getTotals();
 

@@ -6,7 +6,7 @@ import { Component, h, Host } from "@stencil/core";
 })
 export class PageTrucks {
   public componentWillLoad() {
-    document.title = `Food Trucks | Pizza to the Polls`
+    document.title = `Food Trucks | Pizza to the Polls`;
   }
 
   public render() {

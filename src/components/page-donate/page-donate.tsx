@@ -6,7 +6,7 @@ import { Component, h, Host } from "@stencil/core";
 })
 export class PageDonate {
   public componentWillLoad() {
-    document.title = `Donate | Pizza to the Polls`
+    document.title = `Donate | Pizza to the Polls`;
   }
   public render() {
     return (

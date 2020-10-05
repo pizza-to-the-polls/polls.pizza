@@ -42,7 +42,7 @@ const rest = [
 })
 export class PagePartners {
   public componentWillLoad() {
-    document.title = `Partners | Pizza to the Polls`
+    document.title = `Partners | Pizza to the Polls`;
   }
   public render() {
     return (

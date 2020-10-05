@@ -5,7 +5,7 @@ import { Component, h, Host } from "@stencil/core";
 })
 export class PagePress {
   public componentWillLoad() {
-    document.title = `Press | Pizza to the Polls`
+    document.title = `Press | Pizza to the Polls`;
   }
   public render() {
     return (

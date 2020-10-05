@@ -5,7 +5,7 @@ import { Component, h, Host } from "@stencil/core";
 })
 export class PageOnDemand {
   public componentWillLoad() {
-    document.title = `On-demand | Pizza to the Polls`
+    document.title = `On-demand | Pizza to the Polls`;
   }
   public render() {
     return (
@@ -38,7 +38,9 @@ export class PageOnDemand {
               If you’re not actually at the crowded polling place, you can still report the line. Just note that we’re prioritizing deliveries to places where someone can help make
               sure the food gets received and handed out safely.
             </p>
-            <a class="button primary" href="/report">Report a line</a>
+            <a class="button primary" href="/report">
+              Report a line
+            </a>
           </div>
         </section>
       </Host>
