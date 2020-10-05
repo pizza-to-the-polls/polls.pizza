@@ -260,6 +260,10 @@ $border: $blue2;
   a {
     color: $blue;
     font-weight: bold;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
   }
 
   h3 {
