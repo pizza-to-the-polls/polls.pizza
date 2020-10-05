@@ -396,7 +396,9 @@ input[type="radio"]:focus + label {
 .photo-grid {
   display: flex;
   justify-content: space-between;
-
+  flex-direction: row;
+  align-items: flex-start;
+  
   img {
     width: 24%;
     height: auto;
