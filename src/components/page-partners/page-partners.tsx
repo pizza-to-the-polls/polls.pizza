@@ -1,6 +1,6 @@
 import { Component, h, Host } from "@stencil/core";
 
-const logos = [
+const top = [
   {
     slug: "ubereats",
     name: "Uber Eats",
@@ -9,6 +9,9 @@ const logos = [
     slug: "slice",
     name: "Slice",
   },
+];
+
+const rest = [
   {
     slug: "daybreaker",
     name: "Daybreaker",
@@ -25,7 +28,7 @@ const logos = [
     slug: "stickys",
     name: "Sticky's",
   },
-];
+]
 
 @Component({
   tag: "page-partners",
@@ -40,7 +43,16 @@ export class PagePartners {
             <h1>Partners</h1>
             <p>Pizza to the Polls is grateful for the support of its partners:</p>
             <ul class="partners">
-              {logos.map(l => {
+              {top.map(l => {
+                return (
+                  <li>
+                    <img src={`/images/logos/${l.slug}.png`} alt={l.name} />
+                  </li>
+                );
+              })}
+            </ul>
+            <ul class="partners">
+              {rest.map(l => {
                 return (
                   <li>
                     <img src={`/images/logos/${l.slug}.png`} alt={l.name} />
