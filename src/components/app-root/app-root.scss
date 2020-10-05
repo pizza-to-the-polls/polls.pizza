@@ -379,7 +379,6 @@ footer {
   border-top: 5px solid $red;
   color: #fff;
   padding: 40px 0;
-  text-align: center;
 }
 
 footer a {
@@ -401,17 +400,36 @@ footer input[type="submit"] {
   padding: 10px;
 }
 
-.utility-nav {
-  padding: 0px 0 40px;
-  list-style-type: none;
+.footer-nav {
+  padding: 20px 0 40px 0;
+  display: flex;
+  border-top: 3px solid #fff;
 
-  li {
-    display: inline-block;
-    padding: 0 30px;
-    font-size: 24px;
+  ul {
+    list-style-type: none;
+    padding: 0 40px 0 0;
+    flex-grow: 1;
 
-    a {
-      text-decoration: none;
+    li {
+      font-size: 18px;
+
+      a {
+        text-decoration: none;
+
+        &.link-active {
+          color: $blue;
+        }
+      }
+    }
+  }
+
+  .social {
+    padding: 0;
+    text-align: right;
+
+    li {
+      display: inline-block;
+      margin: 0 10px;
     }
   }
 }
