@@ -50,6 +50,10 @@
     color: $red;
     display: block;
   }
+
+  .link-active {
+    color: $blue2;
+  }
 }
 
 @media (min-width: 600px) {
