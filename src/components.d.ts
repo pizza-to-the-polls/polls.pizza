@@ -6,99 +6,123 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-  interface AppHome {}
-  interface AppRoot {}
-  interface PageAbout {}
-  interface PageCovid {}
-  interface PageOnDemand {}
-  interface PagePartners {}
-  interface PagePress {}
-  interface PageTrucks {}
+    interface AppHome {
+    }
+    interface AppRoot {
+    }
+    interface PageAbout {
+    }
+    interface PageCovid {
+    }
+    interface PageOnDemand {
+    }
+    interface PagePartners {
+    }
+    interface PagePress {
+    }
+    interface PageTrucks {
+    }
 }
 declare global {
-  interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {}
-  var HTMLAppHomeElement: {
-    prototype: HTMLAppHomeElement;
-    new (): HTMLAppHomeElement;
-  };
-  interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {}
-  var HTMLAppRootElement: {
-    prototype: HTMLAppRootElement;
-    new (): HTMLAppRootElement;
-  };
-  interface HTMLPageAboutElement extends Components.PageAbout, HTMLStencilElement {}
-  var HTMLPageAboutElement: {
-    prototype: HTMLPageAboutElement;
-    new (): HTMLPageAboutElement;
-  };
-  interface HTMLPageCovidElement extends Components.PageCovid, HTMLStencilElement {}
-  var HTMLPageCovidElement: {
-    prototype: HTMLPageCovidElement;
-    new (): HTMLPageCovidElement;
-  };
-  interface HTMLPageOnDemandElement extends Components.PageOnDemand, HTMLStencilElement {}
-  var HTMLPageOnDemandElement: {
-    prototype: HTMLPageOnDemandElement;
-    new (): HTMLPageOnDemandElement;
-  };
-  interface HTMLPagePartnersElement extends Components.PagePartners, HTMLStencilElement {}
-  var HTMLPagePartnersElement: {
-    prototype: HTMLPagePartnersElement;
-    new (): HTMLPagePartnersElement;
-  };
-  interface HTMLPagePressElement extends Components.PagePress, HTMLStencilElement {}
-  var HTMLPagePressElement: {
-    prototype: HTMLPagePressElement;
-    new (): HTMLPagePressElement;
-  };
-  interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {}
-  var HTMLPageTrucksElement: {
-    prototype: HTMLPageTrucksElement;
-    new (): HTMLPageTrucksElement;
-  };
-  interface HTMLElementTagNameMap {
-    "app-home": HTMLAppHomeElement;
-    "app-root": HTMLAppRootElement;
-    "page-about": HTMLPageAboutElement;
-    "page-covid": HTMLPageCovidElement;
-    "page-on-demand": HTMLPageOnDemandElement;
-    "page-partners": HTMLPagePartnersElement;
-    "page-press": HTMLPagePressElement;
-    "page-trucks": HTMLPageTrucksElement;
-  }
+    interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {
+    }
+    var HTMLAppHomeElement: {
+        prototype: HTMLAppHomeElement;
+        new (): HTMLAppHomeElement;
+    };
+    interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
+    }
+    var HTMLAppRootElement: {
+        prototype: HTMLAppRootElement;
+        new (): HTMLAppRootElement;
+    };
+    interface HTMLPageAboutElement extends Components.PageAbout, HTMLStencilElement {
+    }
+    var HTMLPageAboutElement: {
+        prototype: HTMLPageAboutElement;
+        new (): HTMLPageAboutElement;
+    };
+    interface HTMLPageCovidElement extends Components.PageCovid, HTMLStencilElement {
+    }
+    var HTMLPageCovidElement: {
+        prototype: HTMLPageCovidElement;
+        new (): HTMLPageCovidElement;
+    };
+    interface HTMLPageOnDemandElement extends Components.PageOnDemand, HTMLStencilElement {
+    }
+    var HTMLPageOnDemandElement: {
+        prototype: HTMLPageOnDemandElement;
+        new (): HTMLPageOnDemandElement;
+    };
+    interface HTMLPagePartnersElement extends Components.PagePartners, HTMLStencilElement {
+    }
+    var HTMLPagePartnersElement: {
+        prototype: HTMLPagePartnersElement;
+        new (): HTMLPagePartnersElement;
+    };
+    interface HTMLPagePressElement extends Components.PagePress, HTMLStencilElement {
+    }
+    var HTMLPagePressElement: {
+        prototype: HTMLPagePressElement;
+        new (): HTMLPagePressElement;
+    };
+    interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
+    }
+    var HTMLPageTrucksElement: {
+        prototype: HTMLPageTrucksElement;
+        new (): HTMLPageTrucksElement;
+    };
+    interface HTMLElementTagNameMap {
+        "app-home": HTMLAppHomeElement;
+        "app-root": HTMLAppRootElement;
+        "page-about": HTMLPageAboutElement;
+        "page-covid": HTMLPageCovidElement;
+        "page-on-demand": HTMLPageOnDemandElement;
+        "page-partners": HTMLPagePartnersElement;
+        "page-press": HTMLPagePressElement;
+        "page-trucks": HTMLPageTrucksElement;
+    }
 }
 declare namespace LocalJSX {
-  interface AppHome {}
-  interface AppRoot {}
-  interface PageAbout {}
-  interface PageCovid {}
-  interface PageOnDemand {}
-  interface PagePartners {}
-  interface PagePress {}
-  interface PageTrucks {}
-  interface IntrinsicElements {
-    "app-home": AppHome;
-    "app-root": AppRoot;
-    "page-about": PageAbout;
-    "page-covid": PageCovid;
-    "page-on-demand": PageOnDemand;
-    "page-partners": PagePartners;
-    "page-press": PagePress;
-    "page-trucks": PageTrucks;
-  }
+    interface AppHome {
+    }
+    interface AppRoot {
+    }
+    interface PageAbout {
+    }
+    interface PageCovid {
+    }
+    interface PageOnDemand {
+    }
+    interface PagePartners {
+    }
+    interface PagePress {
+    }
+    interface PageTrucks {
+    }
+    interface IntrinsicElements {
+        "app-home": AppHome;
+        "app-root": AppRoot;
+        "page-about": PageAbout;
+        "page-covid": PageCovid;
+        "page-on-demand": PageOnDemand;
+        "page-partners": PagePartners;
+        "page-press": PagePress;
+        "page-trucks": PageTrucks;
+    }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
-  export namespace JSX {
-    interface IntrinsicElements {
-      "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
-      "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
-      "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
-      "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
-      "page-on-demand": LocalJSX.PageOnDemand & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
-      "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
-      "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
-      "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
+    export namespace JSX {
+        interface IntrinsicElements {
+            "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
+            "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
+            "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
+            "page-on-demand": LocalJSX.PageOnDemand & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
+            "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
+            "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
+            "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
+        }
     }
-  }
 }

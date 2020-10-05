@@ -1,10 +1,26 @@
-import { Component, h } from "@stencil/core";
+import { Component, h, State } from "@stencil/core";
+
+import { getTotals } from "../../lib/sheets";
 
 @Component({
   tag: "app-home",
   styleUrl: "app-home.scss",
 })
 export class AppHome {
+  @State() public pizzas: string = "";
+  @State() public locations: string = "";
+  @State() public states: string = "";
+  @State() public raised: string = "";
+
+  public async componentWillLoad() {
+    const { pizzas, locations, states, raised } = await getTotals();
+
+    this.pizzas = pizzas;
+    this.locations = locations;
+    this.states = states;
+    this.raised = `\$${raised}`;
+  }
+
   public render() {
     return (
       <div>
@@ -19,7 +35,24 @@ export class AppHome {
             <div class="container">
               <div class="stats">
                 <h2 class="display">2020 Election Totals</h2>
-                <div class="stats__row"></div>
+                <div class="stats__row">
+                  <div class="stat">
+                    <span class="stat__number">{this.pizzas}</span>
+                    <span class="stat__label">Pizzas sent</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat__number">{this.locations}</span>
+                    <span class="stat__label">Polling places</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat__number">{this.states}</span>
+                    <span class="stat__label">States</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat__number">{this.raised}</span>
+                    <span class="stat__label">Raised in 2020</span>
+                  </div>
+                </div>
                 <a href="/report" class="button primary">
                   Report a line
                 </a>
