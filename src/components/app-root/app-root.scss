@@ -330,7 +330,8 @@ input[type="radio"]:focus + label {
 }
 
 .page {
-  background: $gray1;
+  background-color: $gray1;
+  color: $blue2;
 
   h1 {
     text-align: left;
@@ -348,6 +349,9 @@ input[type="radio"]:focus + label {
 }
 
 .photo-grid {
+  display: flex;
+  justify-content: space-between;
+
   img {
     width: 24%;
     height: auto;
