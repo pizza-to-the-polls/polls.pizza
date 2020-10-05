@@ -29,7 +29,7 @@ export class AppHome {
         </section>
         <section class="home-secondary">
           <div class="container">
-            <p>Pizza to the Polls is a non-partisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</p>
+            <p>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</p>
             <a href="/donate" class="button secondary">Donate</a>
             <div class="cards">
               <div class="card">
@@ -42,7 +42,7 @@ export class AppHome {
                 <h3>On-demand delivery</h3>
                 <img src="/images/pics/photo_5.jpg" alt="Pizza at a polling location" />
                 <p>Our signature program is back and we need you to help by reporting crowded polling places and then sticking around to make sure food gets delivered safely.</p>
-                <a href="/how-it-works">Learn more</a>
+                <a href="/on-demand">Learn more</a>
               </div>
             </div>
           </div>
