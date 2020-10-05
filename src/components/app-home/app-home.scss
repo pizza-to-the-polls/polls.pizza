@@ -11,10 +11,9 @@ $border: $blue2;
 
 .intro {
   p {
-    font-size: 22px;
+    font-size: 18px;
     margin-top: 0;
     display: block;
-    max-width: 80%;
     margin: 0 auto 30px;
     font-weight: bold;
     text-align: center;
@@ -209,6 +208,7 @@ $border: $blue2;
   .hero {
     p {
       font-size: 24px;
+      max-width: 80%;
     }
   }
 }

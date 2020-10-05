@@ -11,7 +11,7 @@
   text-align: center;
 
   img {
-    width: 400px;
+    width: 300px;
     vertical-align: middle;
   }
 }
@@ -19,7 +19,7 @@
 .menu {
   list-style-type: none;
   margin: 0;
-  padding: 30px 0 10px 0;
+  padding: 10px 0 10px 0;
   width: 100%;
   font-weight: bold;
   z-index: 1000;
@@ -27,18 +27,20 @@
 
   li {
     display: inline-block;
-    font-size: 26px;
+    font-size: 18px;
     font-weight: bold;
     padding: 0 10px;
     margin: 0 10px;
     position: relative;
     color: $blue2;
+
     &:after {
       content: "|";
       position: absolute;
       top: 0;
       right: -15px;
     }
+
     &:last-child:after {
       content: "";
     }
@@ -62,6 +64,10 @@
     position: relative;
     padding-left: 0;
     padding-right: 0;
+
+    img {
+      width: 400px;
+    }
   }
 
   .menu {
@@ -73,6 +79,7 @@
     li {
       display: inline-block;
       width: auto;
+      font-size: 24px;
     }
   }
 }
@@ -403,6 +410,7 @@ footer input[type="submit"] {
 .footer-nav {
   padding: 20px 0 40px 0;
   display: flex;
+  flex-direction: column;
   border-top: 3px solid #fff;
 
   ul {
@@ -425,11 +433,19 @@ footer input[type="submit"] {
 
   .social {
     padding: 0;
-    text-align: right;
+    text-align: center;
 
     li {
       display: inline-block;
       margin: 0 10px;
+    }
+  }
+
+  @media (min-width: 600px) {
+    flex-direction: row;
+
+    .social {
+      text-align: right;
     }
   }
 }

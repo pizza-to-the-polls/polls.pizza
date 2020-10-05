@@ -63,7 +63,7 @@ export class AppRoot {
                 noValidate
               >
                 <div id="mc_embed_signup_scroll">
-                  <label htmlFor="mce-EMAIL">Sign up for updates from Pizza to the Polls</label>
+                  <label htmlFor="mce-EMAIL">Sign up for updates</label>
                   <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required />
                   <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button" />
                   <div style={{ position: "absolute", left: "-5000px" }} aria-hidden="true">
