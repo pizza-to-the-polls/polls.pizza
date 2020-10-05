@@ -2,7 +2,6 @@ import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "page-on-demand",
-  styleUrl: "page-on-demand.css",
 })
 export class PageOnDemand {
   public render() {

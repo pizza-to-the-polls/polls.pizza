@@ -2,7 +2,6 @@ import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "page-press",
-  styleUrl: "page-press.css",
 })
 export class PagePress {
   public render() {

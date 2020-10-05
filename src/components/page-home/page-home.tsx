@@ -3,10 +3,10 @@ import { Component, h, State } from "@stencil/core";
 import { getTotals } from "../../lib/sheets";
 
 @Component({
-  tag: "app-home",
-  styleUrl: "app-home.scss",
+  tag: "page-home",
+  styleUrl: "page-home.scss",
 })
-export class AppHome {
+export class PageHome {
   @State() public pizzas: string = "";
   @State() public locations: string = "";
   @State() public states: string = "";
