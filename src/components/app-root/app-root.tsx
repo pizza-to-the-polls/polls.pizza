@@ -99,9 +99,21 @@ export class AppRoot {
                 </li>
               </ul>
               <ul class="social">
-                <li><a class="twitter" href="https://twitter.com/pizzatothepolls" target="blank"><img alt="Twitter" src="/images/twitter.svg" /></a></li>
-                <li><a class="facebook" href="https://facebook.com/pizzatothepolls" target="blank"><img alt="Facebook" src="/images/facebook.svg" /></a></li>
-                <li><a class="instagram" href="https://www.instagram.com/pizzatothepolls/" target="blank"><img alt="Instagram" src="/images/instagram.svg" /></a></li>
+                <li>
+                  <a class="twitter" href="https://twitter.com/pizzatothepolls" target="blank">
+                    <img alt="Twitter" src="/images/twitter.svg" />
+                  </a>
+                </li>
+                <li>
+                  <a class="facebook" href="https://facebook.com/pizzatothepolls" target="blank">
+                    <img alt="Facebook" src="/images/facebook.svg" />
+                  </a>
+                </li>
+                <li>
+                  <a class="instagram" href="https://www.instagram.com/pizzatothepolls/" target="blank">
+                    <img alt="Instagram" src="/images/instagram.svg" />
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

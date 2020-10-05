@@ -20,8 +20,12 @@ export class AppHome {
               <div class="stats">
                 <h2 class="display">2020 Election Totals</h2>
                 <div class="stats__row"></div>
-                <a href="/report" class="button primary">Report a line</a>
-                <a href="/activity" class="stat__link">View recent deliveries</a>
+                <a href="/report" class="button primary">
+                  Report a line
+                </a>
+                <a href="/activity" class="stat__link">
+                  View recent deliveries
+                </a>
               </div>
             </div>
             <div class="dashboard-bg"></div>
@@ -30,7 +34,9 @@ export class AppHome {
         <section class="home-secondary">
           <div class="container">
             <p>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</p>
-            <a href="/donate" class="button secondary">Donate</a>
+            <a href="/donate" class="button secondary">
+              Donate
+            </a>
             <div class="cards">
               <div class="card">
                 <h3>Food trucks</h3>

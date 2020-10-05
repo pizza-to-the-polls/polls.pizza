@@ -1,8 +1,8 @@
-import { Component, Host, h } from '@stencil/core';
+import { Component, h, Host } from "@stencil/core";
 
 @Component({
-  tag: 'page-trucks',
-  styleUrl: 'page-trucks.css',
+  tag: "page-trucks",
+  styleUrl: "page-trucks.css",
 })
 export class PageTrucks {
   public render() {
@@ -12,9 +12,19 @@ export class PageTrucks {
           <div class="container">
             <h1>Food Trucks</h1>
             <img src="/images/truck.jpg" alt="Food truck" />
-            <p>For the 2020 election season, Pizza to the Polls is launching a food truck program in partnership with Uber Eats and restaurant partners like Milk Bar, Shake Shack, and more. We’ll be sending out food trucks in  25 cities, delivering treats to polling locations with long lines throughout early voting and Election Day.</p>
-            <p>Since the COVID-19 pandemic began in March, we’ve seen in-person voting locations struggle. Poll worker shortages are reducing the number of polling places — and social distancing measures are limiting the number of people who can vote at one time. As a result, lines are getting longer. By launching food trucks in cities with a history of long lines, we plan to safely provide free, individually wrapped snacks and beverages to everyone.</p>
-            <p>Our food trucks will be staffed with trained professionals who will be wearing masks and gloves and will be equipped with hand sanitizer, soap, disinfectant, and additional cleaning supplies.</p>
+            <p>
+              For the 2020 election season, Pizza to the Polls is launching a food truck program in partnership with Uber Eats and restaurant partners like Milk Bar, Shake Shack,
+              and more. We’ll be sending out food trucks in 25 cities, delivering treats to polling locations with long lines throughout early voting and Election Day.
+            </p>
+            <p>
+              Since the COVID-19 pandemic began in March, we’ve seen in-person voting locations struggle. Poll worker shortages are reducing the number of polling places — and
+              social distancing measures are limiting the number of people who can vote at one time. As a result, lines are getting longer. By launching food trucks in cities with
+              a history of long lines, we plan to safely provide free, individually wrapped snacks and beverages to everyone.
+            </p>
+            <p>
+              Our food trucks will be staffed with trained professionals who will be wearing masks and gloves and will be equipped with hand sanitizer, soap, disinfectant, and
+              additional cleaning supplies.
+            </p>
             <h2>Locations and schedule</h2>
             <ul>
               <li>Phoenix, AZ (Oct. 29, Oc. 30, Nov. 3)</li>
@@ -45,9 +55,7 @@ export class PageTrucks {
             </ul>
           </div>
         </section>
-
       </Host>
     );
   }
-
 }

@@ -1,8 +1,8 @@
-import { Component, Host, h } from '@stencil/core';
+import { Component, h, Host } from "@stencil/core";
 
 @Component({
-  tag: 'page-covid',
-  styleUrl: 'page-covid.css',
+  tag: "page-covid",
+  styleUrl: "page-covid.css",
 })
 export class PageCovid {
   public render() {
@@ -11,7 +11,10 @@ export class PageCovid {
         <section id="covid" class="page">
           <div class="container">
             <h1>COVID Safety</h1>
-            <p>Pizza to the Polls values the health and safety of our communities, and will be working to mitigate risk of disease transmission. We encourage everyone visiting their polling location in person to take extra precautions this year:</p>
+            <p>
+              Pizza to the Polls values the health and safety of our communities, and will be working to mitigate risk of disease transmission. We encourage everyone visiting their
+              polling location in person to take extra precautions this year:
+            </p>
             <ul>
               <li>Wear a mask.</li>
               <li>Practice social distancing and stay at least 6 feet apart from others.</li>
@@ -24,5 +27,4 @@ export class PageCovid {
       </Host>
     );
   }
-
 }
