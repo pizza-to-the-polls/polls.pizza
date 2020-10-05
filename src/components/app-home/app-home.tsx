@@ -45,7 +45,7 @@ export class AppHome {
                 <a href="/trucks">Learn more</a>
               </div>
               <div class="card">
-                <h3>On-demand delivery</h3>
+                <h3>On-demand</h3>
                 <img src="/images/pics/photo_5.jpg" alt="Pizza at a polling location" />
                 <p>Our signature program is back and we need you to help by reporting crowded polling places and then sticking around to make sure food gets delivered safely.</p>
                 <a href="/on-demand">Learn more</a>
