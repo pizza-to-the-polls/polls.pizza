@@ -31,7 +31,7 @@ export class PageOnDemand {
             </p>
             <h3>4. Follow election laws</h3>
             <p>We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate.</p>
-            <h3>See a line, but can’t stick around? That’s ok!?</h3>
+            <h3>See a line, but can’t stick around? That’s ok!</h3>
             <p>
               If you’re not actually at the crowded polling place, you can still report the line. Just note that we’re prioritizing deliveries to places where someone can help make
               sure the food gets received and handed out safely.
