@@ -6,49 +6,71 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-  interface AppHome {}
-  interface AppRoot {}
-  interface PageAbout {}
+    interface AppHome {
+    }
+    interface AppRoot {
+    }
+    interface PageAbout {
+    }
+    interface PageTrucks {
+    }
 }
 declare global {
-  interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {}
-  var HTMLAppHomeElement: {
-    prototype: HTMLAppHomeElement;
-    new (): HTMLAppHomeElement;
-  };
-  interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {}
-  var HTMLAppRootElement: {
-    prototype: HTMLAppRootElement;
-    new (): HTMLAppRootElement;
-  };
-  interface HTMLPageAboutElement extends Components.PageAbout, HTMLStencilElement {}
-  var HTMLPageAboutElement: {
-    prototype: HTMLPageAboutElement;
-    new (): HTMLPageAboutElement;
-  };
-  interface HTMLElementTagNameMap {
-    "app-home": HTMLAppHomeElement;
-    "app-root": HTMLAppRootElement;
-    "page-about": HTMLPageAboutElement;
-  }
+    interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {
+    }
+    var HTMLAppHomeElement: {
+        prototype: HTMLAppHomeElement;
+        new (): HTMLAppHomeElement;
+    };
+    interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
+    }
+    var HTMLAppRootElement: {
+        prototype: HTMLAppRootElement;
+        new (): HTMLAppRootElement;
+    };
+    interface HTMLPageAboutElement extends Components.PageAbout, HTMLStencilElement {
+    }
+    var HTMLPageAboutElement: {
+        prototype: HTMLPageAboutElement;
+        new (): HTMLPageAboutElement;
+    };
+    interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
+    }
+    var HTMLPageTrucksElement: {
+        prototype: HTMLPageTrucksElement;
+        new (): HTMLPageTrucksElement;
+    };
+    interface HTMLElementTagNameMap {
+        "app-home": HTMLAppHomeElement;
+        "app-root": HTMLAppRootElement;
+        "page-about": HTMLPageAboutElement;
+        "page-trucks": HTMLPageTrucksElement;
+    }
 }
 declare namespace LocalJSX {
-  interface AppHome {}
-  interface AppRoot {}
-  interface PageAbout {}
-  interface IntrinsicElements {
-    "app-home": AppHome;
-    "app-root": AppRoot;
-    "page-about": PageAbout;
-  }
+    interface AppHome {
+    }
+    interface AppRoot {
+    }
+    interface PageAbout {
+    }
+    interface PageTrucks {
+    }
+    interface IntrinsicElements {
+        "app-home": AppHome;
+        "app-root": AppRoot;
+        "page-about": PageAbout;
+        "page-trucks": PageTrucks;
+    }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
-  export namespace JSX {
-    interface IntrinsicElements {
-      "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
-      "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
-      "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
+    export namespace JSX {
+        interface IntrinsicElements {
+            "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
+            "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
+            "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
+        }
     }
-  }
 }
