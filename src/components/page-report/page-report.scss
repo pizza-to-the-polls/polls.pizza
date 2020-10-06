@@ -1,0 +1,34 @@
+page-report {
+  .container {
+    padding-top: 30px;
+  }
+
+  .message {
+    padding: 10px 20px;
+    background: $yellow;
+    border-radius: 8px;
+    box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.05);
+
+    &.is-error {
+      background: $red;
+    }
+  }
+
+  .report {
+    background-color: $blue;
+    background-image: url("/images/bg2.png");
+    background-attachment: fixed;
+    background-size: 400px;
+    color: $white;
+    padding-bottom: 40px;
+    h1 {
+      color: white;
+      text-align: left;
+      padding-bottom: 8px;
+    }
+    input[type="submit"],
+    .submit {
+      background-color: $blue2;
+    }
+  }
+}

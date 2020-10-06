@@ -10,6 +10,7 @@ export class PageActivity {
   @State() public locations: Array<{ url: string; location: string }> = [];
 
   public async componentWillLoad() {
+    document.title = `Activity | Pizza to the Polls`;
     this.locations = await getActivity();
   }
 

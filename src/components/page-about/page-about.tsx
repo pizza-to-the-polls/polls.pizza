@@ -4,6 +4,9 @@ import { Component, h, Host } from "@stencil/core";
   tag: "page-about",
 })
 export class PageAbout {
+  public componentWillLoad() {
+    document.title = `About | Pizza to the Polls`;
+  }
   public render() {
     return (
       <Host>

@@ -27,3 +27,19 @@ jobs:
 
       - name: run tests
         run: npm run test
+
+      - name: build site
+        run: npm run build
+        env:
+          STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY_TEST }}
+
+      - name: Deploy to next.polls.pizza
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.DEV_BUCKET }}
+          AWS_REGION: "us-west-2"
+          SOURCE_DIR: "dist/www"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}

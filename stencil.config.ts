@@ -1,3 +1,4 @@
+import replace from "@rollup/plugin-replace";
 import { Config } from "@stencil/core";
 import { sass } from "@stencil/sass";
 
@@ -19,9 +20,22 @@ export const config: Config = {
       copy: [{ src: "../public", dest: "." }],
     },
   ],
+  buildEs5: "prod",
   plugins: [
+    replace({
+      exclude: "node_modules/**",
+      values: {
+        "process.env.STRIPE_PUBLIC_KEY": process.env.STRIPE_PUBLIC_KEY ? `"${process.env.STRIPE_PUBLIC_KEY}"` : "process.env.STRIPE_PUBLIC_KEY",
+      },
+    }),
     sass({
       injectGlobalPaths: ["styles/include/vars.scss"],
     }),
   ],
+  extras: {
+    cssVarsShim: true,
+    dynamicImportShim: true,
+    safari10: true,
+    shadowDomShim: true,
+  },
 };

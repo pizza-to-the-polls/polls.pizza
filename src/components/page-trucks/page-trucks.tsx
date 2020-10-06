@@ -5,6 +5,10 @@ import { Component, h, Host } from "@stencil/core";
   styleUrl: "page-trucks.css",
 })
 export class PageTrucks {
+  public componentWillLoad() {
+    document.title = `Food Trucks | Pizza to the Polls`;
+  }
+
   public render() {
     return (
       <Host>
