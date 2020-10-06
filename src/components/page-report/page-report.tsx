@@ -1,4 +1,4 @@
-import { Component, h, Host, State } from "@stencil/core";
+import { Build, Component, h, Host, State } from "@stencil/core";
 
 @Component({
   tag: "page-report",
@@ -13,53 +13,55 @@ export class PageDonate {
     document.title = `Report | Pizza to the Polls`;
   }
   public componentDidRender() {
-    const google: any = (window as any).google;
+    if (Build.isBrowser) {
+      const google: any = (window as any).google;
 
-    const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
-      types: ["geocode", "establishment"],
-      componentRestrictions: { country: "us" },
-    });
-
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-
-      const componentForm: { [key: string]: string } = {
-        street_number: "short_name",
-        route: "long_name",
-        locality: "long_name",
-        administrative_area_level_1: "short_name",
-        postal_code: "short_name",
-        premise: "name",
-        formatted_address: "formatted_address",
-      };
-
-      Object.keys(componentForm).forEach(component => {
-        const elem = document.getElementById(component) as HTMLInputElement;
-        if (elem) {
-          elem.value = "";
-        }
+      const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
+        types: ["geocode", "establishment"],
+        componentRestrictions: { country: "us" },
       });
 
-      this.addressHidden = false;
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
 
-      place.address_components.forEach((address_component: { [key: string]: any }) => {
-        const addressType: string = address_component.types[0];
-        const mapping = componentForm[addressType];
-        const elem = document.getElementById(addressType) as HTMLInputElement;
-        if (mapping && elem) {
-          elem.value = address_component[mapping];
+        const componentForm: { [key: string]: string } = {
+          street_number: "short_name",
+          route: "long_name",
+          locality: "long_name",
+          administrative_area_level_1: "short_name",
+          postal_code: "short_name",
+          premise: "name",
+          formatted_address: "formatted_address",
+        };
+
+        Object.keys(componentForm).forEach(component => {
+          const elem = document.getElementById(component) as HTMLInputElement;
+          if (elem) {
+            elem.value = "";
+          }
+        });
+
+        this.addressHidden = false;
+
+        place.address_components.forEach((address_component: { [key: string]: any }) => {
+          const addressType: string = address_component.types[0];
+          const mapping = componentForm[addressType];
+          const elem = document.getElementById(addressType) as HTMLInputElement;
+          if (mapping && elem) {
+            elem.value = address_component[mapping];
+          }
+        });
+
+        const premise = document.getElementById("premise") as HTMLInputElement;
+        if (premise) {
+          premise.value = place.name;
+        }
+        const formatted_address = document.getElementById("formatted_address") as HTMLInputElement;
+        if (formatted_address) {
+          formatted_address.value = place.formatted_address;
         }
       });
-
-      const premise = document.getElementById("premise") as HTMLInputElement;
-      if (premise) {
-        premise.value = place.name;
-      }
-      const formatted_address = document.getElementById("formatted_address") as HTMLInputElement;
-      if (formatted_address) {
-        formatted_address.value = place.formatted_address;
-      }
-    });
+    }
   }
   public render() {
     const handleSubmit = async () => {

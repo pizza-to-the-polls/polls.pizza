@@ -4,7 +4,7 @@ export const config: PrerenderConfig = {
   hydrateOptions(url) {
     return {
       prettyHtml: true,
-      staticSite: true
+      staticSite: true,
     };
   },
 };

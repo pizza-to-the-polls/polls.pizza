@@ -1,4 +1,4 @@
-import { Component, h, Host, State } from "@stencil/core";
+import { Build, Component, h, Host, State } from "@stencil/core";
 
 interface Token {
   email: string;
@@ -24,33 +24,37 @@ export class PageDonate {
   }
 
   public render() {
-    const StripeCheckout: any = (window as any).StripeCheckout;
+    let handler: any = null;
 
-    const tokenHandler = async (token: Token) => {
-      const params: { [key: string]: any } = {
-        "entry.1599572815": token.email,
-        "entry.690252188": token.card.address_zip,
-        "entry.1474063298": token.id,
-        "entry.1036377864": this.amount,
-        "entry.104127523": document.domain,
+    if (Build.isBrowser) {
+      const StripeCheckout: any = (window as any).StripeCheckout;
+
+      const tokenHandler = async (token: Token) => {
+        const params: { [key: string]: any } = {
+          "entry.1599572815": token.email,
+          "entry.690252188": token.card.address_zip,
+          "entry.1474063298": token.id,
+          "entry.1036377864": this.amount,
+          "entry.104127523": document.domain,
+        };
+
+        const body = Object.keys(params).reduce((form, key) => {
+          form.append(key, params[key]);
+          return form;
+        }, new FormData());
+
+        await fetch("https://docs.google.com/forms/d/e/1FAIpQLSf5RPXqXaVk8KwKC7kzthukydvA9vL7_bP9V9O9PIAiXl14cQ/formResponse", { body, mode: "no-cors", method: "POST" });
+
+        this.showConfirmation = true;
       };
 
-      const body = Object.keys(params).reduce((form, key) => {
-        form.append(key, params[key]);
-        return form;
-      }, new FormData());
-
-      await fetch("https://docs.google.com/forms/d/e/1FAIpQLSf5RPXqXaVk8KwKC7kzthukydvA9vL7_bP9V9O9PIAiXl14cQ/formResponse", { body, mode: "no-cors", method: "POST" });
-
-      this.showConfirmation = true;
-    };
-
-    const handler = StripeCheckout.configure({
-      key: STRIPE_API_KEY,
-      image: "https://polls.pizza/images/logo.png",
-      locale: "auto",
-      token: tokenHandler,
-    });
+      handler = StripeCheckout.configure({
+        key: STRIPE_API_KEY,
+        image: "https://polls.pizza/images/logo.png",
+        locale: "auto",
+        token: tokenHandler,
+      });
+    }
 
     const getAmount = (): number | null => {
       const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
@@ -65,7 +69,7 @@ export class PageDonate {
       if (this.amount) {
         const pizzas = Math.ceil(this.amount / 100 / 20);
 
-        handler.open({
+        handler?.open({
           name: "Pizza to the Polls",
           description: "About " + pizzas + " Pizza" + (pizzas > 1 ? "s" : ""),
           zipCode: true,
