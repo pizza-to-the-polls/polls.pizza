@@ -80,7 +80,7 @@ export class PageDonate {
       }
 
       if (!data.formatted_address) {
-        this.submitMessage = "Whoops - we can't read taht address";
+        this.submitMessage = "Whoops - we can't read that address";
         this.submitError = true;
         return false;
       }
