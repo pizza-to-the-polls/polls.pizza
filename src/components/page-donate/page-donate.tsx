@@ -44,7 +44,7 @@ export class PageDonate {
     };
 
     const handler = StripeCheckout.configure({
-      key: "pk_test_YCa5It9RFIu9vLPZSmRcTKYD",
+      key: process.env.STRIPE_PUBLIC_KEY,
       image: "https://polls.pizza/images/logo.png",
       locale: "auto",
       token: tokenHandler,
