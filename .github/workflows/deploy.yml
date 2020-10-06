@@ -65,5 +65,6 @@ jobs:
       - name: Invalidate cache & wait for completion
         uses: muratiger/invalidate-cloudfront-and-wait-for-completion-action@master
         env:
+          AWS_REGION: "us-east-1"
           DISTRIBUTION_ID: ${{ secrets.DISTRIBUTION_ID }}
           PATHS: "/*"
