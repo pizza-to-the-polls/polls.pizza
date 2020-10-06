@@ -31,7 +31,7 @@ export class PageDonate {
           "entry.1599572815": token.email,
           "entry.690252188": token.card.address_zip,
           "entry.1474063298": token.id,
-          "entry.1036377864": this.amount,
+          "entry.1036377864": (this.amount || 0) / 100,
           "entry.104127523": document.domain,
         };
 
