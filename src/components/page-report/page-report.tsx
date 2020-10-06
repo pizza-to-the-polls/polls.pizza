@@ -13,9 +13,9 @@ export class PageDonate {
     document.title = `Report | Pizza to the Polls`;
   }
   public componentDidRender() {
-    if (Build.isBrowser) {
-      const google: any = (window as any).google;
+    const google: any = (window as any).google;
 
+    if (Build.isBrowser && google) {
       const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
         types: ["geocode", "establishment"],
         componentRestrictions: { country: "us" },

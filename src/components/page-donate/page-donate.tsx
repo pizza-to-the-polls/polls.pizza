@@ -9,8 +9,6 @@ interface Token {
   amount: number;
 }
 
-const STRIPE_API_KEY = process.env.STRIPE_PUBLIC_KEY;
-
 @Component({
   tag: "page-donate",
   styleUrl: "page-donate.scss",
@@ -25,10 +23,9 @@ export class PageDonate {
 
   public render() {
     let handler: any = null;
+    const StripeCheckout: any = (window as any).StripeCheckout;
 
-    if (Build.isBrowser) {
-      const StripeCheckout: any = (window as any).StripeCheckout;
-
+    if (Build.isBrowser && StripeCheckout) {
       const tokenHandler = async (token: Token) => {
         const params: { [key: string]: any } = {
           "entry.1599572815": token.email,
@@ -49,7 +46,7 @@ export class PageDonate {
       };
 
       handler = StripeCheckout.configure({
-        key: STRIPE_API_KEY,
+        key: process.env.STRIPE_PUBLIC_KEY,
         image: "https://polls.pizza/images/logo.png",
         locale: "auto",
         token: tokenHandler,

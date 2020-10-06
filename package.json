@@ -20,6 +20,7 @@
     "prettier:fix": "prettier --write .",
     "generate": "stencil generate",
     "test": "stencil test --spec --e2e",
+    "test:watch": "stencil test --spec --e2e --watch",
     "ci": "npm run prettier && npm run lint && npm run test"
   },
   "devDependencies": {
