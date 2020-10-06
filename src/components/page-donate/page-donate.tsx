@@ -31,7 +31,7 @@ export class PageDonate {
           "entry.1599572815": token.email,
           "entry.690252188": token.card.address_zip,
           "entry.1474063298": token.id,
-          "entry.1036377864": (this.amount || 0) / 100,
+          "entry.1036377864": this.amount,
           "entry.104127523": document.domain,
         };
 
@@ -58,19 +58,19 @@ export class PageDonate {
       const custom = document.getElementById("custom-amount") as HTMLInputElement;
       const amount = custom.value ? custom.value : checked?.value;
 
-      return amount.length > 0 ? Number(amount) * 100 : null;
+      return amount.length > 0 ? Number(amount) : null;
     };
 
     const handleChange = () => (this.amount = getAmount());
     const handleCheckout = (e: Event) => {
       if (this.amount) {
-        const pizzas = Math.ceil(this.amount / 100 / 20);
+        const pizzas = Math.ceil(this.amount / 20);
 
         handler?.open({
           name: "Pizza to the Polls",
           description: "About " + pizzas + " Pizza" + (pizzas > 1 ? "s" : ""),
           zipCode: true,
-          amount: this.amount,
+          amount: this.amount * 100,
           image: "https://polls.pizza/images/logo.png",
         });
       }
