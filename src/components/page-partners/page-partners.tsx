@@ -2,12 +2,12 @@ import { Component, h, Host } from "@stencil/core";
 
 const top = [
   {
-    slug: "ubereats",
+    img: "ubereats.png",
     name: "Uber Eats",
     url: "https://www.ubereats.com/",
   },
   {
-    slug: "slice",
+    img: "slice.png",
     name: "Slice",
     url: "https://slicelife.com/",
   },
@@ -15,24 +15,34 @@ const top = [
 
 const rest = [
   {
-    slug: "daybreaker",
+    img: "&pizza.png",
+    name: "&Pizza",
+    url: "https://andpizza.com/",
+  },
+  {
+    img: "daybreaker.png",
     name: "Daybreaker",
     url: "https://www.daybreaker.com/",
   },
   {
-    slug: "just",
-    name: "Just",
+    img: "just.png",
+    name: "Just Goods, Inc.",
     url: "https://justwater.com/",
   },
   {
-    slug: "pipcorn",
+    img: "pipcorn.png",
     name: "Pipcorn",
     url: "https://www.pipsnacks.com/",
   },
   {
-    slug: "stickys",
-    name: "Sticky's",
+    img: "stickys.png",
+    name: "Sticky's Finger Joint",
     url: "https://www.stickys.com/",
+  },
+  {
+    img: "voodoo.jpg",
+    name: "Voodoo Doughnut",
+    url: "https://www.voodoodoughnut.com/",
   },
 ];
 
@@ -56,7 +66,7 @@ export class PagePartners {
                 return (
                   <li>
                     <a href={l.url} target="blank">
-                      <img src={`/images/logos/${l.slug}.png`} alt={l.name} />
+                      <img src={`/images/logos/${l.img}`} alt={l.name} />
                     </a>
                   </li>
                 );
@@ -67,7 +77,7 @@ export class PagePartners {
                 return (
                   <li>
                     <a href={l.url} target="blank">
-                      <img src={`/images/logos/${l.slug}.png`} alt={l.name} />
+                      <img src={`/images/logos/${l.img}`} alt={l.name} />
                     </a>
                   </li>
                 );
