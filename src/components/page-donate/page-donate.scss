@@ -20,10 +20,20 @@ page-donate {
     background-image: url("/images/bg2.png");
     background-attachment: fixed;
     background-size: 400px;
+    padding-bottom: 40px;
   }
 
   #donate-form {
-    padding: 20px 0;
+    padding: 20px;
+    background: #fff;
+    color: $blue2;
+    max-width: 600px;
+    margin: 40px auto 0 auto;
+
+    p {
+      font-size: 14px;
+      padding: 10px;
+    }
   }
 
   .message {
@@ -37,30 +47,24 @@ page-donate {
     }
   }
 
-  input[type="radio"] {
-    position: absolute !important;
-    top: auto;
-    left: -9999px !important;
-  }
-
   .radio {
-    background-color: rgba($white, 0.9);
-    color: $red;
+    color: $blue2;
     border-radius: 4px;
-    padding: 20px;
+    padding: 10px;
     cursor: pointer;
-    transition: border-color 0.1s ease-in;
+    transition: box-shadow 0.1s ease-in;
     margin-bottom: 10px;
-    border: 4px solid transparent;
+    border: 1px solid $gray2;
   }
 
   .radio:hover {
-    border: 4px solid $blue;
+    border: 1px solid $blue;
+    box-shadow: 0 0 0px 3px $blue;
   }
 
   .radio input {
     display: inline-block;
-    width: 60px;
+    width: 40px;
     background: none;
     border: none;
     border-radius: 0;
@@ -81,6 +85,13 @@ page-donate {
   input[type="text"]:focus + label {
     background-color: $blue2;
     color: $white;
+  }
+
+  .radio input[type="text"] {
+    border-bottom: 2px solid $blue;
+    width: 100px;
+    padding: 5px;
+    color: $blue2;
   }
 
   .submit {

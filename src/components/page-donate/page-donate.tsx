@@ -86,36 +86,36 @@ export class PageDonate {
             <p>Keep our polling places joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
 
             <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
-              <legend>How many pizzas do you wanna fund?</legend>
+              <legend>Choose an amount</legend>
               <ul>
                 <li>
-                  <input type="radio" value="20" id="radio-1" name="amount" />
                   <label class="radio" htmlFor="radio-1">
-                    1 pizza ($20) 🍕
+                    <input type="radio" value="20" id="radio-1" name="amount" />
+                    $20 🍕
                   </label>
                 </li>
                 <li>
-                  <input type="radio" value="40" id="radio-2" name="amount" />
                   <label class="radio" htmlFor="radio-2">
-                    2 pizzas ($40) 🍕🍕
+                    <input type="radio" value="40" id="radio-2" name="amount" />
+                    $40 🍕🍕
                   </label>
                 </li>
                 <li>
-                  <input type="radio" value="60" id="radio-3" name="amount" />
                   <label class="radio" htmlFor="radio-3">
-                    3 pizzas ($60 ) 🍕🍕🍕
+                    <input type="radio" value="60" id="radio-3" name="amount" />
+                    $60 🍕🍕🍕
                   </label>
                 </li>
                 <li>
-                  <input type="radio" value="100" id="radio-4" name="amount" />
                   <label class="radio" htmlFor="radio-4">
-                    5 pizzas ($100) 🍕🍕🍕🍕🍕
+                    <input type="radio" value="100" id="radio-4" name="amount" />
+                    $100 🍕🍕🍕🍕🍕
                   </label>
                 </li>
                 <li>
-                  <input type="radio" value="200" id="radio-5" name="amount" />
                   <label htmlFor="radio-5" class="radio">
-                    10 pizzas ($200) 🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕
+                    <input type="radio" value="200" id="radio-5" name="amount" />
+                    $200 🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕
                   </label>
                 </li>
               </ul>
