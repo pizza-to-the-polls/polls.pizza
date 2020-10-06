@@ -9,6 +9,8 @@ interface Token {
   amount: number;
 }
 
+const STRIPE_API_KEY = process.env.STRIPE_PUBLIC_KEY;
+
 @Component({
   tag: "page-donate",
   styleUrl: "page-donate.scss",
@@ -44,7 +46,7 @@ export class PageDonate {
     };
 
     const handler = StripeCheckout.configure({
-      key: process.env.STRIPE_PUBLIC_KEY,
+      key: STRIPE_API_KEY,
       image: "https://polls.pizza/images/logo.png",
       locale: "auto",
       token: tokenHandler,

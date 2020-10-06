@@ -28,6 +28,11 @@ jobs:
       - name: run tests
         run: npm run test
 
+      - name: build site
+        run: npm run build
+        env:
+          STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY_TEST }}
+
       - name: Deploy to next.polls.pizza
         uses: jakejarvis/s3-sync-action@master
         with:
