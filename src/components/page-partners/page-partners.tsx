@@ -35,14 +35,29 @@ const rest = [
     url: "https://levi.com"
   },
   {
+    img: "nuchas.jpg",
+    name: "Nuchas",
+    url: "https://nuchas.com/"
+  },
+  {
     img: "pipcorn.png",
     name: "Pipcorn",
     url: "https://www.pipsnacks.com/",
   },
   {
+    img: "sftp.jpg",
+    name: "Somebody Feed the People",
+    url: "https://www.somebodyfeedthepeople.org/"
+  },
+  {
     img: "stickys.png",
     name: "Sticky's Finger Joint",
     url: "https://www.stickys.com/",
+  },
+  {
+    img: "thesalty.png",
+    name: "The Salty",
+    url: "https://www.saltydonut.com/"
   },
   {
     img: "voodoo.jpg",
