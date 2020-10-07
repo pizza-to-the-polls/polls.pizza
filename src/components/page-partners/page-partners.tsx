@@ -30,6 +30,11 @@ const rest = [
     url: "https://justwater.com/",
   },
   {
+    img: "levis.jpg",
+    name: "Levi Strauss & Co.",
+    url: "https://levi.com"
+  },
+  {
     img: "pipcorn.png",
     name: "Pipcorn",
     url: "https://www.pipsnacks.com/",
@@ -43,6 +48,11 @@ const rest = [
     img: "voodoo.jpg",
     name: "Voodoo Doughnut",
     url: "https://www.voodoodoughnut.com/",
+  },
+  {
+    img: "zendesk.png",
+    name: "Zendesk",
+    url: "https://zendesk.com/",
   },
 ];
 
