@@ -32,28 +32,28 @@ export class PageTrucks {
             <h2>Locations and schedule</h2>
             <ul>
               <li>Phoenix, AZ (Oct. 29, Oc. 30, Nov. 3)</li>
-              <li>Los Angeles, CA (Nov. 3)</li>
+              <li>Los Angeles, CA (Oct. 29 - Nov. 3)</li>
               <li>Washington, DC (Oct. 30 - Nov. 3)</li>
               <li>Miami, FL (Oct. 29 - Nov. 1, Nov. 3)</li>
               <li>Tampa, FL (Oct. 29 - Nov. 1, Nov. 3)</li>
               <li>Orlando, FL (Oct. 29 - Nov. 1, Nov. 3)</li>
-              <li>Gainesville, FL (Oct. 29 - Nov. 1, Nov. 3)</li>
+              <li>Gainesville, FL (Oct. 29 - Oct. 31, Nov. 3)</li>
               <li>Atlanta, GA (Oct. 29, Oc. 30, Nov. 3)</li>
               <li>Louisville, KY (Nov. 3)</li>
-              <li>Detroit, MI (Oct. 29 - Nov. 3)</li>
-              <li>Ann Arbor, MI (Oct. 29 - Nov. 3)</li>
+              <li>Detroit, MI (Oct. 29 - Oct. 31, Nov.2, Nov. 3)</li>
+              <li>Ann Arbor, MI (Oct. 29 - Oct. 31, Nov.2, Nov. 3)</li>
               <li>Minneapolis, MN (Oct. 29 - Nov. 3)</li>
               <li>Charlotte, NC (Oct. 29 - Oct. 31, Nov. 3)</li>
               <li>Raleigh, NC (Oct. 29 - Oct. 31, Nov. 3)</li>
               <li>Greensboro, NC (Oct. 29 - Oct. 31, Nov. 3)</li>
-              <li>Las Vegas, NV (Nov. 3)</li>
-              <li>Reno, NV (Nov. 3)</li>
+              <li>Las Vegas, NV (Oct. 29, Oct. 30, Nov. 3)</li>
+              <li>Reno, NV (Oct. 29, Oct. 30, Nov. 3)</li>
               <li>New York, NY (Oct. 29 - Nov. 1, Nov. 3)</li>
               <li>Philadelphia, PA (Oct. 29 - Nov. 3)</li>
               <li>Pittsburgh, PA (Oct. 29 - Nov. 3)</li>
-              <li>Charleston, SC (Nov. 3)</li>
+              <li>Charleston, SC (Oct. 29 - Oct. 31, Nov. 3)</li>
               <li>Nashville, TN (Oct. 29, Nov. 3)</li>
-              <li>Houston, TX (Nov. 3)</li>
+              <li>Houston, TX (Oct. 29, Oct. 30, Nov. 3)</li>
               <li>Austin, TX (Oct. 29, Oct. 30, Nov. 3)</li>
               <li>Milwaukee, WI (Oct. 29 - Nov. 1, Nov. 3)</li>
             </ul>
