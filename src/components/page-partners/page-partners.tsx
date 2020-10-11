@@ -32,7 +32,12 @@ const rest = [
   {
     img: "levis.jpg",
     name: "Levi Strauss & Co.",
-    url: "https://levi.com"
+    url: "https://levi.com",
+  },
+  {
+    img: "nuchas.jpg",
+    name: "Nuchas",
+    url: "https://nuchas.com/",
   },
   {
     img: "nuchas.jpg",
@@ -47,7 +52,7 @@ const rest = [
   {
     img: "sftp.jpg",
     name: "Somebody Feed the People",
-    url: "https://www.somebodyfeedthepeople.org/"
+    url: "https://www.somebodyfeedthepeople.org/",
   },
   {
     img: "stickys.png",
@@ -57,7 +62,7 @@ const rest = [
   {
     img: "thesalty.png",
     name: "The Salty",
-    url: "https://www.saltydonut.com/"
+    url: "https://www.saltydonut.com/",
   },
   {
     img: "voodoo.jpg",
