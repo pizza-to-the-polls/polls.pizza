@@ -26,6 +26,7 @@ export const config: Config = {
       exclude: "node_modules/**",
       values: {
         "process.env.STRIPE_PUBLIC_KEY": process.env.STRIPE_PUBLIC_KEY ? `"${process.env.STRIPE_PUBLIC_KEY}"` : "process.env.STRIPE_PUBLIC_KEY",
+        "process.env.PIZZA_BASE_DOMAIN": process.env.PIZZA_BASE_DOMAIN ? `"${process.env.PIZZA_BASE_DOMAIN}"` : "http://localhost:3000",
       },
     }),
     sass({

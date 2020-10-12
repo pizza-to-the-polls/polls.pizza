@@ -52,6 +52,8 @@ jobs:
         run: npm run build
         env:
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+          NODE_ENV: prod
+          PIZZA_BASE_DOMAIN: https://base.polls.pizza
 
       - name: Push the site to S3
         uses: jakejarvis/s3-sync-action@master

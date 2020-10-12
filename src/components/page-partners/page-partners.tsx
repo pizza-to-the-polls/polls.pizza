@@ -42,7 +42,7 @@ const rest = [
   {
     img: "nuchas.jpg",
     name: "Nuchas",
-    url: "https://nuchas.com/"
+    url: "https://nuchas.com/",
   },
   {
     img: "pipcorn.png",
