@@ -31,4 +31,11 @@ page-report {
       background-color: $blue2;
     }
   }
+  .agreement {
+    font-size: 13px;
+    stencil-route-link a {
+      color: $gray1;
+      text-decoration: underline;
+    }
+  }
 }

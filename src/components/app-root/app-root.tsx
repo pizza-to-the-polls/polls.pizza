@@ -38,6 +38,7 @@ export class AppRoot {
               <stencil-route url="/covid" component="page-covid" />
               <stencil-route url="/press" component="page-press" />
               <stencil-route url="/activity" component="page-activity" />
+              <stencil-route url="/privacy" component="page-privacy" />
             </stencil-route-switch>
           </stencil-router>
         </main>
@@ -97,6 +98,9 @@ export class AppRoot {
                 </li>
                 <li>
                   <stencil-route-link url="/covid">COVID safety</stencil-route-link>
+                </li>
+                <li>
+                  <stencil-route-link url="/privacy">Privacy Policy</stencil-route-link>
                 </li>
               </ul>
               <ul class="social">

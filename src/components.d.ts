@@ -24,6 +24,8 @@ export namespace Components {
     }
     interface PagePress {
     }
+    interface PagePrivacy {
+    }
     interface PageReport {
     }
     interface PageTrucks {
@@ -84,6 +86,12 @@ declare global {
         prototype: HTMLPagePressElement;
         new (): HTMLPagePressElement;
     };
+    interface HTMLPagePrivacyElement extends Components.PagePrivacy, HTMLStencilElement {
+    }
+    var HTMLPagePrivacyElement: {
+        prototype: HTMLPagePrivacyElement;
+        new (): HTMLPagePrivacyElement;
+    };
     interface HTMLPageReportElement extends Components.PageReport, HTMLStencilElement {
     }
     var HTMLPageReportElement: {
@@ -106,6 +114,7 @@ declare global {
         "page-on-demand": HTMLPageOnDemandElement;
         "page-partners": HTMLPagePartnersElement;
         "page-press": HTMLPagePressElement;
+        "page-privacy": HTMLPagePrivacyElement;
         "page-report": HTMLPageReportElement;
         "page-trucks": HTMLPageTrucksElement;
     }
@@ -129,6 +138,8 @@ declare namespace LocalJSX {
     }
     interface PagePress {
     }
+    interface PagePrivacy {
+    }
     interface PageReport {
     }
     interface PageTrucks {
@@ -143,6 +154,7 @@ declare namespace LocalJSX {
         "page-on-demand": PageOnDemand;
         "page-partners": PagePartners;
         "page-press": PagePress;
+        "page-privacy": PagePrivacy;
         "page-report": PageReport;
         "page-trucks": PageTrucks;
     }
@@ -160,6 +172,7 @@ declare module "@stencil/core" {
             "page-on-demand": LocalJSX.PageOnDemand & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
+            "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
             "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
         }
