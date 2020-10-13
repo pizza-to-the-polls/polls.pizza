@@ -86,25 +86,21 @@ export class PageDonate {
     const shareUrl = 'https://polls.pizza/donate'; // add URL tracking parameters here, if desired
 
     // Native sharing on device via `navigator.share` - supported on mobile, tablets, and some browsers
-    const nativeShare = () => {
-      if (!navigator.share) {
+    const nativeShare = async () => {
+      if (!navigator || !navigator.share) {
         this.canNativeShare = false
         return
       }
-      navigator.share({
-          title: shareText,
-          text: shareText,
-          url: shareUrl,
-      })
-      .then(() => {
-          // Do something after successful native share (show thanks, etc.)
-      })
-      .catch((error) => {
-        console.log('Sharing failed', error)
-      })
-      .finally(() => {
-          // Do something after native sharing finished or error
-      });
+
+      try {
+        await navigator.share({
+            title: shareText,
+            text: shareText,
+            url: shareUrl,
+        });
+      } catch (error) {
+          console.log('Sharing failed', error);
+      }
     };
 
     // Fallback if native sharing is not available
