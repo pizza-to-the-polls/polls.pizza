@@ -4,6 +4,9 @@ import { Component, h, Host } from "@stencil/core";
   tag: "page-covid",
 })
 export class PageCovid {
+  public componentWillLoad() {
+    document.title = `COVID Safety | Pizza to the Polls`;
+  }
   public render() {
     return (
       <Host>
@@ -53,7 +56,7 @@ export class PageCovid {
               but please keep in mind that it isn’t possible to eliminate the risk of exposure.
             </p>
             <p>
-              For <a href="/on-demand">on-demand</a> pizza deliveries, we will be supporting local pizzerias with our pizza delivery partners at Slice. We share{" "}
+              For <a href="/on-demand">on-demand</a> pizza deliveries, we will be supporting local pizzerias with our pizza delivery partners at Slice. We plan to share{" "}
               <a href="https://www.cdc.gov/coronavirus/2019-ncov/community/organizations/business-employers/bars-restaurants.html" target="_blank">
                 safety recommendations
               </a>{" "}
