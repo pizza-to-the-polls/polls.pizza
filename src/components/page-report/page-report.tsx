@@ -81,7 +81,7 @@ export class PageDonate {
         data[el.name] = el.value;
       });
 
-      data.url = (data.url || "").replace(/<[^>]*>/g, "")
+      data.url = (data.url || "").replace(/<[^>]*>/g, "");
       if (data.url.includes("http") && !data.url.match(/\s/)) {
         data.url = `http://${data.url}`;
       }
