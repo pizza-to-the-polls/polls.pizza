@@ -82,7 +82,7 @@ export class PageDonate {
       });
 
       data.url = (data.url || "").replace(/<[^>]*>/g, "");
-      if (data.url.includes("http") && !data.url.match(/\s/)) {
+      if (!data.url.includes("http") && !data.url.match(/\s/)) {
         data.url = `http://${data.url}`;
       }
       if (!data.url.match(URL_REGEX)) {
