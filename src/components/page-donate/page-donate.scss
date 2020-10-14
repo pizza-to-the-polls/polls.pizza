@@ -103,4 +103,39 @@ page-donate {
     opacity: 0;
     cursor: default;
   }
+
+  #share-donation {
+    cursor: pointer;
+    color: #fff;
+    background-color: $blue2;
+    border: 2px solid darken($blue2, 10%);
+
+    &:hover,
+    &:focus {
+      background-color: darken($blue2, 5%);
+    }
+
+    &:active {
+      background-color: darken($blue2, 10%);
+    }
+  }
+
+  .share-donation-links {
+    padding: 0;
+
+    li {
+      display: inline-block;
+      margin: 0 10px;
+
+      .share-donation-link {
+        display: block;
+        cursor: pointer;
+        pointer-events: auto;
+
+        img {
+          pointer-events: none;
+        }
+      }
+    }
+  }
 }

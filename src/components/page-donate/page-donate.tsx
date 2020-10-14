@@ -16,6 +16,7 @@ interface Token {
 export class PageDonate {
   @State() private amount?: number | null;
   @State() private showConfirmation: boolean = false;
+  @State() private canNativeShare: boolean = false;
 
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
@@ -51,6 +52,9 @@ export class PageDonate {
         locale: "auto",
         token: tokenHandler,
       });
+
+      // Determine if `navigator.share` is supported in browser (native device sharing)
+      this.canNativeShare = navigator && navigator.share ? false : true;
     }
 
     const getAmount = (): number | null => {
@@ -75,6 +79,48 @@ export class PageDonate {
         });
       }
       e.preventDefault();
+    };
+
+    // Donation Sharing
+    const shareText = 'I just donated' + (this.amount ? ' $' + this.amount : '') + ' to Pizza to the Polls to help keep Democracy Delicious this year - you should too! #democracyisdelicious';
+    const shareUrl = 'https://polls.pizza/donate'; // add URL tracking parameters here, if desired
+
+    // Native sharing on device via `navigator.share` - supported on mobile, tablets, and some browsers
+    const nativeShare = async () => {
+      if (!navigator || !navigator.share) {
+        this.canNativeShare = false
+        return
+      }
+
+      try {
+        await navigator.share({
+            title: shareText,
+            text: shareText,
+            url: shareUrl,
+        });
+      } catch (error) {
+          console.log('Sharing failed', error);
+      }
+    };
+
+    // Fallback if native sharing is not available
+    let metaDescription = document.querySelector("meta[name='description']");
+    let shareDescription = '';
+    if (metaDescription) {
+        shareDescription = metaDescription.getAttribute('content') || '';
+    }
+
+    const shareTwitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}&via=PizzaToThePolls`;
+
+    const shareFacebookLink = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&title=${encodeURIComponent(shareText)}&description=${encodeURIComponent(shareDescription)}&quote=${encodeURIComponent(shareText)}`;
+
+    const openSharePopup = (e: Event) => {
+      e.preventDefault();
+      const linkTarget = e.target as HTMLLinkElement;
+      const shareUrl = linkTarget.getAttribute('href');
+      if (!shareUrl) { return }
+      window.open(shareUrl, 'popup', 'width=600,height=600');
+      return
     };
 
     return (
@@ -131,10 +177,32 @@ export class PageDonate {
                 Donate
               </button>
             </form>
+
             <div id="donate-confirmation" class="message" hidden={!this.showConfirmation}>
-              <h3>Thanks for helping make the pizza magic happen!</h3>
-              <p>Thanks for donating ${this.amount} to Pizza to the Polls. You'll receive a receipt in your email soon.</p>
+              <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
+              <p>Thanks for donating ${this.amount} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
+
+              <p>Help spread the word by sharing your donation!</p>
+
+              <button id="share-donation" onClick={nativeShare} class="button" hidden={this.canNativeShare}>Share your donation</button>
+
+              <div hidden={!this.canNativeShare}>
+                <ul class="share-donation-links">
+                  <li>
+                    <a class="share-donation-link" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Twitter">
+                      <img alt="Twitter" src="/images/twitter.svg"/>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="share-donation-link" href={shareFacebookLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Facebook">
+                      <img alt="Facebook" src="/images/facebook.svg"/>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
             </div>
+
           </div>
         </div>
       </Host>
