@@ -12,10 +12,11 @@
 
   li {
     margin: 40px 20px;
-    max-width: 50%;
+    width: calc(30% - 40px);
+    text-align: center;
 
     img {
-      max-height: 100px;
+      max-height: 120px;
       width: auto;
     }
   }

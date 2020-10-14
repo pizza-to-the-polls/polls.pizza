@@ -20,6 +20,11 @@ const rest = [
     url: "https://andpizza.com/",
   },
   {
+    img: "chameleon.png",
+    name: "Chameleon Cold Brew",
+    url: "https://www.chameleoncoldbrew.com/"
+  },
+  {
     img: "daybreaker.png",
     name: "Daybreaker",
     url: "https://www.daybreaker.com/",
@@ -30,14 +35,14 @@ const rest = [
     url: "https://justwater.com/",
   },
   {
+    img: "kind.png",
+    name: "KIND Snacks",
+    url: "https://www.kindsnacks.com/",
+  },
+  {
     img: "levis.jpg",
     name: "Levi Strauss & Co.",
     url: "https://levi.com",
-  },
-  {
-    img: "nuchas.jpg",
-    name: "Nuchas",
-    url: "https://nuchas.com/",
   },
   {
     img: "nuchas.jpg",
@@ -68,6 +73,11 @@ const rest = [
     img: "voodoo.jpg",
     name: "Voodoo Doughnut",
     url: "https://www.voodoodoughnut.com/",
+  },
+  {
+    img: "wetzels.jpg",
+    name: "Wetzel's Pretzels",
+    url: "https://www.wetzels.com/",
   },
   {
     img: "zendesk.png",
