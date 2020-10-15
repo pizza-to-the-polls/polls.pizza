@@ -20,11 +20,6 @@ const rest = [
     url: "https://andpizza.com/",
   },
   {
-    img: "chameleon.png",
-    name: "Chameleon Cold Brew",
-    url: "https://www.chameleoncoldbrew.com/",
-  },
-  {
     img: "daybreaker.png",
     name: "Daybreaker",
     url: "https://www.daybreaker.com/",
