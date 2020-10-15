@@ -190,7 +190,7 @@ export class PageDonate {
 
             <div id="donate-confirmation" class="message" hidden={!this.showConfirmation}>
               <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
-              <p>Thanks for donating {this.amount ? '$' + this.amount : null} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
+              <p>Thanks for donating {this.amount ? "$" + this.amount : null} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
 
               <p>Help spread the word by sharing your donation!</p>
 
