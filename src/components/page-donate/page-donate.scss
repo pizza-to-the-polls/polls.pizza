@@ -38,7 +38,8 @@ page-donate {
 
   .message {
     padding: 10px 20px;
-    background: #3dc1c8;
+    color: $blue2;
+    background: $yellow;
     border-radius: 8px;
     box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.05);
 
@@ -105,18 +106,53 @@ page-donate {
   }
 
   #share-donation {
+    width: 100%;
     cursor: pointer;
     color: #fff;
     background-color: $blue2;
-    border: 2px solid darken($blue2, 10%);
+    border: 2px solid $blue2;
+    font-size: 18px;
+
+    @media (min-width: 769px) {
+      width: auto;
+    }
 
     &:hover,
     &:focus {
+      border-color: darken($blue2, 5%);
       background-color: darken($blue2, 5%);
     }
 
     &:active {
+      border-color: darken($blue2, 10%);
       background-color: darken($blue2, 10%);
+    }
+
+    img,
+    span {
+      pointer-events: none;
+    }
+
+    span {
+      position: relative;
+      top: -2px;
+
+      @media (min-width: 769px) {
+        top: auto;
+      }
+    }
+
+    img {
+      position: relative;
+      top: 3px;
+      display: inline-block;
+      width: 20px;
+      margin-right: 8px;
+
+      @media (min-width: 769px) {
+        float: left;
+        top: auto;
+      }
     }
   }
 
@@ -124,16 +160,83 @@ page-donate {
     padding: 0;
 
     li {
-      display: inline-block;
-      margin: 0 10px;
+      display: block;
+      margin: 0 auto 10px;
+
+      @media (min-width: 769px) {
+        display: inline-block;
+        margin: 0 10px 0 0;
+      }
 
       .share-donation-link {
         display: block;
-        cursor: pointer;
+        padding: 10px 25px;
+        color: $white;
+        background: $blue2;
+        border-radius: 8px;
         pointer-events: auto;
+        font-size: 18px;
+        text-align: center;
+        transition: background-color 0.2s ease-in-out;
+        cursor: pointer;
+
+        @media (min-width: 769px) {
+          display: inline-block;
+          margin: 0 auto;
+          text-align: left;
+        }
+
+        &.twitter {
+          background: $twitter;
+
+          &:hover,
+          &:focus {
+            background-color: darken($twitter, 5%);
+          }
+
+          &:active {
+            background-color: darken($twitter, 10%);
+          }
+        }
+
+        &.facebook {
+          background: $facebook;
+
+          &:hover,
+          &:focus {
+            background-color: darken($facebook, 5%);
+          }
+
+          &:active {
+            background-color: darken($facebook, 10%);
+          }
+        }
+
+        img,
+        span {
+          pointer-events: none;
+        }
+
+        span {
+          position: relative;
+          top: -6px;
+
+          @media (min-width: 769px) {
+            top: 1px;
+          }
+        }
 
         img {
-          pointer-events: none;
+          position: relative;
+          top: 3px;
+          display: inline-block;
+          width: 30px;
+          margin-right: 8px;
+
+          @media (min-width: 769px) {
+            float: left;
+            top: auto;
+          }
         }
       }
     }
