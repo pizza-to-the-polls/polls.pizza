@@ -12,7 +12,7 @@ export class PagePrivacy {
       <Host>
         <section id="about" class="page about">
           <div class="container">
-            <h1>Privacy Poliy</h1>
+            <h1>Privacy Policy</h1>
 
             <p>
               Pizza to the Polls created this privacy notice to explain how we use information that you may provide while visiting our website and to demonstrate our firm
