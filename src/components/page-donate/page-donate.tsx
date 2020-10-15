@@ -141,7 +141,7 @@ export class PageDonate {
             <p>Waiting in line sucks. Waiting in line with pizza sucks a little less.</p>
             <p>Keep our polling places joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
 
-            <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
+            <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout} hidden={this.showConfirmation}>
               <legend>Choose an amount</legend>
               <ul>
                 <li>
@@ -190,24 +190,27 @@ export class PageDonate {
 
             <div id="donate-confirmation" class="message" hidden={!this.showConfirmation}>
               <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
-              <p>Thanks for donating ${this.amount} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
+              <p>Thanks for donating {this.amount ? '$' + this.amount : null} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
 
               <p>Help spread the word by sharing your donation!</p>
 
               <button id="share-donation" onClick={nativeShare} class="button" hidden={this.canNativeShare}>
-                Share your donation
+                <img alt="Share" src="/images/share.svg" />
+                <span>Share your donation!</span>
               </button>
 
               <div hidden={!this.canNativeShare}>
                 <ul class="share-donation-links">
                   <li>
-                    <a class="share-donation-link" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Twitter">
+                    <a class="share-donation-link twitter" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Twitter">
                       <img alt="Twitter" src="/images/twitter.svg" />
+                      <span>Share on Twitter</span>
                     </a>
                   </li>
                   <li>
-                    <a class="share-donation-link" href={shareFacebookLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Facebook">
+                    <a class="share-donation-link facebook" href={shareFacebookLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Facebook">
                       <img alt="Facebook" src="/images/facebook.svg" />
+                      <span>Share on Facebook</span>
                     </a>
                   </li>
                 </ul>
