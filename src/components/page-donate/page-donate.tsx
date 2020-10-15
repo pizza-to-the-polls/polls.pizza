@@ -59,7 +59,7 @@ export class PageDonate {
       });
 
       // Determine if `navigator.share` is supported in browser (native device sharing)
-      this.canNativeShare = navigator && navigator.share ? false : true;
+      this.canNativeShare = navigator && navigator.share ? true : false;
     }
 
     const getAmount = (): number | null => {
@@ -194,12 +194,12 @@ export class PageDonate {
 
               <p>Help spread the word by sharing your donation!</p>
 
-              <button id="share-donation" onClick={nativeShare} class="button" hidden={this.canNativeShare}>
+              <button id="share-donation" onClick={nativeShare} class="button" hidden={!this.canNativeShare}>
                 <img alt="Share" src="/images/share.svg" />
                 <span>Share your donation!</span>
               </button>
 
-              <div hidden={!this.canNativeShare}>
+              <div hidden={this.canNativeShare}>
                 <ul class="share-donation-links">
                   <li>
                     <a class="share-donation-link twitter" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Twitter">
