@@ -26,6 +26,10 @@ export class PageDonate {
     let handler: any = null;
     const StripeCheckout: any = (window as any).StripeCheckout;
 
+    // Get referral from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const referral = urlParams.get("referral") || "";
+
     if (Build.isBrowser && StripeCheckout) {
       const tokenHandler = async (token: Token) => {
         const params: { [key: string]: any } = {
@@ -34,6 +38,7 @@ export class PageDonate {
           "entry.1474063298": token.id,
           "entry.1036377864": this.amount,
           "entry.104127523": document.domain,
+          "entry.901888082": referral,
         };
 
         const body = Object.keys(params).reduce((form, key) => {
