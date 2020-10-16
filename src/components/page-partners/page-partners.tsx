@@ -35,7 +35,7 @@ const rest = [
     url: "https://www.kindsnacks.com/",
   },
   {
-    img: "levis.jpg",
+    img: "levis.png",
     name: "Levi Strauss & Co.",
     url: "https://levi.com",
   },
@@ -58,6 +58,11 @@ const rest = [
     img: "stickys.png",
     name: "Sticky's Finger Joint",
     url: "https://www.stickys.com/",
+  },
+  {
+    img: "gato.png",
+    name: "The Great American Takeout",
+    url: "https://thegreatamericantakeout.com/",
   },
   {
     img: "thesalty.png",
