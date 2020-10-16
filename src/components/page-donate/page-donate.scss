@@ -112,6 +112,7 @@ page-donate {
     background-color: $blue2;
     border: 2px solid $blue2;
     font-size: 18px;
+
     // Always hide (regardless of support) if not on mobile
     @media (min-width: 769px) {
       display: none;
@@ -119,6 +120,10 @@ page-donate {
 
     @media (min-width: 769px) {
       width: auto;
+    }
+
+    &.is-hidden {
+      display: none !important;
     }
 
     &:hover,

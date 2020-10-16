@@ -199,7 +199,7 @@ export class PageDonate {
                 <span>Share your donation!</span>
               </button>
 
-              <div class={`share-donation-link-container ${this.canNativeShare ? "can-native-share" : null}`}>
+              <div class={`share-donation-link-container ${this.canNativeShare ? "can-native-share" : ""}`}>
                 <ul class="share-donation-links">
                   <li>
                     <a class="share-donation-link twitter" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Twitter">
