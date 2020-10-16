@@ -113,8 +113,17 @@ page-donate {
     border: 2px solid $blue2;
     font-size: 18px;
 
+    // Always hide (regardless of support) if not on mobile
+    @media (min-width: 769px) {
+      display: none;
+    }
+
     @media (min-width: 769px) {
       width: auto;
+    }
+
+    &.is-hidden {
+      display: none !important;
     }
 
     &:hover,
@@ -152,6 +161,17 @@ page-donate {
       @media (min-width: 769px) {
         float: left;
         top: auto;
+      }
+    }
+  }
+
+  .share-donation-link-container {
+    &.can-native-share {
+      // Hide on mobile if native sharing is supported
+      display: none;
+      // Show if not on mobile regardless
+      @media (min-width: 769px) {
+        display: block;
       }
     }
   }
