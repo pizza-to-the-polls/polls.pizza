@@ -122,10 +122,6 @@ page-donate {
       width: auto;
     }
 
-    &.is-hidden {
-      display: none !important;
-    }
-
     &:hover,
     &:focus {
       border-color: darken($blue2, 5%);
