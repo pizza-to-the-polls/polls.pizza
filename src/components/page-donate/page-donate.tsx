@@ -30,6 +30,11 @@ export class PageDonate {
     const urlParams = new URLSearchParams(window.location.search);
     const referral = urlParams.get("referral") || "";
 
+    if (Build.isBrowser) {
+      // Determine if `navigator.share` is supported in browser (native device sharing)
+      this.canNativeShare = navigator && navigator.share ? true : false;
+    }
+
     if (Build.isBrowser && StripeCheckout) {
       const tokenHandler = async (token: Token) => {
         const params: { [key: string]: any } = {
@@ -57,9 +62,6 @@ export class PageDonate {
         locale: "auto",
         token: tokenHandler,
       });
-
-      // Determine if `navigator.share` is supported in browser (native device sharing)
-      this.canNativeShare = navigator && navigator.share ? true : false;
     }
 
     const getAmount = (): number | null => {
@@ -194,7 +196,7 @@ export class PageDonate {
 
               <p>Help spread the word by sharing your donation!</p>
 
-              <button id="share-donation" onClick={nativeShare} class={"button " + (this.canNativeShare ? "" : "is-hidden")}>
+              <button id="share-donation" onClick={nativeShare} class={"button " + (!this.canNativeShare ? "is-hidden" : "")}>
                 <img alt="Share" src="/images/share.svg" />
                 <span>Share your donation!</span>
               </button>
