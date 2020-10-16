@@ -194,12 +194,12 @@ export class PageDonate {
 
               <p>Help spread the word by sharing your donation!</p>
 
-              <button id="share-donation" onClick={nativeShare} class="button" hidden={!this.canNativeShare}>
+              <button id="share-donation" onClick={nativeShare} class={`button ${this.canNativeShare ? null : "is-hidden"}`}>
                 <img alt="Share" src="/images/share.svg" />
                 <span>Share your donation!</span>
               </button>
 
-              <div hidden={this.canNativeShare}>
+              <div class={`share-donation-link-container ${this.canNativeShare ? "can-native-share" : null}`}>
                 <ul class="share-donation-links">
                   <li>
                     <a class="share-donation-link twitter" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Twitter">

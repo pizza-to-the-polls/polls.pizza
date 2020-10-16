@@ -144,7 +144,8 @@ img {
   clear: both;
 }
 
-[hidden] {
+[hidden],
+.is-hidden {
   display: none;
 }
 
