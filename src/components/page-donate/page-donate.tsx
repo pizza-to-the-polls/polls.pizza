@@ -24,6 +24,12 @@ export class PageDonate {
 
   public render() {
     let handler: any = null;
+
+    if (Build.isBrowser) {
+        // Determine if `navigator.share` is supported in browser (native device sharing)
+        this.canNativeShare = navigator && navigator.share ? true : false;
+    }
+
     const StripeCheckout: any = (window as any).StripeCheckout;
 
     // Get referral from URL
@@ -47,9 +53,6 @@ export class PageDonate {
         }, new FormData());
 
         await fetch("https://docs.google.com/forms/d/e/1FAIpQLSf5RPXqXaVk8KwKC7kzthukydvA9vL7_bP9V9O9PIAiXl14cQ/formResponse", { body, mode: "no-cors", method: "POST" });
-
-        // Determine if `navigator.share` is supported in browser (native device sharing)
-        this.canNativeShare = navigator && navigator.share ? true : false;
 
         this.showConfirmation = true;
       };
