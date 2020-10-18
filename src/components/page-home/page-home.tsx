@@ -15,7 +15,13 @@ export class PageHome {
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    const { pizzas, locations, states, raised } = await getTotals();
+    const { raised } = await getTotals();
+
+    const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/totals/2020`, {
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+    });
+    const { pizzas, locations, states } = await resp.json();
 
     this.pizzas = pizzas;
     this.locations = locations;
