@@ -8,7 +8,15 @@ page-activity {
     padding: 10px;
   }
 
-  .locations li {
+  .refresh {
+    float: right;
+    margin-top: 10px;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .orders li {
     font-size: 18px;
 
     a {
@@ -16,7 +24,6 @@ page-activity {
       margin-bottom: 5px;
       text-decoration: none;
       display: block;
-      border-bottom: 1px solid rgba($white, 0.8);
 
       &,
       &:hover {

@@ -1,5 +1,6 @@
 import { Component, h, State } from "@stencil/core";
 
+import { baseFetch } from "../../lib/base";
 import { getTotals } from "../../lib/sheets";
 
 @Component({
@@ -17,11 +18,7 @@ export class PageHome {
 
     const { raised } = await getTotals();
 
-    const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/totals/2020`, {
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-    });
-    const { pizzas, locations, states } = await resp.json();
+    const { pizzas, locations, states } = await baseFetch(`/totals/2020`);
 
     this.pizzas = pizzas;
     this.locations = locations;
