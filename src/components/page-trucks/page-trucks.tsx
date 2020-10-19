@@ -52,7 +52,7 @@ export class PageTrucks {
             <h2>Locations and schedule</h2>
             <ul>
               <li>
-                <strong>Phoenix, AZ</strong> Oct. 24, Oct. 29, Oc. 30, Nov. 3
+                <strong>Phoenix, AZ</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
               </li>
               <li>
                 <strong>Los Angeles, CA</strong> Oct. 24, Oct. 29 - Nov. 3
@@ -73,7 +73,7 @@ export class PageTrucks {
                 <strong>Gainesville, FL</strong> Oct. 24, Oct. 29 - Oct. 31, Nov. 3
               </li>
               <li>
-                <strong>Atlanta, GA</strong> Oct. 24, Oct. 29, Oc. 30, Nov. 3
+                <strong>Atlanta, GA</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
               </li>
               <li>
                 <strong>Louisville, KY</strong> Oct. 24, Nov. 3
