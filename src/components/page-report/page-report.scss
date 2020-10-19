@@ -5,7 +5,7 @@ page-report {
 
   .message {
     padding: 10px 20px;
-    color: $blue2;
+    color: $blue;
     background: $yellow;
     border-radius: 8px;
     box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.05);
@@ -16,7 +16,7 @@ page-report {
   }
 
   .report {
-    background-color: $blue;
+    background-color: $cyan;
     background-image: url("/images/bg2.png");
     background-attachment: fixed;
     background-size: 400px;
@@ -29,7 +29,7 @@ page-report {
     }
     input[type="submit"],
     .submit {
-      background-color: $blue2;
+      background-color: $blue;
     }
   }
   .agreement {

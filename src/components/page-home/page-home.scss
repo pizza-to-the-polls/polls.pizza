@@ -1,11 +1,11 @@
-$border: $blue2;
+$border: $blue;
 
 .hero {
   background-image: url("/images/bg.png");
   background-size: 400px;
   background-color: $yellow;
   background-attachment: fixed;
-  color: $blue2;
+  color: $blue;
   padding: 20px 0 0 0;
 }
 
@@ -22,7 +22,7 @@ $border: $blue2;
 
 .dashboard.launching {
   .stats {
-    background-color: $blue2;
+    background-color: $blue;
   }
   h2,
   p {
@@ -57,7 +57,7 @@ $border: $blue2;
       &,
       &:visited,
       &:active {
-        color: $blue;
+        color: $cyan;
       }
       &:hover {
         p,
@@ -65,7 +65,7 @@ $border: $blue2;
           color: $white;
         }
         div {
-          background-color: $blue;
+          background-color: $cyan;
         }
         span {
           text-decoration: underline;
@@ -79,7 +79,7 @@ $border: $blue2;
 }
 
 .dashboard-bg {
-  background-color: $blue2;
+  background-color: $blue;
   background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
@@ -91,7 +91,7 @@ $border: $blue2;
 }
 
 .dashboard {
-  color: $blue2;
+  color: $blue;
   text-align: center;
   position: relative;
   padding: 0 0 20px 0;
@@ -102,7 +102,7 @@ $border: $blue2;
     padding: 0 0 20px 0;
     margin: 0;
     z-index: 101;
-    border-bottom: 4px solid $blue2;
+    border-bottom: 4px solid $blue;
     font-size: 32px;
   }
 }
@@ -110,11 +110,11 @@ $border: $blue2;
 .stats {
   padding: 40px;
   background: $white;
-  color: $blue2;
+  color: $blue;
   position: relative;
   z-index: 100;
   border-radius: 10px;
-  box-shadow: 0 10px 40px 0 rgba($blue2, 0.3);
+  box-shadow: 0 10px 40px 0 rgba($blue, 0.3);
   text-align: center;
 
   h2 {
@@ -138,7 +138,7 @@ $border: $blue2;
 
   &:first-of-type {
     padding: 20px 0;
-    border-bottom: 4px solid $blue2;
+    border-bottom: 4px solid $blue;
     margin-bottom: 40px;
   }
 }
@@ -214,7 +214,7 @@ $border: $blue2;
 }
 
 .home-secondary {
-  background: $blue2;
+  background: $blue;
   background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
@@ -249,7 +249,7 @@ $border: $blue2;
 
   p {
     font-size: 16px;
-    color: $blue2;
+    color: $blue;
   }
 
   img {
@@ -258,7 +258,7 @@ $border: $blue2;
   }
 
   a {
-    color: $blue;
+    color: $cyan;
     font-weight: bold;
     display: inline-block;
     text-align: center;
@@ -271,7 +271,7 @@ $border: $blue2;
     padding-bottom: 10px;
     margin: 0 0 20px 0;
     text-align: center;
-    color: $blue2;
+    color: $blue;
   }
 }
 

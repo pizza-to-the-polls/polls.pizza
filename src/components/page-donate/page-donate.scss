@@ -26,7 +26,7 @@ page-donate {
   #donate-form {
     padding: 20px;
     background: #fff;
-    color: $blue2;
+    color: $blue;
     max-width: 600px;
     margin: 40px auto 0 auto;
 
@@ -38,7 +38,7 @@ page-donate {
 
   .message {
     padding: 10px 20px;
-    color: $blue2;
+    color: $blue;
     background: $yellow;
     border-radius: 8px;
     box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.05);
@@ -49,7 +49,7 @@ page-donate {
   }
 
   .radio {
-    color: $blue2;
+    color: $blue;
     border-radius: 4px;
     padding: 10px;
     cursor: pointer;
@@ -59,8 +59,8 @@ page-donate {
   }
 
   .radio:hover {
-    border: 1px solid $blue;
-    box-shadow: 0 0 0px 3px $blue;
+    border: 1px solid $cyan;
+    box-shadow: 0 0 0px 3px $cyan;
   }
 
   .radio input {
@@ -84,15 +84,15 @@ page-donate {
   input[type="radio"]:checked + label,
   input[type="radio"]:focus + label,
   input[type="text"]:focus + label {
-    background-color: $blue2;
+    background-color: $blue;
     color: $white;
   }
 
   .radio input[type="text"] {
-    border-bottom: 2px solid $blue;
+    border-bottom: 2px solid $cyan;
     width: 100px;
     padding: 5px;
-    color: $blue2;
+    color: $blue;
   }
 
   .submit {
@@ -109,8 +109,8 @@ page-donate {
     width: 100%;
     cursor: pointer;
     color: #fff;
-    background-color: $blue2;
-    border: 2px solid $blue2;
+    background-color: $blue;
+    border: 2px solid $blue;
     font-size: 18px;
 
     // Always hide (regardless of support) if not on mobile
@@ -124,13 +124,13 @@ page-donate {
 
     &:hover,
     &:focus {
-      border-color: darken($blue2, 5%);
-      background-color: darken($blue2, 5%);
+      border-color: darken($blue, 5%);
+      background-color: darken($blue, 5%);
     }
 
     &:active {
-      border-color: darken($blue2, 10%);
-      background-color: darken($blue2, 10%);
+      border-color: darken($blue, 10%);
+      background-color: darken($blue, 10%);
     }
 
     img,
@@ -188,7 +188,7 @@ page-donate {
         display: block;
         padding: 10px 25px;
         color: $white;
-        background: $blue2;
+        background: $blue;
         border-radius: 8px;
         pointer-events: auto;
         font-size: 18px;

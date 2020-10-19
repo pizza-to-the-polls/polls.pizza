@@ -32,7 +32,7 @@
     padding: 0 10px;
     margin: 0 10px;
     position: relative;
-    color: $blue2;
+    color: $blue;
 
     &:after {
       content: "|";
@@ -55,13 +55,13 @@
 
     &:hover,
     &:focus {
-      color: $blue;
+      color: $cyan;
     }
   }
 
   a:active,
   .link-active {
-    color: $blue;
+    color: $cyan;
   }
 }
 
@@ -100,12 +100,12 @@ body {
 }
 
 a {
-  color: $blue;
+  color: $cyan;
   text-decoration: none;
   transition: color 0.1s ease-in-out;
 
   &:hover {
-    color: darken($blue, 10%);
+    color: darken($cyan, 10%);
   }
 }
 
@@ -234,7 +234,7 @@ section {
 
 .page {
   background-color: $gray1;
-  color: $blue2;
+  color: $blue;
   padding-bottom: 40px;
 
   .photo {
@@ -244,7 +244,7 @@ section {
   h1 {
     text-align: left;
     font-size: 2em;
-    color: $blue2;
+    color: $blue;
   }
 
   p + h2 {
@@ -292,7 +292,7 @@ section {
 }
 
 footer {
-  background: $blue2;
+  background: $blue;
   border-top: 5px solid $red;
   color: #fff;
   padding: 40px 0;
@@ -335,7 +335,7 @@ footer input[type="submit"] {
         text-decoration: none;
 
         &.link-active {
-          color: $blue;
+          color: $cyan;
         }
       }
     }
@@ -389,13 +389,13 @@ footer input[type="submit"] {
   transition: background-color 0.1s ease-in-out;
 
   &.primary {
-    background: $blue;
+    background: $cyan;
     color: #fff;
 
     &:hover,
     &:active,
     &:focus {
-      background-color: darken($blue, 10%);
+      background-color: darken($cyan, 10%);
       color: #fff;
     }
   }
