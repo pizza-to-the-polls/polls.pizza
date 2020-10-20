@@ -156,49 +156,51 @@ export class PageDonate {
                     <ul class="donation-amount-list">
                       <li>
                         <label class="radio" htmlFor="radio-1">
-                          <input type="radio" value="20" id="radio-1" name="amount" autocomplete="off" />
-                          $20 🍕
+                          <input type="radio" value="20" id="radio-1" name="amount" />
+                          <span class="label-text">$20 🍕</span>
+                          <span class="indicator"></span>
                         </label>
                       </li>
                       <li>
                         <label class="radio" htmlFor="radio-2">
-                          <input type="radio" value="40" id="radio-2" name="amount" autocomplete="off" />
-                          $40 🍕🍕
+                          <input type="radio" value="40" id="radio-2" name="amount" />
+                          <span class="label-text">$40 🍕🍕</span>
+                          <span class="indicator"></span>
                         </label>
                       </li>
                       <li>
                         <label class="radio" htmlFor="radio-3">
-                          <input type="radio" value="60" id="radio-3" name="amount" autocomplete="off" />
-                          $60 🍕🍕🍕
+                          <input type="radio" value="60" id="radio-3" name="amount" />
+                          <span class="label-text">$60 🍕🍕🍕</span>
+                          <span class="indicator"></span>
                         </label>
                       </li>
                       <li>
                         <label class="radio" htmlFor="radio-4">
-                          <input type="radio" value="100" id="radio-4" name="amount" autocomplete="off" />
-                          $100 🍕🍕🍕🍕🍕
+                          <input type="radio" value="100" id="radio-4" name="amount" />
+                          <span class="label-text">$100 🍕🍕🍕🍕🍕</span>
+                          <span class="indicator"></span>
                         </label>
                       </li>
                       <li>
                         <label class="radio" htmlFor="radio-5">
-                          <input type="radio" value="200" id="radio-5" name="amount" autocomplete="off" />
-                          $200 🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕
+                          <input type="radio" value="200" id="radio-5" name="amount" />
+                          <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
+                          <span class="indicator"></span>
                         </label>
                       </li>
                       <li>
-                        <div class="radio">
-                          <label class="label no-margin" htmlFor="custom-amount">
-                            Other:
-                          </label>{" "}
-                          $
-                          <input type="text" name="amount" id="custom-amount" autocomplete="off" />
-                        </div>
+                        <label class="radio" htmlFor="custom-amount">
+                          <span class="label-text">Other: $</span>
+                          <input class="input" type="text" name="amount" id="custom-amount" autocomplete="off" />
+                        </label>
                       </li>
                     </ul>
-                    {this.amount && (
+                    {this.amount && !isNaN(this.amount) ? (
                       <button onClick={handleCheckout} class="button is-red is-fullwidth-mobile">
                         Donate
                       </button>
-                    )}
+                    ) : null}
                     <p>
                       Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
                       Our activities are 501(c)(3) compliant.

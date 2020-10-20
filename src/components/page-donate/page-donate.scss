@@ -38,6 +38,25 @@ page-donate {
     .donation-amount-list {
       margin: 0;
     }
+
+    #custom-amount {
+      display: inline-block;
+      border-radius: 0;
+      border: none;
+      border-bottom: 2px solid $blue;
+      box-shadow: none;
+      height: 30px;
+      margin-left: 0.25rem;
+      font-size: 18px;
+      color: $blue;
+      padding-left: 0;
+      padding-right: 0;
+      max-width: 80px;
+
+      &:focus {
+        border-bottom-color: $cyan;
+      }
+    }
   }
 
   .message {
