@@ -1,0 +1,66 @@
+.input {
+  @include input-textarea-control;
+}
+
+.textarea {
+  @include input-textarea-control;
+  display: block;
+  max-width: 100%;
+  min-width: 100%;
+  padding: calc(0.75em - 1px);
+  resize: vertical;
+
+  &:not([rows]) {
+    max-height: 40em;
+    min-height: 8em;
+  }
+
+  &[rows] {
+    height: initial;
+  }
+
+  &.has-fixed-size {
+    resize: none;
+  }
+}
+
+label,
+.label {
+  display: block;
+  font-size: 1.2em;
+  font-weight: 600;
+  &:not(:last-child) {
+    margin-bottom: 0.5em;
+  }
+
+  &.no-margin {
+    margin-bottom: 0;
+  }
+
+  .required {
+    position: relative;
+    top: -4px;
+    left: -4px;
+    color: $cyan;
+    font-weight: 600;
+    font-size: 20px;
+  }
+}
+
+::-webkit-input-placeholder,
+::-moz-placeholder,
+:-ms-input-placeholder,
+:-moz-placeholder,
+:placeholder {
+  color: $gray2;
+  font-family: $body-font;
+}
+
+.form-item {
+  padding: 16px 0;
+  border-top: none;
+
+  table {
+    width: 100%;
+  }
+}

@@ -2,12 +2,11 @@ page-donate {
   .container {
     padding-top: 30px;
   }
-  h1 {
-    color: white;
-    text-align: left;
-  }
+
   ul {
+    margin-bottom: 24px;
     padding: 0;
+
     li {
       list-style: none;
       margin: 0;
@@ -16,29 +15,52 @@ page-donate {
 
   .donate {
     background-color: $red;
-    color: #fff;
+    color: $white;
     background-image: url("/images/bg2.png");
     background-attachment: fixed;
     background-size: 400px;
     padding-bottom: 40px;
   }
 
+  .donation-intro {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
   #donate-form {
-    padding: 20px;
-    background: #fff;
-    color: $blue2;
-    max-width: 600px;
-    margin: 40px auto 0 auto;
+    margin-top: 32px;
 
     p {
       font-size: 14px;
-      padding: 10px;
+    }
+
+    .donation-amount-list {
+      margin: 0;
+    }
+
+    #custom-amount {
+      display: inline-block;
+      border-radius: 0;
+      border: none;
+      border-bottom: 2px solid $blue;
+      box-shadow: none;
+      height: 30px;
+      margin-left: 0.25rem;
+      font-size: 18px;
+      color: $blue;
+      padding-left: 0;
+      padding-right: 0;
+      max-width: 80px;
+
+      &:focus {
+        border-bottom-color: $cyan;
+      }
     }
   }
 
   .message {
     padding: 10px 20px;
-    color: $blue2;
+    color: $blue;
     background: $yellow;
     border-radius: 8px;
     box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.05);
@@ -48,89 +70,10 @@ page-donate {
     }
   }
 
-  .radio {
-    color: $blue2;
-    border-radius: 4px;
-    padding: 10px;
-    cursor: pointer;
-    transition: box-shadow 0.1s ease-in;
-    margin-bottom: 10px;
-    border: 1px solid $gray2;
-  }
-
-  .radio:hover {
-    border: 1px solid $blue;
-    box-shadow: 0 0 0px 3px $blue;
-  }
-
-  .radio input {
-    display: inline-block;
-    width: 40px;
-    background: none;
-    border: none;
-    border-radius: 0;
-    border-bottom: 2px solid #fff;
-    font-weight: bold;
-    font-size: 1.2em;
-    margin: 0;
-    padding: 10px 0;
-  }
-
-  .radio label {
-    display: inline-block;
-    margin: 0 10px 0 0;
-  }
-
-  input[type="radio"]:checked + label,
-  input[type="radio"]:focus + label,
-  input[type="text"]:focus + label {
-    background-color: $blue2;
-    color: $white;
-  }
-
-  .radio input[type="text"] {
-    border-bottom: 2px solid $blue;
-    width: 100px;
-    padding: 5px;
-    color: $blue2;
-  }
-
-  .submit {
-    transition: opacity 0.2s ease-in;
-    border-radius: 4px;
-  }
-
-  .is-disabled {
-    opacity: 0;
-    cursor: default;
-  }
-
   #share-donation {
-    width: 100%;
-    cursor: pointer;
-    color: #fff;
-    background-color: $blue2;
-    border: 2px solid $blue2;
-    font-size: 18px;
-
     // Always hide (regardless of support) if not on mobile
-    @media (min-width: 769px) {
+    @media ($tablet) {
       display: none;
-    }
-
-    @media (min-width: 769px) {
-      width: auto;
-    }
-
-    &:hover,
-    &:focus {
-      border-color: darken($blue2, 5%);
-      background-color: darken($blue2, 5%);
-    }
-
-    &:active {
-      border-color: darken($blue2, 10%);
-      background-color: darken($blue2, 10%);
     }
 
     img,
@@ -138,26 +81,10 @@ page-donate {
       pointer-events: none;
     }
 
-    span {
-      position: relative;
-      top: -2px;
-
-      @media (min-width: 769px) {
-        top: auto;
-      }
-    }
-
     img {
-      position: relative;
-      top: 3px;
-      display: inline-block;
-      width: 20px;
+      height: 1em;
+      width: 1em;
       margin-right: 8px;
-
-      @media (min-width: 769px) {
-        float: left;
-        top: auto;
-      }
     }
   }
 
@@ -166,7 +93,7 @@ page-donate {
       // Hide on mobile if native sharing is supported
       display: none;
       // Show if not on mobile regardless
-      @media (min-width: 769px) {
+      @media ($tablet) {
         display: block;
       }
     }
@@ -179,80 +106,19 @@ page-donate {
       display: block;
       margin: 0 auto 10px;
 
-      @media (min-width: 769px) {
+      @media ($tablet) {
         display: inline-block;
         margin: 0 10px 0 0;
       }
 
       .share-donation-link {
-        display: block;
-        padding: 10px 25px;
-        color: $white;
-        background: $blue2;
-        border-radius: 8px;
-        pointer-events: auto;
-        font-size: 18px;
-        text-align: center;
-        transition: background-color 0.2s ease-in-out;
-        cursor: pointer;
-
-        @media (min-width: 769px) {
-          display: inline-block;
-          margin: 0 auto;
-          text-align: left;
-        }
-
-        &.twitter {
-          background: $twitter;
-
-          &:hover,
-          &:focus {
-            background-color: darken($twitter, 5%);
-          }
-
-          &:active {
-            background-color: darken($twitter, 10%);
-          }
-        }
-
-        &.facebook {
-          background: $facebook;
-
-          &:hover,
-          &:focus {
-            background-color: darken($facebook, 5%);
-          }
-
-          &:active {
-            background-color: darken($facebook, 10%);
-          }
-        }
-
         img,
         span {
           pointer-events: none;
         }
 
-        span {
-          position: relative;
-          top: -6px;
-
-          @media (min-width: 769px) {
-            top: 1px;
-          }
-        }
-
         img {
-          position: relative;
-          top: 3px;
-          display: inline-block;
-          width: 30px;
           margin-right: 8px;
-
-          @media (min-width: 769px) {
-            float: left;
-            top: auto;
-          }
         }
       }
     }

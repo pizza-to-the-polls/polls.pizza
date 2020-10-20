@@ -39,7 +39,7 @@ export class PageHome {
           <div class="dashboard">
             <div class="container">
               <div class="stats">
-                <h2 class="display">2020 Election Totals</h2>
+                <h2 class="is-display">2020 Election Totals</h2>
                 <div class="stats__row">
                   <div class="stat">
                     <span class="stat__number">{this.pizzas}</span>
@@ -58,7 +58,7 @@ export class PageHome {
                     <span class="stat__label">Raised in 2020</span>
                   </div>
                 </div>
-                <a href="/report" class="button primary">
+                <a href="/report" class="button is-cyan is-fullwidth">
                   Report a line
                 </a>
                 <a href="/activity" class="stat__link">
@@ -72,7 +72,7 @@ export class PageHome {
         <section class="home-secondary">
           <div class="container">
             <p>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</p>
-            <a href="/donate" class="button secondary">
+            <a href="/donate" class="button is-red is-fullwidth">
               Donate
             </a>
             <div class="cards">

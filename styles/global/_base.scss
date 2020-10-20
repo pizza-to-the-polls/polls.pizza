@@ -1,0 +1,225 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: $white;
+  font-size: 16px;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  min-width: 300px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-rendering: optimizeLegibility;
+  text-size-adjust: 100%;
+}
+
+body {
+  color: $blue;
+  font-family: $body-font;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+a {
+  color: $red;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: darken($red, 10%);
+  }
+}
+
+h1 {
+  font-family: $header-font;
+  font-weight: 400 !important;
+  font-size: 2.25em;
+  margin-top: 0 !important;
+  margin-bottom: 0.5em;
+
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
+}
+
+h2 {
+  font-size: 1.75em;
+  font-weight: 600;
+  margin-bottom: 0.5714em;
+
+  &:not(:first-child) {
+    margin-top: 1.1428em;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  &.is-display {
+    font-family: $header-font;
+    font-weight: 400 !important;
+  }
+}
+
+h3 {
+  font-size: 1.25em;
+  margin-bottom: 0.6666em;
+
+  &:not(:first-child) {
+    margin-top: 1.3333em;
+  }
+}
+
+h4 {
+  font-size: 1.15em;
+  margin-bottom: 0.8em;
+}
+
+h5 {
+  font-size: 1.125em;
+  margin-bottom: 0.8888em;
+}
+
+h6 {
+  font-size: 1em;
+  margin-bottom: 1em;
+}
+
+form {
+  border-radius: $radius;
+  padding: 0;
+}
+
+p,
+li {
+  line-height: 1.5;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.cf:after,
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+[hidden] {
+  display: none;
+}
+
+section {
+  padding: 20px 0;
+}
+
+.container {
+  max-width: 800px;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+// Color helpers
+@each $name, $color in $text-colors {
+  .has-text-#{$name} {
+    color: $color !important;
+  }
+  .has-background-#{$name} {
+    background-color: $color !important;
+  }
+  a.has-text-#{$name} {
+    &:hover,
+    &:focus {
+      color: darken($color, 10%) !important;
+    }
+  }
+}
+
+.help {
+  display: block;
+  font-size: 0.8em;
+  font-style: italic;
+  margin-top: 0.25rem;
+}
+
+.box {
+  background-color: $white;
+  border-radius: $radius;
+  box-shadow: $box-shadow;
+  color: $blue;
+  display: block;
+  padding: 1.5rem;
+}
+
+.cards {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  padding: 40px 0;
+
+  @media ($tablet) {
+    flex-wrap: nowrap;
+    flex-direction: row;
+  }
+}
+
+main .card,
+.card {
+  color: $blue;
+  background: $white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+  margin-bottom: 20px;
+
+  @media ($tablet) {
+    width: calc(50% - 20px);
+    margin-bottom: 0;
+  }
+
+  > p,
+  p {
+    font-size: 16px;
+    color: $blue;
+  }
+
+  img {
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  a {
+    color: $cyan;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
+  }
+
+  h3 {
+    border-bottom: 3px solid $yellow;
+    padding-bottom: 10px;
+    margin: 0 0 20px 0;
+    text-align: center;
+    color: $blue;
+  }
+}
+
+.icon {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  height: 1.5rem;
+  width: 1.5rem;
+}

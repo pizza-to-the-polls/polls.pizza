@@ -66,9 +66,11 @@ export class AppRoot {
                 noValidate
               >
                 <div id="mc_embed_signup_scroll">
-                  <label htmlFor="mce-EMAIL">Sign up for updates</label>
-                  <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required />
-                  <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button" />
+                  <label class="label" htmlFor="mce-EMAIL">
+                    Sign up for updates
+                  </label>
+                  <input type="email" value="" name="EMAIL" class="input email email-signup-input" id="mce-EMAIL" placeholder="Your email address" autocomplete="on" required />
+                  <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="button is-teal email-signup-button" />
                   <div style={{ position: "absolute", left: "-5000px" }} aria-hidden="true">
                     <input type="text" name="b_ff4b828d01c30e7ef1de2e24b_a2d940b77b" tabindex="-1" value="" readOnly />
                   </div>

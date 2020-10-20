@@ -3,7 +3,7 @@
 }
 
 #trucks {
-  background: #fff;
+  background: $white;
 
   p {
     max-width: 600px;
@@ -51,7 +51,7 @@
   background: $red;
   padding: 20px 0;
   text-align: center;
-  color: #fff;
+  color: $white;
   font-size: 28px;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -61,17 +61,17 @@
   background-image: url("/images/wave.png");
   background-size: contain;
   background-position: 0 0;
-  color: #fff;
+  color: $white;
   padding: 50px 0 100px 0;
   text-align: center;
   font-size: 24px;
 
   a {
-    color: #fff;
-    text-decoration: underline;
+    color: $white;
+    border-color: $white;
   }
 
-  @media (min-width: 600px) {
+  @media ($tablet) {
     .container {
       padding: 0 60px;
     }
@@ -95,7 +95,7 @@
   li {
     text-transform: uppercase;
     padding: 10px 20px;
-    border-bottom: 1px solid #e2e2e2;
+    border-bottom: 1px solid $gray1;
   }
 
   strong {
@@ -106,7 +106,7 @@
   }
 }
 
-@media (min-width: 600px) {
+@media ($tablet) {
   .schedule {
     strong {
       width: 30%;

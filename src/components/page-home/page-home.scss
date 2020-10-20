@@ -1,11 +1,11 @@
-$border: $blue2;
+$border: $blue;
 
 .hero {
   background-image: url("/images/bg.png");
   background-size: 400px;
   background-color: $yellow;
   background-attachment: fixed;
-  color: $blue2;
+  color: $blue;
   padding: 20px 0 0 0;
 }
 
@@ -15,14 +15,14 @@ $border: $blue2;
     margin-top: 0;
     display: block;
     margin: 0 auto 30px;
-    font-weight: bold;
+    font-weight: 600;
     text-align: center;
   }
 }
 
 .dashboard.launching {
   .stats {
-    background-color: $blue2;
+    background-color: $blue;
   }
   h2,
   p {
@@ -41,32 +41,39 @@ $border: $blue2;
       margin: 60px auto;
       max-width: 72%;
       text-decoration: none;
+
       p {
-        font-weight: normal;
+        font-weight: 400;
         line-height: 1.25rem;
       }
+
       span {
-        font-weight: bold;
+        font-weight: 600;
       }
+
       div {
         background-color: $white;
         padding: 14px 30px;
         border-radius: 4px;
       }
+
       p,
       &,
       &:visited,
       &:active {
-        color: $blue;
+        color: $cyan;
       }
+
       &:hover {
         p,
         & {
           color: $white;
         }
+
         div {
-          background-color: $blue;
+          background-color: $cyan;
         }
+
         span {
           text-decoration: underline;
         }
@@ -79,7 +86,7 @@ $border: $blue2;
 }
 
 .dashboard-bg {
-  background-color: $blue2;
+  background-color: $blue;
   background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
@@ -91,7 +98,7 @@ $border: $blue2;
 }
 
 .dashboard {
-  color: $blue2;
+  color: $blue;
   text-align: center;
   position: relative;
   padding: 0 0 20px 0;
@@ -102,7 +109,7 @@ $border: $blue2;
     padding: 0 0 20px 0;
     margin: 0;
     z-index: 101;
-    border-bottom: 4px solid $blue2;
+    border-bottom: 4px solid $blue;
     font-size: 32px;
   }
 }
@@ -110,23 +117,22 @@ $border: $blue2;
 .stats {
   padding: 40px;
   background: $white;
-  color: $blue2;
+  color: $blue;
   position: relative;
   z-index: 100;
   border-radius: 10px;
-  box-shadow: 0 10px 40px 0 rgba($blue2, 0.3);
+  box-shadow: 0 10px 40px 0 rgba($blue, 0.3);
   text-align: center;
 
   h2 {
     font-size: 24px;
 
-    @media screen and (min-width: 600px) {
+    @media ($tablet) {
       font-size: 32px;
     }
   }
 
   .button {
-    width: 100%;
     max-width: 400px;
   }
 }
@@ -138,7 +144,7 @@ $border: $blue2;
 
   &:first-of-type {
     padding: 20px 0;
-    border-bottom: 4px solid $blue2;
+    border-bottom: 4px solid $blue;
     margin-bottom: 40px;
   }
 }
@@ -161,9 +167,9 @@ $border: $blue2;
 
 .stat__number {
   font-size: 24px;
-  font-family: "Fredoka One", cursive;
+  font-family: $header-font;
 
-  @media screen and (min-width: 600px) {
+  @media ($tablet) {
     font-size: 32px;
   }
 }
@@ -173,12 +179,18 @@ $border: $blue2;
 }
 
 .stat__link {
-  display: block;
+  color: $cyan;
+  display: inline-block;
   text-align: center;
   margin-top: 20px;
+  font-weight: 600;
+
+  &:hover {
+    color: darken($cyan, 10%);
+  }
 }
 
-@media (min-width: 600px) {
+@media ($tablet) {
   .stats__row {
     display: flex;
   }
@@ -200,7 +212,7 @@ $border: $blue2;
   }
 }
 
-@media (min-width: 769px) {
+@media ($tablet) {
   .intro {
     padding: 20px 0;
   }
@@ -214,75 +226,20 @@ $border: $blue2;
 }
 
 .home-secondary {
-  background: $blue2;
+  background: $blue;
   background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
   text-align: center;
 
   p {
-    color: #fff;
+    color: $white;
     font-size: 24px;
     max-width: 600px;
     margin: 0 auto 20px;
   }
 
   .button {
-    width: 100%;
     max-width: 400px;
-  }
-}
-
-.cards {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  padding: 40px 0;
-}
-
-.card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: left;
-  margin-bottom: 20px;
-
-  p {
-    font-size: 16px;
-    color: $blue2;
-  }
-
-  img {
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-
-  a {
-    color: $blue;
-    font-weight: bold;
-    display: inline-block;
-    text-align: center;
-    width: 100%;
-    font-size: 18px;
-  }
-
-  h3 {
-    border-bottom: 3px solid $yellow;
-    padding-bottom: 10px;
-    margin: 0 0 20px 0;
-    text-align: center;
-    color: $blue2;
-  }
-}
-
-@media (min-width: 600px) {
-  .cards {
-    flex-wrap: nowrap;
-    flex-direction: row;
-  }
-
-  .card {
-    width: calc(50% - 20px);
-    margin-bottom: 0;
   }
 }

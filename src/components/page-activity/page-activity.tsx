@@ -50,9 +50,11 @@ export class PageActivity {
                       {pizzas} pizza{pizzas === 1 ? "" : "s"} at {new Date(createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })} for {fullAddress}
                       <ul>
                         {reports.map(({ reportURL, createdAt: reportCreatedAt }) => (
-                          <a href={reportURL} target="_blank">
-                            Reported at {new Date(reportCreatedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
-                          </a>
+                          <li>
+                            <a href={reportURL} target="_blank">
+                              Reported at {new Date(reportCreatedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                            </a>
+                          </li>
                         ))}
                       </ul>
                     </li>
@@ -61,7 +63,7 @@ export class PageActivity {
               </div>
             ))}
             {ordersByDay.length > 0 ? (
-              <button hidden={!this.hasMore} class="submit" onClick={(_e: Event) => this.loadMore()}>
+              <button hidden={!this.hasMore} class="button is-cyan is-fullwidth" onClick={(_e: Event) => this.loadMore()}>
                 Load More
               </button>
             ) : (

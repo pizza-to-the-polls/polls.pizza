@@ -54,3 +54,4 @@ jobs:
           AWS_REGION: "us-east-1"
           DISTRIBUTION_ID: ${{ secrets.STAGE_DISTRIBUTION_ID }}
           PATHS: "/*"
+          

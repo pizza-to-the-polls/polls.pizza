@@ -1,0 +1,79 @@
+// Brand colors
+$red: #db2b39;
+$yellow: #f3a712;
+$blue: #29335c;
+$cyan: #00c1cc;
+$teal: #00828d;
+$gray1: #e8e9ee;
+$gray2: #c0c3d1;
+$gray3: #9b9fb1;
+$white: #ffffff;
+$black: #000000;
+
+// External brand colors
+$twitter: #1da1f2;
+$facebook: #4267b2;
+
+// class name (is-teal), text color, background color
+$text-colors: (
+  "teal": $teal,
+  "cyan": $cyan,
+  "blue": $blue,
+  "red": $red,
+  "yellow": $yellow,
+  "gray": $gray3,
+  "white": $white,
+  "black": $black,
+);
+
+// class name (is-teal), text color, background color
+$button-colors: (
+  "teal": (
+    $white,
+    $teal,
+  ),
+  "cyan": (
+    $white,
+    $cyan,
+  ),
+  "blue": (
+    $white,
+    $blue,
+  ),
+  "red": (
+    $white,
+    $red,
+  ),
+  "yellow": (
+    $blue,
+    $yellow,
+  ),
+  "twitter": (
+    $white,
+    $twitter,
+  ),
+  "facebook": (
+    $white,
+    $facebook,
+  ),
+);
+
+// Media queries
+// min-width
+$tablet: "min-width: 769px";
+$desktop: "min-width: 1024px";
+$widescreen: "min-width: 1216px";
+// max-width
+$under-tablet: "max-width: 768px";
+$under-desktop: "max-width: 1023px";
+$under-widescreen: "max-width: 1407px";
+
+// Fonts
+$header-font: "Fredoka One", cursive;
+$body-font: "Work Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+
+// Element properties
+$radius: 8px; // Default border-radius
+$radius-rounded: 290486px; // Rounded border-radius
+$border-color: $gray2;
+$box-shadow: 0 0.5em 1em -0.125em rgba($black, 0.1), 0 0px 0 1px rgba($black, 0.02);
