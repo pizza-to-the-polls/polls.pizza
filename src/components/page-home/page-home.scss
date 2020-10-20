@@ -41,32 +41,39 @@ $border: $blue;
       margin: 60px auto;
       max-width: 72%;
       text-decoration: none;
+
       p {
         font-weight: 400;
         line-height: 1.25rem;
       }
+
       span {
         font-weight: 600;
       }
+
       div {
         background-color: $white;
         padding: 14px 30px;
         border-radius: 4px;
       }
+
       p,
       &,
       &:visited,
       &:active {
         color: $cyan;
       }
+
       &:hover {
         p,
         & {
           color: $white;
         }
+
         div {
           background-color: $cyan;
         }
+
         span {
           text-decoration: underline;
         }
@@ -120,7 +127,7 @@ $border: $blue;
   h2 {
     font-size: 24px;
 
-    @media screen and (min-width: 600px) {
+    @media ($tablet) {
       font-size: 32px;
     }
   }
@@ -162,7 +169,7 @@ $border: $blue;
   font-size: 24px;
   font-family: $header-font;
 
-  @media screen and (min-width: 600px) {
+  @media ($tablet) {
     font-size: 32px;
   }
 }
@@ -173,17 +180,17 @@ $border: $blue;
 
 .stat__link {
   color: $cyan;
-  text-decoration: none;
-  display: block;
+  display: inline-block;
   text-align: center;
   margin-top: 20px;
+  font-weight: 600;
 
   &:hover {
     color: darken($cyan, 10%);
   }
 }
 
-@media (min-width: 600px) {
+@media ($tablet) {
   .stats__row {
     display: flex;
   }
@@ -234,59 +241,5 @@ $border: $blue;
 
   .button {
     max-width: 400px;
-  }
-}
-
-.cards {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  padding: 40px 0;
-}
-
-.card {
-  background: $white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: left;
-  margin-bottom: 20px;
-
-  p {
-    font-size: 16px;
-    color: $blue;
-  }
-
-  img {
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-
-  a {
-    color: $cyan;
-    font-weight: 600;
-    display: inline-block;
-    text-align: center;
-    width: 100%;
-    font-size: 18px;
-  }
-
-  h3 {
-    border-bottom: 3px solid $yellow;
-    padding-bottom: 10px;
-    margin: 0 0 20px 0;
-    text-align: center;
-    color: $blue;
-  }
-}
-
-@media (min-width: 600px) {
-  .cards {
-    flex-wrap: nowrap;
-    flex-direction: row;
-  }
-
-  .card {
-    width: calc(50% - 20px);
-    margin-bottom: 0;
   }
 }

@@ -39,7 +39,7 @@ export class PageHome {
           <div class="dashboard">
             <div class="container">
               <div class="stats">
-                <h2 class="display">2020 Election Totals</h2>
+                <h2 class="is-display">2020 Election Totals</h2>
                 <div class="stats__row">
                   <div class="stat">
                     <span class="stat__number">{this.pizzas}</span>

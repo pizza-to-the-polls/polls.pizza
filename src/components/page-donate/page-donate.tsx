@@ -135,11 +135,6 @@ export class PageDonate {
       return;
     };
 
-    const reloadDonationPage = (e: Event) => {
-      e.preventDefault();
-      window.location.reload(true);
-    };
-
     return (
       <Host>
         <div class="donate">
@@ -155,7 +150,7 @@ export class PageDonate {
                   </div>
 
                   <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
-                    <label>
+                    <label class="label">
                       Choose an amount <span class="required">*</span>
                     </label>
                     <ul class="donation-amount-list">
@@ -191,7 +186,7 @@ export class PageDonate {
                       </li>
                       <li>
                         <div class="radio">
-                          <label class="no-margin" htmlFor="custom-amount">
+                          <label class="label no-margin" htmlFor="custom-amount">
                             Other:
                           </label>{" "}
                           $
@@ -205,8 +200,8 @@ export class PageDonate {
                       </button>
                     )}
                     <p>
-                      Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible. Our
-                      activities are 501(c)(3) compliant.
+                      Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
+                      Our activities are 501(c)(3) compliant.
                     </p>
                   </form>
                 </div>
@@ -229,19 +224,32 @@ export class PageDonate {
                   <div class={"share-donation-link-container " + (this.canNativeShare ? "can-native-share" : "")}>
                     <ul class="share-donation-links">
                       <li>
-                        <a class="share-donation-link button is-twitter is-fullwidth-mobile" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Twitter">
+                        <a
+                          class="share-donation-link button is-twitter is-fullwidth-mobile"
+                          href={shareTwitterLink}
+                          rel="noopener noreferrer"
+                          target="popup"
+                          onClick={openSharePopup}
+                          title="Share to Twitter"
+                        >
                           <img class="icon" alt="Twitter" src="/images/twitter.svg" />
                           <span>Share on Twitter</span>
                         </a>
                       </li>
                       <li>
-                        <a class="share-donation-link button is-facebook is-fullwidth-mobile" href={shareFacebookLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Facebook">
+                        <a
+                          class="share-donation-link button is-facebook is-fullwidth-mobile"
+                          href={shareFacebookLink}
+                          rel="noopener noreferrer"
+                          target="popup"
+                          onClick={openSharePopup}
+                          title="Share to Facebook"
+                        >
                           <img class="icon" alt="Facebook" src="/images/facebook.svg" />
                           <span>Share on Facebook</span>
                         </a>
                       </li>
                     </ul>
-                    <a href="#" onClick={reloadDonationPage} class="has-text-cyan">Make another donation</a>
                   </div>
                 </div>
               )}

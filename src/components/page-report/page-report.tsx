@@ -133,7 +133,7 @@ export class PageDonate {
 
               <form id="form">
                 <div class="form-item">
-                  <label htmlFor="social-link">Link to a report on social media <span class="required">*</span></label>
+                  <label class="label" htmlFor="social-link">Link to a report on social media <span class="required">*</span></label>
                   <input class="input" id="social-link" type="text" name="url" />
                   <span class="help">
                     <strong>Required:</strong> We'll make sure there's really a line.
@@ -143,7 +143,7 @@ export class PageDonate {
                   </p>
                 </div>
                 <div class="form-item">
-                  <label htmlFor="address">Polling place address <span class="required">*</span></label>
+                  <label class="label" htmlFor="address">Polling place address <span class="required">*</span></label>
                   <input class="input" type="text" id="autocomplete" name="full_place" placeholder="ex. 123 Main Street" />
                   <span class="help">
                     <strong>Required:</strong> Search by the name of the place ("St. John's Library") or street address.
@@ -189,7 +189,7 @@ export class PageDonate {
                   </table>
                 </div>
                 <div class="form-item">
-                  <label htmlFor="address">Your phone number or email address <span class="required">*</span></label>
+                  <label class="label" htmlFor="address">Your phone number or email address <span class="required">*</span></label>
                   <input class="input" type="text" name="contact" />
                   <br />
                   <span class="help">
@@ -199,7 +199,7 @@ export class PageDonate {
                     {this.submitError.contact}
                   </p>
                 </div>
-                <button onClick={handleSubmit} class="button is-blue is-fullwidth" type="submit">
+                <button onClick={handleSubmit} class="button is-blue is-fullwidth-mobile" type="submit">
                   Submit report. Feed democracy
                 </button>
                 <p class="agreement">

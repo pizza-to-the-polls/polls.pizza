@@ -1,0 +1,118 @@
+.input {
+  @include input-textarea-control;
+}
+
+.textarea {
+  @include input-textarea-control;
+  display: block;
+  max-width: 100%;
+  min-width: 100%;
+  padding: calc(0.75em - 1px);
+  resize: vertical;
+
+  &:not([rows]) {
+    max-height: 40em;
+    min-height: 8em;
+  }
+
+  &[rows] {
+    height: initial;
+  }
+
+  &.has-fixed-size {
+    resize: none;
+  }
+}
+
+label,
+.label {
+  display: block;
+  font-size: 1.2em;
+  font-weight: 600;
+  &:not(:last-child) {
+    margin-bottom: 0.5em;
+  }
+
+  &.no-margin {
+    margin-bottom: 0;
+  }
+
+  .required {
+    position: relative;
+    top: -4px;
+    left: -4px;
+    color: $cyan;
+    font-weight: 600;
+    font-size: 20px;
+  }
+}
+
+::-webkit-input-placeholder,
+::-moz-placeholder,
+:-ms-input-placeholder,
+:-moz-placeholder,
+:placeholder  {
+  color: $gray2;
+  font-family: $body-font;
+}
+
+.radio {
+  color: $blue;
+  border-radius: $radius;
+  padding: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-in;
+  margin-bottom: 10px;
+  border: 1px solid $gray2;
+
+  &:hover {
+    border: 1px solid $cyan;
+    box-shadow: 0 0 0px 2px $cyan;
+  }
+
+  input {
+    display: inline-block;
+    width: 40px;
+    background: none;
+    border: none;
+    border-radius: 0;
+    border-bottom: 2px solid $white;
+    font-weight: 600;
+    font-size: 1.2em;
+    margin: 0;
+    padding: 10px 0;
+  }
+
+  input[type="text"] {
+    border-bottom: 2px solid $blue;
+    width: 100px;
+    padding: 5px;
+    color: $blue;
+
+    &:focus {
+      outline: none;
+      border-bottom-color: $cyan;
+    }
+  }
+
+  label {
+    display: inline-block;
+    margin: 0 10px 0 0;
+  }
+}
+
+input[type="radio"]:checked + label,
+input[type="radio"]:focus + label,
+input[type="text"]:focus + label {
+  background-color: $blue;
+  color: $white;
+}
+
+.form-item {
+  padding: 16px 0;
+  border-top: none;
+
+  table {
+    width: 100%;
+  }
+}

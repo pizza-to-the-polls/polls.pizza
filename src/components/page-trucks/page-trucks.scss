@@ -71,7 +71,7 @@
     border-color: $white;
   }
 
-  @media (min-width: 600px) {
+  @media ($tablet) {
     .container {
       padding: 0 60px;
     }
@@ -106,7 +106,7 @@
   }
 }
 
-@media (min-width: 600px) {
+@media ($tablet) {
   .schedule {
     strong {
       width: 30%;
