@@ -78,7 +78,7 @@ export class PageDonate {
       const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
       const custom = document.getElementById("custom-amount") as HTMLInputElement;
       if (checked && checked.value) {
-          custom.value = "";
+        custom.value = "";
       }
       const amount = custom.value ? custom.value : checked?.value;
 
@@ -204,7 +204,7 @@ export class PageDonate {
                       </li>
                       <li>
                         <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
-                          <input type="radio" id="custom-amount-radio" name="amount" value=""/>
+                          <input type="radio" id="custom-amount-radio" name="amount" value="" />
                           <span class="label-text">Other: $</span>
                           <input class="input" type="text" name="amount" id="custom-amount" autocomplete="off" />
                           <span class="indicator"></span>
