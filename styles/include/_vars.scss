@@ -14,25 +14,49 @@ $black: #000000;
 $twitter: #1da1f2;
 $facebook: #4267b2;
 
+// class name (is-teal), text color, background color
 $text-colors: (
-  'teal': $teal, // class name (is-teal), text color, background color
-  'cyan': $cyan,
-  'blue': $blue,
-  'red': $red,
-  'yellow': $yellow,
-  'gray': $gray3,
-  'white': $white,
-  'black': $black
+  "teal": $teal,
+  "cyan": $cyan,
+  "blue": $blue,
+  "red": $red,
+  "yellow": $yellow,
+  "gray": $gray3,
+  "white": $white,
+  "black": $black,
 );
 
+// class name (is-teal), text color, background color
 $button-colors: (
-  'teal': ($white, $teal), // class name (is-teal), text color, background color
-  'cyan': ($white, $cyan),
-  'blue': ($white, $blue),
-  'red': ($white, $red),
-  'yellow': ($blue, $yellow),
-  'twitter': ($white, $twitter),
-  'facebook': ($white, $facebook)
+  "teal": (
+    $white,
+    $teal,
+  ),
+  "cyan":
+    (
+      $white,
+      $cyan,
+    ),
+  "blue": (
+    $white,
+    $blue,
+  ),
+  "red": (
+    $white,
+    $red,
+  ),
+  "yellow": (
+    $blue,
+    $yellow,
+  ),
+  "twitter": (
+    $white,
+    $twitter,
+  ),
+  "facebook": (
+    $white,
+    $facebook,
+  ),
 );
 
 // Media queries
@@ -46,8 +70,8 @@ $under-desktop: "max-width: 1023px";
 $under-widescreen: "max-width: 1407px";
 
 // Fonts
-$header-font: 'Fredoka One', cursive;
-$body-font: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+$header-font: "Fredoka One", cursive;
+$body-font: "Work Sans", -apple-system, BlinkMacSystemFont, sans-serif;
 
 // Element properties
 $radius: 8px; // Default border-radius
