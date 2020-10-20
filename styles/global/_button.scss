@@ -98,6 +98,10 @@
         box-shadow: none;
         opacity: 0.5;
       }
+
+      svg {
+        fill: $color;
+      }
     }
   }
 

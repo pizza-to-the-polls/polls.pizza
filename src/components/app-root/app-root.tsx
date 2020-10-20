@@ -109,17 +109,17 @@ export class AppRoot {
               <ul class="social">
                 <li>
                   <a class="twitter" href="https://twitter.com/pizzatothepolls" target="blank">
-                    <img alt="Twitter" src="/images/twitter.svg" />
+                    <img class="icon" alt="Twitter" src="/images/icons/twitter.svg" />
                   </a>
                 </li>
                 <li>
                   <a class="facebook" href="https://facebook.com/pizzatothepolls" target="blank">
-                    <img alt="Facebook" src="/images/facebook.svg" />
+                    <img class="icon" alt="Facebook" src="/images/icons/facebook.svg" />
                   </a>
                 </li>
                 <li>
                   <a class="instagram" href="https://www.instagram.com/pizzatothepolls/" target="blank">
-                    <img alt="Instagram" src="/images/instagram.svg" />
+                    <img class="icon" alt="Instagram" src="/images/icons/instagram.svg" />
                   </a>
                 </li>
               </ul>

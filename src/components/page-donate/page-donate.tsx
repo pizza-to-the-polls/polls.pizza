@@ -54,6 +54,8 @@ export class PageDonate {
         await fetch(`${process.env.DONATION_FORM}`, { body, mode: "no-cors", method: "POST" });
 
         this.showConfirmation = true;
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
       handler = StripeCheckout.configure({
@@ -209,7 +211,7 @@ export class PageDonate {
                 </div>
               )}
 
-              {this.showConfirmation && (
+              {!this.showConfirmation && (
                 <div id="donate-confirmation">
                   <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
                   <p>Thanks for donating {this.amount ? "$" + this.amount : null} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
@@ -218,7 +220,7 @@ export class PageDonate {
 
                   {this.canNativeShare && (
                     <button id="share-donation" onClick={nativeShare} class="button is-blue is-fullwidth-mobile">
-                      <img class="icon" alt="Share" src="/images/share.svg" />
+                      <img class="icon" alt="Share" src="/images/icons/share.svg" />
                       <span>Share your donation!</span>
                     </button>
                   )}
@@ -234,7 +236,7 @@ export class PageDonate {
                           onClick={openSharePopup}
                           title="Share to Twitter"
                         >
-                          <img class="icon" alt="Twitter" src="/images/twitter.svg" />
+                          <img class="icon" alt="Twitter" src="/images/icons/twitter.svg" />
                           <span>Share on Twitter</span>
                         </a>
                       </li>
@@ -247,7 +249,7 @@ export class PageDonate {
                           onClick={openSharePopup}
                           title="Share to Facebook"
                         >
-                          <img class="icon" alt="Facebook" src="/images/facebook.svg" />
+                          <img class="icon" alt="Facebook" src="/images/icons/facebook.svg" />
                           <span>Share on Facebook</span>
                         </a>
                       </li>

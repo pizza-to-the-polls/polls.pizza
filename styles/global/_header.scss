@@ -9,12 +9,14 @@
   z-index: 1000;
   padding: 10px 5px;
   text-align: center;
+  box-shadow: $box-shadow;
 
   @media ($tablet) {
     border-bottom: none;
     position: relative;
     padding-left: 0;
     padding-right: 0;
+    box-shadow: none;
   }
 
   stencil-route-link,

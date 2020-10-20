@@ -120,6 +120,8 @@ export class PageDonate {
       });
       this.submitMessage = "Thanks! We will get right on that";
       this.submitError = {};
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
     };
     return (
       <Host>
@@ -137,9 +139,7 @@ export class PageDonate {
                     Link to a report on social media <span class="required">*</span>
                   </label>
                   <input class="input" id="social-link" type="text" name="url" />
-                  <span class="help">
-                    <strong>Required:</strong> We'll make sure there's really a line.
-                  </span>
+                  <span class="help">We'll make sure there's really a line.</span>
                   <p class="message error" hidden={!("url" in this.submitError)}>
                     {this.submitError.url}
                   </p>
@@ -149,9 +149,7 @@ export class PageDonate {
                     Polling place address <span class="required">*</span>
                   </label>
                   <input class="input" type="text" id="autocomplete" name="full_place" placeholder="ex. 123 Main Street" />
-                  <span class="help">
-                    <strong>Required:</strong> Search by the name of the place ("St. John's Library") or street address.
-                  </span>
+                  <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
                   <p class="message error" hidden={!("address" in this.submitError)}>
                     {this.submitError.address}
                   </p>
@@ -198,15 +196,13 @@ export class PageDonate {
                   </label>
                   <input class="input" type="text" name="contact" />
                   <br />
-                  <span class="help">
-                    <strong>Required:</strong> So we can let you know when the order's sent out
-                  </span>
+                  <span class="help">So we can let you know when the order's sent out</span>
                   <p class="message error" hidden={!("contact" in this.submitError)}>
                     {this.submitError.contact}
                   </p>
                 </div>
-                <button onClick={handleSubmit} class="button is-blue is-fullwidth-mobile" type="submit">
-                  Submit report. Feed democracy
+                <button onClick={handleSubmit} class="button is-teal is-fullwidth-mobile" type="submit">
+                  Submit report. Feed democracy.
                 </button>
                 <p class="agreement">
                   <em>

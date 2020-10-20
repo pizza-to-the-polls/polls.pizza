@@ -41,6 +41,10 @@ footer {
     padding: 0 40px 0 0;
     flex-grow: 1;
 
+    @media ($tablet) {
+      flex-direction: row;
+    }
+
     li {
       font-size: 18px;
 
@@ -57,19 +61,20 @@ footer {
 
   .social {
     padding: 0;
-    text-align: center;
+    text-align: left;
+
+    @media ($tablet) {
+      text-align: right;
+    }
 
     li {
       display: inline-block;
       margin: 0 10px;
-    }
-  }
 
-  @media ($tablet) {
-    flex-direction: row;
-
-    .social {
-      text-align: right;
+      .icon {
+        height: 40px;
+        width: 40px;
+      }
     }
   }
 }
