@@ -2,7 +2,7 @@ import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "page-instructions",
-  styleUrl: "page-instructions.css",
+  styleUrl: "page-instructions.scss",
 })
 export class PageInstructions {
   public componentWillLoad() {
