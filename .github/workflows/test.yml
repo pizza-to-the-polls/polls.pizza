@@ -32,6 +32,7 @@ jobs:
         run: npm run build
         env:
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY_TEST }}
+          PIZZA_BASE_DOMAIN: https://base-next.polls.pizza
 
       - name: Deploy to next.polls.pizza
         uses: jakejarvis/s3-sync-action@master
@@ -43,3 +44,10 @@ jobs:
           SOURCE_DIR: "dist/www"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+
+      - name: Invalidate cache & wait for completion
+        uses: muratiger/invalidate-cloudfront-and-wait-for-completion-action@master
+        env:
+          AWS_REGION: "us-east-1"
+          DISTRIBUTION_ID: ${{ secrets.STAGE_DISTRIBUTION_ID }}
+          PATHS: "/*"
