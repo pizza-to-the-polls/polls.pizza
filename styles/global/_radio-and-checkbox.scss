@@ -161,3 +161,30 @@
     }
   }
 }
+
+.checkbox-group,
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  width: 100%;
+
+  .checkbox,
+  .radio {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    @media ($tablet) {
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}

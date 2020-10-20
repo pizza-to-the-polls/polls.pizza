@@ -3,24 +3,26 @@ page-report {
     padding-top: 30px;
   }
 
-  .message {
-    padding: 10px 20px;
-    color: $blue;
-    background: $yellow;
-    border-radius: 8px;
-    box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.05);
-
-    &.is-error {
-      background: $red;
-    }
-  }
-
   .report {
     background-color: $cyan;
     background-image: url("/images/bg2.png");
     background-attachment: fixed;
     background-size: 400px;
     padding-bottom: 40px;
+  }
+
+  #address {
+    margin-bottom: 1.5rem;
+    padding: 0;
+
+    td.label {
+      display: table-cell;
+
+      @media ($under-tablet) {
+        font-size: 14px;
+        line-height: 1.2;
+      }
+    }
   }
 
   .agreement {

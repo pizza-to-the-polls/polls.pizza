@@ -58,7 +58,7 @@ export class PageHome {
                     <span class="stat__label">Raised in 2020</span>
                   </div>
                 </div>
-                <a href="/report" class="button is-cyan is-fullwidth">
+                <a href="/report" class="button is-teal is-fullwidth">
                   Report a line
                 </a>
                 <a href="/activity" class="stat__link">

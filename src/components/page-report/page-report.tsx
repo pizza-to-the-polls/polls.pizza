@@ -92,7 +92,7 @@ export class PageDonate {
       }
 
       if (!(data.contact || "").match(PHONE_REGEX) && !(data.contact || "").match(EMAIL_REGEX)) {
-        this.submitError.contact = "Whoops! Can you add a";
+        this.submitError.contact = "Whoops! Can you add your contact info?";
       }
 
       if (!data.address) {
@@ -129,89 +129,89 @@ export class PageDonate {
           <div class="container">
             <div class="box">
               <h1>Report a line</h1>
-              <p class="message" hidden={this.submitMessage.length < 1}>
-                {this.submitMessage}
-              </p>
+              {this.submitMessage.length > 1 && <p>{this.submitMessage}</p>}
 
-              <form id="form">
-                <div class="form-item">
-                  <label class="label" htmlFor="social-link">
-                    Link to a report on social media <span class="required">*</span>
-                  </label>
-                  <input class="input" id="social-link" type="text" name="url" />
-                  <span class="help">We'll make sure there's really a line.</span>
-                  <p class="message error" hidden={!("url" in this.submitError)}>
-                    {this.submitError.url}
+              {(!this.submitMessage || this.submitMessage.length < 1) && (
+                <form id="form">
+                  <div class="form-item">
+                    <label class="label" htmlFor="social-link">
+                      Link to a report on social media <span class="required">*</span>
+                    </label>
+                    <input class={"input " + ("url" in this.submitError ? "has-error" : "")} id="social-link" type="text" name="url" placeholder="ex. Link to Twitter, IG, etc." />
+                    <span class="help">We'll make sure there's really a line.</span>
+                    <p class="help has-text-red" hidden={!("url" in this.submitError)}>
+                      {this.submitError.url}
+                    </p>
+                  </div>
+                  <div class="form-item">
+                    <label class="label" htmlFor="address">
+                      Polling place address <span class="required">*</span>
+                    </label>
+                    <input class={"input " + ("address" in this.submitError ? "has-error" : "")} type="text" id="autocomplete" name="full_place" placeholder="St. John's Library" />
+                    <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
+                    <p class="help has-text-red" hidden={!("address" in this.submitError)}>
+                      {this.submitError.address}
+                    </p>
+                  </div>
+                  <div id="address" class="form-item" hidden={this.addressHidden}>
+                    <table>
+                      <tr>
+                        <td class="label">Place</td>
+                        <td colSpan={4}>
+                          <input class="input" id="premise" disabled={true} />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label">Street address</td>
+                        <td class="slimField">
+                          <input name="street_number" class="input" id="street_number" disabled={true} />
+                        </td>
+                        <td class="wideField" colSpan={2}>
+                          <input name="route" class="input" id="route" disabled={true} />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label">City</td>
+                        <td class="wideField" colSpan={3}>
+                          <input name="locality" class="input" id="locality" disabled={true} />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label">State</td>
+                        <td class="slimField">
+                          <input name="state" class="input" id="administrative_area_level_1" disabled={true} />
+                        </td>
+                        <td class="label">Zip code</td>
+                        <td class="wideField">
+                          <input name="zip" class="input" id="postal_code" disabled={true} />
+                        </td>
+                        <input type="hidden" name="address" id="formatted_address" />
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="form-item">
+                    <label class="label" htmlFor="address">
+                      Your phone number or email address <span class="required">*</span>
+                    </label>
+                    <input class={"input " + ("contact" in this.submitError ? "has-error" : "")} type="text" name="contact" />
+                    <br />
+                    <span class="help">So we can let you know when the order's sent out</span>
+                    <p class="help has-text-red" hidden={!("contact" in this.submitError)}>
+                      {this.submitError.contact}
+                    </p>
+                  </div>
+                  <button onClick={handleSubmit} class="button is-teal is-fullwidth-mobile" type="submit">
+                    Submit report. Feed democracy.
+                  </button>
+                  <p class="agreement">
+                    <em>
+                      By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and accept our{" "}
+                      <stencil-route-link url="/privacy">Privacy Policy</stencil-route-link>. You can unsubscribe at any time. For texts, message and data rates may apply. Text
+                      HELP for Info. Text STOP to quit.
+                    </em>
                   </p>
-                </div>
-                <div class="form-item">
-                  <label class="label" htmlFor="address">
-                    Polling place address <span class="required">*</span>
-                  </label>
-                  <input class="input" type="text" id="autocomplete" name="full_place" placeholder="ex. 123 Main Street" />
-                  <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
-                  <p class="message error" hidden={!("address" in this.submitError)}>
-                    {this.submitError.address}
-                  </p>
-                </div>
-                <div id="address" class="form-item" hidden={this.addressHidden}>
-                  <table>
-                    <tr>
-                      <td class="label">Place</td>
-                      <td colSpan={4}>
-                        <input class="input" id="premise" disabled={true} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Street address</td>
-                      <td class="slimField">
-                        <input name="street_number" class="input" id="street_number" disabled={true} />
-                      </td>
-                      <td class="wideField" colSpan={2}>
-                        <input name="route" class="input" id="route" disabled={true} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">City</td>
-                      <td class="wideField" colSpan={3}>
-                        <input name="locality" class="input" id="locality" disabled={true} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">State</td>
-                      <td class="slimField">
-                        <input name="state" class="input" id="administrative_area_level_1" disabled={true} />
-                      </td>
-                      <td class="label">Zip code</td>
-                      <td class="wideField">
-                        <input name="zip" class="input" id="postal_code" disabled={true} />
-                      </td>
-                      <input type="hidden" name="address" id="formatted_address" />
-                    </tr>
-                  </table>
-                </div>
-                <div class="form-item">
-                  <label class="label" htmlFor="address">
-                    Your phone number or email address <span class="required">*</span>
-                  </label>
-                  <input class="input" type="text" name="contact" />
-                  <br />
-                  <span class="help">So we can let you know when the order's sent out</span>
-                  <p class="message error" hidden={!("contact" in this.submitError)}>
-                    {this.submitError.contact}
-                  </p>
-                </div>
-                <button onClick={handleSubmit} class="button is-teal is-fullwidth-mobile" type="submit">
-                  Submit report. Feed democracy.
-                </button>
-                <p class="agreement">
-                  <em>
-                    By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and accept our{" "}
-                    <stencil-route-link url="/privacy">Privacy Policy</stencil-route-link>. You can unsubscribe at any time. For texts, message and data rates may apply. Text HELP
-                    for Info. Text STOP to quit.
-                  </em>
-                </p>
-              </form>
+                </form>
+              )}
             </div>
           </div>
         </div>

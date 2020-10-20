@@ -80,18 +80,21 @@
   a,
   stencil-route-link {
     text-decoration: none;
-    color: $red;
+    color: $blue;
     display: block;
     transition: color 0.2s ease-in-out;
 
-    &:hover,
+    &:hover {
+      color: darken($blue, 10%);
+    }
+
     &:focus {
-      color: $cyan;
+      color: $red;
     }
   }
 
   a:active,
   .link-active {
-    color: $cyan;
+    color: $red;
   }
 }

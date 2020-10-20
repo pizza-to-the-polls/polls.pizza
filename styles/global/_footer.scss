@@ -36,14 +36,14 @@ footer {
   flex-direction: column;
   border-top: 3px solid $white;
 
+  @media ($tablet) {
+    flex-direction: row;
+  }
+
   ul {
     list-style-type: none;
     padding: 0 40px 0 0;
     flex-grow: 1;
-
-    @media ($tablet) {
-      flex-direction: row;
-    }
 
     li {
       font-size: 18px;

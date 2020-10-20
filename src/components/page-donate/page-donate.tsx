@@ -66,9 +66,20 @@ export class PageDonate {
       });
     }
 
+    const activateCustomAmountRadio = () => {
+      const form = document.getElementById("donate-form") as HTMLFormElement;
+      if (form) {
+        form.reset();
+      }
+      document.getElementById("custom-amount-radio")?.setAttribute("checked", "true");
+    };
+
     const getAmount = (): number | null => {
       const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
       const custom = document.getElementById("custom-amount") as HTMLInputElement;
+      if (checked && checked.value) {
+          custom.value = "";
+      }
       const amount = custom.value ? custom.value : checked?.value;
 
       return amount.length > 0 ? Number(amount) : null;
@@ -192,17 +203,21 @@ export class PageDonate {
                         </label>
                       </li>
                       <li>
-                        <label class="radio" htmlFor="custom-amount">
+                        <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
+                          <input type="radio" id="custom-amount-radio" name="amount" value=""/>
                           <span class="label-text">Other: $</span>
                           <input class="input" type="text" name="amount" id="custom-amount" autocomplete="off" />
+                          <span class="indicator"></span>
                         </label>
                       </li>
                     </ul>
-                    {this.amount && !isNaN(this.amount) ? (
-                      <button onClick={handleCheckout} class="button is-red is-fullwidth-mobile">
-                        Donate
-                      </button>
-                    ) : null}
+                    <button
+                      onClick={handleCheckout}
+                      class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                      disabled={!this.amount || isNaN(this.amount)}
+                    >
+                      Donate
+                    </button>
                     <p>
                       Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
                       Our activities are 501(c)(3) compliant.
@@ -211,7 +226,7 @@ export class PageDonate {
                 </div>
               )}
 
-              {!this.showConfirmation && (
+              {this.showConfirmation && (
                 <div id="donate-confirmation">
                   <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
                   <p>Thanks for donating {this.amount ? "$" + this.amount : null} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
