@@ -78,23 +78,15 @@
   }
 
   a,
-  stencil-route-link {
+  stencil-route-link a {
     text-decoration: none;
     color: $blue;
     display: block;
     transition: color 0.2s ease-in-out;
 
-    &:hover {
-      color: darken($blue, 10%);
+    &:active,
+    &.link-active {
+      color: $red !important;
     }
-
-    &:focus {
-      color: $red;
-    }
-  }
-
-  a:active,
-  .link-active {
-    color: $red;
   }
 }
