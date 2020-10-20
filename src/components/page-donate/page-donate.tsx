@@ -51,7 +51,7 @@ export class PageDonate {
           return form;
         }, new FormData());
 
-        await fetch("https://docs.google.com/forms/d/e/1FAIpQLSf5RPXqXaVk8KwKC7kzthukydvA9vL7_bP9V9O9PIAiXl14cQ/formResponse", { body, mode: "no-cors", method: "POST" });
+        await fetch(`${process.env.DONATION_FORM}`, { body, mode: "no-cors", method: "POST" });
 
         this.showConfirmation = true;
       };

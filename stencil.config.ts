@@ -27,6 +27,7 @@ export const config: Config = {
       values: {
         "process.env.STRIPE_PUBLIC_KEY": process.env.STRIPE_PUBLIC_KEY ? `"${process.env.STRIPE_PUBLIC_KEY}"` : "process.env.STRIPE_PUBLIC_KEY",
         "process.env.PIZZA_BASE_DOMAIN": process.env.PIZZA_BASE_DOMAIN ? `"${process.env.PIZZA_BASE_DOMAIN}"` : `"https://base.polls.pizza"`,
+        "process.env.DONATION_FORM": process.env.DONATION_FORM ? `"${process.env.DONATION_FORM}"` : `"https://docs.google.com/forms/d/e/form-id/formResponse"`,
       },
     }),
     sass({
