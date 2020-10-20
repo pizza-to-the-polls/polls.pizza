@@ -21,14 +21,14 @@
   margin: 0;
   padding: 10px 0 10px 0;
   width: 100%;
-  font-weight: bold;
+  font-weight: 600;
   z-index: 1000;
   text-align: center;
 
   li {
     display: inline-block;
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 600;
     padding: 0 10px;
     margin: 0 10px;
     position: relative;
@@ -49,7 +49,6 @@
   a,
   stencil-route-link {
     text-decoration: none;
-    border-bottom: none;
     color: $red;
     display: block;
     transition: color 0.2s ease-in-out;
@@ -109,35 +108,68 @@ html {
 }
 
 body {
-  font-family: "Work Sans", sans-serif;
+  color: $blue;
+  font-family: $body-font;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
 }
 
 a {
-  color: $cyan;
-  text-decoration: none;
-  border-bottom: 1px solid $cyan;
-  padding-bottom: 0.1rem;
+  color: $red;
+  text-decoration: underline;
   transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
   &:hover,
   &:active,
   &:focus {
-    color: darken($cyan, 10%);
-    border-color: darken($cyan, 10%);
+    color: darken($red, 10%);
   }
 }
 
 h1 {
-  text-align: center;
-  color: $cyan;
+  font-family: $header-font;
+  font-weight: 400 !important;
+  font-size: 2em;
+  margin-top: 0 !important;
+  margin-bottom: 0.5em;
+
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
 }
 
-h1,
 h2 {
-  font-weight: 800;
+  font-size: 1.75em;
+  font-weight: 600;
+  margin-bottom: 0.5714em;
+
+  &:not(:first-child) {
+    margin-top: 1.1428em;
+  }
+}
+
+h3 {
+  font-size: 1.5em;
+  margin-bottom: 0.6666em;
+  &:not(:first-child) {
+    margin-top: 1.3333em;
+  }
+}
+
+h4 {
+  font-size: 1.25em;
+  margin-bottom: 0.8em;
+}
+
+h5 {
+  font-size: 1.125em;
+  margin-bottom: 0.8888em;
+}
+
+h6 {
+  font-size: 1em;
+  margin-bottom: 1em;
 }
 
 form {
@@ -152,11 +184,12 @@ li {
 
 img {
   max-width: 100%;
+  height: auto;
 }
 
 .display {
-  font-family: "Fredoka One";
-  font-weight: normal;
+  font-family: $header-font;
+  font-weight: 400;
 }
 
 .clearfix:after {
@@ -167,6 +200,22 @@ img {
 
 [hidden] {
   display: none;
+}
+
+// Color helpers
+@each $name, $color in $text-colors {
+  .has-text-#{$name} {
+    color: $color !important;
+  }
+  .has-background-#{$name} {
+    background-color: $color !important;
+  }
+  a.has-text-#{$name} {
+    &:hover,
+    &:focus {
+      color: darken($color, 10%) !important;
+    }
+  }
 }
 
 .bg {
@@ -192,7 +241,7 @@ img {
 
   &:hover {
     border: 1px solid $cyan;
-    box-shadow: 0 0 0px 3px $cyan;
+    box-shadow: 0 0 0px 2px $cyan;
   }
 
   input {
@@ -202,22 +251,53 @@ img {
     border: none;
     border-radius: 0;
     border-bottom: 2px solid $white;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 1.2em;
     margin: 0;
     padding: 10px 0;
   }
 
   input[type="text"] {
-    border-bottom: 2px solid $cyan;
+    border-bottom: 2px solid $blue;
     width: 100px;
     padding: 5px;
     color: $blue;
+
+    &:focus {
+      outline: none;
+      border-bottom-color: $cyan;
+    }
   }
 
   label {
     display: inline-block;
     margin: 0 10px 0 0;
+  }
+}
+
+.input {
+  @include input-textarea-control;
+}
+
+.textarea {
+  @include input-textarea-control;
+  display: block;
+  max-width: 100%;
+  min-width: 100%;
+  padding: calc(0.75em - 1px);
+  resize: vertical;
+
+  &:not([rows]) {
+    max-height: 40em;
+    min-height: 8em;
+  }
+
+  &[rows] {
+    height: initial;
+  }
+
+  &.has-fixed-size {
+    resize: none;
   }
 }
 
@@ -230,7 +310,7 @@ input[type="text"]:focus + label {
 // end form controls
 
 .form-item {
-  padding: 20px 0;
+  padding: 16px 0;
   border-top: none;
 
   table {
@@ -238,33 +318,48 @@ input[type="text"]:focus + label {
   }
 }
 
-label {
+label,
+.label {
   display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
   font-size: 1.2em;
+  font-weight: 600;
+  &:not(:last-child) {
+    margin-bottom: 0.5em;
+  }
+
+  &.no-margin {
+    margin-bottom: 0;
+  }
+
+  .required {
+    position: relative;
+    top: -4px;
+    left: -4px;
+    color: $cyan;
+    font-weight: 600;
+    font-size: 20px;
+  }
 }
 
 legend {
-  font-weight: bold;
+  font-weight: 600;
   font-size: 1.2em;
 }
 
-input,
-textarea {
-  font-family: "Open Sans", sans-serif;
-  width: 100%;
-  margin-bottom: 0.5em;
-  border-radius: $radius;
-  padding: 10px;
-  border: 1px solid $border-color;
-  overflow: hidden;
+::-webkit-input-placeholder,
+::-moz-placeholder,
+:-ms-input-placeholder,
+:-moz-placeholder,
+:placeholder  {
+  color: $gray2;
+  font-family: $body-font;
 }
 
 .help {
+  display: block;
   font-size: 0.8em;
   font-style: italic;
-  display: block;
+  margin-top: 0.25rem;
 }
 
 section {
@@ -316,18 +411,6 @@ section {
   img {
     max-width: 100%;
   }
-
-  a {
-    color: $red;
-    border-color: $red;
-
-    &:hover,
-    &:active,
-    &:focus {
-      color: darken($red, 10%);
-      border-color: darken($red, 10%);
-    }
-  }
 }
 
 .photo-grid {
@@ -348,9 +431,22 @@ footer {
   border-top: 5px solid $red;
   color: $white;
   padding: 40px 0;
+
+  .email-signup-input {
+    border: 0;
+    width: calc(100% - 100px);
+    float: left;
+    border-radius: $radius 0 0 $radius;
+  }
+
+  .email-signup-button {
+    float: left;
+    width: 100px;
+    border-radius: 0 $radius $radius 0;
+  }
 }
 
-footer a {
+footer a:not(.button) {
   color: $white;
   border-color: transparent;
 
@@ -360,18 +456,6 @@ footer a {
     color: darken($white, 10%);
     border-color: transparent;
   }
-}
-
-footer input[type="email"] {
-  width: calc(100% - 110px);
-  float: left;
-  border-radius: $radius 0 0 $radius;
-}
-
-footer input[type="submit"] {
-  float: left;
-  width: 110px;
-  border-radius: 0 $radius $radius 0;
 }
 
 .footer-nav {
@@ -388,7 +472,7 @@ footer input[type="submit"] {
     li {
       font-size: 18px;
 
-      a {
+      a:not(.button) {
         text-decoration: none;
         border-color: transparent;
 
@@ -419,10 +503,6 @@ footer input[type="submit"] {
 }
 
 @media ($tablet) {
-  h1 {
-    font-size: 3em;
-  }
-
   h1 .emoji,
   h1 .emoji:first-of-type {
     display: inline;
@@ -453,7 +533,7 @@ footer input[type="submit"] {
   padding-top: calc(0.5em - 1px);
   text-align: center;
   text-decoration: none;
-  font-family: "Work Sans", sans-serif;
+  font-family: $body-font;
   white-space: nowrap;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
@@ -546,4 +626,13 @@ footer input[type="submit"] {
     height: 1.5em;
     width: 1.5em;
   }
+}
+
+.box {
+  background-color: $white;
+  border-radius: $radius;
+  box-shadow: $box-shadow;
+  color: $blue;
+  display: block;
+  padding: 1.25rem;
 }

@@ -15,7 +15,7 @@ $border: $blue;
     margin-top: 0;
     display: block;
     margin: 0 auto 30px;
-    font-weight: bold;
+    font-weight: 600;
     text-align: center;
   }
 }
@@ -42,11 +42,11 @@ $border: $blue;
       max-width: 72%;
       text-decoration: none;
       p {
-        font-weight: normal;
+        font-weight: 400;
         line-height: 1.25rem;
       }
       span {
-        font-weight: bold;
+        font-weight: 600;
       }
       div {
         background-color: $white;
@@ -160,7 +160,7 @@ $border: $blue;
 
 .stat__number {
   font-size: 24px;
-  font-family: "Fredoka One", cursive;
+  font-family: $header-font;
 
   @media screen and (min-width: 600px) {
     font-size: 32px;
@@ -172,9 +172,15 @@ $border: $blue;
 }
 
 .stat__link {
+  color: $cyan;
+  text-decoration: none;
   display: block;
   text-align: center;
   margin-top: 20px;
+
+  &:hover {
+    color: darken($cyan, 10%);
+  }
 }
 
 @media (min-width: 600px) {
@@ -257,7 +263,7 @@ $border: $blue;
 
   a {
     color: $cyan;
-    font-weight: bold;
+    font-weight: 600;
     display: inline-block;
     text-align: center;
     width: 100%;

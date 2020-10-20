@@ -28,3 +28,51 @@
     cursor: not-allowed;
   }
 }
+
+@mixin input-control {
+  @include base-control;
+  background-color: $white;
+  border-color: $blue;
+  border-radius: $radius;
+  color: $black;
+
+  &:focus,
+  &:active {
+    border-color: $cyan;
+  }
+
+  &.is-disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    background-color: rgba($border-color, 0.3);
+    border-color: rgba($blue, 0.5);
+    box-shadow: none;
+    color: $gray3;
+  }
+
+  &.has-error {
+    border-color: $red;
+  }
+}
+
+@mixin input-textarea-control {
+  @include input-control;
+  box-shadow: inset 0 0.0625em 0.125em rgba($black, 0.05);
+  max-width: 100%;
+  width: 100%;
+
+  &.is-fullwidth {
+    display: block;
+    width: 100%;
+  }
+
+  &.is-inline {
+    display: inline;
+    width: auto;
+  }
+
+  &.is-readonly,
+  &[readonly] {
+    box-shadow: none;
+  }
+}

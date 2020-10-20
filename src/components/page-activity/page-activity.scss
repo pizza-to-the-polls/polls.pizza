@@ -3,7 +3,7 @@ page-activity {
     list-style-type: none;
     margin: 0;
     margin-bottom: 40px;
-    overflow-y: scroll;
+    overflow-y: auto;
     background: rgba($blue, 0.1);
     padding: 10px;
   }
@@ -12,6 +12,7 @@ page-activity {
     float: right;
     margin-top: 10px;
     cursor: pointer;
+
     &:hover {
       text-decoration: underline;
     }
