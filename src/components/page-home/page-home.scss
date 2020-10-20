@@ -126,7 +126,6 @@ $border: $blue;
   }
 
   .button {
-    width: 100%;
     max-width: 400px;
   }
 }
@@ -200,7 +199,7 @@ $border: $blue;
   }
 }
 
-@media (min-width: 769px) {
+@media ($tablet) {
   .intro {
     padding: 20px 0;
   }
@@ -221,14 +220,13 @@ $border: $blue;
   text-align: center;
 
   p {
-    color: #fff;
+    color: $white;
     font-size: 24px;
     max-width: 600px;
     margin: 0 auto 20px;
   }
 
   .button {
-    width: 100%;
     max-width: 400px;
   }
 }
@@ -241,7 +239,7 @@ $border: $blue;
 }
 
 .card {
-  background: #fff;
+  background: $white;
   padding: 20px;
   border-radius: 10px;
   text-align: left;

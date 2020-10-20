@@ -133,7 +133,7 @@ export class PageDonate {
             <form id="form">
               <div class="form-item">
                 <label htmlFor="social-link">Link to a report on social media</label>
-                <input id="social-link" type="text" name="url" />
+                <input id="social-link" type="text" name="url" autocomplete="off" />
                 <span class="help">
                   <strong>Required:</strong> We'll make sure there's really a line.
                 </span>
@@ -143,7 +143,7 @@ export class PageDonate {
               </div>
               <div class="form-item">
                 <label htmlFor="address">Polling place address</label>
-                <input type="text" id="autocomplete" name="full_place" />
+                <input type="text" id="autocomplete" name="full_place" autocomplete="off" />
                 <span class="help">
                   <strong>Required:</strong> Search by the name of the place ("St. John's Library") or street address.
                 </span>
@@ -198,7 +198,7 @@ export class PageDonate {
                   {this.submitError.contact}
                 </p>
               </div>
-              <button onClick={handleSubmit} class="submit" type="button">
+              <button onClick={handleSubmit} class="button is-blue is-fullwidth" type="submit">
                 Submit report. Feed democracy
               </button>
               <p class="agreement">

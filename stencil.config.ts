@@ -30,7 +30,7 @@ export const config: Config = {
       },
     }),
     sass({
-      injectGlobalPaths: ["styles/include/vars.scss"],
+      injectGlobalPaths: ["styles/include/vars.scss", "styles/include/mixins.scss"],
     }),
   ],
   extras: {

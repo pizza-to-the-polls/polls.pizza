@@ -10,11 +10,31 @@ $gray3: #9b9fb1;
 $white: #ffffff;
 $black: #000000;
 
-// Vanity color names
-$tomato: $red;
-$cheese: $yellow;
-$black-olive: $blue;
-
 // External brand colors
 $twitter: #1da1f2;
 $facebook: #4267b2;
+
+$button-colors: (
+  'teal': ($white, $teal), // class name, text color, background color
+  'cyan': ($white, $cyan), // class name, text color, background color
+  'blue': ($white, $blue),
+  'red': ($white, $red),
+  'yellow': ($blue, $yellow),
+  'twitter': ($white, $twitter),
+  'facebook': ($white, $facebook)
+);
+
+// Media queries
+// min-width
+$tablet: "min-width: 769px";
+$desktop: "min-width: 1024px";
+$widescreen: "min-width: 1216px";
+// max-width
+$under-tablet: "max-width: 768px";
+$under-desktop: "max-width: 1023px";
+$under-widescreen: "max-width: 1407px";
+
+// Element properties
+$radius: 8px; // Default border-radius
+$radius-rounded: 290486px; // Rounded border-radius
+$border-color: $gray2;

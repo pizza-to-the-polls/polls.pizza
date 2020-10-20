@@ -1,5 +1,5 @@
 .header {
-  color: #fff;
+  color: $white;
   border-top: 10px solid $red;
   position: sticky;
   width: 100%;
@@ -49,9 +49,10 @@
   a,
   stencil-route-link {
     text-decoration: none;
+    border-bottom: none;
     color: $red;
     display: block;
-    transition: color 0.1s ease-in-out;
+    transition: color 0.2s ease-in-out;
 
     &:hover,
     &:focus {
@@ -95,23 +96,43 @@
   box-sizing: border-box;
 }
 
+html {
+  background-color: $white;
+  font-size: 16px;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  min-width: 300px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-rendering: optimizeLegibility;
+  text-size-adjust: 100%;
+}
+
 body {
   font-family: "Work Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 a {
   color: $cyan;
   text-decoration: none;
-  transition: color 0.1s ease-in-out;
+  border-bottom: 1px solid $cyan;
+  padding-bottom: 0.1rem;
+  transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
-  &:hover {
+  &:hover,
+  &:active,
+  &:focus {
     color: darken($cyan, 10%);
+    border-color: darken($cyan, 10%);
   }
 }
 
 h1 {
   text-align: center;
-  color: #3dc1c8;
+  color: $cyan;
 }
 
 h1,
@@ -120,7 +141,7 @@ h2 {
 }
 
 form {
-  border-radius: 4px;
+  border-radius: $radius;
   padding: 0;
 }
 
@@ -159,6 +180,55 @@ img {
   z-index: 1;
 }
 
+// start form controls
+.radio {
+  color: $blue;
+  border-radius: $radius;
+  padding: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-in;
+  margin-bottom: 10px;
+  border: 1px solid $gray2;
+
+  &:hover {
+    border: 1px solid $cyan;
+    box-shadow: 0 0 0px 3px $cyan;
+  }
+
+  input {
+    display: inline-block;
+    width: 40px;
+    background: none;
+    border: none;
+    border-radius: 0;
+    border-bottom: 2px solid $white;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin: 0;
+    padding: 10px 0;
+  }
+
+  input[type="text"] {
+    border-bottom: 2px solid $cyan;
+    width: 100px;
+    padding: 5px;
+    color: $blue;
+  }
+
+  label {
+    display: inline-block;
+    margin: 0 10px 0 0;
+  }
+}
+
+input[type="radio"]:checked + label,
+input[type="radio"]:focus + label,
+input[type="text"]:focus + label {
+  background-color: $blue;
+  color: $white;
+}
+// end form controls
+
 .form-item {
   padding: 20px 0;
   border-top: none;
@@ -185,30 +255,10 @@ textarea {
   font-family: "Open Sans", sans-serif;
   width: 100%;
   margin-bottom: 0.5em;
-  border-radius: 4px;
+  border-radius: $radius;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid $border-color;
   overflow: hidden;
-}
-
-input[type="submit"],
-.submit {
-  transition: background-color 0.1s ease-in;
-  display: block;
-  background: #3dc1c8;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  width: 100%;
-  font-weight: bold;
-  margin-bottom: 0;
-  padding: 20px;
-  border-radius: 0 0 4px 4px;
-}
-
-input[type="submit"]:hover,
-.submit:hover {
-  background: #35a8ae;
 }
 
 .help {
@@ -269,11 +319,13 @@ section {
 
   a {
     color: $red;
+    border-color: $red;
 
     &:hover,
     &:active,
     &:focus {
       color: darken($red, 10%);
+      border-color: darken($red, 10%);
     }
   }
 }
@@ -294,34 +346,39 @@ section {
 footer {
   background: $blue;
   border-top: 5px solid $red;
-  color: #fff;
+  color: $white;
   padding: 40px 0;
 }
 
 footer a {
-  color: #fff;
+  color: $white;
+  border-color: transparent;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: darken($white, 10%);
+    border-color: transparent;
+  }
 }
 
 footer input[type="email"] {
-  width: calc(100% - 140px);
+  width: calc(100% - 110px);
   float: left;
-  border: 2px solid #fff;
-  border-radius: 4px 0 0 4px;
+  border-radius: $radius 0 0 $radius;
 }
 
 footer input[type="submit"] {
   float: left;
-  width: 140px;
-  border: 2px solid #fff;
-  border-radius: 0 4px 4px 0;
-  padding: 10px;
+  width: 110px;
+  border-radius: 0 $radius $radius 0;
 }
 
 .footer-nav {
   padding: 20px 0 40px 0;
   display: flex;
   flex-direction: column;
-  border-top: 3px solid #fff;
+  border-top: 3px solid $white;
 
   ul {
     list-style-type: none;
@@ -333,6 +390,7 @@ footer input[type="submit"] {
 
       a {
         text-decoration: none;
+        border-color: transparent;
 
         &.link-active {
           color: $cyan;
@@ -360,7 +418,7 @@ footer input[type="submit"] {
   }
 }
 
-@media (min-width: 769px) {
+@media ($tablet) {
   h1 {
     font-size: 3em;
   }
@@ -381,34 +439,111 @@ footer input[type="submit"] {
 }
 
 .button {
-  padding: 15px 20px;
-  border-radius: 5px;
-  font-weight: bold;
+  @include base-control;
+  background-color: $teal;
+  border-color: $teal;
+  border-width: 1px;
+  color: $white;
+  cursor: pointer;
+  justify-content: center;
+  margin: 0 auto;
+  padding-bottom: calc(0.5em - 1px);
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: calc(0.5em - 1px);
+  text-align: center;
   text-decoration: none;
-  display: inline-block;
-  transition: background-color 0.1s ease-in-out;
+  font-family: "Work Sans", sans-serif;
+  white-space: nowrap;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
-  &.primary {
-    background: $cyan;
-    color: #fff;
+  strong {
+    color: inherit;
+  }
 
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: darken($cyan, 10%);
-      color: #fff;
+  // States
+  &:hover {
+    color: $white;
+    background-color: darken($teal, 2.5%);
+    border-color: darken($teal, 2.5%);
+  }
+
+  &:focus {
+    color: $white;
+    background-color: darken($teal, 5%);
+    border-color: darken($teal, 5%);
+  }
+
+  &:active {
+    color: $white;
+    background-color: darken($teal, 10%);
+    border-color: darken($teal, 10%);
+  }
+
+  &.is-disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    color: $white;
+    background-color: $teal;
+    border-color: transparent;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+
+  &.is-fullwidth {
+    display: flex;
+    width: 100%;
+  }
+
+  &.is-fullwidth-mobile {
+    @media ($under-tablet) {
+      display: flex;
+      width: 100%;
     }
   }
 
-  &.secondary {
-    background: $red;
-    color: #fff;
+  // Cycle through button colors
+  @each $name, $colors in $button-colors {
+    $color: nth($colors, 1);
+    $background: nth($colors, 2);
+    &.is-#{$name} {
+      color: $color;
+      background-color: $background;
+      border-color: $background;
 
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: darken($red, 10%);
-      color: #fff;
+      &:hover {
+        color: $color;
+        background-color: darken($background, 5%);
+        border-color: darken($background, 5%);
+      }
+
+      &:focus {
+        color: $color;
+        background-color: darken($background, 10%);
+        border-color: darken($background, 10%);
+      }
+
+      &:active {
+        color: $color;
+        background-color: darken($background, 15%);
+        border-color: darken($background, 15%);
+      }
+
+      &.is-disabled,
+      &[disabled],
+      fieldset[disabled] & {
+        color: $color;
+        background-color: $background;
+        border-color: transparent;
+        box-shadow: none;
+        opacity: 0.5;
+      }
     }
+  }
+
+  .icon,
+  > img {
+    height: 1.5em;
+    width: 1.5em;
   }
 }

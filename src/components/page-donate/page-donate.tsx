@@ -148,76 +148,98 @@ export class PageDonate {
               <ul>
                 <li>
                   <label class="radio" htmlFor="radio-1">
-                    <input type="radio" value="20" id="radio-1" name="amount" />
+                    <input type="radio" value="20" id="radio-1" name="amount" autocomplete="off" />
                     $20 🍕
                   </label>
                 </li>
                 <li>
                   <label class="radio" htmlFor="radio-2">
-                    <input type="radio" value="40" id="radio-2" name="amount" />
+                    <input type="radio" value="40" id="radio-2" name="amount" autocomplete="off" />
                     $40 🍕🍕
                   </label>
                 </li>
                 <li>
                   <label class="radio" htmlFor="radio-3">
-                    <input type="radio" value="60" id="radio-3" name="amount" />
+                    <input type="radio" value="60" id="radio-3" name="amount" autocomplete="off" />
                     $60 🍕🍕🍕
                   </label>
                 </li>
                 <li>
                   <label class="radio" htmlFor="radio-4">
-                    <input type="radio" value="100" id="radio-4" name="amount" />
+                    <input type="radio" value="100" id="radio-4" name="amount" autocomplete="off" />
                     $100 🍕🍕🍕🍕🍕
                   </label>
                 </li>
                 <li>
                   <label htmlFor="radio-5" class="radio">
-                    <input type="radio" value="200" id="radio-5" name="amount" />
+                    <input type="radio" value="200" id="radio-5" name="amount" autocomplete="off" />
                     $200 🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕
                   </label>
                 </li>
+                <li>
+                  <div class="radio">
+                    <label htmlFor="custom-amount">Other:</label> $
+                    <input type="text" name="amount" id="custom-amount" autocomplete="off" />
+                  </div>
+                </li>
               </ul>
-              <div class="radio">
-                <label htmlFor="custom-amount">Other:</label> $
-                <input type="text" name="amount" id="custom-amount" />
-              </div>
+              {this.amount && (
+                <button onClick={handleCheckout} class="button is-red is-fullwidth">
+                  Donate
+                </button>
+              )}
               <p>
                 Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible. Our
                 activities are 501(c)(3) compliant.
               </p>
-              <button onClick={handleCheckout} class={`submit ${this.amount ? "" : "is-disabled"}`}>
-                Donate
-              </button>
             </form>
 
-            <div id="donate-confirmation" class="message" hidden={!this.showConfirmation}>
-              <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
-              <p>Thanks for donating {this.amount ? "$" + this.amount : null} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
+            {this.showConfirmation && (
+              <div id="donate-confirmation" class="message">
+                <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
+                <p>Thanks for donating {this.amount ? "$" + this.amount : null} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
 
-              <p>Help spread the word by sharing your donation!</p>
+                <p>Help spread the word by sharing your donation!</p>
 
-              <button id="share-donation" onClick={nativeShare} class="button" hidden={!this.canNativeShare}>
-                <img alt="Share" src="/images/share.svg" />
-                <span>Share your donation!</span>
-              </button>
+                {this.canNativeShare && (
+                  <button id="share-donation" onClick={nativeShare} class="button is-blue is-fullwidth-mobile">
+                    <img class="icon" alt="Share" src="/images/share.svg" />
+                    <span>Share your donation!</span>
+                  </button>
+                )}
 
-              <div class={"share-donation-link-container " + (this.canNativeShare ? "can-native-share" : "")}>
-                <ul class="share-donation-links">
-                  <li>
-                    <a class="share-donation-link twitter" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Twitter">
-                      <img alt="Twitter" src="/images/twitter.svg" />
-                      <span>Share on Twitter</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="share-donation-link facebook" href={shareFacebookLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup} title="Share to Facebook">
-                      <img alt="Facebook" src="/images/facebook.svg" />
-                      <span>Share on Facebook</span>
-                    </a>
-                  </li>
-                </ul>
+                <div class={"share-donation-link-container " + (this.canNativeShare ? "can-native-share" : "")}>
+                  <ul class="share-donation-links">
+                    <li>
+                      <a
+                        class="share-donation-link button is-twitter is-fullwidth-mobile"
+                        href={shareTwitterLink}
+                        rel="noopener noreferrer"
+                        target="popup"
+                        onClick={openSharePopup}
+                        title="Share to Twitter"
+                      >
+                        <img class="icon" alt="Twitter" src="/images/twitter.svg" />
+                        <span>Share on Twitter</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="share-donation-link button is-facebook is-fullwidth-mobile"
+                        href={shareFacebookLink}
+                        rel="noopener noreferrer"
+                        target="popup"
+                        onClick={openSharePopup}
+                        title="Share to Facebook"
+                      >
+                        <img class="icon" alt="Facebook" src="/images/facebook.svg" />
+                        <span>Share on Facebook</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </Host>

@@ -61,7 +61,7 @@ export class PageActivity {
               </div>
             ))}
             {ordersByDay.length > 0 ? (
-              <button hidden={!this.hasMore} class="submit" onClick={(_e: Event) => this.loadMore()}>
+              <button hidden={!this.hasMore} class="button is-cyan is-fullwidth" onClick={(_e: Event) => this.loadMore()}>
                 Load More
               </button>
             ) : (
