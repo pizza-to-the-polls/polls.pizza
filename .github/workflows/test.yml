@@ -8,6 +8,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+
     steps:
       - uses: actions/checkout@v2
 
@@ -43,8 +47,6 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.DEV_BUCKET }}
           AWS_REGION: "us-west-2"
           SOURCE_DIR: "dist/www"
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
 
       - name: Invalidate cache & wait for completion
         uses: muratiger/invalidate-cloudfront-and-wait-for-completion-action@master
