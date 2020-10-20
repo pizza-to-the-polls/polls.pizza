@@ -179,14 +179,14 @@ $border: $blue;
 }
 
 .stat__link {
-  color: $cyan;
+  color: $teal;
   display: inline-block;
   text-align: center;
   margin-top: 20px;
   font-weight: 600;
 
   &:hover {
-    color: darken($cyan, 10%);
+    color: darken($teal, 10%);
   }
 }
 

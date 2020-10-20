@@ -36,6 +36,10 @@ footer {
   flex-direction: column;
   border-top: 3px solid $white;
 
+  @media ($tablet) {
+    flex-direction: row;
+  }
+
   ul {
     list-style-type: none;
     padding: 0 40px 0 0;
@@ -57,19 +61,20 @@ footer {
 
   .social {
     padding: 0;
-    text-align: center;
+    text-align: left;
+
+    @media ($tablet) {
+      text-align: right;
+    }
 
     li {
       display: inline-block;
       margin: 0 10px;
-    }
-  }
 
-  @media ($tablet) {
-    flex-direction: row;
-
-    .social {
-      text-align: right;
+      .icon {
+        height: 40px;
+        width: 40px;
+      }
     }
   }
 }

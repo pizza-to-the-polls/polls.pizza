@@ -54,6 +54,8 @@ export class PageDonate {
         await fetch(`${process.env.DONATION_FORM}`, { body, mode: "no-cors", method: "POST" });
 
         this.showConfirmation = true;
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
       handler = StripeCheckout.configure({
@@ -64,9 +66,21 @@ export class PageDonate {
       });
     }
 
+    const activateCustomAmountRadio = () => {
+      const form = document.getElementById("donate-form") as HTMLFormElement;
+      if (form) {
+        this.amount = null;
+        form.reset();
+      }
+      document.getElementById("custom-amount-radio")?.setAttribute("checked", "true");
+    };
+
     const getAmount = (): number | null => {
       const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
       const custom = document.getElementById("custom-amount") as HTMLInputElement;
+      if (checked && checked.value) {
+        custom.value = "";
+      }
       const amount = custom.value ? custom.value : checked?.value;
 
       return amount.length > 0 ? Number(amount) : null;
@@ -190,17 +204,21 @@ export class PageDonate {
                         </label>
                       </li>
                       <li>
-                        <label class="radio" htmlFor="custom-amount">
+                        <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
+                          <input type="radio" id="custom-amount-radio" name="amount" value="" />
                           <span class="label-text">Other: $</span>
                           <input class="input" type="text" name="amount" id="custom-amount" autocomplete="off" />
+                          <span class="indicator"></span>
                         </label>
                       </li>
                     </ul>
-                    {this.amount && !isNaN(this.amount) ? (
-                      <button onClick={handleCheckout} class="button is-red is-fullwidth-mobile">
-                        Donate
-                      </button>
-                    ) : null}
+                    <button
+                      onClick={handleCheckout}
+                      class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                      disabled={!this.amount || isNaN(this.amount)}
+                    >
+                      Donate
+                    </button>
                     <p>
                       Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
                       Our activities are 501(c)(3) compliant.
@@ -218,7 +236,7 @@ export class PageDonate {
 
                   {this.canNativeShare && (
                     <button id="share-donation" onClick={nativeShare} class="button is-blue is-fullwidth-mobile">
-                      <img class="icon" alt="Share" src="/images/share.svg" />
+                      <img class="icon" alt="Share" src="/images/icons/share.svg" />
                       <span>Share your donation!</span>
                     </button>
                   )}
@@ -234,7 +252,7 @@ export class PageDonate {
                           onClick={openSharePopup}
                           title="Share to Twitter"
                         >
-                          <img class="icon" alt="Twitter" src="/images/twitter.svg" />
+                          <img class="icon" alt="Twitter" src="/images/icons/twitter.svg" />
                           <span>Share on Twitter</span>
                         </a>
                       </li>
@@ -247,7 +265,7 @@ export class PageDonate {
                           onClick={openSharePopup}
                           title="Share to Facebook"
                         >
-                          <img class="icon" alt="Facebook" src="/images/facebook.svg" />
+                          <img class="icon" alt="Facebook" src="/images/icons/facebook.svg" />
                           <span>Share on Facebook</span>
                         </a>
                       </li>
