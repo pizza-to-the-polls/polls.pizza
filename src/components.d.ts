@@ -18,6 +18,8 @@ export namespace Components {
     }
     interface PageHome {
     }
+    interface PageInstructions {
+    }
     interface PageOnDemand {
     }
     interface PagePartners {
@@ -68,6 +70,12 @@ declare global {
         prototype: HTMLPageHomeElement;
         new (): HTMLPageHomeElement;
     };
+    interface HTMLPageInstructionsElement extends Components.PageInstructions, HTMLStencilElement {
+    }
+    var HTMLPageInstructionsElement: {
+        prototype: HTMLPageInstructionsElement;
+        new (): HTMLPageInstructionsElement;
+    };
     interface HTMLPageOnDemandElement extends Components.PageOnDemand, HTMLStencilElement {
     }
     var HTMLPageOnDemandElement: {
@@ -111,6 +119,7 @@ declare global {
         "page-covid": HTMLPageCovidElement;
         "page-donate": HTMLPageDonateElement;
         "page-home": HTMLPageHomeElement;
+        "page-instructions": HTMLPageInstructionsElement;
         "page-on-demand": HTMLPageOnDemandElement;
         "page-partners": HTMLPagePartnersElement;
         "page-press": HTMLPagePressElement;
@@ -132,6 +141,8 @@ declare namespace LocalJSX {
     }
     interface PageHome {
     }
+    interface PageInstructions {
+    }
     interface PageOnDemand {
     }
     interface PagePartners {
@@ -151,6 +162,7 @@ declare namespace LocalJSX {
         "page-covid": PageCovid;
         "page-donate": PageDonate;
         "page-home": PageHome;
+        "page-instructions": PageInstructions;
         "page-on-demand": PageOnDemand;
         "page-partners": PagePartners;
         "page-press": PagePress;
@@ -169,6 +181,7 @@ declare module "@stencil/core" {
             "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
             "page-home": LocalJSX.PageHome & JSXBase.HTMLAttributes<HTMLPageHomeElement>;
+            "page-instructions": LocalJSX.PageInstructions & JSXBase.HTMLAttributes<HTMLPageInstructionsElement>;
             "page-on-demand": LocalJSX.PageOnDemand & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
