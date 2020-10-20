@@ -69,6 +69,7 @@ export class PageDonate {
     const activateCustomAmountRadio = () => {
       const form = document.getElementById("donate-form") as HTMLFormElement;
       if (form) {
+        this.amount = null;
         form.reset();
       }
       document.getElementById("custom-amount-radio")?.setAttribute("checked", "true");
