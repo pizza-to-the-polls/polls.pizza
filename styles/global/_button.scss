@@ -14,7 +14,9 @@
   text-align: center;
   text-decoration: none;
   font-family: $body-font;
+  font-weight: 400;
   white-space: nowrap;
+  text-decoration: none;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
   strong {

@@ -22,7 +22,18 @@ body {
   line-height: 1.5;
 }
 
-a:not(.button) {
+::-moz-selection {
+  color: $blue;
+  background: rgba($cyan, 0.2); // change as desired
+  text-shadow: none;
+}
+::selection {
+  color: $blue;
+  background: rgba($cyan, 0.2); // change as desired
+  text-shadow: none;
+}
+
+a {
   color: $red;
   text-decoration: underline;
   transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;

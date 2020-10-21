@@ -209,7 +209,7 @@ export class PageDonate {
                       <li>
                         <label class="radio" htmlFor="radio-5">
                           <input type="radio" value="200" id="radio-5" name="amount" />
-                          <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
+                          <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
                           <span class="indicator"></span>
                         </label>
                       </li>

@@ -128,10 +128,13 @@
     font-weight: 700;
   }
 
-  > .label-text,
   > .label-text {
     font-weight: 400;
-    font-size: 18px;
+    font-size: 16px;
+
+    @media ($tablet) {
+      font-size: 18px;
+    }
   }
 }
 
@@ -206,6 +209,14 @@
 
     &:last-of-type {
       margin-right: 0;
+    }
+
+    > .label-text {
+      font-size: 14px;
+
+      @media (min-width: 400px) {
+        font-size: 16px;
+      }
     }
   }
 }

@@ -294,9 +294,12 @@ export class PageDonate {
         this.submitError.contact = "Whoops! Can you add your phone number?";
       }
 
+      // Check for any errors
       if (Object.keys(this.submitError).length > 0) {
         // Disable submit
         this.isDisabled = true;
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
         return false;
       }
 
@@ -332,6 +335,8 @@ export class PageDonate {
         if (errors.address) {
           this.showLocationInput = true;
           this.showConfirmation = false;
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: "smooth" });
           return false;
         }
 
