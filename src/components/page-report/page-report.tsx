@@ -312,12 +312,9 @@ export class PageDonate {
           // Enable submit
           this.isDisabled = false;
 
-          // Check for duplicate
           if (response.duplicate_url) {
             this.showDuplicateReportConfirmation = true;
-          }
-          // Check if truck is on site
-          else if (response.has_truck) {
+          } else if (response.has_truck) {
             this.showFoodTruckOnSiteConfirmation = true;
           }
 
