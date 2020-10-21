@@ -50,6 +50,11 @@ const rest = [
     url: "https://www.pipsnacks.com/",
   },
   {
+    img: "planet-fitness.jpg",
+    name: "Planet Fitness",
+    url: "https://www.planetfitness.com/",
+  },
+  {
     img: "sftp.jpg",
     name: "Somebody Feed the People",
     url: "https://www.somebodyfeedthepeople.org/",
