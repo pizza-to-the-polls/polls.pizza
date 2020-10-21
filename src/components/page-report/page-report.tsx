@@ -1,6 +1,6 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
 
-// import { baseFetch } from "../../lib/base";
+import { baseFetch } from "../../lib/base";
 
 // Shared with pizzabase
 const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
@@ -236,7 +236,9 @@ export class PageDonate {
       this.submitError = {};
 
       Array.prototype.forEach.call(document.querySelectorAll("#form input, #form select"), (el: HTMLInputElement) => {
-        data[el.name] = el.value;
+        if (el) {
+          data[el.name] = el.value;
+        }
       });
 
       // Reset checkboxes and radios in data (values will be set below if present)
@@ -299,11 +301,10 @@ export class PageDonate {
       }
 
       try {
-        throw new Error("hello");
-        // await baseFetch(`/report`, {
-        //   body: JSON.stringify(data),
-        //   method: "POST",
-        // });
+        await baseFetch(`/report`, {
+          body: JSON.stringify(data),
+          method: "POST",
+        });
       } catch (errors) {
         this.submitError = errors;
         // Enable submit
@@ -315,16 +316,18 @@ export class PageDonate {
         return false;
       }
 
-      // Array.prototype.map.call(document.querySelectorAll("#form input"), (el: HTMLInputElement) => {
-      //   el.value = "";
-      // });
-      // this.submitError = {};
-      // this.showServerError = false;
-      // this.showConfirmation = true;
-      // // Enable submit
-      // this.isDisabled = false;
-      // // Scroll to top
-      // window.scrollTo({ top: 0, behavior: "smooth" });
+      Array.prototype.map.call(document.querySelectorAll("#form input, #form select"), (el: HTMLInputElement) => {
+        if (el) {
+          el.value = "";
+        }
+      });
+      this.submitError = {};
+      this.showServerError = false;
+      this.showConfirmation = true;
+      // Enable submit
+      this.isDisabled = false;
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
     };
     return (
       <Host>
