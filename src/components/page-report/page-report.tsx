@@ -15,7 +15,7 @@ export class PageDonate {
   // Show/hide form & confirmations
   @State() private showConfirmation: boolean = false; // *Always* required to hide form, regardless of other show booleans
   @State() private showDuplicateReportConfirmation: boolean = false; // Enable to show duplicate report message
-  @State() private showDuplicateFoodTruckConfirmation: boolean = false; // Enable to show food truck already at location
+  @State() private showFoodTruckOnSiteConfirmation: boolean = false; // Enable to show food truck already at location
   @State() private showServerError: boolean = false; // Enable to show submission error
   // Other vars
   @State() private viewportIsTablet: boolean = false;
@@ -33,7 +33,7 @@ export class PageDonate {
   public componentDidRender() {
     const google: any = (window as any).google;
 
-    if (Build.isBrowser && google) {
+    if (Build.isBrowser && google && document.getElementById("autocomplete")) {
       const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
         types: ["geocode", "establishment"],
         componentRestrictions: { country: "us" },
@@ -140,7 +140,7 @@ export class PageDonate {
       this.showConfirmation = false;
       this.showServerError = false;
       this.showDuplicateReportConfirmation = false;
-      this.showDuplicateFoodTruckConfirmation = false;
+      this.showFoodTruckOnSiteConfirmation = false;
       this.submitError = {};
       this.locationName = "";
       this.reportType = "";
@@ -301,33 +301,49 @@ export class PageDonate {
       }
 
       try {
-        await baseFetch(`/report`, {
+        const response = await baseFetch(`/report`, {
           body: JSON.stringify(data),
           method: "POST",
         });
+
+        if (response) {
+          this.submitError = {};
+          this.showServerError = false;
+          // Enable submit
+          this.isDisabled = false;
+
+          // Check for duplicate
+          if (response.duplicate_url) {
+            this.showDuplicateReportConfirmation = true;
+          }
+          // Check if truck is on site
+          else if (response.has_truck) {
+            this.showFoodTruckOnSiteConfirmation = true;
+          }
+
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          // Show confirmation
+          this.showConfirmation = true;
+        }
       } catch (errors) {
         this.submitError = errors;
         // Enable submit
         this.isDisabled = false;
+
+        // If invalid address, take user back to location input
+        if (errors.address) {
+          this.showLocationInput = true;
+          this.showConfirmation = false;
+          return false;
+        }
+
         // Hide form
         this.showConfirmation = true;
         // Show error
         this.showServerError = true;
         return false;
       }
-
-      Array.prototype.map.call(document.querySelectorAll("#form input, #form select"), (el: HTMLInputElement) => {
-        if (el) {
-          el.value = "";
-        }
-      });
-      this.submitError = {};
-      this.showServerError = false;
-      this.showConfirmation = true;
-      // Enable submit
-      this.isDisabled = false;
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
     };
     return (
       <Host>
@@ -561,7 +577,7 @@ export class PageDonate {
                     </div>
                     {/* Submit */}
                     <button onClick={handleSubmit} class={"button is-teal is-fullwidth-mobile " + (this.isDisabled ? "is-disabled" : "")} type="submit" disabled={this.isDisabled}>
-                      Submit report. Feed democracy.
+                      Submit report. Feed democracy
                     </button>
                     {/* Legal */}
                     <p class="agreement">
@@ -575,7 +591,7 @@ export class PageDonate {
                 </form>
               )}
               {/* Duplicate Report Confirmation */}
-              {!this.showConfirmation && this.showDuplicateReportConfirmation && (
+              {this.showConfirmation && this.showDuplicateReportConfirmation && (
                 <div id="duplicate-report-confirmation">
                   <h2 class="is-display">Good news!</h2>
                   <p>
@@ -592,7 +608,7 @@ export class PageDonate {
                 </div>
               )}
               {/* Duplicate Food Truck at location Confirmation */}
-              {this.showConfirmation && !this.showServerError && this.showDuplicateFoodTruckConfirmation && (
+              {this.showConfirmation && !this.showServerError && this.showFoodTruckOnSiteConfirmation && (
                 <div id="duplicate-report-confirmation">
                   <h2 class="is-display">Good news!</h2>
                   <p>
@@ -609,26 +625,8 @@ export class PageDonate {
                   {/* Insert map here */}
                 </div>
               )}
-              {/* Server Error / Submission Failed Error */}
-              {this.showConfirmation && this.showServerError && (
-                <div id="duplicate-report-confirmation">
-                  <h2 class="is-display">Our servers are a little stuffed right now.</h2>
-                  <p>
-                    <b>Sorry, we couldn’t process your report! Please try submitting again or return to the homepage and resubmit.</b>
-                  </p>
-                  <button class="button is-blue" onClick={handleSubmit}>
-                    Retry submission
-                  </button>
-                  <p>
-                    <a href="/report" class="has-text-teal" onClick={resetForm}>
-                      Return to the beginning
-                    </a>
-                  </p>
-                  {/* Insert map here */}
-                </div>
-              )}
               {/* Watchdog Confirmation */}
-              {this.showConfirmation && !this.showServerError && this.reportWatchdogDistributor === "watchdog" && (
+              {this.showConfirmation && !this.showServerError && !this.showDuplicateReportConfirmation && this.reportWatchdogDistributor === "watchdog" && (
                 <div id="watchdog-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
@@ -654,7 +652,7 @@ export class PageDonate {
                 </div>
               )}
               {/* Distributor Confirmation */}
-              {this.showConfirmation && !this.showServerError && this.reportWatchdogDistributor === "distributor" && (
+              {this.showConfirmation && !this.showServerError && !this.showDuplicateReportConfirmation && this.reportWatchdogDistributor === "distributor" && (
                 <div id="distributor-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
@@ -673,6 +671,24 @@ export class PageDonate {
                   <p>
                     <b>We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate.</b>
                   </p>
+                </div>
+              )}
+              {/* Server Error / Submission Failed Error */}
+              {this.showConfirmation && this.showServerError && (
+                <div id="duplicate-report-confirmation">
+                  <h2 class="is-display">Our servers are a little stuffed right now.</h2>
+                  <p>
+                    <b>Sorry, we couldn’t process your report! Please try submitting again or return to the homepage and resubmit.</b>
+                  </p>
+                  <button class="button is-blue" onClick={handleSubmit}>
+                    Retry submission
+                  </button>
+                  <p>
+                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                      Return to the beginning
+                    </a>
+                  </p>
+                  {/* Insert map here */}
                 </div>
               )}
             </div>
