@@ -48,7 +48,9 @@
     background-color: rgba($border-color, 0.3);
     border-color: rgba($blue, 0.5);
     box-shadow: none;
-    color: $gray3;
+    color: darken($gray3, 20%);
+    -webkit-text-fill-color: darken($gray3, 20%);
+    opacity: 1; /* required on iOS */
   }
 
   &.has-error {
