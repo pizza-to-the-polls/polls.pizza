@@ -64,6 +64,17 @@
     }
   }
 
+  &.is-loading {
+    color: transparent !important;
+    pointer-events: none;
+
+    &::after {
+      @include loader;
+      @include center(1em);
+      position: absolute;
+    }
+  }
+
   // Cycle through button colors
   @each $name, $colors in $button-colors {
     $color: nth($colors, 1);
@@ -99,6 +110,12 @@
         border-color: transparent;
         box-shadow: none;
         opacity: 0.5;
+      }
+
+      &.is-loading {
+        &::after {
+          border-color: transparent transparent $color $color !important;
+        }
       }
 
       svg {

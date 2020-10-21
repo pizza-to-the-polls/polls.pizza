@@ -20,6 +20,7 @@ export class PageDonate {
   // Other vars
   @State() private viewportIsTablet: boolean = false;
   @State() private isDisabled: boolean = false; // Disable form and submit
+  @State() private isLoading: boolean = false; // Submit button loading state
   @State() private submitError: { [key: string]: string } = {};
   @State() private showLocationInput: boolean = true;
   @State() private locationName: string = "";
@@ -193,6 +194,7 @@ export class PageDonate {
         fileInput.value = "";
       }
       this.hasPhoto = false;
+      delete this.submitError.photo;
       if (imagePreview) {
         imagePreview.style.backgroundImage = "";
       }
@@ -225,10 +227,8 @@ export class PageDonate {
         return false;
       }
 
-      // Hide any confirmations
-      this.showConfirmation = false;
-      // Clear server error and try submitting again
-      this.showServerError = false;
+      // Update loading
+      this.isLoading = true;
       // Disable submit
       this.isDisabled = true;
 
@@ -296,6 +296,8 @@ export class PageDonate {
 
       // Check for any errors
       if (Object.keys(this.submitError).length > 0) {
+        // Update loading
+        this.isLoading = false;
         // Disable submit
         this.isDisabled = true;
         // Scroll to top
@@ -312,31 +314,29 @@ export class PageDonate {
         if (response) {
           this.submitError = {};
           this.showServerError = false;
-          // Enable submit
-          this.isDisabled = false;
 
           if (response.duplicate_url) {
             this.showDuplicateReportConfirmation = true;
           } else if (response.has_truck) {
             this.showFoodTruckOnSiteConfirmation = true;
           }
-
-          // Scroll to top
-          window.scrollTo({ top: 0, behavior: "smooth" });
           // Show confirmation
           this.showConfirmation = true;
         }
       } catch (errors) {
         this.submitError = errors;
-        // Enable submit
-        this.isDisabled = false;
 
         // If invalid address, take user back to location input
         if (errors.address) {
           this.showLocationInput = true;
           this.showConfirmation = false;
-          // Scroll to top
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          return false;
+        }
+
+        // If invalid social link, take user back to report step 2
+        if (errors.url) {
+          this.showLocationInput = false;
+          this.showConfirmation = false;
           return false;
         }
 
@@ -344,7 +344,13 @@ export class PageDonate {
         this.showConfirmation = true;
         // Show error
         this.showServerError = true;
-        return false;
+      } finally {
+        // Update loading
+        this.isLoading = false;
+        // Enable submit
+        this.isDisabled = false;
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     };
     return (
@@ -352,246 +358,242 @@ export class PageDonate {
         <div id="report" class="report">
           <div class="container">
             <div class="box">
-              {!this.showConfirmation && (
-                <form id="form" onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)}>
-                  <div id="form-step-1" class={!this.showLocationInput ? "is-hidden" : ""}>
-                    <h1>Report a line</h1>
-                    {/* Location */}
+              <form id="form" onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
+                <div id="form-step-1" hidden={!this.showLocationInput}>
+                  <h1>Report a line</h1>
+                  {/* Location */}
+                  <div class="form-item">
+                    <label class="label" htmlFor="address">
+                      Polling place address <span class="required">*</span>
+                    </label>
+                    <input
+                      class={"input " + ("address" in this.submitError ? "has-error" : "")}
+                      type="text"
+                      id="autocomplete"
+                      name="full_place"
+                      placeholder="ex. St. John's Library"
+                      onInput={handleAddressChange}
+                      readOnly={!this.showLocationInput}
+                      autocomplete="off"
+                    />
+                    <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
+                    <p class="help has-text-red" hidden={!("address" in this.submitError)}>
+                      {this.submitError.address}
+                    </p>
+                  </div>
+                  {/* Hidden address info (needed for submit) */}
+                  <div id="address" class="form-item is-hidden" hidden={true}>
+                    <table>
+                      <tr>
+                        <td class="label">Place</td>
+                        <td colSpan={4}>
+                          <input class="input" id="premise" disabled={true} readOnly />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label">Street address</td>
+                        <td class="slimField">
+                          <input name="street_number" class="input" id="street_number" disabled={true} readOnly />
+                        </td>
+                        <td class="wideField" colSpan={2}>
+                          <input name="route" class="input" id="route" disabled={true} readOnly />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label">City</td>
+                        <td class="wideField" colSpan={3}>
+                          <input name="locality" class="input" id="locality" disabled={true} readOnly />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label">State</td>
+                        <td class="slimField">
+                          <input name="state" class="input" id="administrative_area_level_1" disabled={true} readOnly />
+                        </td>
+                        <td class="label">Zip code</td>
+                        <td class="wideField">
+                          <input name="zip" class="input" id="postal_code" disabled={true} readOnly />
+                        </td>
+                        <input type="hidden" name="address" id="formatted_address" />
+                      </tr>
+                    </table>
+                  </div>
+                  <button onClick={handleLoadStepTwo} class={"button is-teal is-marginless " + (!this.locationName ? "is-disabled" : "")} disabled={!this.locationName}>
+                    Report line
+                  </button>
+                </div>
+                <div id="form-step-2" hidden={this.showLocationInput}>
+                  <p class="is-marginless is-unselectable">
+                    <a href="#" class="has-text-teal" onClick={handleNewLocation}>
+                      Change address
+                    </a>
+                  </p>
+                  <h2 class="is-display">
+                    Tell us a little more about the line at <span class="is-dotted">{this.locationName ? this.locationName : "the location"}</span>
+                  </h2>
+                  {/* Social or Photo */}
+                  <div class="form-item">
+                    <label class="label">
+                      Social media report <span class="is-hidden-tablet">or photo</span> <span class="required">*</span>
+                    </label>
+                    <div class="radio-group social-radio-group">
+                      <label class={"radio " + ("reportType" in this.submitError ? "has-error" : "")} htmlFor="report-type-social" onClick={handleReportTypeChange}>
+                        <input type="radio" value="social" id="report-type-social" name="reportType" checked={this.viewportIsTablet} />
+                        <span class="label-text">Social link</span>
+                        <span class="indicator"></span>
+                      </label>
+                      <div class="radio-group-spacer is-hidden-mobile"></div>
+                      <label class={"radio is-hidden-tablet " + ("reportType" in this.submitError ? "has-error" : "")} htmlFor="report-type-photo" onClick={handleReportTypeChange}>
+                        <input type="radio" value="photo" id="report-type-photo" name="reportType" />
+                        <span class="label-text">Photo</span>
+                        <span class="indicator"></span>
+                      </label>
+                    </div>
+                    <span class="help">We'll make sure there's really a line.</span>
+                    <p class="help has-text-red" hidden={!("reportType" in this.submitError)}>
+                      {this.submitError.reportType}
+                    </p>
+                  </div>
+                  {/* Social Report */}
+                  {this.reportType && this.reportType === "social" && (
                     <div class="form-item">
-                      <label class="label" htmlFor="address">
-                        Polling place address <span class="required">*</span>
+                      <label class="label" htmlFor="social-link">
+                        Link to a report on social media <span class="required">*</span>
                       </label>
                       <input
-                        class={"input " + ("address" in this.submitError ? "has-error" : "")}
-                        type="text"
-                        id="autocomplete"
-                        name="full_place"
-                        placeholder="ex. St. John's Library"
-                        onInput={handleAddressChange}
-                        readOnly={!this.showLocationInput}
+                        class={"input " + ("url" in this.submitError ? "has-error" : "")}
+                        id="social-link"
+                        type="url"
+                        name="url"
+                        placeholder="ex. Link to Twitter, IG, etc."
                         autocomplete="off"
                       />
-                      <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
-                      <p class="help has-text-red" hidden={!("address" in this.submitError)}>
-                        {this.submitError.address}
+                      <p class="help has-text-red" hidden={!("url" in this.submitError)}>
+                        {this.submitError.url}
                       </p>
                     </div>
-                    {/* Hidden address info (needed for submit) */}
-                    <div id="address" class="form-item is-hidden" hidden={true}>
-                      <table>
-                        <tr>
-                          <td class="label">Place</td>
-                          <td colSpan={4}>
-                            <input class="input" id="premise" disabled={true} readOnly />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="label">Street address</td>
-                          <td class="slimField">
-                            <input name="street_number" class="input" id="street_number" disabled={true} readOnly />
-                          </td>
-                          <td class="wideField" colSpan={2}>
-                            <input name="route" class="input" id="route" disabled={true} readOnly />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="label">City</td>
-                          <td class="wideField" colSpan={3}>
-                            <input name="locality" class="input" id="locality" disabled={true} readOnly />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="label">State</td>
-                          <td class="slimField">
-                            <input name="state" class="input" id="administrative_area_level_1" disabled={true} readOnly />
-                          </td>
-                          <td class="label">Zip code</td>
-                          <td class="wideField">
-                            <input name="zip" class="input" id="postal_code" disabled={true} readOnly />
-                          </td>
-                          <input type="hidden" name="address" id="formatted_address" />
-                        </tr>
-                      </table>
-                    </div>
-                    <button onClick={handleLoadStepTwo} class={"button is-teal is-marginless " + (!this.locationName ? "is-disabled" : "")} disabled={!this.locationName}>
-                      Report line
-                    </button>
-                  </div>
-                  <div id="form-step-2" class={this.showLocationInput ? "is-hidden" : ""}>
-                    <p class="is-marginless is-unselectable">
-                      <a href="#" class="has-text-teal" onClick={handleNewLocation}>
-                        Change address
-                      </a>
-                    </p>
-                    <h2 class="is-display">
-                      Tell us a little more about the line at <span class="is-dotted">{this.locationName ? this.locationName : "the location"}</span>
-                    </h2>
-                    {/* Social or Photo */}
+                  )}
+                  {/* Photo Report */}
+                  {this.reportType && this.reportType === "photo" && (
                     <div class="form-item">
-                      <label class="label">
-                        Social media report <span class="is-hidden-tablet">or photo</span> <span class="required">*</span>
-                      </label>
-                      <div class="radio-group social-radio-group">
-                        <label class={"radio " + ("reportType" in this.submitError ? "has-error" : "")} htmlFor="report-type-social" onClick={handleReportTypeChange}>
-                          <input type="radio" value="social" id="report-type-social" name="reportType" checked={this.viewportIsTablet} />
-                          <span class="label-text">Social link</span>
-                          <span class="indicator"></span>
-                        </label>
-                        <div class="radio-group-spacer is-hidden-mobile"></div>
-                        <label
-                          class={"radio is-hidden-tablet " + ("reportType" in this.submitError ? "has-error" : "")}
-                          htmlFor="report-type-photo"
-                          onClick={handleReportTypeChange}
-                        >
-                          <input type="radio" value="photo" id="report-type-photo" name="reportType" />
-                          <span class="label-text">Photo</span>
-                          <span class="indicator"></span>
-                        </label>
-                      </div>
-                      <span class="help">We'll make sure there's really a line.</span>
-                      <p class="help has-text-red" hidden={!("reportType" in this.submitError)}>
-                        {this.submitError.reportType}
-                      </p>
-                    </div>
-                    {/* Social Report */}
-                    {this.reportType && this.reportType === "social" && (
-                      <div class="form-item">
-                        <label class="label" htmlFor="social-link">
-                          Link to a report on social media <span class="required">*</span>
-                        </label>
-                        <input
-                          class={"input " + ("url" in this.submitError ? "has-error" : "")}
-                          id="social-link"
-                          type="url"
-                          name="url"
-                          placeholder="ex. Link to Twitter, IG, etc."
-                          autocomplete="off"
-                        />
-                        <p class="help has-text-red" hidden={!("url" in this.submitError)}>
-                          {this.submitError.url}
-                        </p>
-                      </div>
-                    )}
-                    {/* Photo Report */}
-                    {this.reportType && this.reportType === "photo" && (
-                      <div class="form-item">
-                        <div class="clearfix">
-                          <div id="file-input-button" class={"file " + ("photo" in this.submitError ? "is-red" : "is-blue")}>
-                            <label class="file-label">
-                              <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} />
-                              <span class="file-cta">
-                                <span class="file-label">{this.hasPhoto ? "Change photo" : "Upload photo"}</span>
-                              </span>
-                            </label>
-                          </div>
-                          <div class={"photo-preview-container " + (!this.hasPhoto ? "is-hidden" : "")}>
-                            <div id="photo-preview"></div>
-                            <div class="delete" onClick={removePhoto}></div>
-                          </div>
+                      <div class="clearfix">
+                        <div id="file-input-button" class={"file " + ("photo" in this.submitError ? "is-red" : "is-blue")}>
+                          <label class="file-label">
+                            <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} />
+                            <span class="file-cta">
+                              <span class="file-label">{this.hasPhoto ? "Change photo" : "Upload photo"}</span>
+                            </span>
+                          </label>
                         </div>
-                        <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
-                          {this.submitError.photo}
-                        </p>
+                        <div class="photo-preview-container" hidden={!this.hasPhoto}>
+                          <div id="photo-preview"></div>
+                          <div class="delete" onClick={removePhoto}></div>
+                        </div>
                       </div>
-                    )}
-                    {/* Line Wait */}
-                    <div class="form-item">
-                      <label class="label" htmlFor="wait">
-                        How long is the wait in line? <span class="required">*</span>
-                      </label>
-                      <div class="select is-fullwidth">
-                        <select id="wait" name="wait">
-                          <option value="" disabled selected>
-                            Select your best guess
-                          </option>
-                          <option value="1">Less than an hour&nbsp;&nbsp;🍕</option>
-                          <option value="2">1-2 hours&nbsp;&nbsp;🍕🍕</option>
-                          <option value="3">2-3 hours&nbsp;&nbsp;🍕🍕🍕</option>
-                          <option value="4">3-4 hours&nbsp;&nbsp;🍕🍕🍕🍕</option>
-                          <option value="max">4+ hours&nbsp;&nbsp;🍕🍕🍕🍕🍕</option>
-                        </select>
-                      </div>
-                      <p class="help has-text-red" hidden={!("wait" in this.submitError)}>
-                        {this.submitError.wait}
+                      <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
+                        {this.submitError.photo}
                       </p>
                     </div>
-                    {/* Watchdog or Distributor */}
-                    <div class="form-item">
-                      <label class="label">
-                        Will you receive the order? <span class="required">*</span>
-                      </label>
-                      <div class="radio-group report-watchdog-distributor-radio-group">
-                        <label
-                          class={"radio " + ("reportWatchdogDistributor" in this.submitError ? "has-error" : "")}
-                          htmlFor="report-distributor"
-                          onClick={handleWatchdogDistributorChange}
-                        >
-                          <input type="radio" value="distributor" id="report-distributor" name="reportWatchdogDistributor" />
-                          <span class="label-text">Yes 🍕</span>
-                          <span class="indicator"></span>
-                        </label>
-                        <label
-                          class={"radio " + ("reportWatchdogDistributor" in this.submitError ? "has-error" : "")}
-                          htmlFor="report-watchdog"
-                          onClick={handleWatchdogDistributorChange}
-                        >
-                          <input type="radio" value="watchdog" id="report-watchdog" name="reportWatchdogDistributor" />
-                          <span class="label-text">No</span>
-                          <span class="indicator"></span>
-                        </label>
-                      </div>
-                      <span class="help">Note that we're prioritizing deliveries to places where someone can help make sure the food gets received and handed out safely.</span>
-                      <p class="help has-text-red" hidden={!("reportWatchdogDistributor" in this.submitError)}>
-                        {this.submitError.reportWatchdogDistributor}
-                      </p>
+                  )}
+                  {/* Line Wait */}
+                  <div class="form-item">
+                    <label class="label" htmlFor="wait">
+                      How long is the wait in line? <span class="required">*</span>
+                    </label>
+                    <div class="select is-fullwidth">
+                      <select id="wait" name="wait">
+                        <option value="" disabled selected>
+                          Select your best guess
+                        </option>
+                        <option value="1">Less than an hour&nbsp;&nbsp;🍕</option>
+                        <option value="2">1-2 hours&nbsp;&nbsp;🍕🍕</option>
+                        <option value="3">2-3 hours&nbsp;&nbsp;🍕🍕🍕</option>
+                        <option value="4">3-4 hours&nbsp;&nbsp;🍕🍕🍕🍕</option>
+                        <option value="max">4+ hours&nbsp;&nbsp;🍕🍕🍕🍕🍕</option>
+                      </select>
                     </div>
-                    {/* Delivery legal disclaimer */}
-                    {this.reportWatchdogDistributor && this.reportWatchdogDistributor === "distributor" && (
-                      <div class="form-item">
-                        <label
-                          class={"checkbox is-small is-marginless " + ("distributorDisclaimer" in this.submitError ? "has-error" : "")}
-                          htmlFor="accept-distributor-disclaimer"
-                        >
-                          <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
-                          <span class="label-text">
-                            I have read and agreed to follow the{" "}
-                            <a href="/guidelines" target="_blank">
-                              on-demand delivery guidelines
-                            </a>
-                          </span>
-                          <span class="indicator"></span>
-                        </label>
-                        <p class="help has-text-red" hidden={!("distributorDisclaimer" in this.submitError)}>
-                          {this.submitError.distributorDisclaimer}
-                        </p>
-                      </div>
-                    )}
-                    {/* Phone Number */}
-                    <div class="form-item">
-                      <label class="label" htmlFor="contact">
-                        Your phone number <span class="required">*</span>
-                      </label>
-                      <input class={"input " + ("contact" in this.submitError ? "has-error" : "")} type="tel" name="contact" autocomplete="off" />
-                      <span class="help">So we can let you know when your order's sent!</span>
-                      <p class="help has-text-red" hidden={!("contact" in this.submitError)}>
-                        {this.submitError.contact}
-                      </p>
-                    </div>
-                    {/* Submit */}
-                    <button onClick={handleSubmit} class={"button is-teal is-fullwidth-mobile " + (this.isDisabled ? "is-disabled" : "")} type="submit" disabled={this.isDisabled}>
-                      Submit report. Feed democracy
-                    </button>
-                    {/* Legal */}
-                    <p class="agreement">
-                      <em>
-                        By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and accept our{" "}
-                        <stencil-route-link url="/privacy">Privacy Policy</stencil-route-link>. You can unsubscribe at any time. For texts, message and data rates may apply. Text
-                        HELP for Info. Text STOP to quit.
-                      </em>
+                    <p class="help has-text-red" hidden={!("wait" in this.submitError)}>
+                      {this.submitError.wait}
                     </p>
                   </div>
-                </form>
-              )}
+                  {/* Watchdog or Distributor */}
+                  <div class="form-item">
+                    <label class="label">
+                      Will you receive the order? <span class="required">*</span>
+                    </label>
+                    <div class="radio-group report-watchdog-distributor-radio-group">
+                      <label
+                        class={"radio " + ("reportWatchdogDistributor" in this.submitError ? "has-error" : "")}
+                        htmlFor="report-distributor"
+                        onClick={handleWatchdogDistributorChange}
+                      >
+                        <input type="radio" value="distributor" id="report-distributor" name="reportWatchdogDistributor" />
+                        <span class="label-text">Yes 🍕</span>
+                        <span class="indicator"></span>
+                      </label>
+                      <label
+                        class={"radio " + ("reportWatchdogDistributor" in this.submitError ? "has-error" : "")}
+                        htmlFor="report-watchdog"
+                        onClick={handleWatchdogDistributorChange}
+                      >
+                        <input type="radio" value="watchdog" id="report-watchdog" name="reportWatchdogDistributor" />
+                        <span class="label-text">No</span>
+                        <span class="indicator"></span>
+                      </label>
+                    </div>
+                    <span class="help">Note that we're prioritizing deliveries to places where someone can help make sure the food gets received and handed out safely.</span>
+                    <p class="help has-text-red" hidden={!("reportWatchdogDistributor" in this.submitError)}>
+                      {this.submitError.reportWatchdogDistributor}
+                    </p>
+                  </div>
+                  {/* Delivery legal disclaimer */}
+                  {this.reportWatchdogDistributor && this.reportWatchdogDistributor === "distributor" && (
+                    <div class="form-item">
+                      <label class={"checkbox is-small is-marginless " + ("distributorDisclaimer" in this.submitError ? "has-error" : "")} htmlFor="accept-distributor-disclaimer">
+                        <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
+                        <span class="label-text">
+                          I have read and agreed to follow the{" "}
+                          <a href="/guidelines" target="_blank">
+                            on-demand delivery guidelines
+                          </a>
+                        </span>
+                        <span class="indicator"></span>
+                      </label>
+                      <p class="help has-text-red" hidden={!("distributorDisclaimer" in this.submitError)}>
+                        {this.submitError.distributorDisclaimer}
+                      </p>
+                    </div>
+                  )}
+                  {/* Phone Number */}
+                  <div class="form-item">
+                    <label class="label" htmlFor="contact">
+                      Your phone number <span class="required">*</span>
+                    </label>
+                    <input class={"input " + ("contact" in this.submitError ? "has-error" : "")} type="tel" name="contact" autocomplete="off" />
+                    <span class="help">So we can let you know when your order's sent!</span>
+                    <p class="help has-text-red" hidden={!("contact" in this.submitError)}>
+                      {this.submitError.contact}
+                    </p>
+                  </div>
+                  {/* Submit */}
+                  <button
+                    onClick={handleSubmit}
+                    class={"button is-teal is-fullwidth-mobile " + (this.isDisabled ? "is-disabled " : "") + (this.isLoading ? "is-loading" : "")}
+                    type="submit"
+                    disabled={this.isDisabled}
+                  >
+                    Submit report. Feed democracy
+                  </button>
+                  {/* Legal */}
+                  <p class="agreement">
+                    <em>
+                      By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and accept our{" "}
+                      <stencil-route-link url="/privacy">Privacy Policy</stencil-route-link>. You can unsubscribe at any time. For texts, message and data rates may apply. Text
+                      HELP for Info. Text STOP to quit.
+                    </em>
+                  </p>
+                </div>
+              </form>
               {/* Duplicate Report Confirmation */}
               {this.showConfirmation && this.showDuplicateReportConfirmation && (
                 <div id="duplicate-report-confirmation">
@@ -680,9 +682,9 @@ export class PageDonate {
                 <div id="duplicate-report-confirmation">
                   <h2 class="is-display">Our servers are a little stuffed right now.</h2>
                   <p>
-                    <b>Sorry, we couldn’t process your report! Please try submitting again or return to the homepage and resubmit.</b>
+                    <b>Sorry, we couldn’t process your report! Please try submitting again or return to the beginning and resubmit.</b>
                   </p>
-                  <button class="button is-blue" onClick={handleSubmit}>
+                  <button class={"button is-blue " + (this.isLoading ? "is-loading" : "")} onClick={handleSubmit}>
                     Retry submission
                   </button>
                   <p>
