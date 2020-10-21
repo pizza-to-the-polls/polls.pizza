@@ -149,6 +149,16 @@ export class PageDonate {
       return;
     };
 
+    const resetDonationForm = (e: Event) => {
+        this.showConfirmation = false;
+        this.amount = null;
+        const form = document.getElementById("donate-form") as HTMLFormElement;
+        if (form) {
+            form.reset();
+        }
+        e.preventDefault();
+    }
+
     return (
       <Host>
         <div class="donate">
@@ -271,6 +281,7 @@ export class PageDonate {
                       </li>
                     </ul>
                   </div>
+                  <p><a href="#" class="has-text-teal" onClick={resetDonationForm}>Make another donation</a></p>
                 </div>
               )}
             </div>

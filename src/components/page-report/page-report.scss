@@ -11,16 +11,43 @@ page-report {
     padding-bottom: 40px;
   }
 
-  #address {
-    margin-bottom: 1.5rem;
-    padding: 0;
+  #form {
+    #form-step-2 {
+      h2 {
+        margin-top: 0.5rem;
+      }
 
-    td.label {
-      display: table-cell;
+      #file-input-button {
+        float: left;
+      }
 
-      @media ($under-tablet) {
-        font-size: 14px;
-        line-height: 1.2;
+      .photo-preview-container {
+        display: inline-block;
+        position: relative;
+
+        .delete {
+          position: absolute;
+          top: -0.5rem;
+          right: -0.5rem;
+          z-index: 2;
+          cursor: pointer;
+          background-color: rgba(0, 0, 0, 0.5);
+
+          &:hover {
+            background-color: rgba(0, 0, 0, 0.75);
+          }
+        }
+
+        #photo-preview {
+          opacity: 0.85;
+          margin-left: 1.5rem;
+          width: 40px;
+          height: 40px;
+          border-radius: $radius;
+          background-size: cover;
+          background-position: center;
+          object-fit: cover;
+        }
       }
     }
   }
@@ -31,6 +58,12 @@ page-report {
     stencil-route-link a {
       color: $blue;
       text-decoration: underline;
+    }
+  }
+
+  .social-radio-group {
+    .radio {
+      margin-bottom: 0;
     }
   }
 }

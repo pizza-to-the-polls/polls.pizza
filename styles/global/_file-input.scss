@@ -1,0 +1,122 @@
+// File input
+// Usage:
+// <div class="file">
+//   <label class="file-label">
+//     <input class="file-input" type="file" name="resume">
+//     <span class="file-cta">
+//       <span class="file-icon">
+//         <img src="/images/icons/icon.svg"/>
+//       </span>
+//       <span class="file-label">Choose a file…</span>
+//     </span>
+//   </label>
+// </div>
+
+.file {
+  @include unselectable;
+  align-items: stretch;
+  display: flex;
+  justify-content: flex-start;
+  position: relative;
+
+  // Colors
+  @each $name, $pair in $button-colors {
+    $color: nth($pair, 1);
+    $background: nth($pair, 2);
+    &.is-#{$name} {
+      .file-cta {
+        background-color: $background;
+        border-color: transparent;
+        color: $color;
+      }
+
+      &:hover {
+        .file-cta {
+          background-color: darken($background, 2.5%);
+          border-color: transparent;
+          color: $color;
+        }
+      }
+
+      &:focus {
+        .file-cta {
+          border-color: transparent;
+          box-shadow: 0 0 0.5em rgba($background, 0.25);
+          color: $color;
+        }
+      }
+
+      &:active,
+      &.is-active {
+        .file-cta {
+          background-color: darken($background, 5%);
+          border-color: transparent;
+          color: $color;
+        }
+      }
+    }
+  }
+
+  &.is-fullwidth {
+    .file-label {
+      width: 100%;
+    }
+  }
+}
+
+.file-label {
+  align-items: stretch;
+  display: flex;
+  cursor: pointer;
+  justify-content: flex-start;
+  overflow: hidden;
+  position: relative;
+  border-radius: $radius;
+
+  &:hover {
+    .file-cta {
+      background-color: darken($white, 2.5%);
+      color: $gray3;
+    }
+  }
+
+  &:active {
+    .file-cta {
+      background-color: darken($white, 5%);
+      color: $gray3;
+    }
+  }
+}
+
+.file-input {
+  height: 0.01em;
+  left: 0;
+  outline: none;
+  position: absolute;
+  top: 0;
+  width: 0.01em;
+}
+
+.file-cta {
+  @include base-control;
+  border-color: $border-color;
+  border-radius: $radius;
+  font-size: 16px;
+  padding-left: 1em;
+  padding-right: 1em;
+  white-space: nowrap;
+}
+
+.file-cta {
+  background-color: $white;
+  color: $gray3;
+}
+
+.file-icon {
+  align-items: center;
+  display: flex;
+  height: 1em;
+  justify-content: center;
+  margin-right: 0.5em;
+  width: 1em;
+}
