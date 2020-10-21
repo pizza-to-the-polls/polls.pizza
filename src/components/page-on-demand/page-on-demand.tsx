@@ -32,7 +32,10 @@ export class PageOnDemand {
               poll watchers, and anyone else who’s out and about.
             </p>
             <h3>4. Follow election laws</h3>
-            <p>We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate. Please review our full <a href="/guidelines">election law compliance policies here.</a></p>
+            <p>
+              We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate. Please review our full{" "}
+              <a href="/guidelines">election law compliance policies here.</a>
+            </p>
             <h3>See a line, but can’t stick around? That’s ok!</h3>
             <p>
               If you’re not actually at the crowded polling place, you can still report the line. Just note that we’re prioritizing deliveries to places where someone can help make
