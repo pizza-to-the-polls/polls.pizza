@@ -11,7 +11,7 @@ const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s
   tag: "page-report",
   styleUrl: "page-report.scss",
 })
-export class PageDonate {
+export class PageReport {
   @State() private submitMessage: string = "";
   @State() private submitError: { [key: string]: string } = {};
   @State() private addressHidden: boolean = true;
@@ -84,7 +84,7 @@ export class PageDonate {
       });
 
       data.url = (data.url || "").replace(/<[^>]*>/g, "");
-      if (!data.url.includes("http") && !data.url.match(/\s/)) {
+      if (!data.url.includes("http") && data.url.includes(".") && !data.url.match(/\s/)) {
         data.url = `http://${data.url}`;
       }
       if (!data.url.match(URL_REGEX)) {
