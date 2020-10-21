@@ -242,15 +242,15 @@ export class PageDonate {
       });
 
       // Reset checkboxes and radios in data (values will be set below if present)
-      data["reportType"] = "";
-      data["reportWatchdogDistributor"] = "";
-      data["distributorDisclaimer"] = "";
+      data[`reportType`] = ``;
+      data[`reportWatchdogDistributor`] = ``;
+      data[`distributorDisclaimer`] = ``;
 
       if (!this.reportType || this.reportType.length < 1) {
         this.submitError.reportType = "Whoops! Pick how you'd like to help us verify the line at this location.";
       } else {
         // Inject correct value into data
-        data["reportType"] = this.reportType;
+        data[`reportType`] = this.reportType;
       }
 
       if (this.reportType === "social") {
@@ -278,7 +278,7 @@ export class PageDonate {
         this.submitError.reportWatchdogDistributor = "Whoops! Will you be on location to help distribute the order?";
       } else {
         // Inject correct value into data
-        data["reportWatchdogDistributor"] = this.reportWatchdogDistributor;
+        data[`reportWatchdogDistributor`] = this.reportWatchdogDistributor;
       }
 
       if (this.reportWatchdogDistributor === "distributor") {
@@ -286,7 +286,7 @@ export class PageDonate {
         if (!distributorDisclaimerAgree) {
           this.submitError.distributorDisclaimer = "Whoops! You must read and agree to the guidelines.";
         } else {
-          data["distributorDisclaimer"] = "agree";
+          data[`distributorDisclaimer`] = `agree`;
         }
       }
 
