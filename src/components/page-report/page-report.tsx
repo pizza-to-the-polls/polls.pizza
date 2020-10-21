@@ -1,6 +1,6 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
 
-import { baseFetch } from "../../lib/base";
+// import { baseFetch } from "../../lib/base";
 
 // Shared with pizzabase
 const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
@@ -12,7 +12,12 @@ const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s
   styleUrl: "page-report.scss",
 })
 export class PageDonate {
-  @State() private showConfirmation: boolean = false;
+  // Show/hide form & confirmations
+  @State() private showConfirmation: boolean = false; // *Always* required to hide form, regardless of other show booleans
+  @State() private showDuplicateReportConfirmation: boolean = false; // Enable to show duplicate report message
+  @State() private showDuplicateFoodTruckConfirmation: boolean = false; // Enable to show food truck already at location
+  @State() private showServerError: boolean = false; // Enable to show submission error
+  // Other vars
   @State() private viewportIsTablet: boolean = false;
   @State() private isDisabled: boolean = false; // Disable form and submit
   @State() private submitError: { [key: string]: string } = {};
@@ -133,6 +138,9 @@ export class PageDonate {
 
     const resetForm = () => {
       this.showConfirmation = false;
+      this.showServerError = false;
+      this.showDuplicateReportConfirmation = false;
+      this.showDuplicateFoodTruckConfirmation = false;
       this.submitError = {};
       this.locationName = "";
       this.reportType = "";
@@ -217,6 +225,10 @@ export class PageDonate {
         return false;
       }
 
+      // Hide any confirmations
+      this.showConfirmation = false;
+      // Clear server error and try submitting again
+      this.showServerError = false;
       // Disable submit
       this.isDisabled = true;
 
@@ -287,26 +299,32 @@ export class PageDonate {
       }
 
       try {
-        await baseFetch(`/report`, {
-          body: JSON.stringify(data),
-          method: "POST",
-        });
+        throw new Error("hello");
+        // await baseFetch(`/report`, {
+        //   body: JSON.stringify(data),
+        //   method: "POST",
+        // });
       } catch (errors) {
         this.submitError = errors;
         // Enable submit
         this.isDisabled = false;
+        // Hide form
+        this.showConfirmation = true;
+        // Show error
+        this.showServerError = true;
         return false;
       }
 
-      Array.prototype.map.call(document.querySelectorAll("#form input"), (el: HTMLInputElement) => {
-        el.value = "";
-      });
-      this.submitError = {};
-      this.showConfirmation = true;
-      // Enable submit
-      this.isDisabled = false;
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Array.prototype.map.call(document.querySelectorAll("#form input"), (el: HTMLInputElement) => {
+      //   el.value = "";
+      // });
+      // this.submitError = {};
+      // this.showServerError = false;
+      // this.showConfirmation = true;
+      // // Enable submit
+      // this.isDisabled = false;
+      // // Scroll to top
+      // window.scrollTo({ top: 0, behavior: "smooth" });
     };
     return (
       <Host>
@@ -527,13 +545,12 @@ export class PageDonate {
                         </p>
                       </div>
                     )}
-                    {/* Contact Info */}
+                    {/* Phone Number */}
                     <div class="form-item">
-                      <label class="label" htmlFor="address">
+                      <label class="label" htmlFor="contact">
                         Your phone number <span class="required">*</span>
                       </label>
                       <input class={"input " + ("contact" in this.submitError ? "has-error" : "")} type="tel" name="contact" autocomplete="off" />
-                      <br />
                       <span class="help">So we can let you know when your order's sent!</span>
                       <p class="help has-text-red" hidden={!("contact" in this.submitError)}>
                         {this.submitError.contact}
@@ -554,8 +571,61 @@ export class PageDonate {
                   </div>
                 </form>
               )}
+              {/* Duplicate Report Confirmation */}
+              {!this.showConfirmation && this.showDuplicateReportConfirmation && (
+                <div id="duplicate-report-confirmation">
+                  <h2 class="is-display">Good news!</h2>
+                  <p>
+                    <b>We already have a report for {this.locationName}, but if you'd still like to help out, consider donating to the fund.</b>
+                  </p>
+                  <a href="/donate" class="button is-red">
+                    Donate to feed democracy
+                  </a>
+                  <p>
+                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                      Return to Report a Line
+                    </a>
+                  </p>
+                </div>
+              )}
+              {/* Duplicate Food Truck at location Confirmation */}
+              {this.showConfirmation && !this.showServerError && this.showDuplicateFoodTruckConfirmation && (
+                <div id="duplicate-report-confirmation">
+                  <h2 class="is-display">Good news!</h2>
+                  <p>
+                    <b>We already have a food truck at this location, but if you'd still like to help out, consider donating to the fund.</b>
+                  </p>
+                  <a href="/donate" class="button is-red">
+                    Donate to feed democracy
+                  </a>
+                  <p>
+                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                      Return to Report a Line
+                    </a>
+                  </p>
+                  {/* Insert map here */}
+                </div>
+              )}
+              {/* Server Error / Submission Failed Error */}
+              {this.showConfirmation && this.showServerError && (
+                <div id="duplicate-report-confirmation">
+                  <h2 class="is-display">Our servers are a little stuffed right now.</h2>
+                  <p>
+                    <b>Sorry, we couldn’t process your report! Please try submitting again or return to the homepage and resubmit.</b>
+                  </p>
+                  <button class="button is-blue" onClick={handleSubmit}>
+                    Retry submission
+                  </button>
+                  <p>
+                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                      Return to the beginning
+                    </a>
+                  </p>
+                  {/* Insert map here */}
+                </div>
+              )}
               {/* Watchdog Confirmation */}
-              {this.showConfirmation && this.reportWatchdogDistributor === "watchdog" && (
+              {this.showConfirmation && !this.showServerError && this.reportWatchdogDistributor === "watchdog" && (
                 <div id="watchdog-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
@@ -581,7 +651,7 @@ export class PageDonate {
                 </div>
               )}
               {/* Distributor Confirmation */}
-              {this.showConfirmation && this.reportWatchdogDistributor === "distributor" && (
+              {this.showConfirmation && !this.showServerError && this.reportWatchdogDistributor === "distributor" && (
                 <div id="distributor-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
@@ -593,7 +663,7 @@ export class PageDonate {
                     </li>
                     <li>
                       Be sure to be at the location once confirmed to coordinate pickup. Keep an eye out for a delivery driver. When the food arrives, let people around the polling
-                      site know it’s free for all: poll workers, voters, children, journalists, poll watchers, and anyone else who’s out and about. Be sure to practice social
+                      site know it's free for all: poll workers, voters, children, journalists, poll watchers, and anyone else who's out and about. Be sure to practice social
                       distancing and stay at least 6 feet apart from others.
                     </li>
                   </ul>
