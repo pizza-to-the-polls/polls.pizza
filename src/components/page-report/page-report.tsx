@@ -11,13 +11,16 @@ const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s
   tag: "page-report",
   styleUrl: "page-report.scss",
 })
-export class PageReport {
-  @State() private submitMessage: string = "";
+export class PageDonate {
+  @State() private showConfirmation: boolean = false;
+  @State() private viewportIsTablet: boolean = false;
+  @State() private isDisabled: boolean = false; // Disable form and submit
   @State() private submitError: { [key: string]: string } = {};
   @State() private showLocationInput: boolean = true;
   @State() private locationName: string = "";
   @State() private reportType: string = ""; // 'social' or 'photo'
   @State() private hasPhoto: boolean = false;
+  @State() private reportWatchdogDistributor: string = ""; // 'watchdog' or 'distributor'
 
   public componentWillLoad() {
     document.title = `Report | Pizza to the Polls`;
@@ -78,8 +81,27 @@ export class PageReport {
     }
   }
   public render() {
+    // Determine if mobile or tablet (for Report Type)
+    const checkViewport = () => {
+      const viewport: MediaQueryList = window.matchMedia("(min-width: 769px)");
+      this.viewportIsTablet = viewport.matches;
+      const socialRadio = document.getElementById("report-type-social") as HTMLInputElement;
+      if (this.viewportIsTablet && socialRadio) {
+        socialRadio.checked = true;
+        handleReportTypeChange();
+      }
+    };
+
+    const handleAddressChange = () => {
+      const address = document.getElementById("autocomplete") as HTMLInputElement;
+      if (address && !address.value) {
+        this.locationName = "";
+      }
+    };
+
     const handleLoadStepTwo = (e: Event) => {
       e.preventDefault();
+      checkViewport();
       this.showLocationInput = false;
     };
 
@@ -93,8 +115,8 @@ export class PageReport {
 
     const handleReportTypeChange = () => {
       const reportType = document.querySelector("input[name=reportType]:checked") as HTMLInputElement;
-      // Clear errors
-      this.submitError = {};
+      // Clear error
+      delete this.submitError.reportType;
       // Clear if changing report type
       if (this.reportType !== reportType?.value) {
         clearReportVerification();
@@ -102,19 +124,32 @@ export class PageReport {
       this.reportType = reportType?.value;
     };
 
-    const resetForm = () => {
-      const form = document.getElementById("form") as HTMLFormElement;
-      if (form) {
-        removePhoto();
-        form.reset();
-      }
+    const handleWatchdogDistributorChange = () => {
+      const reportWatchdogDistributor = document.querySelector("input[name=reportWatchdogDistributor]:checked") as HTMLInputElement;
+      // Clear error
+      delete this.submitError.reportWatchdogDistributor;
+      this.reportWatchdogDistributor = reportWatchdogDistributor?.value;
     };
 
-    const handleChangeAddress = (e: Event) => {
-      resetForm();
+    const resetForm = () => {
+      this.showConfirmation = false;
+      this.submitError = {};
       this.locationName = "";
-      this.showLocationInput = true;
       this.reportType = "";
+      this.reportWatchdogDistributor = "";
+      this.isDisabled = false;
+      removePhoto();
+      const form = document.getElementById("form") as HTMLFormElement;
+      if (form) {
+        form.reset();
+        (document.getElementById("wait") as HTMLFormElement).value = "";
+      }
+      checkViewport();
+      this.showLocationInput = true;
+    };
+
+    const handleNewLocation = (e: Event) => {
+      resetForm();
       e.preventDefault();
     };
 
@@ -155,37 +190,65 @@ export class PageReport {
       }
     };
 
+    // Sharing
+    const shareUrl = "https://polls.pizza/";
+    const shareText = "Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines";
+    const shareTwitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}&via=PizzaToThePolls`;
+    const shareFacebookLink = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&title=${encodeURIComponent(shareText)}&description=${encodeURIComponent(
+      shareText,
+    )}&quote=${encodeURIComponent(shareText)}`;
+
+    const openSharePopup = (e: Event) => {
+      e.preventDefault();
+      const linkTarget = e.target as HTMLLinkElement;
+      const targetURL = linkTarget.getAttribute("href");
+      if (!targetURL) {
+        return;
+      }
+      window.open(targetURL, "popup", "width=600,height=600");
+      return;
+    };
+
     const handleSubmit = async (event: Event) => {
       event.preventDefault();
 
+      // Prevent submitting a disabled form
+      if (this.isDisabled) {
+        return false;
+      }
+
+      // Disable submit
+      this.isDisabled = true;
+
       let data: { [key: string]: string } = {};
-      this.submitMessage = "";
       this.submitError = {};
 
-      Array.prototype.forEach.call(document.querySelectorAll("#form input"), (el: HTMLInputElement) => {
+      Array.prototype.forEach.call(document.querySelectorAll("#form input, #form select"), (el: HTMLInputElement) => {
         data[el.name] = el.value;
       });
 
+      // Reset checkboxes and radios in data (values will be set below if present)
+      data["reportType"] = "";
+      data["reportWatchdogDistributor"] = "";
+      data["distributorDisclaimer"] = "";
+
       if (!this.reportType || this.reportType.length < 1) {
-        // Insert photo validation
         this.submitError.reportType = "Whoops! Pick how you'd like to help us verify the line at this location.";
+      } else {
+        // Inject correct value into data
+        data["reportType"] = this.reportType;
       }
 
-      console.log("reportType", this.reportType);
       if (this.reportType === "social") {
         data.url = (data.url || "").replace(/<[^>]*>/g, "");
         if (!data.url.includes("http") && !data.url.match(/\s/)) {
           data.url = `http://${data.url}`;
         }
-        if (data.url.match(URL_REGEX) !== null || !data.url.match(URL_REGEX)) {
+        if (!data.url.match(URL_REGEX)) {
           this.submitError.url = "Whoops! Can you add a link to a report of a long line - with a publicly accessible photo - so we can verify this is on the level?";
         }
       } else if (this.reportType === "photo" && !this.hasPhoto) {
         this.submitError.photo = "Whoops! Can you add a photo of the line to your report so we can verify this is on the level?";
-      }
-
-      if (!(data.contact || "").match(PHONE_REGEX)) {
-        this.submitError.contact = "Whoops! Can you add your phone number?";
       }
 
       if (!data.address) {
@@ -197,7 +260,29 @@ export class PageReport {
         this.submitError.wait = "Whoops! Can you estimate the wait time?";
       }
 
+      if (!this.reportWatchdogDistributor || this.reportWatchdogDistributor.length < 1) {
+        this.submitError.reportWatchdogDistributor = "Whoops! Will you be on location to help distribute the order?";
+      } else {
+        // Inject correct value into data
+        data["reportWatchdogDistributor"] = this.reportWatchdogDistributor;
+      }
+
+      if (this.reportWatchdogDistributor === "distributor") {
+        const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
+        if (!distributorDisclaimerAgree) {
+          this.submitError.distributorDisclaimer = "Whoops! You must read and agree to the guidelines.";
+        } else {
+          data["distributorDisclaimer"] = "agree";
+        }
+      }
+
+      if (!(data.contact || "").match(PHONE_REGEX)) {
+        this.submitError.contact = "Whoops! Can you add your phone number?";
+      }
+
       if (Object.keys(this.submitError).length > 0) {
+        // Disable submit
+        this.isDisabled = true;
         return false;
       }
 
@@ -208,14 +293,18 @@ export class PageReport {
         });
       } catch (errors) {
         this.submitError = errors;
+        // Enable submit
+        this.isDisabled = false;
         return false;
       }
 
       Array.prototype.map.call(document.querySelectorAll("#form input"), (el: HTMLInputElement) => {
         el.value = "";
       });
-      this.submitMessage = "Thanks! We will get right on that";
       this.submitError = {};
+      this.showConfirmation = true;
+      // Enable submit
+      this.isDisabled = false;
       // Scroll to top
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
@@ -224,10 +313,8 @@ export class PageReport {
         <div id="report" class="report">
           <div class="container">
             <div class="box">
-              {this.submitMessage.length > 1 && <p>{this.submitMessage}</p>}
-
-              {(!this.submitMessage || this.submitMessage.length < 1) && (
-                <form id="form">
+              {!this.showConfirmation && (
+                <form id="form" onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)}>
                   <div id="form-step-1" class={!this.showLocationInput ? "is-hidden" : ""}>
                     <h1>Report a line</h1>
                     {/* Location */}
@@ -241,6 +328,9 @@ export class PageReport {
                         id="autocomplete"
                         name="full_place"
                         placeholder="St. John's Library"
+                        onInput={handleAddressChange}
+                        readOnly={!this.showLocationInput}
+                        autocomplete="off"
                       />
                       <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
                       <p class="help has-text-red" hidden={!("address" in this.submitError)}>
@@ -253,62 +343,67 @@ export class PageReport {
                         <tr>
                           <td class="label">Place</td>
                           <td colSpan={4}>
-                            <input class="input" id="premise" disabled={true} />
+                            <input class="input" id="premise" disabled={true} readOnly />
                           </td>
                         </tr>
                         <tr>
                           <td class="label">Street address</td>
                           <td class="slimField">
-                            <input name="street_number" class="input" id="street_number" disabled={true} />
+                            <input name="street_number" class="input" id="street_number" disabled={true} readOnly />
                           </td>
                           <td class="wideField" colSpan={2}>
-                            <input name="route" class="input" id="route" disabled={true} />
+                            <input name="route" class="input" id="route" disabled={true} readOnly />
                           </td>
                         </tr>
                         <tr>
                           <td class="label">City</td>
                           <td class="wideField" colSpan={3}>
-                            <input name="locality" class="input" id="locality" disabled={true} />
+                            <input name="locality" class="input" id="locality" disabled={true} readOnly />
                           </td>
                         </tr>
                         <tr>
                           <td class="label">State</td>
                           <td class="slimField">
-                            <input name="state" class="input" id="administrative_area_level_1" disabled={true} />
+                            <input name="state" class="input" id="administrative_area_level_1" disabled={true} readOnly />
                           </td>
                           <td class="label">Zip code</td>
                           <td class="wideField">
-                            <input name="zip" class="input" id="postal_code" disabled={true} />
+                            <input name="zip" class="input" id="postal_code" disabled={true} readOnly />
                           </td>
                           <input type="hidden" name="address" id="formatted_address" />
                         </tr>
                       </table>
                     </div>
-                    <button onClick={handleLoadStepTwo} class={"button is-teal " + (!this.locationName ? "is-disabled" : "")} disabled={!this.locationName}>
-                      Find line
+                    <button onClick={handleLoadStepTwo} class={"button is-teal is-marginless " + (!this.locationName ? "is-disabled" : "")} disabled={!this.locationName}>
+                      Report line
                     </button>
                   </div>
                   <div id="form-step-2" class={this.showLocationInput ? "is-hidden" : ""}>
-                    {/* Line Verification */}
                     <p class="is-marginless is-unselectable">
-                      <a href="#" class="has-text-teal" onClick={handleChangeAddress}>
+                      <a href="#" class="has-text-teal" onClick={handleNewLocation}>
                         Change address
                       </a>
                     </p>
                     <h2 class="is-display">
                       Tell us a little more about the line at <span class="is-dotted">{this.locationName ? this.locationName : "the location"}</span>
                     </h2>
+                    {/* Social or Photo */}
                     <div class="form-item">
-                      <label class="label" htmlFor="">
-                        Social media report or photo <span class="required">*</span>
+                      <label class="label">
+                        Social media report <span class="is-hidden-tablet">or photo</span> <span class="required">*</span>
                       </label>
                       <div class="radio-group social-radio-group">
-                        <label class="radio" htmlFor="report-type-social" onClick={handleReportTypeChange}>
-                          <input type="radio" value="social" id="report-type-social" name="reportType" />
+                        <label class={"radio " + ("reportType" in this.submitError ? "has-error" : "")} htmlFor="report-type-social" onClick={handleReportTypeChange}>
+                          <input type="radio" value="social" id="report-type-social" name="reportType" checked={this.viewportIsTablet} />
                           <span class="label-text">Social link</span>
                           <span class="indicator"></span>
                         </label>
-                        <label class="radio" htmlFor="report-type-photo" onClick={handleReportTypeChange}>
+                        <div class="radio-group-spacer is-hidden-mobile"></div>
+                        <label
+                          class={"radio is-hidden-tablet " + ("reportType" in this.submitError ? "has-error" : "")}
+                          htmlFor="report-type-photo"
+                          onClick={handleReportTypeChange}
+                        >
                           <input type="radio" value="photo" id="report-type-photo" name="reportType" />
                           <span class="label-text">Photo</span>
                           <span class="indicator"></span>
@@ -328,9 +423,10 @@ export class PageReport {
                         <input
                           class={"input " + ("url" in this.submitError ? "has-error" : "")}
                           id="social-link"
-                          type="text"
+                          type="url"
                           name="url"
                           placeholder="ex. Link to Twitter, IG, etc."
+                          autocomplete="off"
                         />
                         <p class="help has-text-red" hidden={!("url" in this.submitError)}>
                           {this.submitError.url}
@@ -341,7 +437,7 @@ export class PageReport {
                     {this.reportType && this.reportType === "photo" && (
                       <div class="form-item">
                         <div class="clearfix">
-                          <div id="file-input-button" class="file is-blue">
+                          <div id="file-input-button" class={"file " + ("photo" in this.submitError ? "is-red" : "is-blue")}>
                             <label class="file-label">
                               <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} />
                               <span class="file-cta">
@@ -361,22 +457,82 @@ export class PageReport {
                     )}
                     {/* Line Wait */}
                     <div class="form-item">
-                      <label class="label" htmlFor="address">
+                      <label class="label" htmlFor="wait">
                         How long is the wait in line? <span class="required">*</span>
                       </label>
-                      <input class={"input " + ("wait" in this.submitError ? "has-error" : "")} name="wait" />
-                      <br />
-                      <span class="help">Select your best guess</span>
+                      <div class="select is-fullwidth">
+                        <select id="wait" name="wait">
+                          <option value="" disabled selected>
+                            Select your best guess
+                          </option>
+                          <option value="1">Less than an hour&nbsp;&nbsp;🍕</option>
+                          <option value="2">1-2 hours&nbsp;&nbsp;🍕🍕</option>
+                          <option value="3">2-3 hours&nbsp;&nbsp;🍕🍕🍕</option>
+                          <option value="4">3-4 hours&nbsp;&nbsp;🍕🍕🍕🍕</option>
+                          <option value="max">4+ hours&nbsp;&nbsp;🍕🍕🍕🍕🍕</option>
+                        </select>
+                      </div>
                       <p class="help has-text-red" hidden={!("wait" in this.submitError)}>
                         {this.submitError.wait}
                       </p>
                     </div>
+                    {/* Watchdog or Distributor */}
+                    <div class="form-item">
+                      <label class="label">
+                        Will you receive the order? <span class="required">*</span>
+                      </label>
+                      <div class="radio-group report-watchdog-distributor-radio-group">
+                        <label
+                          class={"radio " + ("reportWatchdogDistributor" in this.submitError ? "has-error" : "")}
+                          htmlFor="report-distributor"
+                          onClick={handleWatchdogDistributorChange}
+                        >
+                          <input type="radio" value="distributor" id="report-distributor" name="reportWatchdogDistributor" />
+                          <span class="label-text">Yes 🍕</span>
+                          <span class="indicator"></span>
+                        </label>
+                        <label
+                          class={"radio " + ("reportWatchdogDistributor" in this.submitError ? "has-error" : "")}
+                          htmlFor="report-watchdog"
+                          onClick={handleWatchdogDistributorChange}
+                        >
+                          <input type="radio" value="watchdog" id="report-watchdog" name="reportWatchdogDistributor" />
+                          <span class="label-text">No</span>
+                          <span class="indicator"></span>
+                        </label>
+                      </div>
+                      <span class="help">Note that we're prioritizing deliveries to places where someone can help make sure the food gets received and handed out safely.</span>
+                      <p class="help has-text-red" hidden={!("reportWatchdogDistributor" in this.submitError)}>
+                        {this.submitError.reportWatchdogDistributor}
+                      </p>
+                    </div>
+                    {/* Delivery legal disclaimer */}
+                    {this.reportWatchdogDistributor && this.reportWatchdogDistributor === "distributor" && (
+                      <div class="form-item">
+                        <label
+                          class={"checkbox is-small is-marginless " + ("distributorDisclaimer" in this.submitError ? "has-error" : "")}
+                          htmlFor="accept-distributor-disclaimer"
+                        >
+                          <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
+                          <span class="label-text">
+                            I have read and agreed to follow the{" "}
+                            <a href="/guidelines" target="_blank">
+                              on-demand delivery guidelines
+                            </a>
+                          </span>
+                          <span class="indicator"></span>
+                        </label>
+                        <p class="help has-text-red" hidden={!("distributorDisclaimer" in this.submitError)}>
+                          {this.submitError.distributorDisclaimer}
+                        </p>
+                      </div>
+                    )}
                     {/* Contact Info */}
                     <div class="form-item">
                       <label class="label" htmlFor="address">
                         Your phone number <span class="required">*</span>
                       </label>
-                      <input class={"input " + ("contact" in this.submitError ? "has-error" : "")} type="tel" name="contact" />
+                      <input class={"input " + ("contact" in this.submitError ? "has-error" : "")} type="tel" name="contact" autocomplete="off" />
                       <br />
                       <span class="help">So we can let you know when your order's sent!</span>
                       <p class="help has-text-red" hidden={!("contact" in this.submitError)}>
@@ -384,7 +540,7 @@ export class PageReport {
                       </p>
                     </div>
                     {/* Submit */}
-                    <button onClick={handleSubmit} class="button is-teal is-fullwidth-mobile" type="submit">
+                    <button onClick={handleSubmit} class={"button is-teal is-fullwidth-mobile " + (this.isDisabled ? "is-disabled" : "")} type="submit" disabled={this.isDisabled}>
                       Submit report. Feed democracy.
                     </button>
                     {/* Legal */}
@@ -397,6 +553,54 @@ export class PageReport {
                     </p>
                   </div>
                 </form>
+              )}
+              {/* Watchdog Confirmation */}
+              {this.showConfirmation && this.reportWatchdogDistributor === "watchdog" && (
+                <div id="watchdog-confirmation">
+                  <h2 class="is-display">We're on it!</h2>
+                  <p>
+                    <b>Thank you for your submission! Our delivery team will review your report shortly. In the meantime, please donate to keep the pizza flowing!</b>
+                  </p>
+                  <a href="/donate" class="button is-red">
+                    Donate to feed democracy
+                  </a>
+                  <hr />
+                  <h3>Share us on social media!</h3>
+                  <ul class="social-link-list">
+                    <li>
+                      <a class="twitter" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup}>
+                        <img class="icon" alt="Twitter" src="/images/icons/twitter-blue.svg" />
+                      </a>
+                    </li>
+                    <li>
+                      <a class="facebook" href={shareFacebookLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup}>
+                        <img class="icon" alt="Facebook" src="/images/icons/facebook-blue.svg" />
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+              {/* Distributor Confirmation */}
+              {this.showConfirmation && this.reportWatchdogDistributor === "distributor" && (
+                <div id="distributor-confirmation">
+                  <h2 class="is-display">We're on it!</h2>
+                  <p>
+                    <b>Thank you for your submission! Our delivery team will review your report shortly. We'll reach out to you to verify delivery and pickup.</b>
+                  </p>
+                  <ul class="pizza-list">
+                    <li>
+                      One of our volunteers will reach out to you to verify timing for delivery. Pizzas usually take around 90 minutes to be delivered after an order is placed.
+                    </li>
+                    <li>
+                      Be sure to be at the location once confirmed to coordinate pickup. Keep an eye out for a delivery driver. When the food arrives, let people around the polling
+                      site know it’s free for all: poll workers, voters, children, journalists, poll watchers, and anyone else who’s out and about. Be sure to practice social
+                      distancing and stay at least 6 feet apart from others.
+                    </li>
+                  </ul>
+                  <p>
+                    <b>We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate.</b>
+                  </p>
+                </div>
               )}
             </div>
           </div>

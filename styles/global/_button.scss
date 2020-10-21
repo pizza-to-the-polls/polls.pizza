@@ -6,7 +6,7 @@
   color: $white;
   cursor: pointer;
   justify-content: center;
-  margin: 0 auto;
+  margin: 0 auto 1rem;
   padding-bottom: calc(0.5em - 1px);
   padding-left: 1em;
   padding-right: 1em;
@@ -102,6 +102,14 @@
       svg {
         fill: $color;
       }
+    }
+  }
+
+  &.is-white {
+    border-color: $border-color;
+
+    &:hover {
+      border-color: darken($border-color, 5%);
     }
   }
 

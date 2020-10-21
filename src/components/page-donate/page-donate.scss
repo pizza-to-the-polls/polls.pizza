@@ -114,7 +114,7 @@ page-donate {
       .share-donation-link {
         img,
         span {
-          pointer-events: none;
+          pointer-events: none; // important
         }
 
         img {

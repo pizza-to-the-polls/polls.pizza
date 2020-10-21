@@ -22,7 +22,7 @@ body {
   line-height: 1.5;
 }
 
-a {
+a:not(.button) {
   color: $red;
   text-decoration: underline;
   transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
@@ -104,12 +104,34 @@ form {
 
 p,
 li {
+  margin: 0;
   line-height: 1.5;
+
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+}
+
+b,
+strong {
+  font-weight: 600;
+
+  p & {
+    font-weight: 600;
+  }
 }
 
 img {
   max-width: 100%;
   height: auto;
+}
+
+hr {
+  background-color: $blue;
+  border: none;
+  display: block;
+  height: 2px !important;
+  margin: 1rem 0;
 }
 
 .cf:after,
@@ -209,6 +231,17 @@ section {
   color: $blue;
   display: block;
   padding: 1.5rem;
+
+  &.is-small {
+    padding: 0.5rem;
+    border: 1px solid $border-color;
+    box-shadow: none;
+    font-size: 14px;
+
+    p {
+      font-size: 14px;
+    }
+  }
 }
 
 .cards {
@@ -276,4 +309,55 @@ main .card,
   justify-content: center;
   height: 1.5rem;
   width: 1.5rem;
+}
+
+.social-link-list {
+  padding: 0;
+  text-align: left;
+
+  li {
+    display: inline-block;
+    margin: 0 10px;
+
+    img,
+    span {
+      pointer-events: none; // important
+    }
+
+    .icon {
+      height: 40px;
+      width: 40px;
+    }
+  }
+}
+
+.pizza-list {
+  padding: 0;
+  text-align: left;
+  list-style: none;
+
+  li {
+    position: relative;
+    margin: 1.5rem 0 1.5rem 2rem;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+
+    &:before {
+      content: url('/images/icons/pizza-slice-yellow.svg');
+      position: absolute;
+      top: 0;
+      left: -2rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: inline-block;
+      text-align: center;
+    }
+  }
+
+  ::marker {
+    position: relative;
+    text-align: left;
+  }
 }
