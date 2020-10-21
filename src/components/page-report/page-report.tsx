@@ -361,7 +361,7 @@ export class PageDonate {
                         type="text"
                         id="autocomplete"
                         name="full_place"
-                        placeholder="St. John's Library"
+                        placeholder="ex. St. John's Library"
                         onInput={handleAddressChange}
                         readOnly={!this.showLocationInput}
                         autocomplete="off"
