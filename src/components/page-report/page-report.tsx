@@ -83,8 +83,6 @@ export class PageDonate {
           formatted_address.value = place.formatted_address;
         }
 
-        console.log("place", place);
-
         // Get readable address (either name or the address; remove USA)
         this.locationName = place.formatted_address ? place.formatted_address.replace(/, USA/gi, "") : place.name ? place.name : "the location";
       });
@@ -363,6 +361,11 @@ export class PageDonate {
             // Or if Watchdog, and duplicate report
             // and no truck on site
             this.showDuplicateReportConfirmation = true;
+          } else {
+            // Catch-all confirmation - this should never fire, but just in case I'm going to
+            // show the default showSuccessfulReportConfirmation, and then log in the console.
+            this.showSuccessfulReportConfirmation = true;
+            console.info("Confirmation Catch-all Executed: showSuccessfulReportConfirmation");
           }
 
           // Show confirmation
