@@ -83,9 +83,9 @@ export class PageDonate {
           formatted_address.value = place.formatted_address;
         }
 
+        console.log("place", place);
+
         // Get readable address (either name or the address; remove USA)
-        // this.locationName = place.name ? place.name : place.formatted_address ? place.formatted_address.replace(/, USA/gi, "") : "the location";
-        // Just show address for now
         this.locationName = place.formatted_address ? place.formatted_address.replace(/, USA/gi, "") : place.name ? place.name : "the location";
       });
     }
