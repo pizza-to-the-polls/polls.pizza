@@ -14,18 +14,22 @@ const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s
 export class PageDonate {
   // Show/hide form & confirmations
   @State() private showConfirmation: boolean = false; // *Always* required to hide form, regardless of other show booleans
-  @State() private showDuplicateReportConfirmation: boolean = false; // Enable to show duplicate report message
   @State() private showFoodTruckOnSiteConfirmation: boolean = false; // Enable to show food truck already at location
+  @State() private showDistributorConfirmation: boolean = false; // Enable to show distributor confirmation & guidelines
+  @State() private showWatchdogConfirmation: boolean = false; // Enable to show watchdog confirmation
+  @State() private showDuplicateReportConfirmation: boolean = false; // Enable to show duplicate report message
   @State() private showServerError: boolean = false; // Enable to show submission error
   // Other vars
   @State() private viewportIsTablet: boolean = false;
   @State() private isDisabled: boolean = false; // Disable form and submit
   @State() private isLoading: boolean = false; // Submit button loading state
+  @State() private submitResponse: { [key: string]: string } = {};
   @State() private submitError: { [key: string]: string } = {};
   @State() private showLocationInput: boolean = true;
   @State() private locationName: string = "";
   @State() private reportType: string = ""; // 'social' or 'photo'
   @State() private hasPhoto: boolean = false;
+  @State() private photoUrl: string = "";
   @State() private reportWatchdogDistributor: string = ""; // 'watchdog' or 'distributor'
 
   public componentWillLoad() {
@@ -140,8 +144,11 @@ export class PageDonate {
     const resetForm = () => {
       this.showConfirmation = false;
       this.showServerError = false;
-      this.showDuplicateReportConfirmation = false;
       this.showFoodTruckOnSiteConfirmation = false;
+      this.showDistributorConfirmation = false;
+      this.showWatchdogConfirmation = false;
+      this.showDuplicateReportConfirmation = false;
+      this.submitResponse = {};
       this.submitError = {};
       this.locationName = "";
       this.reportType = "";
@@ -174,17 +181,19 @@ export class PageDonate {
           imagePreview.style.backgroundImage = "";
         }
         this.hasPhoto = false;
+        this.photoUrl = "";
         fileInput.value = "";
         return false;
       }
       this.submitError = {};
       this.hasPhoto = true;
+      this.photoUrl = window.URL.createObjectURL(file);
       // Generate file preview
       if (imagePreview) {
-        imagePreview.style.backgroundImage = "url(" + window.URL.createObjectURL(file) + ")";
+        imagePreview.style.backgroundImage = "url(" + this.photoUrl + ")";
       }
 
-      // Do more things with the photo here (await, etc.)
+      // TODO: Do more things with the photo here (await, etc.)
     };
 
     const removePhoto = () => {
@@ -194,6 +203,7 @@ export class PageDonate {
         fileInput.value = "";
       }
       this.hasPhoto = false;
+      this.photoUrl = "";
       delete this.submitError.photo;
       if (imagePreview) {
         imagePreview.style.backgroundImage = "";
@@ -233,6 +243,7 @@ export class PageDonate {
       this.isDisabled = true;
 
       let data: { [key: string]: string } = {};
+      this.submitResponse = {};
       this.submitError = {};
 
       Array.prototype.forEach.call(document.querySelectorAll("#form input, #form select"), (el: HTMLInputElement) => {
@@ -254,6 +265,7 @@ export class PageDonate {
       }
 
       if (this.reportType === "social") {
+        // Set data.url for report (social)
         data.url = (data.url || "").replace(/<[^>]*>/g, "");
         if (!data.url.includes("http") && !data.url.match(/\s/)) {
           data.url = `http://${data.url}`;
@@ -261,8 +273,14 @@ export class PageDonate {
         if (!data.url.match(URL_REGEX)) {
           this.submitError.url = "Whoops! Can you add a link to a report of a long line - with a publicly accessible photo - so we can verify this is on the level?";
         }
-      } else if (this.reportType === "photo" && !this.hasPhoto) {
-        this.submitError.photo = "Whoops! Can you add a photo of the line to your report so we can verify this is on the level?";
+      } else if (this.reportType === "photo") {
+        if (!this.hasPhoto) {
+          this.submitError.photo = "Whoops! Can you add a photo of the line to your report so we can verify this is on the level?";
+        } else {
+          // TODO: Set the actual image URL here
+          // Set data.url for report (photo)
+          data.url = this.photoUrl;
+        }
       }
 
       if (!data.address) {
@@ -312,14 +330,32 @@ export class PageDonate {
         });
 
         if (response) {
+          this.submitResponse = response;
           this.submitError = {};
           this.showServerError = false;
 
-          if (response.duplicate_url) {
-            this.showDuplicateReportConfirmation = true;
-          } else if (response.has_truck) {
+          // I've repeated some unnecessary (hasTruck) logic here, but mainly to prevent any
+          // confusion and/or errors if the logic is changed in the future.
+          if (this.submitResponse.hasTruck) {
+            // If truck is scheduled/on-site
             this.showFoodTruckOnSiteConfirmation = true;
+          } else if (this.reportWatchdogDistributor === "watchdog" && this.submitResponse.isUnique && !this.submitResponse.hasTruck) {
+            // If Watchdog, unique report, and no truck on site
+            this.showWatchdogConfirmation = true;
+          } else if (this.reportWatchdogDistributor === "distributor" && this.submitResponse.willReceive && !this.submitResponse.hasTruck) {
+            // If Distributor, will receive order (confirmed), and no truck on site
+            this.showDistributorConfirmation = true;
+          } else if (
+            ((this.reportWatchdogDistributor === "distributor" && !this.submitResponse.willReceive) ||
+              (this.reportWatchdogDistributor === "watchdog" && !this.submitResponse.isUnique)) &&
+            !this.submitResponse.hasTruck
+          ) {
+            // If Distributor, but someone else will receive
+            // Or if Watchdog, and duplicate report
+            // and no truck on site
+            this.showDuplicateReportConfirmation = true;
           }
+
           // Show confirmation
           this.showConfirmation = true;
         }
@@ -333,18 +369,20 @@ export class PageDonate {
           return false;
         }
 
-        // If invalid social link, take user back to report step 2
+        // If invalid url, take user back to report step 2
         if (errors.url) {
           this.showLocationInput = false;
           this.showConfirmation = false;
           return false;
         }
 
+        // Otherwise, show server error
         // Hide form
         this.showConfirmation = true;
         // Show error
         this.showServerError = true;
       } finally {
+        // Do these things always
         // Update loading
         this.isLoading = false;
         // Enable submit
@@ -594,29 +632,9 @@ export class PageDonate {
                   </p>
                 </div>
               </form>
-              {/* Duplicate Report Confirmation */}
-              {this.showConfirmation && this.showDuplicateReportConfirmation && (
-                <div id="duplicate-report-confirmation">
-                  <h2 class="is-display">Good news!</h2>
-                  <p>
-                    <b>
-                      We already have a report for <span class="is-dotted">{this.locationName ? this.locationName : "this location"}</span>, but if you'd still like to help out,
-                      consider donating to the fund.
-                    </b>
-                  </p>
-                  <a href="/donate" class="button is-red">
-                    Donate to feed democracy
-                  </a>
-                  <p>
-                    <a href="/report" class="has-text-teal" onClick={resetForm}>
-                      Return to Report a Line
-                    </a>
-                  </p>
-                </div>
-              )}
-              {/* Duplicate Food Truck at location Confirmation */}
+              {/* Food Truck at location Confirmation */}
               {this.showConfirmation && !this.showServerError && this.showFoodTruckOnSiteConfirmation && (
-                <div id="duplicate-report-confirmation">
+                <div id="food-truck-at-location-confirmation">
                   <h2 class="is-display">Good news!</h2>
                   <p>
                     <b>We already have a food truck at this location, but if you'd still like to help out, consider donating to the fund.</b>
@@ -629,11 +647,11 @@ export class PageDonate {
                       Return to Report a Line
                     </a>
                   </p>
-                  {/* Insert map here */}
+                  {/* TODO: Insert map and location link here */}
                 </div>
               )}
               {/* Watchdog Confirmation */}
-              {this.showConfirmation && !this.showServerError && !this.showDuplicateReportConfirmation && this.reportWatchdogDistributor === "watchdog" && (
+              {this.showConfirmation && !this.showServerError && this.showWatchdogConfirmation && (
                 <div id="watchdog-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
@@ -659,7 +677,7 @@ export class PageDonate {
                 </div>
               )}
               {/* Distributor Confirmation */}
-              {this.showConfirmation && !this.showServerError && !this.showDuplicateReportConfirmation && this.reportWatchdogDistributor === "distributor" && (
+              {this.showConfirmation && !this.showServerError && this.showDistributorConfirmation && (
                 <div id="distributor-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
@@ -680,9 +698,29 @@ export class PageDonate {
                   </p>
                 </div>
               )}
-              {/* Server Error / Submission Failed Error */}
-              {this.showConfirmation && this.showServerError && (
+              {/* Duplicate Report Confirmation */}
+              {this.showConfirmation && !this.showServerError && this.showDuplicateReportConfirmation && (
                 <div id="duplicate-report-confirmation">
+                  <h2 class="is-display">Good news!</h2>
+                  <p>
+                    <b>
+                      We already have a report for <span class="is-dotted">{this.locationName ? this.locationName : "this location"}</span>, but if you'd still like to help out,
+                      consider donating to the fund.
+                    </b>
+                  </p>
+                  <a href="/donate" class="button is-red">
+                    Donate to feed democracy
+                  </a>
+                  <p>
+                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                      Return to Report a line
+                    </a>
+                  </p>
+                </div>
+              )}
+              {/* Server Error / Submission Failed for other reason */}
+              {this.showConfirmation && this.showServerError && (
+                <div id="server-error">
                   <h2 class="is-display">Our servers are a little stuffed right now.</h2>
                   <p>
                     <b>Sorry, we couldn’t process your report! Please try submitting again or return to the beginning and resubmit.</b>
@@ -695,7 +733,6 @@ export class PageDonate {
                       Return to the beginning
                     </a>
                   </p>
-                  {/* Insert map here */}
                 </div>
               )}
             </div>
