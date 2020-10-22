@@ -599,7 +599,10 @@ export class PageDonate {
                 <div id="duplicate-report-confirmation">
                   <h2 class="is-display">Good news!</h2>
                   <p>
-                    <b>We already have a report for {this.locationName}, but if you'd still like to help out, consider donating to the fund.</b>
+                    <b>
+                      We already have a report for <span class="is-dotted">{this.locationName ? this.locationName : "this location"}</span>, but if you'd still like to help out,
+                      consider donating to the fund.
+                    </b>
                   </p>
                   <a href="/donate" class="button is-red">
                     Donate to feed democracy
