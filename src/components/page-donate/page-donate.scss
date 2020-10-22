@@ -38,6 +38,11 @@ page-donate {
       margin: 0;
     }
 
+    #custom-amount-text {
+      position: relative;
+      top: 4px;
+    }
+
     #custom-amount {
       display: inline-block;
       border-radius: 0;

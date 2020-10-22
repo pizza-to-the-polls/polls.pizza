@@ -216,7 +216,9 @@ export class PageDonate {
                       <li>
                         <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
                           <input type="radio" id="custom-amount-radio" name="amount" value="" />
-                          <span class="label-text">Other: $</span>
+                          <span class="label-text" id="custom-amount-text">
+                            Other: $
+                          </span>
                           <input class="input" type="text" name="amount" id="custom-amount" autocomplete="off" />
                           <span class="indicator"></span>
                         </label>
