@@ -330,6 +330,11 @@ main .card,
     display: inline-block;
     margin: 0 10px;
 
+    a {
+      display: inline-block;
+      font-weight: 400;
+    }
+
     img,
     span {
       pointer-events: none; // important
