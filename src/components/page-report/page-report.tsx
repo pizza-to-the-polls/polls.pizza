@@ -685,7 +685,7 @@ export class PageDonate {
                     Donate to feed democracy
                   </a>
                   <p>
-                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                    <a href="/report" class="has-text-teal" onClick={handleNewLocation}>
                       Return to Report a Line
                     </a>
                   </p>
@@ -739,7 +739,7 @@ export class PageDonate {
                     Learn more about best practices
                   </a>
                   <p>
-                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                    <a href="/report" class="has-text-teal" onClick={handleNewLocation}>
                       Return to Report a line
                     </a>
                   </p>
@@ -763,7 +763,7 @@ export class PageDonate {
                     Donate to feed democracy
                   </a>
                   <p>
-                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                    <a href="/report" class="has-text-teal" onClick={handleNewLocation}>
                       Return to Report a line
                     </a>
                   </p>
@@ -780,7 +780,7 @@ export class PageDonate {
                     Retry submission
                   </button>
                   <p>
-                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                    <a href="/report" class="has-text-teal" onClick={handleNewLocation}>
                       Return to the beginning
                     </a>
                   </p>
