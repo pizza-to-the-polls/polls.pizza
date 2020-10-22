@@ -25,6 +25,11 @@ const rest = [
     url: "https://www.daybreaker.com/",
   },
   {
+    img: "hattiebs.png",
+    name: "Hattie B's Chicken",
+    url: "https://hattieb.com/",
+  },
+  {
     img: "just.png",
     name: "Just Goods, Inc.",
     url: "https://justwater.com/",
