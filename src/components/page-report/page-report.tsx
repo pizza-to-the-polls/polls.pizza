@@ -16,7 +16,7 @@ export class PageDonate {
   @State() private showConfirmation: boolean = false; // *Always* required to hide form, regardless of other show booleans
   @State() private showFoodTruckOnSiteConfirmation: boolean = false; // Enable to show food truck already at location
   @State() private showDistributorConfirmation: boolean = false; // Enable to show distributor confirmation & guidelines
-  @State() private showWatchdogConfirmation: boolean = false; // Enable to show watchdog confirmation
+  @State() private showSuccessfulReportConfirmation: boolean = false; // Enable to show successful report confirmation
   @State() private showDuplicateReportConfirmation: boolean = false; // Enable to show duplicate report message
   @State() private showServerError: boolean = false; // Enable to show submission error
   // Other vars
@@ -30,7 +30,7 @@ export class PageDonate {
   @State() private reportType: string = ""; // 'social' or 'photo'
   @State() private hasPhoto: boolean = false;
   @State() private photoUrl: string = "";
-  @State() private reportWatchdogDistributor: string = ""; // 'watchdog' or 'distributor'
+  @State() private canDistribute: string = ""; // watchdog or distributor
 
   public componentWillLoad() {
     document.title = `Report | Pizza to the Polls`;
@@ -135,10 +135,10 @@ export class PageDonate {
     };
 
     const handleWatchdogDistributorChange = () => {
-      const reportWatchdogDistributor = document.querySelector("input[name=reportWatchdogDistributor]:checked") as HTMLInputElement;
+      const canDistribute = document.querySelector("input[name=canDistribute]:checked") as HTMLInputElement;
       // Clear error
-      delete this.submitError.reportWatchdogDistributor;
-      this.reportWatchdogDistributor = reportWatchdogDistributor?.value;
+      delete this.submitError.canDistribute;
+      this.canDistribute = canDistribute?.value;
     };
 
     const resetForm = () => {
@@ -146,13 +146,13 @@ export class PageDonate {
       this.showServerError = false;
       this.showFoodTruckOnSiteConfirmation = false;
       this.showDistributorConfirmation = false;
-      this.showWatchdogConfirmation = false;
+      this.showSuccessfulReportConfirmation = false;
       this.showDuplicateReportConfirmation = false;
       this.submitResponse = {};
       this.submitError = {};
       this.locationName = "";
       this.reportType = "";
-      this.reportWatchdogDistributor = "";
+      this.canDistribute = "";
       this.isDisabled = false;
       removePhoto();
       const form = document.getElementById("form") as HTMLFormElement;
@@ -255,7 +255,7 @@ export class PageDonate {
 
       // Reset checkboxes and radios in data (values will be set below if present)
       data[`reportType`] = ``;
-      data[`reportWatchdogDistributor`] = ``;
+      data[`canDistribute`] = ``;
       data[`distributorDisclaimer`] = ``;
 
       if (!this.reportType || this.reportType.length < 1) {
@@ -293,14 +293,14 @@ export class PageDonate {
         this.submitError.waitTime = "Whoops! Can you estimate the wait time?";
       }
 
-      if (!this.reportWatchdogDistributor || this.reportWatchdogDistributor.length < 1) {
-        this.submitError.reportWatchdogDistributor = "Whoops! Will you be on location to help distribute the order?";
+      if (!this.canDistribute || this.canDistribute.length < 1) {
+        this.submitError.canDistribute = "Whoops! Will you be on location to help distribute the order?";
       } else {
         // Inject correct value into data
-        data[`reportWatchdogDistributor`] = this.reportWatchdogDistributor;
+        data[`canDistribute`] = this.canDistribute;
       }
 
-      if (this.reportWatchdogDistributor === "distributor") {
+      if (this.canDistribute === "true") {
         const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
         if (!distributorDisclaimerAgree) {
           this.submitError.distributorDisclaimer = "Whoops! You must read and agree to the guidelines.";
@@ -330,7 +330,7 @@ export class PageDonate {
         contact: data.contact,
         url: data.url,
         waitTime: data.waitTime,
-        canDistribute: this.reportWatchdogDistributor === "distributor",
+        canDistribute: this.canDistribute === "true",
       };
 
       try {
@@ -349,15 +349,14 @@ export class PageDonate {
           if (this.submitResponse.hasTruck) {
             // If truck is scheduled/on-site
             this.showFoodTruckOnSiteConfirmation = true;
-          } else if (this.reportWatchdogDistributor === "watchdog" && this.submitResponse.isUnique && !this.submitResponse.hasTruck) {
+          } else if (this.canDistribute === "false" && this.submitResponse.isUnique && !this.submitResponse.hasTruck) {
             // If Watchdog, unique report, and no truck on site
-            this.showWatchdogConfirmation = true;
-          } else if (this.reportWatchdogDistributor === "distributor" && this.submitResponse.willReceive && !this.submitResponse.hasTruck) {
+            this.showSuccessfulReportConfirmation = true;
+          } else if (this.canDistribute === "true" && this.submitResponse.willReceive && !this.submitResponse.hasTruck) {
             // If Distributor, will receive order (confirmed), and no truck on site
             this.showDistributorConfirmation = true;
           } else if (
-            ((this.reportWatchdogDistributor === "distributor" && !this.submitResponse.willReceive) ||
-              (this.reportWatchdogDistributor === "watchdog" && !this.submitResponse.isUnique)) &&
+            ((this.canDistribute === "true" && !this.submitResponse.willReceive) || (this.canDistribute === "false" && !this.submitResponse.isUnique)) &&
             !this.submitResponse.hasTruck
           ) {
             // If Distributor, but someone else will receive
@@ -570,32 +569,24 @@ export class PageDonate {
                       Will you receive the order? <span class="required">*</span>
                     </label>
                     <div class="radio-group report-watchdog-distributor-radio-group">
-                      <label
-                        class={"radio " + ("reportWatchdogDistributor" in this.submitError ? "has-error" : "")}
-                        htmlFor="report-distributor"
-                        onClick={handleWatchdogDistributorChange}
-                      >
-                        <input type="radio" value="distributor" id="report-distributor" name="reportWatchdogDistributor" />
+                      <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-distributor" onClick={handleWatchdogDistributorChange}>
+                        <input type="radio" value="true" id="report-distributor" name="canDistribute" />
                         <span class="label-text">Yes 🍕</span>
                         <span class="indicator"></span>
                       </label>
-                      <label
-                        class={"radio " + ("reportWatchdogDistributor" in this.submitError ? "has-error" : "")}
-                        htmlFor="report-watchdog"
-                        onClick={handleWatchdogDistributorChange}
-                      >
-                        <input type="radio" value="watchdog" id="report-watchdog" name="reportWatchdogDistributor" />
+                      <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-watchdog" onClick={handleWatchdogDistributorChange}>
+                        <input type="radio" value="false" id="report-watchdog" name="canDistribute" />
                         <span class="label-text">No</span>
                         <span class="indicator"></span>
                       </label>
                     </div>
                     <span class="help">Note that we're prioritizing deliveries to places where someone can help make sure the food gets received and handed out safely.</span>
-                    <p class="help has-text-red" hidden={!("reportWatchdogDistributor" in this.submitError)}>
-                      {this.submitError.reportWatchdogDistributor}
+                    <p class="help has-text-red" hidden={!("canDistribute" in this.submitError)}>
+                      {this.submitError.canDistribute}
                     </p>
                   </div>
                   {/* Delivery legal disclaimer */}
-                  {this.reportWatchdogDistributor && this.reportWatchdogDistributor === "distributor" && (
+                  {this.canDistribute && this.canDistribute === "true" && (
                     <div class="form-item">
                       <label class={"checkbox is-small is-marginless " + ("distributorDisclaimer" in this.submitError ? "has-error" : "")} htmlFor="accept-distributor-disclaimer">
                         <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
@@ -661,7 +652,7 @@ export class PageDonate {
                 </div>
               )}
               {/* Watchdog Confirmation */}
-              {this.showConfirmation && !this.showServerError && this.showWatchdogConfirmation && (
+              {this.showConfirmation && !this.showServerError && this.showSuccessfulReportConfirmation && (
                 <div id="watchdog-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
@@ -735,7 +726,7 @@ export class PageDonate {
                   <p>
                     <b>Sorry, we couldn’t process your report! Please try submitting again or return to the beginning and resubmit.</b>
                   </p>
-                  <button class={"button is-blue " + (this.isLoading ? "is-loading" : "")} onClick={handleSubmit}>
+                  <button class={"button is-blue " + (this.isLoading ? "is-loading is-disabled" : "")} onClick={handleSubmit} disabled={this.isLoading}>
                     Retry submission
                   </button>
                   <p>
