@@ -29,7 +29,7 @@ export class PageInstructions {
               </li>
               <li>
                 And remember: The food is for anyone at the polling place: poll workers, people standing in line, their children, or anyone who just walks by.{" "}
-                <a href="/guidelines">Please see our full guidelines here</a>
+                <a href="/guidelines">Please see our full guidelines here</a>. You can download a <a href="/downloads/guidelines.pdf">printable version here</a>.
               </li>
             </ol>
             <p>
