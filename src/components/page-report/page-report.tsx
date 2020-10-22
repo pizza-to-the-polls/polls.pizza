@@ -20,7 +20,7 @@ export class PageDonate {
   @State() private showDuplicateReportConfirmation: boolean = false; // Enable to show duplicate report message
   @State() private showServerError: boolean = false; // Enable to show submission error
   // Other vars
-  @State() private viewportIsTablet: boolean = false;
+  @State() private viewportIsMobile: boolean = false;
   @State() private isDisabled: boolean = false; // Disable form and submit
   @State() private isLoading: boolean = false; // Submit button loading state
   @State() private submitResponse: { [key: string]: string } = {};
@@ -89,15 +89,11 @@ export class PageDonate {
     }
   }
   public render() {
-    // Determine if mobile or tablet (for Report Type)
+    // Determine if viewport is mobile.
+    // Sets this.viewPortIsMobile: boolean when called.
     const checkViewport = () => {
-      const viewport: MediaQueryList = window.matchMedia("(min-width: 769px)");
-      this.viewportIsTablet = viewport.matches;
-      const socialRadio = document.getElementById("report-type-social") as HTMLInputElement;
-      if (this.viewportIsTablet && socialRadio) {
-        socialRadio.checked = true;
-        handleReportTypeChange();
-      }
+      const viewport: MediaQueryList = window.matchMedia("(max-width: 768px)");
+      this.viewportIsMobile = viewport.matches;
     };
 
     const handleAddressChange = () => {
@@ -110,6 +106,7 @@ export class PageDonate {
     const handleLoadStepTwo = (e: Event) => {
       e.preventDefault();
       checkViewport();
+      handleReportTypeChange();
       this.showLocationInput = false;
     };
 
@@ -157,6 +154,11 @@ export class PageDonate {
       if (form) {
         form.reset();
         (document.getElementById("waitTime") as HTMLFormElement).value = "";
+      }
+      // Reset report type
+      const reportType = document.getElementById("report-type-social") as HTMLInputElement;
+      if (reportType) {
+        reportType.checked = true;
       }
       checkViewport();
       this.showLocationInput = true;
@@ -405,7 +407,7 @@ export class PageDonate {
     };
     return (
       <Host>
-        <div id="report" class="report">
+        <div id="report" class={"report " + (this.viewportIsMobile ? "is-mobile-report" : "")}>
           <div class="container">
             <div class="box">
               <form id="form" onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
@@ -482,13 +484,13 @@ export class PageDonate {
                     Tell us a little more about the line at <span class="is-dotted">{this.locationName ? this.locationName : "the location"}</span>
                   </h2>
                   {/* Social or Photo */}
-                  <div class="form-item">
+                  <div class="form-item is-hidden-tablet">
                     <label class="label">
                       Social media report <span class="is-hidden-tablet">or photo</span> <span class="required">*</span>
                     </label>
                     <div class="radio-group social-radio-group">
                       <label class={"radio " + ("reportType" in this.submitError ? "has-error" : "")} htmlFor="report-type-social" onClick={handleReportTypeChange}>
-                        <input type="radio" value="social" id="report-type-social" name="reportType" checked={this.viewportIsTablet} />
+                        <input type="radio" value="social" id="report-type-social" name="reportType" checked />
                         <span class="label-text">Social link</span>
                         <span class="indicator"></span>
                       </label>
@@ -518,6 +520,7 @@ export class PageDonate {
                         placeholder="ex. Link to Twitter, IG, etc."
                         autocomplete="off"
                       />
+                      <span class="help is-hidden-mobile">We'll make sure there's really a line.</span>
                       <p class="help has-text-red" hidden={!("url" in this.submitError)}>
                         {this.submitError.url}
                       </p>
@@ -525,7 +528,7 @@ export class PageDonate {
                   )}
                   {/* Photo Report */}
                   {this.reportType && this.reportType === "photo" && (
-                    <div class="form-item">
+                    <div class="form-item is-hidden-tablet">
                       <div class="clearfix">
                         <div id="file-input-button" class={"file " + ("photo" in this.submitError ? "is-red" : "is-blue")}>
                           <label class="file-label">
