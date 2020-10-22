@@ -158,7 +158,7 @@ export class PageDonate {
       const form = document.getElementById("form") as HTMLFormElement;
       if (form) {
         form.reset();
-        (document.getElementById("wait") as HTMLFormElement).value = "";
+        (document.getElementById("waitTime") as HTMLFormElement).value = "";
       }
       checkViewport();
       this.showLocationInput = true;
@@ -241,10 +241,11 @@ export class PageDonate {
       this.isLoading = true;
       // Disable submit
       this.isDisabled = true;
-
-      let data: { [key: string]: string } = {};
+      // Clear request data
       this.submitResponse = {};
       this.submitError = {};
+      // Setup request
+      let data: { [key: string]: string } = {};
 
       Array.prototype.forEach.call(document.querySelectorAll("#form input, #form select"), (el: HTMLInputElement) => {
         if (el) {
@@ -288,8 +289,8 @@ export class PageDonate {
         this.submitError.address = "Whoops - we can't read that address";
       }
 
-      if (!data.wait) {
-        this.submitError.wait = "Whoops! Can you estimate the wait time?";
+      if (!data.waitTime) {
+        this.submitError.waitTime = "Whoops! Can you estimate the wait time?";
       }
 
       if (!this.reportWatchdogDistributor || this.reportWatchdogDistributor.length < 1) {
@@ -323,9 +324,18 @@ export class PageDonate {
         return false;
       }
 
+      // Setup request data
+      let requestData = {
+        address: data.address,
+        contact: data.contact,
+        url: data.url,
+        waitTime: data.waitTime,
+        canDistribute: this.reportWatchdogDistributor === "distributor",
+      };
+
       try {
         const response = await baseFetch(`/report`, {
-          body: JSON.stringify(data),
+          body: JSON.stringify(requestData),
           method: "POST",
         });
 
@@ -535,23 +545,23 @@ export class PageDonate {
                   )}
                   {/* Line Wait */}
                   <div class="form-item">
-                    <label class="label" htmlFor="wait">
+                    <label class="label" htmlFor="waitTime">
                       How long is the wait in line? <span class="required">*</span>
                     </label>
                     <div class="select is-fullwidth">
-                      <select id="wait" name="wait">
+                      <select id="waitTime" name="waitTime">
                         <option value="" disabled selected>
                           Select your best guess
                         </option>
-                        <option value="1">Less than an hour&nbsp;&nbsp;🍕</option>
-                        <option value="2">1-2 hours&nbsp;&nbsp;🍕🍕</option>
-                        <option value="3">2-3 hours&nbsp;&nbsp;🍕🍕🍕</option>
-                        <option value="4">3-4 hours&nbsp;&nbsp;🍕🍕🍕🍕</option>
-                        <option value="max">4+ hours&nbsp;&nbsp;🍕🍕🍕🍕🍕</option>
+                        <option value="Less than one hour">Less than an hour&nbsp;&nbsp;🍕</option>
+                        <option value="1-2 hours">1-2 hours&nbsp;&nbsp;🍕🍕</option>
+                        <option value="2-3 hours">2-3 hours&nbsp;&nbsp;🍕🍕🍕</option>
+                        <option value="3-4 hours">3-4 hours&nbsp;&nbsp;🍕🍕🍕🍕</option>
+                        <option value="4+ hours">4+ hours&nbsp;&nbsp;🍕🍕🍕🍕🍕</option>
                       </select>
                     </div>
-                    <p class="help has-text-red" hidden={!("wait" in this.submitError)}>
-                      {this.submitError.wait}
+                    <p class="help has-text-red" hidden={!("waitTime" in this.submitError)}>
+                      {this.submitError.waitTime}
                     </p>
                   </div>
                   {/* Watchdog or Distributor */}
