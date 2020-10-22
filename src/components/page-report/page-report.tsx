@@ -694,6 +694,15 @@ export class PageDonate {
                       distancing and stay at least 6 feet apart from others.
                     </li>
                   </ul>
+                  <a href="/guidelines" class="button is-blue">
+                    Learn more about best practices
+                  </a>
+                  <p>
+                    <a href="/report" class="has-text-teal" onClick={resetForm}>
+                      Return to Report a line
+                    </a>
+                  </p>
+                  <hr />
                   <p>
                     <b>We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate.</b>
                   </p>
