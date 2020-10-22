@@ -365,9 +365,9 @@ export class PageDonate {
             this.showDuplicateReportConfirmation = true;
           } else {
             // Catch-all confirmation - this should never fire, but just in case I'm going to
-            // show the default showSuccessfulReportConfirmation, and then log in the console.
+            // show the default showSuccessfulReportConfirmation, and then log in the console (uncomment to debug).
             this.showSuccessfulReportConfirmation = true;
-            console.info("Confirmation Catch-all Executed: showSuccessfulReportConfirmation");
+            // console.info("Confirmation Catch-all Executed: showSuccessfulReportConfirmation");
           }
 
           // Show confirmation
