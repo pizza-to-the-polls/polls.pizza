@@ -193,7 +193,44 @@ export class PageDonate {
         imagePreview.style.backgroundImage = "url(" + this.photoUrl + ")";
       }
 
-      // TODO: Do more things with the photo here (await, etc.)
+      const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
+      if (addressInput.value && file) {
+        try {
+          await uploadPhoto(file, addressInput.value);
+        } catch (error) {
+          this.submitError.photo = error?.fileName || "Whoops! We could not upload that photo";
+        }
+      }
+    };
+
+    const uploadPhoto = async (file: File, address: string): Promise<void> => {
+      const {
+        id,
+        filePath,
+        presigned: { url, fields },
+      } = await baseFetch("/upload", { method: "POST", body: JSON.stringify({ fileName: file.name, address }) });
+      const formData = new FormData();
+
+      formData.append("ACL", "public-read");
+      formData.append("x-amz-acl", "public-read");
+      formData.append("x-amz-meta-user-id", id);
+      formData.append("Content-Type", file.type);
+
+      Object.entries(fields).forEach(([k, v]: [string, any]) => {
+        formData.append(k, v);
+      });
+
+      formData.append("file", file);
+
+      const awsReq = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        body: formData,
+      });
+      if (awsReq.status > 299) {
+        throw { fileName: "Whoops! That did not work - try again!" };
+      }
+      this.photoUrl = `https://polls.pizza/${filePath}`;
     };
 
     const removePhoto = () => {
@@ -278,8 +315,6 @@ export class PageDonate {
         if (!this.hasPhoto) {
           this.submitError.photo = "Whoops! Can you add a photo of the line to your report so we can verify this is on the level?";
         } else {
-          // TODO: Set the actual image URL here
-          // Set data.url for report (photo)
           data.url = this.photoUrl;
         }
       }
