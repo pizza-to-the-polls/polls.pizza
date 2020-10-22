@@ -686,7 +686,7 @@ export class PageDonate {
                   </a>
                   <p>
                     <a href="/report" class="has-text-teal" onClick={handleNewLocation}>
-                      Return to Report a Line
+                      Return to Report a line
                     </a>
                   </p>
                   {/* TODO: Insert map and location link here */}
