@@ -113,7 +113,7 @@ form {
   padding: 0;
 }
 
-p,
+p:not(.help),
 li {
   margin: 0;
   line-height: 1.5;
@@ -228,7 +228,7 @@ section {
   display: block;
   font-size: 0.8em;
   font-weight: 400;
-  margin-top: 0.25rem;
+  margin: 0.25rem 0 0;
 
   &.has-text-red {
     font-weight: 600;

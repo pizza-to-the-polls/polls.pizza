@@ -23,6 +23,7 @@ export class PageDonate {
   @State() private viewportIsMobile: boolean = false;
   @State() private isDisabled: boolean = false; // Disable form and submit
   @State() private isLoading: boolean = false; // Submit button loading state
+  @State() private photoIsProcessing: boolean = false; // Submit button loading state
   @State() private submitResponse: { [key: string]: string } = {};
   @State() private submitError: { [key: string]: string } = {};
   @State() private showLocationInput: boolean = true;
@@ -148,6 +149,8 @@ export class PageDonate {
       this.locationName = "";
       this.reportType = "";
       this.canDistribute = "";
+      this.photoIsProcessing = false;
+      this.isLoading = false;
       this.isDisabled = false;
       removePhoto();
       const form = document.getElementById("form") as HTMLFormElement;
@@ -170,19 +173,20 @@ export class PageDonate {
     };
 
     const handlePhotoChange = async (e?: Event) => {
-      const fileInput = document.getElementById("photo") as HTMLInputElement;
       const target = e?.target as HTMLInputElement;
       const file = (target.files as FileList)[0];
       const imagePreview = document.getElementById("photo-preview");
 
+      // Prevent submit before photo finishes processing
+      this.photoIsProcessing = true;
+      this.isDisabled = true;
+
       // If no files
       if (!file) {
-        if (imagePreview) {
-          imagePreview.style.backgroundImage = "";
-        }
-        this.hasPhoto = false;
-        this.photoUrl = "";
-        fileInput.value = "";
+        removePhoto();
+        // Reset
+        this.photoIsProcessing = false;
+        this.isDisabled = false;
         return false;
       }
       this.submitError = {};
@@ -198,8 +202,19 @@ export class PageDonate {
         try {
           await uploadPhoto(file, addressInput.value);
         } catch (error) {
+          removePhoto();
           this.submitError.photo = error?.fileName || "Whoops! We could not upload that photo";
+        } finally {
+          // Always reset
+          this.photoIsProcessing = false;
+          this.isDisabled = false;
         }
+      } else {
+        this.submitError.photo = "Whoops! We could not upload that photo. Try adding a link to a social media report instead.";
+        removePhoto();
+        // Always reset
+        this.photoIsProcessing = false;
+        this.isDisabled = false;
       }
     };
 
@@ -245,6 +260,7 @@ export class PageDonate {
       if (imagePreview) {
         imagePreview.style.backgroundImage = "";
       }
+      this.photoIsProcessing = false;
     };
 
     // Sharing
@@ -564,9 +580,12 @@ export class PageDonate {
                   {this.reportType && this.reportType === "photo" && (
                     <div class="form-item is-hidden-tablet">
                       <div class="clearfix">
-                        <div id="file-input-button" class={"file " + ("photo" in this.submitError ? "is-red" : "is-blue")}>
+                        <div
+                          id="file-input-button"
+                          class={"file " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + ("photo" in this.submitError ? "is-red" : "is-blue")}
+                        >
                           <label class="file-label">
-                            <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} />
+                            <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} disabled={this.photoIsProcessing} />
                             <span class="file-cta">
                               <span class="file-label">{this.hasPhoto ? "Change photo" : "Upload photo"}</span>
                             </span>
@@ -577,15 +596,15 @@ export class PageDonate {
                           <div class="delete" onClick={removePhoto}></div>
                         </div>
                       </div>
+                      <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
+                        {this.submitError.photo}
+                      </p>
                       <p class="help">
                         By uploading a photo you grant Pizza to the Polls the right to use and distribute as we see fit - see our{" "}
                         <a href="/privacy" target="_blank">
                           Privacy Policy
                         </a>{" "}
                         for more details
-                      </p>
-                      <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
-                        {this.submitError.photo}
                       </p>
                     </div>
                   )}
@@ -664,11 +683,15 @@ export class PageDonate {
                   {/* Submit */}
                   <button
                     onClick={handleSubmit}
-                    class={"button is-teal is-fullwidth-mobile " + (this.isDisabled ? "is-disabled " : "") + (this.isLoading ? "is-loading" : "")}
+                    class={
+                      "button is-teal is-fullwidth-mobile " +
+                      (this.isDisabled || this.isLoading || this.photoIsProcessing ? "is-disabled " : "") +
+                      (this.isLoading ? "is-loading" : "")
+                    }
                     type="submit"
-                    disabled={this.isDisabled}
+                    disabled={this.isDisabled || this.isLoading || this.photoIsProcessing}
                   >
-                    Submit report. Feed democracy
+                    {this.photoIsProcessing ? "Processing photo..." : "Submit report. Feed democracy"}
                   </button>
                   {/* Legal */}
                   <p class="agreement">
@@ -784,7 +807,11 @@ export class PageDonate {
                   <p>
                     <b>Sorry, we couldn’t process your report! Please try submitting again or return to the beginning and resubmit.</b>
                   </p>
-                  <button class={"button is-blue " + (this.isLoading ? "is-loading is-disabled" : "")} onClick={handleSubmit} disabled={this.isLoading}>
+                  <button
+                    class={"button is-blue " + (this.isDisabled || this.isLoading ? "is-disabled " : "") + (this.isLoading ? "is-loading" : "")}
+                    onClick={handleSubmit}
+                    disabled={this.isLoading}
+                  >
                     Retry submission
                   </button>
                   <p>

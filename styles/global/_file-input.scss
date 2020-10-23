@@ -16,8 +16,81 @@
   @include unselectable;
   align-items: stretch;
   display: flex;
+  margin-bottom: 0.25rem;
   justify-content: flex-start;
   position: relative;
+
+  &.is-fullwidth {
+    .file-label {
+      width: 100%;
+    }
+  }
+
+  &.is-loading .file-cta {
+    color: transparent !important;
+    pointer-events: none;
+
+    &::after {
+      @include loader;
+      @include center(1em);
+      position: absolute;
+    }
+  }
+
+  .file-label {
+    align-items: stretch;
+    display: flex;
+    cursor: pointer;
+    justify-content: flex-start;
+    overflow: hidden;
+    position: relative;
+    border-radius: $radius;
+
+    &:hover {
+      .file-cta {
+        background-color: darken($white, 2.5%);
+        color: $gray3;
+      }
+    }
+
+    &:active {
+      .file-cta {
+        background-color: darken($white, 5%);
+        color: $gray3;
+      }
+    }
+  }
+
+  .file-input {
+    height: 0.01em;
+    left: 0;
+    outline: none;
+    position: absolute;
+    top: 0;
+    width: 0.01em;
+    opacity: 0;
+  }
+
+  .file-cta {
+    @include base-control;
+    color: $gray3;
+    background-color: $white;
+    border-color: $border-color;
+    border-radius: $radius;
+    font-size: 16px;
+    padding-left: 1em;
+    padding-right: 1em;
+    white-space: nowrap;
+  }
+
+  .file-icon {
+    align-items: center;
+    display: flex;
+    height: 1em;
+    justify-content: center;
+    margin-right: 0.5em;
+    width: 1em;
+  }
 
   // Colors
   @each $name, $pair in $button-colors {
@@ -54,69 +127,24 @@
           color: $color;
         }
       }
+
+      &.is-disabled,
+      &[disabled],
+      fieldset[disabled] & {
+        .file-cta {
+          color: $color;
+          background-color: $background;
+          border-color: transparent;
+          box-shadow: none;
+          opacity: 0.5;
+        }
+      }
+
+      &.is-loading .file-cta {
+        &::after {
+          border-color: transparent transparent $color $color !important;
+        }
+      }
     }
   }
-
-  &.is-fullwidth {
-    .file-label {
-      width: 100%;
-    }
-  }
-}
-
-.file-label {
-  align-items: stretch;
-  display: flex;
-  cursor: pointer;
-  justify-content: flex-start;
-  overflow: hidden;
-  position: relative;
-  border-radius: $radius;
-
-  &:hover {
-    .file-cta {
-      background-color: darken($white, 2.5%);
-      color: $gray3;
-    }
-  }
-
-  &:active {
-    .file-cta {
-      background-color: darken($white, 5%);
-      color: $gray3;
-    }
-  }
-}
-
-.file-input {
-  height: 0.01em;
-  left: 0;
-  outline: none;
-  position: absolute;
-  top: 0;
-  width: 0.01em;
-}
-
-.file-cta {
-  @include base-control;
-  border-color: $border-color;
-  border-radius: $radius;
-  font-size: 16px;
-  padding-left: 1em;
-  padding-right: 1em;
-  white-space: nowrap;
-}
-
-.file-cta {
-  background-color: $white;
-  color: $gray3;
-}
-
-.file-icon {
-  align-items: center;
-  display: flex;
-  height: 1em;
-  justify-content: center;
-  margin-right: 0.5em;
-  width: 1em;
 }
