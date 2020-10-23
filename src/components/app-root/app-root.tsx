@@ -41,6 +41,7 @@ export class AppRoot {
               <stencil-route url="/guidelines" component="page-guidelines" />
               <stencil-route url="/activity" component="page-activity" />
               <stencil-route url="/privacy" component="page-privacy" />
+              <stencil-route component="page-home" />
             </stencil-route-switch>
           </stencil-router>
         </main>
