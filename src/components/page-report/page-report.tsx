@@ -750,7 +750,7 @@ export class PageDonate {
                 </div>
               )}
               {/* Distributor Confirmation */}
-              {this.showConfirmation && !this.showServerError && this.showDistributorConfirmation && (
+              {!this.showConfirmation && !this.showServerError && !this.showDistributorConfirmation && (
                 <div id="distributor-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
@@ -769,6 +769,12 @@ export class PageDonate {
                   <a href="/guidelines" class="button is-blue">
                     Learn more about best practices
                   </a>
+                  <p>
+                    Want to help more?{" "}
+                    <a href="/donate" class="has-text-teal">
+                      Donate to the fund!
+                    </a>
+                  </p>
                   <hr />
                   <p>
                     <b>We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate.</b>
