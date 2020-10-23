@@ -401,8 +401,8 @@ export class PageDonate {
           } else {
             // If Reporter CAN distribute
             if (this.canDistribute === "true") {
-              if (this.submitResponse.willReceive) {
-                // If Distributor, and they WILL receive order
+              if (this.submitResponse.willReceive && !this.submitResponse.alreadyOrdered) {
+                // If Distributor, and they WILL receive order, and we haven't already ordered
                 this.showDistributorConfirmation = true;
               } else {
                 // If Distributor, and they will NOT receive order
