@@ -379,33 +379,32 @@ export class PageDonate {
           this.submitError = {};
           this.showServerError = false;
 
-          // I've repeated some unnecessary (hasTruck) logic here, but mainly to prevent any
-          // confusion and/or errors if the logic is changed in the future.
+          // If truck is scheduled/on-site
           if (this.submitResponse.hasTruck) {
-            // If truck is scheduled/on-site
             this.showFoodTruckOnSiteConfirmation = true;
-          } else if (this.canDistribute === "false" && this.submitResponse.isUnique && !this.submitResponse.hasTruck) {
-            // If Watchdog, unique report, and no truck on site
-            this.showSuccessfulReportConfirmation = true;
-          } else if (this.canDistribute === "true" && this.submitResponse.willReceive && !this.submitResponse.hasTruck) {
-            // If Distributor, will receive order (confirmed), and no truck on site
-            this.showDistributorConfirmation = true;
-          } else if (
-            ((this.canDistribute === "true" && !this.submitResponse.willReceive) || (this.canDistribute === "false" && !this.submitResponse.isUnique)) &&
-            !this.submitResponse.hasTruck
-          ) {
-            // If Distributor, but someone else will receive
-            // Or if Watchdog, and duplicate report
-            // and no truck on site
-            this.showDuplicateReportConfirmation = true;
           } else {
-            // Catch-all confirmation - this should never fire, but just in case I'm going to
-            // show the default showSuccessfulReportConfirmation, and then log in the console (uncomment to debug).
-            this.showSuccessfulReportConfirmation = true;
-            // console.info("Confirmation Catch-all Executed: showSuccessfulReportConfirmation");
+            // If Reporter CAN distribute
+            if (this.canDistribute === "true") {
+              if (this.submitResponse.willReceive) {
+                // If Distributor, and they WILL receive order
+                this.showDistributorConfirmation = true;
+              } else {
+                // If Distributor, and they will NOT receive order
+                this.showDuplicateReportConfirmation = true;
+              }
+            } else {
+              // Reporter CANNOT distribute
+              if (this.submitResponse.alreadyOrdered) {
+                // We already have a report
+                this.showDuplicateReportConfirmation = true;
+              } else {
+                // New report, we'll look into it
+                this.showSuccessfulReportConfirmation = true;
+              }
+            }
           }
 
-          // Show confirmation
+          // Show confirmation: *Always* required to hide form
           this.showConfirmation = true;
         }
       } catch (errors) {
