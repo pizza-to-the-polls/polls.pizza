@@ -104,6 +104,13 @@ export class PagePrivacy {
               regard to information collected from you in the past and in the future.
             </p>
 
+            <h3>Uploaded Photos</h3>
+            <p>
+              By uploading a photo to Pizza to the Polls to report a line you grant for the use of the photograph(s) or electronic media in any presentation of any and all kind
+              whatsoever. I understand that I may revoke this authorization at any time by notifying us in writing. The revocation will not affect any actions taken before the
+              receipt of this written notification. Images may be distributed to the general public without identifying you unless prior permission is received.
+            </p>
+
             <h3>How To Contact Us</h3>
             <p>Questions regarding this Privacy Policy should be emailed to morequestions@polls.pizza.</p>
           </div>
