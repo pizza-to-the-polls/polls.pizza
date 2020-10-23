@@ -750,7 +750,7 @@ export class PageDonate {
                 </div>
               )}
               {/* Distributor Confirmation */}
-              {!this.showConfirmation && !this.showServerError && !this.showDistributorConfirmation && (
+              {this.showConfirmation && !this.showServerError && this.showDistributorConfirmation && (
                 <div id="distributor-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
