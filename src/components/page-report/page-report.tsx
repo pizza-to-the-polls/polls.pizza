@@ -578,6 +578,13 @@ export class PageDonate {
                           <div class="delete" onClick={removePhoto}></div>
                         </div>
                       </div>
+                      <p class="help">
+                        By uploading a photo you grant Pizza to the Polls the right to use and distribute as we see fit - see our{" "}
+                        <a href="/privacy" target="_blank">
+                          Privacy Policy
+                        </a>{" "}
+                        for more details
+                      </p>
                       <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
                         {this.submitError.photo}
                       </p>
@@ -668,8 +675,10 @@ export class PageDonate {
                   <p class="agreement">
                     <em>
                       By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and accept our{" "}
-                      <stencil-route-link url="/privacy">Privacy Policy</stencil-route-link>. You can unsubscribe at any time. For texts, message and data rates may apply. Text
-                      HELP for Info. Text STOP to quit.
+                      <a href="/privacy" target="_blank">
+                        Privacy Policy
+                      </a>
+                      . You can unsubscribe at any time. For texts, message and data rates may apply. Text HELP for Info. Text STOP to quit.
                     </em>
                   </p>
                 </div>
