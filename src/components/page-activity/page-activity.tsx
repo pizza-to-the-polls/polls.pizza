@@ -94,9 +94,7 @@ export class PageActivity {
               ) : (
                 <div id="loading-container">
                   <div class="box has-background-blue">
-                    <p class="has-text-centered has-text-white">
-                      Loading...
-                    </p>
+                    <p class="has-text-centered has-text-white">Loading...</p>
                   </div>
                 </div>
               )}
