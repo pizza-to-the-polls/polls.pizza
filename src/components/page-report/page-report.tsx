@@ -130,7 +130,7 @@ export class PageDonate {
       this.reportType = reportType?.value;
     };
 
-    const handleWatchdogDistributorChange = () => {
+    const handleCanDistributeChange = () => {
       const canDistribute = document.querySelector("input[name=canDistribute]:checked") as HTMLInputElement;
       // Clear error
       delete this.submitError.canDistribute;
@@ -352,16 +352,27 @@ export class PageDonate {
       }
 
       if (this.canDistribute === "true") {
+        // Disclaimer
         const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
         if (!distributorDisclaimerAgree) {
           this.submitError.distributorDisclaimer = "Whoops! You must read and agree to the guidelines.";
         } else {
           data[`distributorDisclaimer`] = `agree`;
         }
+
+        // Contact First Name
+        if (!(data.contactFirstName || "")) {
+          this.submitError.contactFirstName = "Whoops! Can you please add your first name?";
+        }
+
+        // Contact Last Name
+        if (!(data.contactLastName || "")) {
+          this.submitError.contactLastName = "Whoops! Can you please add your last name?";
+        }
       }
 
-      if (!(data.contact || "").match(PHONE_REGEX)) {
-        this.submitError.contact = "Whoops! Can you add your phone number?";
+      if (!(data.contactPhone || "").match(PHONE_REGEX)) {
+        this.submitError.contactPhone = "Whoops! Can you add your phone number?";
       }
 
       // Check for any errors
@@ -378,7 +389,9 @@ export class PageDonate {
       // Setup request data
       let requestData = {
         address: data.address,
-        contact: data.contact,
+        contact: data.contactPhone,
+        contactFirstName: data.contactFirstName,
+        contactLastName: data.contactLastName,
         url: data.url,
         waitTime: data.waitTime,
         canDistribute: this.canDistribute === "true",
@@ -635,12 +648,12 @@ export class PageDonate {
                       Will you receive the order? <span class="required">*</span>
                     </label>
                     <div class="radio-group report-watchdog-distributor-radio-group">
-                      <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-distributor" onClick={handleWatchdogDistributorChange}>
+                      <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-distributor" onClick={handleCanDistributeChange}>
                         <input type="radio" value="true" id="report-distributor" name="canDistribute" />
                         <span class="label-text">Yes 🍕</span>
                         <span class="indicator"></span>
                       </label>
-                      <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-watchdog" onClick={handleWatchdogDistributorChange}>
+                      <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-watchdog" onClick={handleCanDistributeChange}>
                         <input type="radio" value="false" id="report-watchdog" name="canDistribute" />
                         <span class="label-text">No</span>
                         <span class="indicator"></span>
@@ -653,31 +666,59 @@ export class PageDonate {
                   </div>
                   {/* Delivery legal disclaimer */}
                   {this.canDistribute && this.canDistribute === "true" && (
-                    <div class="form-item">
-                      <label class={"checkbox is-small is-marginless " + ("distributorDisclaimer" in this.submitError ? "has-error" : "")} htmlFor="accept-distributor-disclaimer">
-                        <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
-                        <span class="label-text">
-                          I have read and agreed to follow the{" "}
-                          <a href="/guidelines" target="_blank">
-                            on-demand delivery guidelines
-                          </a>
-                        </span>
-                        <span class="indicator"></span>
-                      </label>
-                      <p class="help has-text-red" hidden={!("distributorDisclaimer" in this.submitError)}>
-                        {this.submitError.distributorDisclaimer}
-                      </p>
+                    <div>
+                      <div class="form-item">
+                        <label
+                          class={"checkbox is-small is-marginless " + ("distributorDisclaimer" in this.submitError ? "has-error" : "")}
+                          htmlFor="accept-distributor-disclaimer"
+                        >
+                          <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
+                          <span class="label-text">
+                            I have read and agreed to follow the{" "}
+                            <a href="/guidelines" target="_blank">
+                              on-demand delivery guidelines
+                            </a>
+                          </span>
+                          <span class="indicator"></span>
+                        </label>
+                        <p class="help has-text-red" hidden={!("distributorDisclaimer" in this.submitError)}>
+                          {this.submitError.distributorDisclaimer}
+                        </p>
+                      </div>
+                      {/* Contact Name */}
+                      <div class="form-item-group">
+                        <div class="form-item">
+                          <label class="label" htmlFor="contactFirstName">
+                            Your first name <span class="required">*</span>
+                          </label>
+                          <input class={"input " + ("contactFirstName" in this.submitError ? "has-error" : "")} type="text" name="contactFirstName" />
+                          <p class="help">To give to the delivery driver.</p>
+                          <p class="help has-text-red" hidden={!("contactFirstName" in this.submitError)}>
+                            {this.submitError.contactFirstName}
+                          </p>
+                        </div>
+                        <div class="form-item">
+                          <label class="label" htmlFor="contactLastName">
+                            Your last name <span class="required">*</span>
+                          </label>
+                          <input class={"input " + ("contactLastName" in this.submitError ? "has-error" : "")} type="text" name="contactLastName" />
+                          <p class="help is-hidden-tablet">To give to the delivery driver.</p>
+                          <p class="help has-text-red" hidden={!("contactLastName" in this.submitError)}>
+                            {this.submitError.contactLastName}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   )}
                   {/* Phone Number */}
                   <div class="form-item">
-                    <label class="label" htmlFor="contact">
+                    <label class="label" htmlFor="contactPhone">
                       Your phone number <span class="required">*</span>
                     </label>
-                    <input class={"input " + ("contact" in this.submitError ? "has-error" : "")} type="tel" name="contact" autocomplete="off" />
+                    <input class={"input " + ("contactPhone" in this.submitError ? "has-error" : "")} type="tel" name="contactPhone" />
                     <span class="help">So we can let you know when your order's sent!</span>
-                    <p class="help has-text-red" hidden={!("contact" in this.submitError)}>
-                      {this.submitError.contact}
+                    <p class="help has-text-red" hidden={!("contactPhone" in this.submitError)}>
+                      {this.submitError.contactPhone}
                     </p>
                   </div>
                   {/* Submit */}
