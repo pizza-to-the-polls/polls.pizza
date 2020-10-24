@@ -33,7 +33,7 @@ page-activity {
       font-size: 16px;
 
       &:first-of-type {
-        margin-top: 0.5rem;
+        margin-top: 1rem;
       }
 
       // Nested list items
@@ -45,11 +45,6 @@ page-activity {
         li {
           margin: 0.5rem 0;
           font-size: 14px;
-
-          &:last-of-type {
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid $border-color;
-          }
         }
       }
     }
