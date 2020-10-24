@@ -27,10 +27,10 @@ export class PageDonate {
     const StripeCheckout: any = (window as any).StripeCheckout;
 
     const scrollPageToTop = () => {
-        if (window) {
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+      if (window) {
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     };
     // Scroll page to top on render
     scrollPageToTop();
