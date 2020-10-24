@@ -193,6 +193,14 @@ hr {
   border-bottom: 1px $blue dotted;
 }
 
+.has-text-centered {
+  text-align: center !important;
+}
+
+.has-no-word-break {
+  white-space: nowrap;
+}
+
 .delete {
   @include delete;
 }
@@ -353,7 +361,7 @@ main .card,
   text-align: left;
   list-style: none;
 
-  li {
+  > li {
     position: relative;
     margin: 1.5rem 0 1.5rem 2rem;
 

@@ -90,6 +90,15 @@ export class PageDonate {
     }
   }
   public render() {
+    const scrollPageToTop = () => {
+      if (window) {
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
+    // Scroll page to top on render
+    scrollPageToTop();
+
     // Determine if viewport is mobile.
     // Sets this.viewPortIsMobile: boolean when called.
     const checkViewport = () => {
@@ -164,6 +173,7 @@ export class PageDonate {
         reportType.checked = true;
       }
       checkViewport();
+      scrollPageToTop();
       this.showLocationInput = true;
     };
 
@@ -382,7 +392,7 @@ export class PageDonate {
         // Disable submit
         this.isDisabled = true;
         // Scroll to top
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollPageToTop();
         return false;
       }
 
@@ -465,7 +475,7 @@ export class PageDonate {
         // Enable submit
         this.isDisabled = false;
         // Scroll to top
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollPageToTop();
       }
     };
     return (
@@ -702,7 +712,7 @@ export class PageDonate {
                             Your last name <span class="required">*</span>
                           </label>
                           <input class={"input " + ("contactLastName" in this.submitError ? "has-error" : "")} type="text" name="contactLastName" />
-                          <p class="help is-hidden-tablet">To give to the delivery driver.</p>
+                          <p class="help">To give to the delivery driver.</p>
                           <p class="help has-text-red" hidden={!("contactLastName" in this.submitError)}>
                             {this.submitError.contactLastName}
                           </p>
