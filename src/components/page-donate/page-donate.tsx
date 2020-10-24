@@ -26,6 +26,15 @@ export class PageDonate {
     let handler: any = null;
     const StripeCheckout: any = (window as any).StripeCheckout;
 
+    const scrollPageToTop = () => {
+        if (window) {
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
+    // Scroll page to top on render
+    scrollPageToTop();
+
     // Get referral from URL
     const urlParams = new URLSearchParams(window.location.search);
     const referral = urlParams.get("referral") || "";
@@ -54,8 +63,7 @@ export class PageDonate {
         await fetch(`${process.env.DONATION_FORM}`, { body, mode: "no-cors", method: "POST" });
 
         this.showConfirmation = true;
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollPageToTop();
       };
 
       handler = StripeCheckout.configure({
