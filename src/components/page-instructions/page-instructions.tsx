@@ -16,13 +16,20 @@ export class PageInstructions {
           <div class="container">
             <h1>Delivery Instructions</h1>
             <p>
-              Hello there! You’re probably here because you received an order from Pizza to the Polls. We’re a nonprofit that orders food to be delivered to crowded polling places
-              and we’re hoping you can help us out!
+              Hello there! You’re probably here because you received an order from Pizza to the Polls. We’re a nonprofit that orders food to be delivered to busy polling places and
+              we’re hoping you can help us out! We’d really appreciate it if you could cut the pizzas into small slices, and if you’re able to bring plates and/or napkins that’s a
+              huge help too.
             </p>
             <h2>Here’s how it works:</h2>
             <ol>
-              <li>Whenever possible, we include the phone number of a person at the location who can receive the order and help you set it out.</li>
-              <li>If there’s no name provided, we recommend finding a poll worker and asking for a table.</li>
+              <li>
+                Whenever possible, we include the name and phone number of a person at the location who can receive the order and help you set it out. Otherwise, you’ll see Scott
+                Duncombe as the customer and a 971 phone number.
+              </li>
+              <li>
+                If the only name on the order is Scott that means we don’t have anyone who is physically at the site. In these cases, we recommend finding a poll worker and asking
+                for a table.
+              </li>
               <li>
                 If you want, you can print out these signs to tape them up around the food: <a href="/downloads/color-sign.pdf">color PDF</a> |{" "}
                 <a href="/downloads/bw.pdf">black and white PDF</a>
