@@ -7,6 +7,13 @@ const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.
 // const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
 
+const scrollPageToTop = () => {
+  if (window) {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+};
+
 @Component({
   tag: "page-report",
   styleUrl: "page-report.scss",
@@ -36,6 +43,11 @@ export class PageDonate {
   public componentWillLoad() {
     document.title = `Report | Pizza to the Polls`;
   }
+
+  public componentDidLoad() {
+    scrollPageToTop();
+  }
+
   public componentDidRender() {
     const google: any = (window as any).google;
 
@@ -90,15 +102,6 @@ export class PageDonate {
     }
   }
   public render() {
-    const scrollPageToTop = () => {
-      if (window) {
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    };
-    // Scroll page to top on render
-    scrollPageToTop();
-
     // Determine if viewport is mobile.
     // Sets this.viewPortIsMobile: boolean when called.
     const checkViewport = () => {

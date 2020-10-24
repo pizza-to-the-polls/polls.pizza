@@ -9,6 +9,13 @@ interface Token {
   amount: number;
 }
 
+const scrollPageToTop = () => {
+  if (window) {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+};
+
 @Component({
   tag: "page-donate",
   styleUrl: "page-donate.scss",
@@ -22,18 +29,13 @@ export class PageDonate {
     document.title = `Donate | Pizza to the Polls`;
   }
 
+  public componentDidLoad() {
+    scrollPageToTop();
+  }
+
   public render() {
     let handler: any = null;
     const StripeCheckout: any = (window as any).StripeCheckout;
-
-    const scrollPageToTop = () => {
-      if (window) {
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    };
-    // Scroll page to top on render
-    scrollPageToTop();
 
     // Get referral from URL
     const urlParams = new URLSearchParams(window.location.search);
