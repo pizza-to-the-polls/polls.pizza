@@ -45,7 +45,7 @@ export class PageActivity {
               </a>
               <h1>Recent Deliveries</h1>
               <a
-                class={"refresh-button button is-red is-fullwidth is-hidden-tablet " + (this.isRefreshing ? "is-loading is-disabled " : "")}
+                class={"refresh-button button is-teal is-fullwidth is-hidden-tablet " + (this.isRefreshing ? "is-loading is-disabled " : "")}
                 onClick={(_e: Event) => this.refreshRecent()}
               >
                 Refresh
@@ -93,7 +93,11 @@ export class PageActivity {
                 </button>
               ) : (
                 <div id="loading-container">
-                  <button class="button is-teal is-fullwidth">Loading...</button>
+                  <div class="box has-background-blue">
+                    <p class="has-text-centered has-text-white">
+                      Loading...
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
