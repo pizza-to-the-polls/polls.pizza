@@ -39,7 +39,7 @@ jobs:
           PIZZA_BASE_DOMAIN: https://base-next.polls.pizza
           DONATION_FORM: https://docs.google.com/forms/d/e/1FAIpQLSeCUE98I2bfLxBK4cVIRy2MduJzq3UaJ44TQ7iZ3Nzc2V5FYg/formResponse
 
-      - name: Deploy to next.polls.pizza
+      - name: Deploy to staging
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read --follow-symlinks --delete
@@ -54,4 +54,3 @@ jobs:
           AWS_REGION: "us-east-1"
           DISTRIBUTION_ID: ${{ secrets.STAGE_DISTRIBUTION_ID }}
           PATHS: "/*"
-          

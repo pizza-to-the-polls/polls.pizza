@@ -6,6 +6,7 @@
   border-radius: $radius;
   box-shadow: none;
   display: inline-flex;
+  font-family: $body-font;
   font-size: 16px;
   height: 2.5em;
   justify-content: flex-start;
@@ -44,6 +45,8 @@
 
   &.is-disabled,
   &[disabled],
+  &[readonly],
+  &[readOnly],
   fieldset[disabled] & {
     background-color: rgba($border-color, 0.3);
     border-color: rgba($blue, 0.5);
@@ -51,6 +54,7 @@
     color: darken($gray3, 20%);
     -webkit-text-fill-color: darken($gray3, 20%);
     opacity: 1; /* required on iOS */
+    cursor: not-allowed;
   }
 
   &.has-error {
@@ -110,6 +114,7 @@
   position: relative;
   vertical-align: top;
   width: 20px;
+  transition: background-color 0.2s ease-in-out;
 
   &::before,
   &::after {
@@ -149,4 +154,54 @@
   position: absolute;
   right: 0;
   top: 0;
+}
+
+@mixin arrow($color: transparent) {
+  border: 3px solid $color;
+  border-radius: 2px;
+  border-right: 0;
+  border-top: 0;
+  content: " ";
+  display: block;
+  height: 0.625em;
+  margin-top: -0.4375em;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  width: 0.625em;
+}
+
+@mixin loader {
+  animation: spinAround 500ms infinite linear;
+  border: 2px solid $gray1;
+  border-radius: $radius-rounded;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  content: "";
+  display: block;
+  height: 1em;
+  position: relative;
+  width: 1em;
+}
+
+@keyframes spinAround {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+@mixin center($width, $height: 0) {
+  position: absolute;
+  @if $height != 0 {
+    left: calc(50% - (#{$width} / 2));
+    top: calc(50% - (#{$height} / 2));
+  } @else {
+    left: calc(50% - (#{$width} / 2));
+    top: calc(50% - (#{$width} / 1.5));
+  }
 }

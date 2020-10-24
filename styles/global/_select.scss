@@ -1,0 +1,132 @@
+// Select dropdown
+// Usage:
+// <div class="select is-fullwidth">
+//   <select id="the-id" name="the-name">
+//     <option value="" disabled selected>Select an option</option>
+//     <option value="1">First option</option>
+//     <option value="2">Second option</option>
+//   </select>
+// </div>
+
+.select {
+  display: inline-block;
+  max-width: 100%;
+  position: relative;
+  vertical-align: top;
+
+  &:not(.is-multiple) {
+    height: 2.25em;
+  }
+
+  &:not(.is-multiple):not(.is-loading) {
+    &::after {
+      @include arrow;
+      border-color: $blue;
+      right: 1.125em;
+      z-index: 4;
+    }
+  }
+
+  &.is-rounded {
+    select {
+      border-radius: $radius-rounded;
+      padding-left: 1em;
+    }
+  }
+
+  select {
+    @include input-control;
+    color: $blue;
+    cursor: pointer;
+    display: block;
+    font-family: $body-font;
+    font-size: 1em;
+    max-width: 100%;
+    outline: none;
+
+    &::-ms-expand {
+      display: none;
+    }
+
+    &[disabled]:hover {
+      border-color: $border-color;
+    }
+
+    &:not([multiple]) {
+      padding-right: 2.5em;
+    }
+
+    &[multiple] {
+      height: auto;
+      padding: 0;
+
+      option {
+        padding: 0.5em 1em;
+      }
+    }
+
+    option {
+      color: $blue;
+      font-size: 16px;
+      font-weight: 600;
+
+      &[disabled] {
+        font-weight: 400;
+      }
+    }
+  }
+
+  // States
+  &:not(.is-multiple):not(.is-loading):hover {
+    &::after {
+      transition: border-color 0.2s ease-in-out;
+      border-color: darken($blue, 10%);
+    }
+  }
+
+  // rotate arrow
+  &:not(.is-multiple):not(.is-loading).is-active {
+    &::after {
+      transform: rotate(135deg);
+      top: 60%;
+    }
+  }
+
+  // Colors
+  @each $name, $pair in $button-colors {
+    $color: nth($pair, 1);
+    &.is-#{$name} {
+      &:not(:hover)::after {
+        border-color: $color;
+      }
+
+      select {
+        border-color: $color;
+        &:hover {
+          border-color: darken($color, 5%);
+        }
+
+        &:focus,
+        &:active,
+        &.is-active {
+          box-shadow: 0 0 0 0.125em rgba($color, 0.25);
+        }
+      }
+    }
+  }
+
+  // Modifiers
+  &.is-disabled {
+    &::after {
+      border-color: $border-color;
+    }
+  }
+
+  &.is-fullwidth {
+    width: 100%;
+
+    select {
+      width: 100%;
+    }
+  }
+}

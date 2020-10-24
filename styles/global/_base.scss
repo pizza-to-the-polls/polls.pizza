@@ -22,11 +22,25 @@ body {
   line-height: 1.5;
 }
 
+::-moz-selection {
+  color: $blue;
+  background: rgba($cyan, 0.2); // change as desired
+  text-shadow: none;
+}
+::selection {
+  color: $blue;
+  background: rgba($cyan, 0.2); // change as desired
+  text-shadow: none;
+}
+
 a {
   color: $red;
   text-decoration: underline;
-  font-weight: 600;
   transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+  &:not(.button) {
+    font-weight: 600;
+  }
 
   &:hover,
   &:active,
@@ -99,14 +113,36 @@ form {
   padding: 0;
 }
 
-p,
+p:not(.help),
 li {
+  margin: 0;
   line-height: 1.5;
+
+  &:not(:last-child) {
+    margin-bottom: 1.5rem;
+  }
+}
+
+b,
+strong {
+  font-weight: 600;
+
+  p & {
+    font-weight: 600;
+  }
 }
 
 img {
   max-width: 100%;
   height: auto;
+}
+
+hr {
+  background-color: $blue;
+  border: none;
+  display: block;
+  height: 2px !important;
+  margin: 1rem 0;
 }
 
 .cf:after,
@@ -116,8 +152,49 @@ img {
   clear: both;
 }
 
+.is-hidden,
 [hidden] {
-  display: none;
+  display: none !important;
+}
+
+.is-hidden {
+  &-mobile {
+    @media ($under-tablet) {
+      display: none !important;
+    }
+  }
+  &-tablet {
+    @media ($tablet) {
+      display: none !important;
+    }
+  }
+  &-desktop {
+    @media ($desktop) {
+      display: none !important;
+    }
+  }
+  &-widescreen {
+    @media ($widescreen) {
+      display: none !important;
+    }
+  }
+}
+
+.is-marginless {
+  margin: 0 !important;
+}
+
+.is-unselectable {
+  @include unselectable;
+}
+
+.is-dotted {
+  padding-bottom: 0.05rem;
+  border-bottom: 1px $blue dotted;
+}
+
+.delete {
+  @include delete;
 }
 
 section {
@@ -147,10 +224,11 @@ section {
 }
 
 .help {
+  @include unselectable;
   display: block;
   font-size: 0.8em;
-  font-style: italic;
-  margin-top: 0.25rem;
+  font-weight: 400;
+  margin: 0.25rem 0 0;
 
   &.has-text-red {
     font-weight: 600;
@@ -164,6 +242,17 @@ section {
   color: $blue;
   display: block;
   padding: 1.5rem;
+
+  &.is-small {
+    padding: 0.5rem;
+    border: 1px solid $border-color;
+    box-shadow: none;
+    font-size: 14px;
+
+    p {
+      font-size: 14px;
+    }
+  }
 }
 
 .cards {
@@ -231,4 +320,61 @@ main .card,
   justify-content: center;
   height: 1.5rem;
   width: 1.5rem;
+}
+
+.social-link-list {
+  padding: 0;
+  text-align: left;
+
+  li {
+    display: inline-block;
+    margin: 0 10px;
+
+    a {
+      display: inline-block;
+      font-weight: 400;
+    }
+
+    img,
+    span {
+      pointer-events: none; // important
+    }
+
+    .icon {
+      height: 40px;
+      width: 40px;
+    }
+  }
+}
+
+.pizza-list {
+  margin: 1rem 0 1.5rem;
+  padding: 0;
+  text-align: left;
+  list-style: none;
+
+  li {
+    position: relative;
+    margin: 1.5rem 0 1.5rem 2rem;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+
+    &:before {
+      content: url("/images/icons/pizza-slice-yellow.svg");
+      position: absolute;
+      top: 0;
+      left: -2rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: inline-block;
+      text-align: center;
+    }
+  }
+
+  ::marker {
+    position: relative;
+    text-align: left;
+  }
 }

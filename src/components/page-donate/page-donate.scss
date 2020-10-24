@@ -38,6 +38,11 @@ page-donate {
       margin: 0;
     }
 
+    #custom-amount-text {
+      position: relative;
+      top: 4px;
+    }
+
     #custom-amount {
       display: inline-block;
       border-radius: 0;
@@ -114,7 +119,7 @@ page-donate {
       .share-donation-link {
         img,
         span {
-          pointer-events: none;
+          pointer-events: none; // important
         }
 
         img {

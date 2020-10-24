@@ -27,10 +27,14 @@
 label:not(.checkbox):not(.radio),
 .label:not(.checkbox):not(.radio) {
   display: block;
-  font-size: 1.2em;
+  font-size: 16px;
   font-weight: 600;
   &:not(:last-child) {
     margin-bottom: 0.25em;
+  }
+
+  @media ($tablet) {
+    font-size: 18px;
   }
 
   &.no-margin {

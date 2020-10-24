@@ -6,7 +6,7 @@
   color: $white;
   cursor: pointer;
   justify-content: center;
-  margin: 0 auto;
+  margin: 0 auto 1rem;
   padding-bottom: calc(0.5em - 1px);
   padding-left: 1em;
   padding-right: 1em;
@@ -14,7 +14,9 @@
   text-align: center;
   text-decoration: none;
   font-family: $body-font;
+  font-weight: 400;
   white-space: nowrap;
+  text-decoration: none;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
   strong {
@@ -62,6 +64,17 @@
     }
   }
 
+  &.is-loading {
+    color: transparent !important;
+    pointer-events: none;
+
+    &::after {
+      @include loader;
+      @include center(1em);
+      position: absolute;
+    }
+  }
+
   // Cycle through button colors
   @each $name, $colors in $button-colors {
     $color: nth($colors, 1);
@@ -99,9 +112,23 @@
         opacity: 0.5;
       }
 
+      &.is-loading {
+        &::after {
+          border-color: transparent transparent $color $color !important;
+        }
+      }
+
       svg {
         fill: $color;
       }
+    }
+  }
+
+  &.is-white {
+    border-color: $border-color;
+
+    &:hover {
+      border-color: darken($border-color, 5%);
     }
   }
 

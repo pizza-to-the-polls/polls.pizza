@@ -149,6 +149,16 @@ export class PageDonate {
       return;
     };
 
+    const resetDonationForm = (e: Event) => {
+      this.showConfirmation = false;
+      this.amount = null;
+      const form = document.getElementById("donate-form") as HTMLFormElement;
+      if (form) {
+        form.reset();
+      }
+      e.preventDefault();
+    };
+
     return (
       <Host>
         <div class="donate">
@@ -199,14 +209,16 @@ export class PageDonate {
                       <li>
                         <label class="radio" htmlFor="radio-5">
                           <input type="radio" value="200" id="radio-5" name="amount" />
-                          <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
+                          <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
                           <span class="indicator"></span>
                         </label>
                       </li>
                       <li>
                         <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
                           <input type="radio" id="custom-amount-radio" name="amount" value="" />
-                          <span class="label-text">Other: $</span>
+                          <span class="label-text" id="custom-amount-text">
+                            Other: $
+                          </span>
                           <input class="input" type="text" name="amount" id="custom-amount" autocomplete="off" />
                           <span class="indicator"></span>
                         </label>
@@ -271,6 +283,11 @@ export class PageDonate {
                       </li>
                     </ul>
                   </div>
+                  <p>
+                    <a href="#" class="has-text-teal" onClick={resetDonationForm}>
+                      Make another donation
+                    </a>
+                  </p>
                 </div>
               )}
             </div>

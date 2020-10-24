@@ -16,6 +16,7 @@
   border: 1px solid $border-color;
   padding: 10px 10px 10px 3rem;
   margin-bottom: 1rem;
+  line-height: 1.2;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -23,6 +24,16 @@
   user-select: none;
   font-size: 16px;
   transition: border-color 0.2s ease-in-out;
+
+  &.is-small {
+    .label-text {
+      font-size: 14px;
+    }
+  }
+
+  &.is-borderless {
+    border-color: transparent;
+  }
 
   &.is-disabled,
   &[disabled] {
@@ -41,6 +52,14 @@
 
     > input[type="checkbox"]:checked ~ .indicator {
       background-color: darken($gray3, 5%);
+    }
+  }
+
+  &.has-error {
+    border-color: $red;
+
+    &:hover {
+      border-color: $red;
     }
   }
 
@@ -109,10 +128,13 @@
     font-weight: 700;
   }
 
-  > .label-text,
   > .label-text {
     font-weight: 400;
-    font-size: 18px;
+    font-size: 16px;
+
+    @media ($tablet) {
+      font-size: 18px;
+    }
   }
 }
 
@@ -170,7 +192,9 @@
   width: 100%;
 
   .checkbox,
-  .radio {
+  .radio,
+  .checkbox-group-spacer,
+  .radio-group-spacer {
     display: flex;
     flex-direction: column;
     flex-basis: 100%;
@@ -185,6 +209,14 @@
 
     &:last-of-type {
       margin-right: 0;
+    }
+
+    > .label-text {
+      font-size: 14px;
+
+      @media (min-width: 400px) {
+        font-size: 16px;
+      }
     }
   }
 }
