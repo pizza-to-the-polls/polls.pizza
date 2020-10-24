@@ -67,5 +67,12 @@ page-activity {
 
   #loading-container {
     min-height: 300px;
+
+    .box.is-small {
+      border: 0;
+      p {
+        font-size: 16px !important;
+      }
+    }
   }
 }
