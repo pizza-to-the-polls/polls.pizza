@@ -112,9 +112,9 @@ export class PageActivity {
     if (window) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-    await this.loadMore();
+    await this.loadMore(false);
   }
-  private async loadMore() {
+  private async loadMore(withScroll = true) {
     this.isRefreshing = true;
     // Get last visible order to scroll to after loading more
     const lastDay = document.querySelector(".order-day:last-of-type") as HTMLElement;
@@ -129,7 +129,7 @@ export class PageActivity {
       }, {}),
     ).reverse();
 
-    if (lastOrder) {
+    if (!!withScroll && lastOrder) {
       setTimeout(() => {
         document.getElementById(lastOrder.id)?.scrollIntoView();
       }, 200);
