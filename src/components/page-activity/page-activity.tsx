@@ -54,11 +54,11 @@ export class PageActivity {
                 If you'd like to help keep the pizza flowing, <stencil-route-link url="/donate">make a donation!</stencil-route-link>
               </p>
               {ordersByDay.map(({ date, orders }) => (
-                <div>
+                <div class="order-day">
                   <h3 class="date-header">{date}</h3>
                   <ul class="pizza-list order-list">
-                    {orders.map(({ createdAt, pizzas, location: { fullAddress }, reports }: Order) => (
-                      <li>
+                    {orders.map(({ id, createdAt, pizzas, location: { fullAddress }, reports }: Order) => (
+                      <li id={"order-id-" + id}>
                         <b>
                           {pizzas} pizza{pizzas === 1 ? "" : "s"} ordered at {new Date(createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })} for{" "}
                           {fullAddress}
@@ -116,6 +116,9 @@ export class PageActivity {
   }
   private async loadMore() {
     this.isRefreshing = true;
+    // Get last visible order to scroll to after loading more
+    const lastDay = document.querySelector(".order-day:last-of-type") as HTMLElement;
+    const lastOrder = lastDay?.querySelector(".order-list > li:last-of-type") as HTMLElement;
 
     const { count, results } = await await baseFetch(`/orders?page=${this.page}`);
 
@@ -126,6 +129,11 @@ export class PageActivity {
       }, {}),
     ).reverse();
 
+    if (lastOrder) {
+      setTimeout(() => {
+        document.getElementById(lastOrder.id)?.scrollIntoView();
+      }, 200);
+    }
     this.hasMore = this.orders.length < count;
     this.page += 1;
     this.isRefreshing = false;
