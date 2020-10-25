@@ -130,9 +130,9 @@ export class PageActivity {
     ).reverse();
 
     if (lastOrder) {
-        setTimeout(() => {
-            document.getElementById(lastOrder.id)?.scrollIntoView();
-        }, 200);
+      setTimeout(() => {
+        document.getElementById(lastOrder.id)?.scrollIntoView();
+      }, 200);
     }
     this.hasMore = this.orders.length < count;
     this.page += 1;
