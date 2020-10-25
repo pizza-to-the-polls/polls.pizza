@@ -332,8 +332,8 @@ export class PageDonate {
       }
 
       if (this.reportType === "social") {
-        // Set data.url for report (social)
-        data.url = (data.url || "").replace(/<[^>]*>/g, "");
+        // Set data.url for report (social), and trim leading/trailing white space
+        data.url = (data.url || "").replace(/<[^>]*>/g, "").trim();
         if (!data.url.includes("http") && !data.url.match(/\s/)) {
           data.url = `http://${data.url}`;
         }
