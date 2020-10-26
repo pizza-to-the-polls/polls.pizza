@@ -783,7 +783,7 @@ export class PageDonate {
                 <div id="watchdog-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
-                    <b>Thank you for your submission! Our delivery team will review your report shortly. In the meantime, please donate to keep the pizza flowing!</b>
+                    <b>Thank you for your submission! Our team will review your report shortly. In the meantime, please donate to keep the pizza flowing!</b>
                   </p>
                   <a href="/donate" class="button is-red">
                     Donate to feed democracy
@@ -809,7 +809,7 @@ export class PageDonate {
                 <div id="distributor-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
-                    <b>Thank you for your submission! Our delivery team will review your report shortly. We'll reach out to you to verify delivery and pickup.</b>
+                    <b>Thank you for your submission! Our team will review your report shortly. We'll reach out to you to verify delivery and pickup.</b>
                   </p>
                   <ul class="pizza-list">
                     <li>

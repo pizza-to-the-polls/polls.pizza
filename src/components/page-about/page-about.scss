@@ -1,0 +1,26 @@
+page-about {
+  .about {
+    background-color: $gray1;
+    padding-bottom: 0;
+  }
+
+  .about-info {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .covid-safety,
+  .faq {
+    background-image: url("/images/bg2.png");
+    background-attachment: fixed;
+    background-size: 400px;
+    padding: 40px 0;
+  }
+
+  .covid-safety {
+    background-color: $blue;
+  }
+
+  .faq {
+    background-color: $yellow;
+  }
+}
