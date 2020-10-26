@@ -101,11 +101,6 @@ export class PageCovid {
                   </a>{" "}
                   with delivery drivers and restaurants, but it’s up to each person to consider their own personal risks.
                 </p>
-                <p>
-                  <stencil-route-link url="/guidelines" anchorClass="has-text-teal">
-                    Learn more about best practices and guidelines
-                  </stencil-route-link>
-                </p>
               </div>
             </div>
           </div>
