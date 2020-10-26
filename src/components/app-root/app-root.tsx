@@ -20,7 +20,7 @@ const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) =
 export class AppRoot {
   @State() private scrollTop: number = 0;
   @State() private scrollTopThreshold: number = 300;
-  @State() private longPageThreshold: number = 2000;
+  @State() private longPageThreshold: number = 2200;
   @State() private showBackToTop: boolean = false;
 
   public render() {
