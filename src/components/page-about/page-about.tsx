@@ -25,6 +25,7 @@ export class PageAbout {
   public render() {
     // Expand/collapse section
     const toggleCollapse = (e?: Event) => {
+      e?.preventDefault();
       const header = e?.target as HTMLInputElement;
       const contentId = header.getAttribute("data-section");
       if (contentId) {
@@ -80,9 +81,9 @@ export class PageAbout {
               </div>
 
               <div class="box">
-                <h2 class="expand-section-link is-active" onClick={toggleCollapse} data-section="how-it-got-started" aria-expanded="true">
+                <a href="#" class="expand-section-link is-active" onClick={toggleCollapse} data-section="how-it-got-started" aria-expanded="true">
                   How it got started
-                </h2>
+                </a>
                 <div id="how-it-got-started" class="expand-section is-active">
                   <div class="expand-content">
                     <p>
@@ -131,9 +132,9 @@ export class PageAbout {
               </div>
 
               <div class="box">
-                <h2 class="expand-section-link" onClick={toggleCollapse} data-section="how-we-do-it" aria-expanded="false">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="how-we-do-it" aria-expanded="false">
                   How we do it
-                </h2>
+                </a>
                 <div id="how-we-do-it" class="expand-section">
                   <div class="expand-content">
                     <img src="/images/truck.jpg" alt="Democracy is Delicious food truck" class="image" />
@@ -220,9 +221,9 @@ export class PageAbout {
 
               {/* Question */}
               <div class="box">
-                <h3 class="expand-section-link is-active" onClick={toggleCollapse} data-section="is-this-a-charity" aria-expanded="true">
+                <a href="#" class="expand-section-link is-active" onClick={toggleCollapse} data-section="is-this-a-charity" aria-expanded="true">
                   Is this a charity?
-                </h3>
+                </a>
                 <div id="is-this-a-charity" class="expand-section is-active">
                   <div class="expand-content">
                     <p>
@@ -238,9 +239,9 @@ export class PageAbout {
               </div>
               {/* Question */}
               <div class="box">
-                <h3 class="expand-section-link" onClick={toggleCollapse} data-section="how-do-i-report-a-line" aria-expanded="false">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="how-do-i-report-a-line" aria-expanded="false">
                   How do I report a line?
-                </h3>
+                </a>
                 <div id="how-do-i-report-a-line" class="expand-section">
                   <div class="expand-content">
                     <p>
@@ -256,9 +257,9 @@ export class PageAbout {
               </div>
               {/* Question */}
               <div class="box">
-                <h3 class="expand-section-link" onClick={toggleCollapse} data-section="who-do-you-give-snacks-to" aria-expanded="false">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="who-do-you-give-snacks-to" aria-expanded="false">
                   Who do you give snacks to?
-                </h3>
+                </a>
                 <div id="who-do-you-give-snacks-to" class="expand-section">
                   <div class="expand-content">
                     <p>
@@ -270,9 +271,9 @@ export class PageAbout {
               </div>
               {/* Question */}
               <div class="box">
-                <h3 class="expand-section-link" onClick={toggleCollapse} data-section="covid-19-precautions" aria-expanded="false">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="covid-19-precautions" aria-expanded="false">
                   What precautions is Pizza to the Polls taking as a result of COVID&#8209;19?
-                </h3>
+                </a>
                 <div id="covid-19-precautions" class="expand-section">
                   <div class="expand-content">
                     <p>Pizza to the Polls values the health and safety of our communities, and will be working to mitigate risk of disease transmission:</p>
@@ -314,9 +315,9 @@ export class PageAbout {
               </div>
               {/* Question */}
               <div class="box">
-                <h3 class="expand-section-link" onClick={toggleCollapse} data-section="can-i-help-distribute-pizzas" aria-expanded="false">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="can-i-help-distribute-pizzas" aria-expanded="false">
                   Can I help distribute pizzas?
-                </h3>
+                </a>
                 <div id="can-i-help-distribute-pizzas" class="expand-section">
                   <div class="expand-content">
                     <p>
@@ -332,9 +333,9 @@ export class PageAbout {
               </div>
               {/* Question */}
               <div class="box">
-                <h3 class="expand-section-link" onClick={toggleCollapse} data-section="can-you-send-other-items" aria-expanded="false">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="can-you-send-other-items" aria-expanded="false">
                   Can you send water, chairs, umbrellas, or other items besides pizza to people in lines?
-                </h3>
+                </a>
                 <div id="can-you-send-other-items" class="expand-section">
                   <div class="expand-content">
                     <p>Unfortunately, we’re only able to support sending pizzas or food trucks to lines at this time.</p>
@@ -343,9 +344,9 @@ export class PageAbout {
               </div>
               {/* Question */}
               <div class="box">
-                <h3 class="expand-section-link" onClick={toggleCollapse} data-section="is-this-partisan" aria-expanded="false">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="is-this-partisan" aria-expanded="false">
                   Is this partisan?
-                </h3>
+                </a>
                 <div id="is-this-partisan" class="expand-section">
                   <div class="expand-content">
                     <p>No. Ain’t nothing partisan about trying to make voting less of a drag.</p>
@@ -354,9 +355,9 @@ export class PageAbout {
               </div>
               {/* Question */}
               <div class="box">
-                <h3 class="expand-section-link" onClick={toggleCollapse} data-section="where-do-you-get-your-pizzas" aria-expanded="false">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="where-do-you-get-your-pizzas" aria-expanded="false">
                   Where do you get your pizzas?
-                </h3>
+                </a>
                 <div id="where-do-you-get-your-pizzas" class="expand-section">
                   <div class="expand-content">
                     <p>
@@ -368,9 +369,9 @@ export class PageAbout {
               </div>
               {/* Question */}
               <div class="box">
-                <h3 class="expand-section-link" onClick={toggleCollapse} data-section="more-questions" aria-expanded="false">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="more-questions" aria-expanded="false">
                   I have more questions?
-                </h3>
+                </a>
                 <div id="more-questions" class="expand-section">
                   <div class="expand-content">
                     <p>

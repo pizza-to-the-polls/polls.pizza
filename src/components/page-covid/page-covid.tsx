@@ -25,6 +25,7 @@ export class PageCovid {
   public render() {
     // Expand/collapse section
     const toggleCollapse = (e?: Event) => {
+      e?.preventDefault();
       const header = e?.target as HTMLInputElement;
       const contentId = header.getAttribute("data-section");
       if (contentId) {
@@ -98,9 +99,9 @@ export class PageCovid {
           </div>
           <div class="container guidelines">
             <div class="box">
-              <h2 class="expand-section-link is-active" onClick={toggleCollapse} data-section="distributor-guidelines" aria-expanded="true">
+              <a href="#" class="expand-section-link is-active" onClick={toggleCollapse} data-section="distributor-guidelines" aria-expanded="true">
                 Guidelines for Distributors
-              </h2>
+              </a>
               <div id="distributor-guidelines" class="expand-section is-active">
                 <div class="expand-content">
                   <p>
@@ -165,9 +166,9 @@ export class PageCovid {
               </div>
             </div>
             <div class="box">
-              <h2 class="expand-section-link" onClick={toggleCollapse} data-section="delivery-guidelines" aria-expanded="false">
+              <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="delivery-guidelines" aria-expanded="false">
                 Guidelines for Restaurants and Delivery
-              </h2>
+              </a>
               <div id="delivery-guidelines" class="expand-section">
                 <div class="expand-content">
                   <p>
