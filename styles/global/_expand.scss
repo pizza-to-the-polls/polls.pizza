@@ -4,6 +4,7 @@
   position: relative;
   margin-bottom: 0;
   padding-right: 2rem;
+  transition: color 0.2s ease-in-out;
   cursor: pointer;
   @include unselectable;
 
@@ -17,7 +18,7 @@
     border-color: $teal;
     right: 0;
     z-index: 4;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
   }
 
   &.is-active {
