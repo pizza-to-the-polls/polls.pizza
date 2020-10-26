@@ -36,6 +36,7 @@ export class PageCovid {
         }
         content.classList.toggle("is-active");
         header.classList.toggle("is-active");
+        header.setAttribute("aria-expanded", header.classList.contains("is-active") ? "true" : "false");
       }
     };
 
@@ -97,7 +98,7 @@ export class PageCovid {
           </div>
           <div class="container guidelines">
             <div class="box">
-              <h2 class="expand-section-link is-active" onClick={toggleCollapse} data-section="distributor-guidelines">
+              <h2 class="expand-section-link is-active" onClick={toggleCollapse} data-section="distributor-guidelines" aria-expanded="true">
                 Guidelines for Distributors
               </h2>
               <div id="distributor-guidelines" class="expand-section is-active">
@@ -164,7 +165,7 @@ export class PageCovid {
               </div>
             </div>
             <div class="box">
-              <h2 class="expand-section-link" onClick={toggleCollapse} data-section="delivery-guidelines">
+              <h2 class="expand-section-link" onClick={toggleCollapse} data-section="delivery-guidelines" aria-expanded="false">
                 Guidelines for Restaurants and Delivery
               </h2>
               <div id="delivery-guidelines" class="expand-section">
