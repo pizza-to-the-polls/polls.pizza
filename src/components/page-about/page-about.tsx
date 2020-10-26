@@ -1,11 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
-
-const scrollPageToTop = () => {
-  if (window) {
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-};
+import { scrollPageToTop } from "../../lib/base";
 
 @Component({
   tag: "page-about",

@@ -16,3 +16,10 @@ export const baseFetch = async (path: string, options: { [key: string]: string }
 
   return data;
 };
+
+export const scrollPageToTop = () => {
+  if (window) {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+};

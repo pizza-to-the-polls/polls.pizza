@@ -45,7 +45,7 @@ export class AppRoot {
       );
     }
 
-    const scrollPageToTop = (e?: Event) => {
+    const scrollBackToTop = (e?: Event) => {
       e?.preventDefault();
       (e?.target as HTMLElement)?.blur();
       if (window) {
@@ -178,7 +178,7 @@ export class AppRoot {
           </div>
         </footer>
         {this.scrollTop > this.scrollTopThreshold && this.showBackToTop && (
-          <span onClick={scrollPageToTop} class={"back-to-top " + (this.scrollTop > this.scrollTopThreshold && this.showBackToTop ? "is-active" : "")} title="Back to top"></span>
+          <span onClick={scrollBackToTop} class={"back-to-top " + (this.scrollTop > this.scrollTopThreshold && this.showBackToTop ? "is-active" : "")} title="Back to top"></span>
         )}
       </Host>
     );

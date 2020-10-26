@@ -1,4 +1,5 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
+import { scrollPageToTop } from "../../lib/base";
 
 interface Token {
   email: string;
@@ -8,13 +9,6 @@ interface Token {
   id: string;
   amount: number;
 }
-
-const scrollPageToTop = () => {
-  if (window) {
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-};
 
 @Component({
   tag: "page-donate",
@@ -30,7 +24,9 @@ export class PageDonate {
   }
 
   public componentDidLoad() {
-    scrollPageToTop();
+    if (!window.location.hash) {
+      scrollPageToTop();
+    }
   }
 
   public render() {

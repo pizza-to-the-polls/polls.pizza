@@ -1,4 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
+import { scrollPageToTop } from "../../lib/base";
 
 const top = [
   {
@@ -104,6 +105,13 @@ export class PagePartners {
   public componentWillLoad() {
     document.title = `Partners | Pizza to the Polls`;
   }
+
+  public componentDidLoad() {
+    if (!window.location.hash) {
+      scrollPageToTop();
+    }
+  }
+
   public render() {
     return (
       <Host>

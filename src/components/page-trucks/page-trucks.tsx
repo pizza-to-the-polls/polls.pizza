@@ -1,4 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
+import { scrollPageToTop } from "../../lib/base";
 
 @Component({
   tag: "page-trucks",
@@ -9,13 +10,19 @@ export class PageTrucks {
     document.title = `Food Trucks | Pizza to the Polls`;
   }
 
+  public componentDidLoad() {
+    if (!window.location.hash) {
+      scrollPageToTop();
+    }
+  }
+
   public render() {
     return (
       <Host>
         <section id="trucks" class="page">
           <div class="container intro">
             <h1>Food Trucks</h1>
-            <img src="/images/truck.jpg" alt="Food truck" class="photo" />
+            <img src="/images/truck.jpg" alt="Food truck" class="image" />
             <div class="democracy-is-delicious">
               <img src="/images/democracy-is-delicious.png" alt="Democracy is Delicious" width="200" />
             </div>
