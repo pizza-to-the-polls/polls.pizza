@@ -237,6 +237,13 @@ section {
       color: darken($color, 10%) !important;
     }
   }
+  // Specific for teal text
+  a.has-text-teal {
+    &:hover,
+    &:focus {
+      color: $cyan !important;
+    }
+  }
 }
 
 .help {

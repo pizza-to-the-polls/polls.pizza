@@ -1,12 +1,22 @@
 .expand-section-link {
-  color: $teal;
+  color: $blue;
   max-width: 100%;
   position: relative;
   margin-bottom: 0;
   padding-right: 2rem;
   transition: color 0.2s ease-in-out;
   cursor: pointer;
+  z-index: 1;
   @include unselectable;
+
+  &:hover,
+  &:focus {
+    color: $cyan !important;
+
+    &::after {
+      border-color: $cyan !important;
+    }
+  }
 
   @media ($tablet) {
     padding-top: 0;
@@ -15,18 +25,18 @@
   &::after {
     @include arrow;
     top: 40%;
-    border-color: $teal;
+    border-color: $blue;
     right: 0;
     z-index: 4;
     transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
   }
 
   &.is-active {
-    color: $cyan;
+    color: $teal;
 
     // rotate arrow
     &::after {
-      border-color: $cyan;
+      border-color: $teal;
       transform: rotate(135deg);
       top: 60%;
     }
@@ -51,6 +61,7 @@ h2.expand-section-link {
   max-height: 0;
   overflow-y: hidden;
   transition: max-height 0.2s ease-in-out;
+  opacity: 0;
 
   @media ($tablet) {
     margin-top: -72px; // allow scrolling for mobile header height
@@ -60,6 +71,7 @@ h2.expand-section-link {
   &.is-active {
     max-height: none;
     transition: max-height 0.2s ease-in-out;
+    opacity: 1;
   }
 
   .expand-content {
