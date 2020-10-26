@@ -76,6 +76,12 @@ export class PageTrucks {
                 <strong>Atlanta, GA</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
               </li>
               <li>
+                <strong>Chicago, IL</strong> Oct. 29 - Nov. 3
+              </li>
+              <li>
+                <strong>Indianapolis, IN</strong> Oct. 29 - Nov. 3
+              </li>
+              <li>
                 <strong>Louisville, KY</strong> Oct. 24, Nov. 3
               </li>
               <li>
@@ -104,6 +110,12 @@ export class PageTrucks {
               </li>
               <li>
                 <strong>New York, NY</strong> Oct. 24, Oct. 29 - Nov. 1, Nov. 3
+              </li>
+              <li>
+                <strong>Cleveland, OH</strong> Oct. 29 - Nov. 3
+              </li>
+              <li>
+                <strong>Columbus, OH</strong> Oct. 29 - Nov. 3
               </li>
               <li>
                 <strong>Philadelphia, PA</strong> Oct. 24, Oct. 29 - Nov. 3
