@@ -1,4 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
+
 import { scrollPageToTop } from "../../lib/base";
 
 @Component({
