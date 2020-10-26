@@ -141,7 +141,7 @@ export class PageAbout {
                         Learn more
                       </stencil-route-link>
                     </p>
-                    <p class="has-text-red">IMAGE_PLACEHOLDER</p>
+                    <img src="/images/pics/pizza-on-plate.jpg" alt="Slice of pizza on paper plate" class="image" />
                     <h3>On-Demand</h3>
                     <p>
                       Our signature program is back! We need you to help by reporting crowded polling places and sticking around to ensure food gets delivered safely.
