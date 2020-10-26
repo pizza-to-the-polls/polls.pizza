@@ -81,7 +81,7 @@ export class PageAbout {
               </div>
 
               <div class="box">
-                <a href="#" class="expand-section-link is-active" onClick={toggleCollapse} data-section="how-it-got-started" aria-expanded="true">
+                <a href="#" class="expand-section-link is-header is-active" onClick={toggleCollapse} data-section="how-it-got-started" aria-expanded="true">
                   How it got started
                 </a>
                 <div id="how-it-got-started" class="expand-section is-active">
@@ -132,7 +132,7 @@ export class PageAbout {
               </div>
 
               <div class="box">
-                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="how-we-do-it" aria-expanded="false">
+                <a href="#" class="expand-section-link is-header" onClick={toggleCollapse} data-section="how-we-do-it" aria-expanded="false">
                   How we do it
                 </a>
                 <div id="how-we-do-it" class="expand-section">
