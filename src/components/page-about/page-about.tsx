@@ -283,6 +283,17 @@ export class PageAbout {
               </div>
               {/* Question */}
               <div class="box">
+                <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="where-will-you-deliver-pizzas" aria-expanded="false">
+                  Where will you deliver pizzas?
+                </a>
+                <div id="where-will-you-deliver-pizzas" class="expand-section">
+                  <div class="expand-content">
+                    <p>Any polling place in the US, as long as we can find a delivery place that services that location.</p>
+                  </div>
+                </div>
+              </div>
+              {/* Question */}
+              <div class="box">
                 <a href="#" class="expand-section-link" onClick={toggleCollapse} data-section="covid-19-precautions" aria-expanded="false">
                   What precautions is Pizza to the Polls taking as a result of COVID&#8209;19?
                 </a>
@@ -333,8 +344,8 @@ export class PageAbout {
                 <div id="can-i-help-distribute-pizzas" class="expand-section">
                   <div class="expand-content">
                     <p>
-                      Yes! When you report a line, let us know that you can receive an order on behalf of Pizza to the Polls. One of our volunteers will reach out to you to verify
-                      timing for delivery. Pizzas usually take around 90 minutes to be delivered after an order is placed. Please be sure to{" "}
+                      Yes! When you report a line, let us know that you can receive an order on behalf of Pizza to the Polls. We’ll send you a text once an order has been placed!
+                      Pizzas usually take around 90 minutes to be delivered after an order is placed. Please be sure to{" "}
                       <stencil-route-link url="/guidelines" anchorClass="has-text-teal">
                         read our guidelines
                       </stencil-route-link>{" "}
@@ -350,7 +361,7 @@ export class PageAbout {
                 </a>
                 <div id="can-you-send-other-items" class="expand-section">
                   <div class="expand-content">
-                    <p>Unfortunately, we’re only able to support sending pizzas or food trucks to lines at this time.</p>
+                    <p>Unfortunately, we’re only able to support sending snacks or food trucks to lines at this time.</p>
                   </div>
                 </div>
               </div>
@@ -387,7 +398,7 @@ export class PageAbout {
                 <div id="more-questions" class="expand-section">
                   <div class="expand-content">
                     <p>
-                      That’s more of a statement - but why don’t you send them to us at{" "}
+                      That’s more of a statement, but please send them to us at{" "}
                       <a href="mailto:morequestions@polls.pizza" class="has-text-teal" target="_blank" rel="noopener noreferrer">
                         morequestions@polls.pizza
                       </a>
