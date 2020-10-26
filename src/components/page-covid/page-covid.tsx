@@ -23,24 +23,6 @@ export class PageCovid {
   }
 
   public render() {
-    // Expand/collapse section
-    const toggleCollapse = (e?: Event) => {
-      e?.preventDefault();
-      const header = e?.target as HTMLInputElement;
-      const contentId = header.getAttribute("data-section");
-      if (contentId) {
-        const content = document.getElementById(contentId) as HTMLElement;
-        if (content.classList.contains("is-active")) {
-          content.style.maxHeight = "";
-        } else {
-          content.style.maxHeight = content.scrollHeight + 500 + "px"; // Add 500 to account for changing viewport size
-        }
-        content.classList.toggle("is-active");
-        header.classList.toggle("is-active");
-        header.setAttribute("aria-expanded", header.classList.contains("is-active") ? "true" : "false");
-      }
-    };
-
     return (
       <Host>
         <section id="covid" class="page covid">
@@ -101,163 +83,16 @@ export class PageCovid {
                   </a>{" "}
                   with delivery drivers and restaurants, but it’s up to each person to consider their own personal risks.
                 </p>
-              </div>
-            </div>
-          </div>
-          <div class="container guidelines">
-            <div class="box">
-              <a href="#" class="expand-section-link is-header is-active" onClick={toggleCollapse} data-section="distributor-guidelines" aria-expanded="true">
-                Guidelines for Distributors
-              </a>
-              <div id="distributor-guidelines" class="expand-section is-active">
-                <div class="expand-content">
-                  <p>
-                    <b>Thank you for helping us get pizza to hungry poll workers and poll-goers!</b>
-                  </p>
-                  <p>
-                    <b>If you’re waiting to receive an order:</b>
-                  </p>
-                  <ul class="pizza-list">
-                    <li>We’ll let you know when an order has been placed. Pizzas usually take around 90 minutes to be delivered after an order is placed.</li>
-                    <li>
-                      Be sure to be at the location once confirmed to coordinate pickup. Keep an eye out for a delivery driver. When the food arrives, let people around the polling
-                      site know it's free for all: poll workers, voters, children, journalists, poll watchers, and anyone else who's out and about. Be sure to practice social
-                      distancing and stay at least 6 feet apart from others.
-                    </li>
-                  </ul>
-                  <p>
-                    <b>Once you receive an order:</b>
-                  </p>
-                  <ul class="pizza-list">
-                    <li>
-                      <b>Wear a mask</b>
-                      <br />
-                      Wear a mask when providing food and drink, social distance as much as possible, and follow state and local COVID-19 protocols.
-                    </li>
-                    <li>
-                      <b>Minimize crowding</b>
-                      <br />
-                      Distribute food in a way that minimizes crowding around the food.
-                    </li>
-                    <li>
-                      <b>Keep food covered</b>
-                      <br />
-                      Try not to distribute food directly, and keep the food covered when not being accessed by the public (e.g. no open pizza boxes being passed around).
-                    </li>
-                    <li>
-                      <b>Wash or sanitize your hands</b>
-                      <br />
-                      Wash or sanitize your hands (with sanitizer containing at least 60% alcohol) prior to handling food at the polling location. If possible, put on gloves after
-                      sanitizing and prior to handling food.
-                    </li>
-                    <li>
-                      <b>Dispose of food waste</b>
-                      <br />
-                      Be sure to dispose of food waste in trash cans, and encourage people consuming food to do the same.
-                    </li>
-                    <li>
-                      <b>Respect your needs</b>
-                      <br />
-                      If you feel unsafe at any point, leave the area.
-                    </li>
-                    <li>
-                      <b>Stay safe</b>
-                      <br />
-                      If there are protests or unrest at or around a polling place, keep your distance and do not engage while distributing pizza to people in the area.
-                    </li>
-                  </ul>
-                  <p>
-                    <stencil-route-link url="guidelines" anchorClass="has-text-teal">
-                      Learn more about our guidelines to provide free food for all
-                    </stencil-route-link>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="box">
-              <a href="#" class="expand-section-link is-header" onClick={toggleCollapse} data-section="delivery-guidelines" aria-expanded="false">
-                Guidelines for Restaurants and Delivery
-              </a>
-              <div id="delivery-guidelines" class="expand-section">
-                <div class="expand-content">
-                  <p>
-                    <b>
-                      Thank you for helping us get pizza to hungry poll workers and poll-goers! Below, you can find our COVID recommendations for restaurants and delivery people.
-                    </b>
-                  </p>
-                  <p>
-                    For restaurants preparing the food,{" "}
-                    <stencil-route-link url="/instructions" anchorClass="has-text-teal">
-                      learn more here about how it works
-                    </stencil-route-link>
-                    . For restaurant partners, food delivery people, and volunteers helping hand out food at polling locations,{" "}
-                    <stencil-route-link url="/guidelines" anchorClass="has-text-teal">
-                      find our full guidelines here
-                    </stencil-route-link>
-                    .
-                  </p>
-                  <h3>Guidelines for Restaurants</h3>
-                  <ul class="pizza-list">
-                    <li>
-                      <b>Print out signs to place by the pizza!</b>
-                      <br />
-                      If you want, you can print out these signs to tape them up around the food. These PDF’s have links to our COVID guidelines for people in line!
-                      <br />
-                      <a href="/downloads/color-sign.pdf" target="_blank">
-                        Color PDF
-                      </a>{" "}
-                      |{" "}
-                      <a href="/downloads/bw.pdf" target="_blank">
-                        Black &amp; White PDF
-                      </a>
-                    </li>
-                    <li>
-                      <b>Send napkins and plates if you can</b>
-                      <br />
-                      In order to help facilitate indirect contact with the food, please consider sending extra napkins and plates!
-                    </li>
-                    <li>
-                      <b>Cut into small slices!</b>
-                      <br />
-                      We’d appreciate it if you could cut the pizza into small slices so that more folks can have a piece.
-                    </li>
-                  </ul>
-                  <h3>Guidelines for Delivery People</h3>
-                  <ul class="pizza-list">
-                    <li>
-                      <b>Wear a mask</b>
-                      <br />
-                      Wear a mask when providing food and drink, social distance as much as possible, and follow state and local COVID-19 protocols.
-                    </li>
-                    <li>
-                      <b>Minimize crowding</b>
-                      <br />
-                      Distribute food in a way that minimizes crowding around the food.
-                    </li>
-                    <li>
-                      <b>Keep food covered</b>
-                      <br />
-                      Try not to distribute food directly, if distributing food always wear a mask and keep the food covered when not being accessed by the public (e.g. no open
-                      pizza boxes being passed around).
-                    </li>
-                    <li>
-                      <b>Wash or sanitize your hands</b>
-                      <br />
-                      Wash or sanitize your hands (with sanitizer containing at least 60% alcohol) prior to handling food at the polling location. If possible, put on gloves after
-                      sanitizing and prior to handling food.
-                    </li>
-                    <li>
-                      <b>Respect your needs</b>
-                      <br />
-                      If you feel unsafe at any point, leave the area.
-                    </li>
-                    <li>
-                      <b>Stay safe</b>
-                      <br />
-                      If there are protests or unrest at or around a polling place, keep your distance and do not engage while distributing pizza to people in the area.
-                    </li>
-                  </ul>
-                </div>
+                <hr />
+                <h3 class="instructions-subheader">Are you a restaurant or helping distribute food?</h3>
+                <stencil-route-link url="/guidelines" anchorClass="button is-teal">
+                  View our guidelines for distributors
+                </stencil-route-link>
+                <p>
+                  <stencil-route-link url="/insstructions" anchorClass="has-text-teal">
+                    View our guidelines for restaurants
+                  </stencil-route-link>
+                </p>
               </div>
             </div>
           </div>
