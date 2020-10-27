@@ -78,7 +78,7 @@ export class PageActivity {
                               {waitTime && (
                                 <span>
                                   {" "}
-                                  with an est. wait time <span class="has-no-word-break">of {waitTime}</span>
+                                  with an est. wait time <span class="has-no-word-break">of {waitTime.toLowerCase()}</span>
                                 </span>
                               )}
                             </li>
