@@ -112,13 +112,14 @@ export class PageDonate {
     // Donation Sharing
     const shareAmount = this.amount
       ? " $" +
-        Number(this.amount).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }).replace(/\.00/g, "")
+        Number(this.amount)
+          .toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+          .replace(/\.00/g, "")
       : "";
-    const shareText =
-      "I just donated" + shareAmount + " to Pizza to the Polls to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
+    const shareText = "I just donated" + shareAmount + " to Pizza to the Polls to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
     const shareUrl = "https://polls.pizza/donate"; // add URL tracking parameters here, if desired
     console.log(shareText);
 
