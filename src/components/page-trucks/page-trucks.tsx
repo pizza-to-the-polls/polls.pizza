@@ -84,10 +84,10 @@ export class PageTrucks {
                 <strong>Atlanta, GA</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
               </li>
               <li>
-                <strong>Chicago, IL</strong> Oct. 29 - Nov. 3
+                <strong>Chicago, IL</strong> Oct. 30 - Nov. 3
               </li>
               <li>
-                <strong>Indianapolis, IN</strong> Oct. 29 - Nov. 3
+                <strong>Indianapolis, IN</strong> Oct. 30 - Nov. 3
               </li>
               <li>
                 <strong>Louisville, KY</strong> Oct. 24, Nov. 3
