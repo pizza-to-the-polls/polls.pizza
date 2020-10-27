@@ -1,12 +1,11 @@
 import { Component, h, Host, Prop } from "@stencil/core";
 
-@Component( {
+@Component({
   tag: "ui-card",
   styleUrl: "ui-card.scss",
   shadow: false,
-} )
+})
 export class UiCard {
-
   @Prop() public isCollapsible: boolean;
 
   /**
@@ -24,7 +23,7 @@ export class UiCard {
     return (
       <Host class={{ "is-small": this.isSmall }}>
         <slot />
-      </Host >
+      </Host>
     );
   }
 }

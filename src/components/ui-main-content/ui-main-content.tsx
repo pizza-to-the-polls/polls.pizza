@@ -14,13 +14,12 @@ import { Component, h } from "@stencil/core";
  * ```
  * TODO: Add a prop to toggle the background and colors instead of setting via CSS
  */
-@Component( {
+@Component({
   tag: "ui-main-content",
   styleUrl: "ui-main-content.scss",
   shadow: false,
-} )
+})
 export class UiMainContent {
-
   public render() {
     return (
       <div class="background">
@@ -30,5 +29,4 @@ export class UiMainContent {
       </div>
     );
   }
-
 }

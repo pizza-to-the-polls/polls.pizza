@@ -3,23 +3,21 @@ import { Component, h, State } from "@stencil/core";
 import { PizzaApi, PizzaTotals } from "../../api";
 import { scrollPageToTop } from "../../util";
 
-@Component( {
+@Component({
   tag: "page-home",
   styleUrl: "page-home.scss",
-} )
+})
 export class PageHome {
   @State() private totals?: PizzaTotals;
 
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    PizzaApi.getTotals().then( totals =>
-      PizzaApi.getDonations().then( raised => ( this.totals = { ...totals, raised } ) ),
-    );
+    PizzaApi.getTotals().then(totals => PizzaApi.getDonations().then(raised => (this.totals = { ...totals, raised })));
   }
 
   public componentDidLoad() {
-    if( !window.location.hash ) {
+    if (!window.location.hash) {
       scrollPageToTop();
     }
   }

@@ -8,28 +8,26 @@ enum FoodChoice {
   trucks = "Food trucks",
 }
 const FoodChoices: FunctionalComponent<{
-  selected: FoodChoice,
-  onSelected: ( option: FoodChoice ) => void,
-}> = ( { selected, onSelected } ) => (
+  selected: FoodChoice;
+  onSelected: (option: FoodChoice) => void;
+}> = ({ selected, onSelected }) => (
   <div class="food-choices">
     <ul>
-      {( Object.values( FoodChoice ) as FoodChoice[] ).map( ( x ) => (
-        <li class={{ selected: selected === x }} onClick={() => onSelected( x )}>
+      {(Object.values(FoodChoice) as FoodChoice[]).map(x => (
+        <li class={{ selected: selected === x }} onClick={() => onSelected(x)}>
           {x}
         </li>
-      ) )}
+      ))}
     </ul>
   </div>
 );
 
-
-@Component( {
+@Component({
   tag: "page-deliveries",
   styleUrl: "page-deliveries.scss",
   shadow: false,
-} )
+})
 export class PageDeliveries {
-
   @Prop() public selectedLocation?: LocationInfo;
   @State() public selectedFood: FoodChoice;
 
@@ -37,10 +35,10 @@ export class PageDeliveries {
     this.selectedFood = FoodChoice.all;
   }
 
-  @Listen( "keyup", { target: "document" } )
-  public onKey( e: KeyboardEvent ) {
-    if( e.key === "f" ) {
-      this.selectedLocation = ( { fullAddress: "dsdsds ds das dsad sad sa dv" } as LocationInfo );
+  @Listen("keyup", { target: "document" })
+  public onKey(e: KeyboardEvent) {
+    if (e.key === "f") {
+      this.selectedLocation = { fullAddress: "dsdsds ds das dsad sad sa dv" } as LocationInfo;
     }
   }
 
@@ -50,21 +48,20 @@ export class PageDeliveries {
       <Host>
         <ui-main-content>
           <div>
-            {selectedLocation != null ?
-              (
-                <Fragment>
-                  <a onClick={() => this.selectedLocation = undefined}>Back to all deliveries</a>
-                  <h3>{selectedLocation.fullAddress}</h3>
-                </Fragment>
-              ) : (
-                <Fragment>
-                  <h2>Deliveries</h2>
-                  <h3>Search for your polling place</h3>
-                  <input type="text" />
-                </Fragment>
-              )}
+            {selectedLocation != null ? (
+              <Fragment>
+                <a onClick={() => (this.selectedLocation = undefined)}>Back to all deliveries</a>
+                <h3>{selectedLocation.fullAddress}</h3>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <h2>Deliveries</h2>
+                <h3>Search for your polling place</h3>
+                <input type="text" />
+              </Fragment>
+            )}
           </div>
-          <FoodChoices selected={this.selectedFood} onSelected={x => this.selectedFood = x} />
+          <FoodChoices selected={this.selectedFood} onSelected={x => (this.selectedFood = x)} />
         </ui-main-content>
 
         <hr class="heavy" />
@@ -91,7 +88,7 @@ export class PageDeliveries {
             <stencil-route-link url="/activity">view more</stencil-route-link>
           </ui-card>
 
-          {selectedLocation != null &&
+          {selectedLocation != null && (
             <ui-card isCollapsible={true}>
               <h3>Reports</h3>
               <ul>
@@ -100,10 +97,9 @@ export class PageDeliveries {
                 <li></li>
               </ul>
             </ui-card>
-          }
+          )}
         </ui-main-content>
       </Host>
     );
   }
-
 }
