@@ -2,7 +2,7 @@ import replace from "@rollup/plugin-replace";
 import { Config } from "@stencil/core";
 import { sass } from "@stencil/sass";
 
-require( "dotenv" ).config();
+require("dotenv").config();
 
 // https://stenciljs.com/docs/config
 
@@ -11,17 +11,17 @@ export const config: Config = {
   // globalScript: 'src/global/app.ts',
   taskQueue: "async",
   plugins: [
-    replace( {
+    replace({
       exclude: "node_modules/**",
       values: {
         "process.env.STRIPE_PUBLIC_KEY": process.env.STRIPE_PUBLIC_KEY ? `"${process.env.STRIPE_PUBLIC_KEY}"` : "process.env.STRIPE_PUBLIC_KEY",
         "process.env.PIZZA_BASE_DOMAIN": process.env.PIZZA_BASE_DOMAIN ? `"${process.env.PIZZA_BASE_DOMAIN}"` : `"z"`,
         "process.env.DONATION_FORM": process.env.DONATION_FORM ? `"${process.env.DONATION_FORM}"` : `"https://docs.google.com/forms/d/e/form-id/formResponse"`,
       },
-    } ),
-    sass( {
+    }),
+    sass({
       injectGlobalPaths: ["styles/include/vars.scss", "styles/include/mixins.scss"],
-    } ),
+    }),
   ],
   outputTargets: [
     {

@@ -68,6 +68,11 @@ export class AppRoot {
             <li>
               <stencil-route-link url="/donate">Donate</stencil-route-link>
             </li>
+            {/*
+            <li>
+              <stencil-route-link url="/deliveries">Deliveries</stencil-route-link>
+            </li>
+             */}
             <li>
               <stencil-route-link url="/about">About</stencil-route-link>
             </li>

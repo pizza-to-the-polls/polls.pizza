@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { LocationInfo } from "./api/types";
 export namespace Components {
     interface AppRoot {
     }
@@ -13,6 +14,9 @@ export namespace Components {
     interface PageActivity {
     }
     interface PageCovid {
+    }
+    interface PageDeliveries {
+        "selectedLocation"?: LocationInfo;
     }
     interface PageDonate {
     }
@@ -33,6 +37,21 @@ export namespace Components {
     interface PageReport {
     }
     interface PageTrucks {
+    }
+    interface UiCard {
+        "isCollapsible": boolean;
+        /**
+          * TODO: Is this used anywhere?
+         */
+        "isSmall": boolean;
+    }
+    interface UiDynamicText {
+        "format"?: (value: any) => string;
+        "value": any | undefined;
+    }
+    interface UiMainContent {
+    }
+    interface UiModal {
     }
 }
 declare global {
@@ -59,6 +78,12 @@ declare global {
     var HTMLPageCovidElement: {
         prototype: HTMLPageCovidElement;
         new (): HTMLPageCovidElement;
+    };
+    interface HTMLPageDeliveriesElement extends Components.PageDeliveries, HTMLStencilElement {
+    }
+    var HTMLPageDeliveriesElement: {
+        prototype: HTMLPageDeliveriesElement;
+        new (): HTMLPageDeliveriesElement;
     };
     interface HTMLPageDonateElement extends Components.PageDonate, HTMLStencilElement {
     }
@@ -120,11 +145,36 @@ declare global {
         prototype: HTMLPageTrucksElement;
         new (): HTMLPageTrucksElement;
     };
+    interface HTMLUiCardElement extends Components.UiCard, HTMLStencilElement {
+    }
+    var HTMLUiCardElement: {
+        prototype: HTMLUiCardElement;
+        new (): HTMLUiCardElement;
+    };
+    interface HTMLUiDynamicTextElement extends Components.UiDynamicText, HTMLStencilElement {
+    }
+    var HTMLUiDynamicTextElement: {
+        prototype: HTMLUiDynamicTextElement;
+        new (): HTMLUiDynamicTextElement;
+    };
+    interface HTMLUiMainContentElement extends Components.UiMainContent, HTMLStencilElement {
+    }
+    var HTMLUiMainContentElement: {
+        prototype: HTMLUiMainContentElement;
+        new (): HTMLUiMainContentElement;
+    };
+    interface HTMLUiModalElement extends Components.UiModal, HTMLStencilElement {
+    }
+    var HTMLUiModalElement: {
+        prototype: HTMLUiModalElement;
+        new (): HTMLUiModalElement;
+    };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
         "page-covid": HTMLPageCovidElement;
+        "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
         "page-guidelines": HTMLPageGuidelinesElement;
         "page-home": HTMLPageHomeElement;
@@ -135,6 +185,10 @@ declare global {
         "page-privacy": HTMLPagePrivacyElement;
         "page-report": HTMLPageReportElement;
         "page-trucks": HTMLPageTrucksElement;
+        "ui-card": HTMLUiCardElement;
+        "ui-dynamic-text": HTMLUiDynamicTextElement;
+        "ui-main-content": HTMLUiMainContentElement;
+        "ui-modal": HTMLUiModalElement;
     }
 }
 declare namespace LocalJSX {
@@ -145,6 +199,9 @@ declare namespace LocalJSX {
     interface PageActivity {
     }
     interface PageCovid {
+    }
+    interface PageDeliveries {
+        "selectedLocation"?: LocationInfo;
     }
     interface PageDonate {
     }
@@ -166,11 +223,27 @@ declare namespace LocalJSX {
     }
     interface PageTrucks {
     }
+    interface UiCard {
+        "isCollapsible"?: boolean;
+        /**
+          * TODO: Is this used anywhere?
+         */
+        "isSmall"?: boolean;
+    }
+    interface UiDynamicText {
+        "format"?: (value: any) => string;
+        "value"?: any | undefined;
+    }
+    interface UiMainContent {
+    }
+    interface UiModal {
+    }
     interface IntrinsicElements {
         "app-root": AppRoot;
         "page-about": PageAbout;
         "page-activity": PageActivity;
         "page-covid": PageCovid;
+        "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
         "page-guidelines": PageGuidelines;
         "page-home": PageHome;
@@ -181,6 +254,10 @@ declare namespace LocalJSX {
         "page-privacy": PagePrivacy;
         "page-report": PageReport;
         "page-trucks": PageTrucks;
+        "ui-card": UiCard;
+        "ui-dynamic-text": UiDynamicText;
+        "ui-main-content": UiMainContent;
+        "ui-modal": UiModal;
     }
 }
 export { LocalJSX as JSX };
@@ -191,6 +268,7 @@ declare module "@stencil/core" {
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
             "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
+            "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
             "page-guidelines": LocalJSX.PageGuidelines & JSXBase.HTMLAttributes<HTMLPageGuidelinesElement>;
             "page-home": LocalJSX.PageHome & JSXBase.HTMLAttributes<HTMLPageHomeElement>;
@@ -201,6 +279,10 @@ declare module "@stencil/core" {
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
             "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
+            "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
+            "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
+            "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
+            "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
         }
     }
 }
