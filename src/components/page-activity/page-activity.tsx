@@ -18,19 +18,13 @@ export class PageActivity {
     this.loadMore();
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public render() {
     const ordersByDay = this.ordersByDay();
     return (
       <Host>
         <section class="page activity">
           <div class="container">
-            <div class="box">
+            <ui-card>
               <a class={"refresh-button button is-teal is-hidden-mobile " + (this.isRefreshing ? "is-loading is-disabled " : "")} onClick={(_e: Event) => this.refreshRecent()}>
                 Refresh
               </a>
@@ -84,12 +78,12 @@ export class PageActivity {
                 </button>
               ) : (
                 <div id="loading-container">
-                  <div class="box is-small has-background-blue">
+                  <ui-card is-small="true" class="has-background-blue">
                     <p class="has-text-centered has-text-white">Loading...</p>
-                  </div>
+                  </ui-card>
                 </div>
               )}
-            </div>
+            </ui-card>
           </div>
         </section>
       </Host>

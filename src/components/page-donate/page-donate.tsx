@@ -24,12 +24,6 @@ export class PageDonate {
     document.title = `Donate | Pizza to the Polls`;
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public render() {
     let handler: any = null;
     const StripeCheckout: any = (window as any).StripeCheckout;
@@ -179,7 +173,7 @@ export class PageDonate {
       <Host>
         <div class="donate">
           <div class="container">
-            <div class="box">
+            <ui-card>
               <h1>Donate</h1>
 
               {!this.showConfirmation && (
@@ -318,7 +312,7 @@ export class PageDonate {
                   </p>
                 </div>
               )}
-            </div>
+            </ui-card>
           </div>
         </div>
       </Host>

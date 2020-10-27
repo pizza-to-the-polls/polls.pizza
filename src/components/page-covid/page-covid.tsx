@@ -1,7 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../util";
-
 @Component({
   tag: "page-covid",
   styleUrl: "page-covid.scss",
@@ -11,19 +9,13 @@ export class PageCovid {
     document.title = `COVID Safety | Pizza to the Polls`;
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public render() {
     return (
       <Host>
         <section id="covid" class="page covid">
           <div class="covid-safety">
             <div class="container">
-              <div class="box">
+              <ui-card>
                 <h2 id="covid-safety" class="is-display is-scroll-to">
                   COVID Safety
                 </h2>
@@ -88,7 +80,7 @@ export class PageCovid {
                     View our guidelines for restaurants
                   </stencil-route-link>
                 </p>
-              </div>
+              </ui-card>
             </div>
           </div>
         </section>

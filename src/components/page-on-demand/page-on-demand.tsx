@@ -1,7 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../util";
-
 @Component({
   tag: "page-on-demand",
   styleUrl: "page-on-demand.scss",
@@ -11,18 +9,12 @@ export class PageOnDemand {
     document.title = `On-demand | Pizza to the Polls`;
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public render() {
     return (
       <Host>
         <section id="on-demand" class="page on-demand">
           <div class="container">
-            <div class="box">
+            <ui-card>
               <h1>On-demand</h1>
               <img src="/images/pics/photo_5.jpg" alt="Pizzas at a polling place" class="image" />
               <h2>How to help</h2>
@@ -55,7 +47,7 @@ export class PageOnDemand {
               <a class="button is-teal" href="/report">
                 Report a line
               </a>
-            </div>
+            </ui-card>
           </div>
         </section>
       </Host>

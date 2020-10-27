@@ -11,6 +11,7 @@ page-activity {
     text-align: left;
     color: $white;
     background: $blue;
+    margin-bottom: 0;
     padding: 10px 15px;
     border-top-right-radius: $radius;
     border-top-left-radius: $radius;
@@ -68,7 +69,7 @@ page-activity {
   #loading-container {
     min-height: 300px;
 
-    .box.is-small {
+    ui-card.is-small {
       border: 0;
       p {
         font-size: 16px !important;

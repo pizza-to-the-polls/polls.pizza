@@ -1,7 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../util";
-
 @Component({
   tag: "page-guidelines",
   styleUrl: "page-guidelines.scss",
@@ -9,12 +7,6 @@ import { scrollPageToTop } from "../../util";
 export class PageGuidelines {
   public componentWillLoad() {
     document.title = `On-Demand Delivery Guidelines | Pizza to the Polls`;
-  }
-
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
   }
 
   public render() {

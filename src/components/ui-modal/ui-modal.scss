@@ -1,3 +1,63 @@
+// Modal
+// Usage:
+// <ui-modal class="is-active">
+//   <div class="modal-background"></div>
+//   <div class="modal-content">
+//     <ui-card>
+//       <h2 class="is-display">This is a modal</h2>
+//       <p>This is the modal content.</p>
+//     </ui-card>
+//   </div>
+//   <button class="modal-close" aria-label="close"></button>
+// </ui-modal>
+
 ui-modal {
-  display: block;
+  @include overlay;
+  align-items: center;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  position: fixed;
+  z-index: 2000;
+
+  &.is-active {
+    display: flex;
+  }
+
+  .modal-background {
+    @include overlay;
+    background-color: rgba($black, 0.86);
+  }
+
+  .modal-content {
+    margin: 0 20px;
+    padding: 0 20px;
+    max-height: calc(100vh - 160px);
+    overflow: auto;
+    position: relative;
+    width: 100%;
+
+    @media ($tablet) {
+      margin: 0 auto;
+      max-height: calc(100vh - 40px);
+      width: 640px;
+    }
+
+    ui-card {
+      border-top: 10px solid $red;
+    }
+  }
+
+  .modal-close {
+    @include delete;
+    background: none;
+    height: 40px;
+    max-height: 40px;
+    width: 40px;
+    max-width: 40px;
+    position: fixed;
+    right: 20px;
+    top: 20px;
+  }
 }

@@ -1,7 +1,6 @@
 import { Component, h, State } from "@stencil/core";
 
 import { PizzaApi, PizzaTotals } from "../../api";
-import { scrollPageToTop } from "../../util";
 
 @Component({
   tag: "page-home",
@@ -16,12 +15,6 @@ export class PageHome {
     PizzaApi.getTotals().then(totals => PizzaApi.getDonations().then(raised => (this.totals = { ...totals, raised })));
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public render() {
     return (
       <div>
@@ -34,7 +27,7 @@ export class PageHome {
           </div>
           <div class="dashboard">
             <div class="container">
-              <div class="stats">
+              <ui-card class="stats">
                 <h2 class="is-display">2020 Election Totals</h2>
                 <div class="stats__row">
                   <div class="stat">
@@ -68,7 +61,7 @@ export class PageHome {
                 <a href="/activity" class="stat__link">
                   View recent deliveries
                 </a>
-              </div>
+              </ui-card>
             </div>
             <div class="dashboard-bg"></div>
           </div>

@@ -114,14 +114,9 @@ $border: $blue;
   }
 }
 
-.stats {
-  padding: 40px;
-  background: $white;
-  color: $blue;
+ui-card.stats {
   position: relative;
   z-index: 100;
-  border-radius: 10px;
-  box-shadow: 0 10px 40px 0 rgba($blue, 0.3);
   text-align: center;
 
   h2 {

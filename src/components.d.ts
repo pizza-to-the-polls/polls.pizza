@@ -39,11 +39,11 @@ export namespace Components {
     interface PageTrucks {
     }
     interface UiCard {
+        "headerText": string;
+        "isActive": boolean;
         "isCollapsible": boolean;
-        /**
-          * TODO: Is this used anywhere?
-         */
         "isSmall": boolean;
+        "scrollId": string;
     }
     interface UiDynamicText {
         "format"?: (value: any) => string;
@@ -52,6 +52,7 @@ export namespace Components {
     interface UiMainContent {
     }
     interface UiModal {
+        "isActive": boolean;
     }
 }
 declare global {
@@ -224,11 +225,11 @@ declare namespace LocalJSX {
     interface PageTrucks {
     }
     interface UiCard {
+        "headerText"?: string;
+        "isActive"?: boolean;
         "isCollapsible"?: boolean;
-        /**
-          * TODO: Is this used anywhere?
-         */
         "isSmall"?: boolean;
+        "scrollId"?: string;
     }
     interface UiDynamicText {
         "format"?: (value: any) => string;
@@ -237,6 +238,7 @@ declare namespace LocalJSX {
     interface UiMainContent {
     }
     interface UiModal {
+        "isActive"?: boolean;
     }
     interface IntrinsicElements {
         "app-root": AppRoot;

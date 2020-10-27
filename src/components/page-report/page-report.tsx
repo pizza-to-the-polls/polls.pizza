@@ -38,12 +38,6 @@ export class PageDonate {
     document.title = `Report | Pizza to the Polls`;
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public componentDidRender() {
     const google: any = (window as any).google;
 
@@ -495,7 +489,7 @@ export class PageDonate {
       <Host>
         <div id="report" class={"report " + (this.viewportIsMobile ? "is-mobile-report" : "")}>
           <div class="container">
-            <div class="box">
+            <ui-card>
               <form id="form" onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
                 <div hidden={!this.showLocationInput}>
                   <h1>Report a line</h1>
@@ -906,7 +900,7 @@ export class PageDonate {
                   </p>
                 </div>
               )}
-            </div>
+            </ui-card>
           </div>
         </div>
       </Host>

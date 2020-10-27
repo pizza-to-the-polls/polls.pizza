@@ -1,7 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../util";
-
 const top = [
   {
     img: "ubereats.png",
@@ -107,18 +105,12 @@ export class PagePartners {
     document.title = `Partners | Pizza to the Polls`;
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public render() {
     return (
       <Host>
         <section id="partners" class="page">
           <div class="container">
-            <div class="box">
+            <ui-card>
               <h1>Partners</h1>
               <p>Pizza to the Polls is grateful for the support of its partners:</p>
               <ul class="partners">
@@ -143,8 +135,8 @@ export class PagePartners {
                   );
                 })}
               </ul>
-            </div>
-            <div class="box">
+            </ui-card>
+            <ui-card>
               <h2>Become a partner</h2>
               <p>We’re looking for partners who can:</p>
               <ul class="pizza-list">
@@ -169,7 +161,7 @@ export class PagePartners {
                 </a>
                 .
               </p>
-            </div>
+            </ui-card>
           </div>
         </section>
       </Host>
