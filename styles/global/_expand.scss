@@ -72,6 +72,7 @@
   overflow-y: hidden;
   transition: max-height 0.2s ease-in-out;
   opacity: 0;
+  pointer-events: none;
 
   @media ($tablet) {
     margin-top: -72px; // allow scrolling for mobile header height
@@ -82,6 +83,7 @@
     max-height: none;
     transition: max-height 0.2s ease-in-out;
     opacity: 1;
+    pointer-events: auto;
   }
 
   .expand-content {
