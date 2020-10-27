@@ -121,7 +121,6 @@ export class PageDonate {
       : "";
     const shareText = "I just donated" + shareAmount + " to Pizza to the Polls to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
     const shareUrl = "https://polls.pizza/donate"; // add URL tracking parameters here, if desired
-    console.log(shareText);
 
     // Native sharing on device via `navigator.share` - supported on mobile, tablets, and some browsers
     const nativeShare = async () => {
