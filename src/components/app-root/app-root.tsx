@@ -78,18 +78,19 @@ export class AppRoot {
           <stencil-router>
             <stencil-route-switch scrollTopOffset={0}>
               <stencil-route url="/" component="page-home" exact={true} />
-              <stencil-route url="/donate" component="page-donate" />
-              <stencil-route url="/report" component="page-report" />
               <stencil-route url="/about" component="page-about" />
-              <stencil-route url="/trucks" component="page-trucks" />
-              <stencil-route url="/partners" component="page-partners" />
-              <stencil-route url="/on-demand" component="page-on-demand" />
-              <stencil-route url="/covid" component="page-covid" />
-              <stencil-route url="/press" component="page-press" />
-              <stencil-route url="/instructions" component="page-instructions" />
-              <stencil-route url="/guidelines" component="page-guidelines" />
               <stencil-route url="/activity" component="page-activity" />
+              <stencil-route url="/covid" component="page-covid" />
+              <stencil-route url="/deliveries" component="page-deliveries" />
+              <stencil-route url="/donate" component="page-donate" />
+              <stencil-route url="/guidelines" component="page-guidelines" />
+              <stencil-route url="/instructions" component="page-instructions" />
+              <stencil-route url="/on-demand" component="page-on-demand" />
+              <stencil-route url="/partners" component="page-partners" />
+              <stencil-route url="/press" component="page-press" />
               <stencil-route url="/privacy" component="page-privacy" />
+              <stencil-route url="/report" component="page-report" />
+              <stencil-route url="/trucks" component="page-trucks" />
               <stencil-route component="page-home" />
             </stencil-route-switch>
           </stencil-router>
