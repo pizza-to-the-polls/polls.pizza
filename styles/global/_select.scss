@@ -9,7 +9,6 @@
 // </div>
 
 .select {
-  // display: inline-block;
   max-width: 100%;
   position: relative;
   vertical-align: top;
@@ -31,6 +30,20 @@
     select {
       border-radius: $radius-rounded;
       padding-left: 1em;
+    }
+  }
+
+  + .help {
+    margin-top: 0.5rem;
+  }
+
+  &.has-error {
+    select {
+      border-color: $red;
+    }
+
+    &::after {
+      border-color: $red !important;
     }
   }
 
