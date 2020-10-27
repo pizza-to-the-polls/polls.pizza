@@ -114,11 +114,8 @@ export class PageAbout {
                           <stencil-route-link url="/donate" anchorClass="has-text-teal">
                             donating
                           </stencil-route-link>{" "}
-                          and{" "}
-                          <stencil-route-link url="/report" anchorClass="has-text-teal">
-                            reporting long lines
-                          </stencil-route-link>
-                          !
+                          and {/* prettier-ignore */}
+                          <stencil-route-link url="/report" anchorClass="has-text-teal">reporting long lines</stencil-route-link>!
                         </p>
                       </li>
                     </ul>
@@ -170,11 +167,8 @@ export class PageAbout {
                   <div class="expand-content">
                     <p>
                       We are incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible. Our activities
-                      are 501(c)(3) compliant. If you’d like to learn more about how you can contribute or work with us,{" "}
-                      <stencil-route-link url="/partners" anchorClass="has-text-teal">
-                        learn more here
-                      </stencil-route-link>
-                      .
+                      are 501(c)(3) compliant. If you’d like to learn more about how you can contribute or work with us, {/* prettier-ignore */}
+                      <stencil-route-link url="/partners" anchorClass="has-text-teal">learn more here</stencil-route-link>.
                     </p>
                   </div>
                 </div>
@@ -187,12 +181,12 @@ export class PageAbout {
                 <div id="how-do-i-report-a-line" class="expand-section">
                   <div class="expand-content">
                     <p>
-                      You can submit a report of a long line through our{" "}
+                      You can submit a report of a long line through our {/* prettier-ignore */}
                       <stencil-route-link url="/report" anchorClass="has-text-teal">
                         submission form
-                      </stencil-route-link>
-                      . We’ll ask for a delivery address, photo or link to a social media post to verify the line, an estimate of the line’s wait time, and your phone number. Once
-                      you submit a report, our volunteers will review to verify the line, and then ship pizzas or snacks your way.
+                      </stencil-route-link>. We’ll ask
+                      for a delivery address, photo or link to a social media post to verify the line, an estimate of the line’s wait time, and your phone number. Once you submit a
+                      report, our volunteers will review to verify the line, and then ship pizzas or snacks your way.
                     </p>
                   </div>
                 </div>
@@ -257,11 +251,10 @@ export class PageAbout {
                       </li>
                     </ul>
                     <p>
-                      You can learn more about safety precautions you can take to stay safe at the polls{" "}
+                      You can learn more about safety precautions you can take to stay safe at the polls {/* prettier-ignore */}
                       <stencil-route-link url="/covid" anchorClass="has-text-teal">
                         here
-                      </stencil-route-link>
-                      .
+                      </stencil-route-link>.
                     </p>
                   </div>
                 </div>
