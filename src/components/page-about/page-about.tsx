@@ -33,6 +33,7 @@ export class PageAbout {
         content.classList.toggle("is-active");
         header.classList.toggle("is-active");
         header.setAttribute("aria-expanded", header.classList.contains("is-active") ? "true" : "false");
+        header.blur();
       }
     };
 

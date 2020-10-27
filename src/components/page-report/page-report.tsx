@@ -130,7 +130,7 @@ export class PageDonate {
 
     const handleReportTypeChange = () => {
       const reportType = document.querySelector("input[name=reportType]:checked") as HTMLInputElement;
-      // Clear error
+      // Clear errors
       delete this.submitError.reportType;
       // Clear if changing report type
       if (this.reportType !== reportType?.value) {
@@ -141,8 +141,13 @@ export class PageDonate {
 
     const handleCanDistributeChange = () => {
       const canDistribute = document.querySelector("input[name=canDistribute]:checked") as HTMLInputElement;
-      // Clear error
+      // Clear errors
       delete this.submitError.canDistribute;
+      delete this.submitError.distributorDisclaimer;
+      delete this.submitError.contactRole;
+      delete this.submitError.contactFirstName;
+      delete this.submitError.contactLastName;
+      // Set new value
       this.canDistribute = canDistribute?.value;
     };
 
@@ -165,6 +170,7 @@ export class PageDonate {
       const form = document.getElementById("form") as HTMLFormElement;
       if (form) {
         form.reset();
+        // Reset select element (some browsers need this extra step)
         (document.getElementById("waitTime") as HTMLFormElement).value = "";
       }
       // Reset report type
@@ -371,6 +377,11 @@ export class PageDonate {
           data[`distributorDisclaimer`] = `agree`;
         }
 
+        // Contact Role
+        if (!data.contactRole) {
+          this.submitError.contactRole = "Whoops! Can you specify your role at the polling location?";
+        }
+
         // Contact First Name
         if (!(data.contactFirstName || "")) {
           this.submitError.contactFirstName = "Whoops! Can you please add your first name?";
@@ -400,12 +411,13 @@ export class PageDonate {
       // Setup request data
       let requestData = {
         address: data.address,
-        contact: data.contactPhone,
-        contactFirstName: data.contactFirstName,
-        contactLastName: data.contactLastName,
         url: data.url,
         waitTime: data.waitTime,
         canDistribute: this.canDistribute === "true",
+        contactRole: data.contactRole,
+        contactFirstName: data.contactFirstName,
+        contactLastName: data.contactLastName,
+        contact: data.contactPhone,
       };
 
       try {
@@ -625,19 +637,19 @@ export class PageDonate {
                       </p>
                       <p class="help">
                         By uploading a photo you grant Pizza to the Polls the right to use and distribute as we see fit - see our{" "}
-                        <a href="/privacy" target="_blank">
+                        <a href="/privacy" class="has-text-blue" target="_blank">
                           Privacy Policy
                         </a>{" "}
                         for more details
                       </p>
                     </div>
                   )}
-                  {/* Line Wait */}
+                  {/* Wait Time */}
                   <div class="form-item">
                     <label class="label" htmlFor="waitTime">
                       How long is the wait in line? <span class="required">*</span>
                     </label>
-                    <div class="select is-fullwidth">
+                    <div class={"select is-fullwidth " + ("waitTime" in this.submitError ? "has-error " : "")}>
                       <select id="waitTime" name="waitTime">
                         <option value="" disabled selected>
                           Select your best guess
@@ -696,6 +708,26 @@ export class PageDonate {
                           {this.submitError.distributorDisclaimer}
                         </p>
                       </div>
+                      {/* Contact Role */}
+                      <div class="form-item">
+                        <label class="label" htmlFor="contactRole">
+                          What is your role at the polling location? <span class="required">*</span>
+                        </label>
+                        <div class={"select is-fullwidth " + ("contactRole" in this.submitError ? "has-error " : "")}>
+                          <select id="contactRole" name="contactRole">
+                            <option value="" disabled selected>
+                              Select your role
+                            </option>
+                            <option value="Voter">Voter</option>
+                            <option value="Poll worker">Poll worker</option>
+                            <option value="Poll watcher">Poll watcher</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                        <p class="help has-text-red" hidden={!("contactRole" in this.submitError)}>
+                          {this.submitError.contactRole}
+                        </p>
+                      </div>
                       {/* Contact Name */}
                       <div class="form-item-group">
                         <div class="form-item">
@@ -749,7 +781,7 @@ export class PageDonate {
                   <p class="agreement">
                     <em>
                       By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and accept our{" "}
-                      <a href="/privacy" target="_blank">
+                      <a href="/privacy" class="has-text-blue" target="_blank">
                         Privacy Policy
                       </a>
                       . You can unsubscribe at any time. For texts, message and data rates may apply. Text HELP for Info. Text STOP to quit.

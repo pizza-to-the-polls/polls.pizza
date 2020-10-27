@@ -110,9 +110,18 @@ export class PageDonate {
     };
 
     // Donation Sharing
-    const shareText =
-      "I just donated" + (this.amount ? " $" + this.amount : "") + " to Pizza to the Polls to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
+    const shareAmount = this.amount
+      ? " $" +
+        Number(this.amount)
+          .toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+          .replace(/\.00/g, "")
+      : "";
+    const shareText = "I just donated" + shareAmount + " to Pizza to the Polls to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
     const shareUrl = "https://polls.pizza/donate"; // add URL tracking parameters here, if desired
+    console.log(shareText);
 
     // Native sharing on device via `navigator.share` - supported on mobile, tablets, and some browsers
     const nativeShare = async () => {
@@ -249,7 +258,19 @@ export class PageDonate {
               {this.showConfirmation && (
                 <div id="donate-confirmation">
                   <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
-                  <p>Thanks for donating {this.amount ? "$" + this.amount : null} to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
+                  <p>
+                    Thanks for donating{" "}
+                    {this.amount
+                      ? " $" +
+                        Number(this.amount)
+                          .toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                          .replace(/\.00/g, "")
+                      : null}{" "}
+                    to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.
+                  </p>
 
                   <p>Help spread the word by sharing your donation!</p>
 
