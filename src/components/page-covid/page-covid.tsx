@@ -84,7 +84,7 @@ export class PageCovid {
                   View our guidelines for distributors
                 </stencil-route-link>
                 <p>
-                  <stencil-route-link url="/insstructions" anchorClass="has-text-teal">
+                  <stencil-route-link url="/instructions" anchorClass="has-text-teal">
                     View our guidelines for restaurants
                   </stencil-route-link>
                 </p>
