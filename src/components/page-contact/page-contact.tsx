@@ -2,7 +2,6 @@ import { Component, Host, h } from "@stencil/core";
 
 @Component({
   tag: "page-contact",
-  styleUrl: "page-contact.scss",
 })
 export class PageContact {
   public componentWillLoad() {
