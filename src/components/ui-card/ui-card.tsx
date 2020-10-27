@@ -35,7 +35,7 @@ export class UiCard {
         };
       } else {
         this.maxHeight = {
-          "max-height": (expandContent ? expandContent.scrollHeight + 500 + "px" : "10000px"),
+          "max-height": expandContent ? expandContent.scrollHeight + 500 + "px" : "10000px",
         };
       }
       this.isActive = !this.isActive;

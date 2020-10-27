@@ -1,8 +1,7 @@
 /**
  * TODO: In progress
  */
-class Pizzabase {
-}
+class Pizzabase {}
 
 const singleton = new Pizzabase();
 export default singleton;
