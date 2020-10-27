@@ -1,5 +1,7 @@
 import { Component, h, Host } from "@stencil/core";
 
+import { scrollPageToTop } from "../../lib/base";
+
 @Component({
   tag: "page-press",
 })
@@ -7,6 +9,13 @@ export class PagePress {
   public componentWillLoad() {
     document.title = `Press | Pizza to the Polls`;
   }
+
+  public componentDidLoad() {
+    if (!window.location.hash) {
+      scrollPageToTop();
+    }
+  }
+
   public render() {
     return (
       <Host>
@@ -20,8 +29,11 @@ export class PagePress {
               If you’d like to get in touch with us for a story send an email to <a href="mailto:press@polls.pizza">press@polls.pizza</a>.
             </p>
             <p>
-              <a href="/about">Learn more about our story.</a>
+              <a href="/about" class="has-text-teal">
+                Learn more about our story.
+              </a>
             </p>
+            <hr />
             <h2>2018 press</h2>
             <ul>
               <li>

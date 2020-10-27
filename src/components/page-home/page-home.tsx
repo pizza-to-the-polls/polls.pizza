@@ -1,6 +1,6 @@
 import { Component, h, State } from "@stencil/core";
 
-import { baseFetch } from "../../lib/base";
+import { baseFetch, scrollPageToTop } from "../../lib/base";
 import { getTotals } from "../../lib/sheets";
 
 @Component({
@@ -24,6 +24,12 @@ export class PageHome {
     this.locations = locations;
     this.states = states;
     this.raised = `\$${raised}`;
+  }
+
+  public componentDidLoad() {
+    if (!window.location.hash) {
+      scrollPageToTop();
+    }
   }
 
   public render() {

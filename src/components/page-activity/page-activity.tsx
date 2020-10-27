@@ -1,6 +1,6 @@
 import { Component, h, Host, State } from "@stencil/core";
 
-import { baseFetch } from "../../lib/base";
+import { baseFetch, scrollPageToTop } from "../../lib/base";
 
 interface Order {
   id: number;
@@ -31,6 +31,12 @@ export class PageActivity {
   public async componentWillLoad() {
     document.title = `Activity | Pizza to the Polls`;
     this.loadMore();
+  }
+
+  public componentDidLoad() {
+    if (!window.location.hash) {
+      scrollPageToTop();
+    }
   }
 
   public render() {
@@ -110,7 +116,7 @@ export class PageActivity {
     this.orders = [];
     // Scroll page to top
     if (window) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      scrollPageToTop();
     }
     await this.loadMore(false);
   }

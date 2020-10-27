@@ -1,5 +1,7 @@
 import { Component, h, Host } from "@stencil/core";
 
+import { scrollPageToTop } from "../../lib/base";
+
 @Component({
   tag: "page-instructions",
   styleUrl: "page-instructions.css",
@@ -7,6 +9,12 @@ import { Component, h, Host } from "@stencil/core";
 export class PageInstructions {
   public componentWillLoad() {
     document.title = `Delivery Instructions | Pizza to the Polls`;
+  }
+
+  public componentDidLoad() {
+    if (!window.location.hash) {
+      scrollPageToTop();
+    }
   }
 
   public render() {
@@ -40,8 +48,7 @@ export class PageInstructions {
               </li>
             </ol>
             <p>
-              We know this isn’t the kind of request you normally get, but we really appreciate the help. If you have any questions, you can call our hotline at:{" "}
-              <strong>971-407-1829</strong>
+              If you have any questions, you can call our hotline at: <a href="tel:+1-971-407-1829">971-407-1829</a>
             </p>
           </div>
         </section>

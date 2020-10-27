@@ -1,18 +1,11 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
 
-import { baseFetch } from "../../lib/base";
+import { baseFetch, scrollPageToTop } from "../../lib/base";
 
 // Shared with pizzabase
 const URL_REGEX = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
 const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
-
-const scrollPageToTop = () => {
-  if (window) {
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-};
 
 @Component({
   tag: "page-report",
@@ -45,7 +38,9 @@ export class PageDonate {
   }
 
   public componentDidLoad() {
-    scrollPageToTop();
+    if (!window.location.hash) {
+      scrollPageToTop();
+    }
   }
 
   public componentDidRender() {
@@ -783,7 +778,7 @@ export class PageDonate {
                 <div id="watchdog-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
-                    <b>Thank you for your submission! Our delivery team will review your report shortly. In the meantime, please donate to keep the pizza flowing!</b>
+                    <b>Thank you for your submission! Our team will review your report shortly. In the meantime, please donate to keep the pizza flowing!</b>
                   </p>
                   <a href="/donate" class="button is-red">
                     Donate to feed democracy
@@ -809,7 +804,7 @@ export class PageDonate {
                 <div id="distributor-confirmation">
                   <h2 class="is-display">We're on it!</h2>
                   <p>
-                    <b>Thank you for your submission! Our delivery team will review your report shortly. We'll reach out to you to verify delivery and pickup.</b>
+                    <b>Thank you for your submission! Our team will review your report shortly. We'll reach out to you to verify delivery and pickup.</b>
                   </p>
                   <ul class="pizza-list">
                     <li>

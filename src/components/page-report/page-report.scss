@@ -9,6 +9,10 @@ page-report {
     background-attachment: fixed;
     background-size: 400px;
     padding-bottom: 40px;
+
+    @media ($tablet) {
+      min-height: 500px;
+    }
   }
 
   #form {
