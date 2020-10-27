@@ -52,9 +52,13 @@
   padding: 20px 0;
   text-align: center;
   color: $white;
-  font-size: 28px;
+  font-size: 20px;
   text-transform: uppercase;
   letter-spacing: 2px;
+
+  @media ($tablet) {
+    font-size: 28px;
+  }
 }
 
 .instructions {
@@ -62,9 +66,17 @@
   background-size: contain;
   background-position: 0 0;
   color: $white;
-  padding: 50px 0 100px 0;
+  padding: 20px 0 50px;
   text-align: center;
   font-size: 24px;
+
+  @media (min-width: 400px) {
+    padding-bottom: 40px 0 70px;
+  }
+
+  @media ($tablet) {
+    padding-bottom: 50px 0 100px;
+  }
 
   a {
     color: $white;
