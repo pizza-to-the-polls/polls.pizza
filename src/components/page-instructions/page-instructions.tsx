@@ -1,10 +1,10 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../lib/base";
+import { scrollPageToTop } from "../../util";
 
 @Component({
   tag: "page-instructions",
-  styleUrl: "page-instructions.css",
+  styleUrl: "page-instructions.scss",
 })
 export class PageInstructions {
   public componentWillLoad() {

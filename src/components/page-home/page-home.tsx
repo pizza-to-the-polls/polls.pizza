@@ -1,33 +1,25 @@
 import { Component, h, State } from "@stencil/core";
 
-import { baseFetch, scrollPageToTop } from "../../lib/base";
-import { getTotals } from "../../lib/sheets";
+import { PizzaApi, PizzaTotals } from "../../api";
+import { scrollPageToTop } from "../../util";
 
-@Component({
+@Component( {
   tag: "page-home",
   styleUrl: "page-home.scss",
-})
+} )
 export class PageHome {
-  @State() public pizzas: string = "";
-  @State() public locations: string = "";
-  @State() public states: string = "";
-  @State() public raised: string = "";
+  @State() private totals?: PizzaTotals;
 
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    const { raised } = await getTotals();
-
-    const { pizzas, locations, states } = await baseFetch(`/totals/2020`);
-
-    this.pizzas = pizzas;
-    this.locations = locations;
-    this.states = states;
-    this.raised = `\$${raised}`;
+    PizzaApi.getTotals().then( totals =>
+      PizzaApi.getDonations().then( raised => ( this.totals = { ...totals, raised } ) ),
+    );
   }
 
   public componentDidLoad() {
-    if (!window.location.hash) {
+    if( !window.location.hash ) {
       scrollPageToTop();
     }
   }
@@ -48,19 +40,27 @@ export class PageHome {
                 <h2 class="is-display">2020 Election Totals</h2>
                 <div class="stats__row">
                   <div class="stat">
-                    <span class="stat__number">{this.pizzas}</span>
+                    <span class="stat__number">
+                      <ui-dynamic-text value={this.totals?.pizzas} />
+                    </span>
                     <span class="stat__label">Pizzas sent</span>
                   </div>
                   <div class="stat">
-                    <span class="stat__number">{this.locations}</span>
+                    <span class="stat__number">
+                      <ui-dynamic-text value={this.totals?.locations} />
+                    </span>
                     <span class="stat__label">Polling places</span>
                   </div>
                   <div class="stat">
-                    <span class="stat__number">{this.states}</span>
+                    <span class="stat__number">
+                      <ui-dynamic-text value={this.totals?.states} />
+                    </span>
                     <span class="stat__label">States</span>
                   </div>
                   <div class="stat">
-                    <span class="stat__number">{this.raised}</span>
+                    <span class="stat__number">
+                      <ui-dynamic-text value={this.totals?.raised} format={x => `\$${x}`} />
+                    </span>
                     <span class="stat__label">Raised in 2020</span>
                   </div>
                 </div>

@@ -1,16 +1,17 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
 
-import { baseFetch, scrollPageToTop } from "../../lib/base";
+import { baseFetch } from "../../api/PizzaApi";
+import { scrollPageToTop } from "../../util";
 
 // Shared with pizzabase
 const URL_REGEX = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
 const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
 
-@Component({
+@Component( {
   tag: "page-report",
   styleUrl: "page-report.scss",
-})
+} )
 export class PageDonate {
   // Show/hide form & confirmations
   @State() private showConfirmation: boolean = false; // *Always* required to hide form, regardless of other show booleans
@@ -38,21 +39,21 @@ export class PageDonate {
   }
 
   public componentDidLoad() {
-    if (!window.location.hash) {
+    if( !window.location.hash ) {
       scrollPageToTop();
     }
   }
 
   public componentDidRender() {
-    const google: any = (window as any).google;
+    const google: any = ( window as any ).google;
 
-    if (Build.isBrowser && google && document.getElementById("autocomplete")) {
-      const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
+    if( Build.isBrowser && google && document.getElementById( "autocomplete" ) ) {
+      const autocomplete = new google.maps.places.Autocomplete( document.getElementById( "autocomplete" ), {
         types: ["geocode", "establishment"],
         componentRestrictions: { country: "us" },
-      });
+      } );
 
-      autocomplete.addListener("place_changed", () => {
+      autocomplete.addListener( "place_changed", () => {
         const place = autocomplete.getPlace();
 
         const componentForm: { [key: string]: string } = {
@@ -65,53 +66,54 @@ export class PageDonate {
           address: "formatted_address",
         };
 
-        Object.keys(componentForm).forEach(component => {
-          const elem = document.getElementById(component) as HTMLInputElement;
-          if (elem) {
+        Object.keys( componentForm ).forEach( component => {
+          const elem = document.getElementById( component ) as HTMLInputElement;
+          if( elem ) {
             elem.value = "";
           }
-        });
+        } );
 
-        place.address_components.forEach((address_component: { [key: string]: any }) => {
+        place.address_components.forEach( ( address_component: { [key: string]: any } ) => {
           const addressType: string = address_component.types[0];
           const mapping = componentForm[addressType];
-          const elem = document.getElementById(addressType) as HTMLInputElement;
-          if (mapping && elem) {
+          const elem = document.getElementById( addressType ) as HTMLInputElement;
+          if( mapping && elem ) {
             elem.value = address_component[mapping];
           }
-        });
+        } );
 
-        const premise = document.getElementById("premise") as HTMLInputElement;
-        if (premise) {
+        const premise = document.getElementById( "premise" ) as HTMLInputElement;
+        if( premise ) {
           premise.value = place.name;
         }
-        const formatted_address = document.getElementById("formatted_address") as HTMLInputElement;
+        const formatted_address = document.getElementById( "formatted_address" ) as HTMLInputElement;
 
-        if (formatted_address) {
+        if( formatted_address ) {
           formatted_address.value = place.formatted_address;
         }
 
         // Get readable address (either name or the address; remove USA)
-        this.locationName = place.formatted_address ? place.formatted_address.replace(/, USA/gi, "") : place.name ? place.name : "the location";
-      });
+        this.locationName = place.formatted_address ? place.formatted_address.replace( /, USA/gi, "" ) : place.name ? place.name : "the location";
+      } );
     }
   }
+
   public render() {
     // Determine if viewport is mobile.
     // Sets this.viewPortIsMobile: boolean when called.
     const checkViewport = () => {
-      const viewport: MediaQueryList = window.matchMedia("(max-width: 768px)");
+      const viewport: MediaQueryList = window.matchMedia( "(max-width: 768px)" );
       this.viewportIsMobile = viewport.matches;
     };
 
     const handleAddressChange = () => {
-      const address = document.getElementById("autocomplete") as HTMLInputElement;
-      if (address && !address.value) {
+      const address = document.getElementById( "autocomplete" ) as HTMLInputElement;
+      if( address && !address.value ) {
         this.locationName = "";
       }
     };
 
-    const handleLoadStepTwo = (e: Event) => {
+    const handleLoadStepTwo = ( e: Event ) => {
       e.preventDefault();
       checkViewport();
       handleReportTypeChange();
@@ -119,26 +121,26 @@ export class PageDonate {
     };
 
     const clearReportVerification = () => {
-      const socialLink = document.getElementById("social-link") as HTMLInputElement;
-      if (socialLink) {
+      const socialLink = document.getElementById( "social-link" ) as HTMLInputElement;
+      if( socialLink ) {
         socialLink.value = "";
       }
       removePhoto();
     };
 
     const handleReportTypeChange = () => {
-      const reportType = document.querySelector("input[name=reportType]:checked") as HTMLInputElement;
+      const reportType = document.querySelector( "input[name=reportType]:checked" ) as HTMLInputElement;
       // Clear error
       delete this.submitError.reportType;
       // Clear if changing report type
-      if (this.reportType !== reportType?.value) {
+      if( this.reportType !== reportType?.value ) {
         clearReportVerification();
       }
       this.reportType = reportType?.value;
     };
 
     const handleCanDistributeChange = () => {
-      const canDistribute = document.querySelector("input[name=canDistribute]:checked") as HTMLInputElement;
+      const canDistribute = document.querySelector( "input[name=canDistribute]:checked" ) as HTMLInputElement;
       // Clear error
       delete this.submitError.canDistribute;
       this.canDistribute = canDistribute?.value;
@@ -160,14 +162,14 @@ export class PageDonate {
       this.isLoading = false;
       this.isDisabled = false;
       removePhoto();
-      const form = document.getElementById("form") as HTMLFormElement;
-      if (form) {
+      const form = document.getElementById( "form" ) as HTMLFormElement;
+      if( form ) {
         form.reset();
-        (document.getElementById("waitTime") as HTMLFormElement).value = "";
+        ( document.getElementById( "waitTime" ) as HTMLFormElement ).value = "";
       }
       // Reset report type
-      const reportType = document.getElementById("report-type-social") as HTMLInputElement;
-      if (reportType) {
+      const reportType = document.getElementById( "report-type-social" ) as HTMLInputElement;
+      if( reportType ) {
         reportType.checked = true;
       }
       checkViewport();
@@ -175,22 +177,22 @@ export class PageDonate {
       this.showLocationInput = true;
     };
 
-    const handleNewLocation = (e: Event) => {
+    const handleNewLocation = ( e: Event ) => {
       resetForm();
       e.preventDefault();
     };
 
-    const handlePhotoChange = async (e?: Event) => {
+    const handlePhotoChange = async ( e?: Event ) => {
       const target = e?.target as HTMLInputElement;
-      const file = (target.files as FileList)[0];
-      const imagePreview = document.getElementById("photo-preview");
+      const file = ( target.files as FileList )[0];
+      const imagePreview = document.getElementById( "photo-preview" );
 
       // Prevent submit before photo finishes processing
       this.photoIsProcessing = true;
       this.isDisabled = true;
 
       // If no files
-      if (!file) {
+      if( !file ) {
         removePhoto();
         // Reset
         this.photoIsProcessing = false;
@@ -199,17 +201,17 @@ export class PageDonate {
       }
       this.submitError = {};
       this.hasPhoto = true;
-      this.photoUrl = window.URL.createObjectURL(file);
+      this.photoUrl = window.URL.createObjectURL( file );
       // Generate file preview
-      if (imagePreview) {
+      if( imagePreview ) {
         imagePreview.style.backgroundImage = "url(" + this.photoUrl + ")";
       }
 
-      const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
-      if (addressInput.value && file) {
+      const addressInput = document.getElementById( "formatted_address" ) as HTMLInputElement;
+      if( addressInput.value && file ) {
         try {
-          await uploadPhoto(file, addressInput.value);
-        } catch (error) {
+          await uploadPhoto( file, addressInput.value );
+        } catch( error ) {
           removePhoto();
           this.submitError.photo = error?.fileName || "Whoops! We could not upload that photo";
         } finally {
@@ -226,46 +228,46 @@ export class PageDonate {
       }
     };
 
-    const uploadPhoto = async (file: File, address: string): Promise<void> => {
+    const uploadPhoto = async ( file: File, address: string ): Promise<void> => {
       const {
         id,
         filePath,
         presigned: { url, fields },
-      } = await baseFetch("/upload", { method: "POST", body: JSON.stringify({ fileName: file.name, address }) });
+      } = await baseFetch( "/upload", { method: "POST", body: JSON.stringify( { fileName: file.name, address } ) } );
       const formData = new FormData();
 
-      formData.append("ACL", "public-read");
-      formData.append("x-amz-acl", "public-read");
-      formData.append("x-amz-meta-user-id", id);
-      formData.append("Content-Type", file.type);
+      formData.append( "ACL", "public-read" );
+      formData.append( "x-amz-acl", "public-read" );
+      formData.append( "x-amz-meta-user-id", id );
+      formData.append( "Content-Type", file.type );
 
-      Object.entries(fields).forEach(([k, v]: [string, any]) => {
-        formData.append(k, v);
-      });
+      Object.entries( fields ).forEach( ( [k, v]: [string, any] ) => {
+        formData.append( k, v );
+      } );
 
-      formData.append("file", file);
+      formData.append( "file", file );
 
-      const awsReq = await fetch(url, {
+      const awsReq = await fetch( url, {
         method: "POST",
         mode: "cors",
         body: formData,
-      });
-      if (awsReq.status > 299) {
+      } );
+      if( awsReq.status > 299 ) {
         throw { fileName: "Whoops! That did not work - try again!" };
       }
       this.photoUrl = `https://polls.pizza/${filePath}`;
     };
 
     const removePhoto = () => {
-      const fileInput = document.getElementById("photo") as HTMLInputElement;
-      const imagePreview = document.getElementById("photo-preview");
-      if (fileInput) {
+      const fileInput = document.getElementById( "photo" ) as HTMLInputElement;
+      const imagePreview = document.getElementById( "photo-preview" );
+      if( fileInput ) {
         fileInput.value = "";
       }
       this.hasPhoto = false;
       this.photoUrl = "";
       delete this.submitError.photo;
-      if (imagePreview) {
+      if( imagePreview ) {
         imagePreview.style.backgroundImage = "";
       }
       this.photoIsProcessing = false;
@@ -274,27 +276,27 @@ export class PageDonate {
     // Sharing
     const shareUrl = "https://polls.pizza/";
     const shareText = "Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines";
-    const shareTwitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}&via=PizzaToThePolls`;
-    const shareFacebookLink = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&title=${encodeURIComponent(shareText)}&description=${encodeURIComponent(
+    const shareTwitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent( shareText )}&url=${shareUrl}&via=PizzaToThePolls`;
+    const shareFacebookLink = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&title=${encodeURIComponent( shareText )}&description=${encodeURIComponent(
       shareText,
-    )}&quote=${encodeURIComponent(shareText)}`;
+    )}&quote=${encodeURIComponent( shareText )}`;
 
-    const openSharePopup = (e: Event) => {
+    const openSharePopup = ( e: Event ) => {
       e.preventDefault();
       const linkTarget = e.target as HTMLLinkElement;
-      const targetURL = linkTarget.getAttribute("href");
-      if (!targetURL) {
+      const targetURL = linkTarget.getAttribute( "href" );
+      if( !targetURL ) {
         return;
       }
-      window.open(targetURL, "popup", "width=600,height=600");
+      window.open( targetURL, "popup", "width=600,height=600" );
       return;
     };
 
-    const handleSubmit = async (event: Event) => {
+    const handleSubmit = async ( event: Event ) => {
       event.preventDefault();
 
       // Prevent submitting a disabled form
-      if (this.isDisabled) {
+      if( this.isDisabled ) {
         return false;
       }
 
@@ -308,84 +310,84 @@ export class PageDonate {
       // Setup request
       let data: { [key: string]: string } = {};
 
-      Array.prototype.forEach.call(document.querySelectorAll("#form input, #form select"), (el: HTMLInputElement) => {
-        if (el) {
+      Array.prototype.forEach.call( document.querySelectorAll( "#form input, #form select" ), ( el: HTMLInputElement ) => {
+        if( el ) {
           data[el.name] = el.value;
         }
-      });
+      } );
 
       // Reset checkboxes and radios in data (values will be set below if present)
       data[`reportType`] = ``;
       data[`canDistribute`] = ``;
       data[`distributorDisclaimer`] = ``;
 
-      if (!this.reportType || this.reportType.length < 1) {
+      if( !this.reportType || this.reportType.length < 1 ) {
         this.submitError.reportType = "Whoops! Pick how you'd like to help us verify the line at this location.";
       } else {
         // Inject correct value into data
         data[`reportType`] = this.reportType;
       }
 
-      if (this.reportType === "social") {
+      if( this.reportType === "social" ) {
         // Set data.url for report (social), and trim leading/trailing white space
-        data.url = (data.url || "").replace(/<[^>]*>/g, "").trim();
-        if (!data.url.includes("http") && !data.url.match(/\s/)) {
+        data.url = ( data.url || "" ).replace( /<[^>]*>/g, "" ).trim();
+        if( !data.url.includes( "http" ) && !data.url.match( /\s/ ) ) {
           data.url = `http://${data.url}`;
         }
         // Ensure url is valid, and not an email address
-        if (!data.url.match(URL_REGEX) || !!data.url.match(EMAIL_REGEX)) {
+        if( !data.url.match( URL_REGEX ) || !!data.url.match( EMAIL_REGEX ) ) {
           this.submitError.url = "Whoops! Can you add a link to a report of a long line - with a publicly accessible photo - so we can verify this is on the level?";
         }
-      } else if (this.reportType === "photo") {
-        if (!this.hasPhoto) {
+      } else if( this.reportType === "photo" ) {
+        if( !this.hasPhoto ) {
           this.submitError.photo = "Whoops! Can you add a photo of the line to your report so we can verify this is on the level?";
         } else {
           data.url = this.photoUrl;
         }
       }
 
-      if (!data.address) {
+      if( !data.address ) {
         this.showLocationInput = true;
         this.submitError.address = "Whoops - we can't read that address";
       }
 
-      if (!data.waitTime) {
+      if( !data.waitTime ) {
         this.submitError.waitTime = "Whoops! Can you estimate the wait time?";
       }
 
-      if (!this.canDistribute || this.canDistribute.length < 1) {
+      if( !this.canDistribute || this.canDistribute.length < 1 ) {
         this.submitError.canDistribute = "Whoops! Will you be on location to help distribute the order?";
       } else {
         // Inject correct value into data
         data[`canDistribute`] = this.canDistribute;
       }
 
-      if (this.canDistribute === "true") {
+      if( this.canDistribute === "true" ) {
         // Disclaimer
-        const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
-        if (!distributorDisclaimerAgree) {
+        const distributorDisclaimerAgree = ( document.querySelector( "input[name=distributorDisclaimer]" ) as HTMLInputElement )?.checked;
+        if( !distributorDisclaimerAgree ) {
           this.submitError.distributorDisclaimer = "Whoops! You must read and agree to the guidelines.";
         } else {
           data[`distributorDisclaimer`] = `agree`;
         }
 
         // Contact First Name
-        if (!(data.contactFirstName || "")) {
+        if( !( data.contactFirstName || "" ) ) {
           this.submitError.contactFirstName = "Whoops! Can you please add your first name?";
         }
 
         // Contact Last Name
-        if (!(data.contactLastName || "")) {
+        if( !( data.contactLastName || "" ) ) {
           this.submitError.contactLastName = "Whoops! Can you please add your last name?";
         }
       }
 
-      if (!(data.contactPhone || "").match(PHONE_REGEX)) {
+      if( !( data.contactPhone || "" ).match( PHONE_REGEX ) ) {
         this.submitError.contactPhone = "Whoops! Can you add your phone number?";
       }
 
       // Check for any errors
-      if (Object.keys(this.submitError).length > 0) {
+      if( Object.keys( this.submitError ).length > 0 ) {
         // Update loading
         this.isLoading = false;
         // Disable submit
@@ -407,23 +409,23 @@ export class PageDonate {
       };
 
       try {
-        const response = await baseFetch(`/report`, {
-          body: JSON.stringify(requestData),
+        const response = await baseFetch( `/report`, {
+          body: JSON.stringify( requestData ),
           method: "POST",
-        });
+        } );
 
-        if (response) {
+        if( response ) {
           this.submitResponse = response;
           this.submitError = {};
           this.showServerError = false;
 
           // If truck is scheduled/on-site
-          if (this.submitResponse.hasTruck) {
+          if( this.submitResponse.hasTruck ) {
             this.showFoodTruckOnSiteConfirmation = true;
           } else {
             // If Reporter CAN distribute
-            if (this.canDistribute === "true") {
-              if (this.submitResponse.willReceive && !this.submitResponse.alreadyOrdered) {
+            if( this.canDistribute === "true" ) {
+              if( this.submitResponse.willReceive && !this.submitResponse.alreadyOrdered ) {
                 // If Distributor, and they WILL receive order, and we haven't already ordered
                 this.showDistributorConfirmation = true;
               } else {
@@ -432,7 +434,7 @@ export class PageDonate {
               }
             } else {
               // Reporter CANNOT distribute
-              if (this.submitResponse.alreadyOrdered) {
+              if( this.submitResponse.alreadyOrdered ) {
                 // We already have a report
                 this.showDuplicateReportConfirmation = true;
               } else {
@@ -445,18 +447,18 @@ export class PageDonate {
           // Show confirmation: *Always* required to hide form
           this.showConfirmation = true;
         }
-      } catch (errors) {
+      } catch( errors ) {
         this.submitError = errors;
 
         // If invalid address, take user back to location input
-        if (errors.address) {
+        if( errors.address ) {
           this.showLocationInput = true;
           this.showConfirmation = false;
           return false;
         }
 
         // If invalid url, take user back to report step 2
-        if (errors.url) {
+        if( errors.url ) {
           this.showLocationInput = false;
           this.showConfirmation = false;
           return false;
@@ -479,11 +481,11 @@ export class PageDonate {
     };
     return (
       <Host>
-        <div id="report" class={"report " + (this.viewportIsMobile ? "is-mobile-report" : "")}>
+        <div id="report" class={"report " + ( this.viewportIsMobile ? "is-mobile-report" : "" )}>
           <div class="container">
             <div class="box">
-              <form id="form" onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
-                <div id="form-step-1" hidden={!this.showLocationInput}>
+              <form id="form" onChange={() => ( this.isDisabled = false )} onInput={() => ( this.isDisabled = false )} hidden={this.showConfirmation}>
+                <div hidden={!this.showLocationInput}>
                   <h1>Report a line</h1>
                   {/* Location */}
                   <div class="form-item">
@@ -491,7 +493,7 @@ export class PageDonate {
                       Polling place address <span class="required">*</span>
                     </label>
                     <input
-                      class={"input " + ("address" in this.submitError ? "has-error" : "")}
+                      class={"input " + ( "address" in this.submitError ? "has-error" : "" )}
                       type="text"
                       id="autocomplete"
                       name="full_place"
@@ -501,7 +503,7 @@ export class PageDonate {
                       autocomplete="off"
                     />
                     <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
-                    <p class="help has-text-red" hidden={!("address" in this.submitError)}>
+                    <p class="help has-text-red" hidden={!( "address" in this.submitError )}>
                       {this.submitError.address}
                     </p>
                   </div>
@@ -542,7 +544,7 @@ export class PageDonate {
                       </tr>
                     </table>
                   </div>
-                  <button onClick={handleLoadStepTwo} class={"button is-teal is-marginless " + (!this.locationName ? "is-disabled" : "")} disabled={!this.locationName}>
+                  <button onClick={handleLoadStepTwo} class={"button is-teal is-marginless " + ( !this.locationName ? "is-disabled" : "" )} disabled={!this.locationName}>
                     Report line
                   </button>
                 </div>
@@ -561,20 +563,20 @@ export class PageDonate {
                       Social media report <span class="is-hidden-tablet">or photo</span> <span class="required">*</span>
                     </label>
                     <div class="radio-group social-radio-group">
-                      <label class={"radio " + ("reportType" in this.submitError ? "has-error" : "")} htmlFor="report-type-social" onClick={handleReportTypeChange}>
+                      <label class={"radio " + ( "reportType" in this.submitError ? "has-error" : "" )} htmlFor="report-type-social" onClick={handleReportTypeChange}>
                         <input type="radio" value="social" id="report-type-social" name="reportType" checked />
                         <span class="label-text">Social link</span>
                         <span class="indicator"></span>
                       </label>
                       <div class="radio-group-spacer is-hidden-mobile"></div>
-                      <label class={"radio is-hidden-tablet " + ("reportType" in this.submitError ? "has-error" : "")} htmlFor="report-type-photo" onClick={handleReportTypeChange}>
+                      <label class={"radio is-hidden-tablet " + ( "reportType" in this.submitError ? "has-error" : "" )} htmlFor="report-type-photo" onClick={handleReportTypeChange}>
                         <input type="radio" value="photo" id="report-type-photo" name="reportType" />
                         <span class="label-text">Photo</span>
                         <span class="indicator"></span>
                       </label>
                     </div>
                     <span class="help">We'll make sure there's really a line.</span>
-                    <p class="help has-text-red" hidden={!("reportType" in this.submitError)}>
+                    <p class="help has-text-red" hidden={!( "reportType" in this.submitError )}>
                       {this.submitError.reportType}
                     </p>
                   </div>
@@ -585,7 +587,7 @@ export class PageDonate {
                         Link to a report on social media <span class="required">*</span>
                       </label>
                       <input
-                        class={"input " + ("url" in this.submitError ? "has-error" : "")}
+                        class={"input " + ( "url" in this.submitError ? "has-error" : "" )}
                         id="social-link"
                         type="url"
                         name="url"
@@ -593,7 +595,7 @@ export class PageDonate {
                         autocomplete="off"
                       />
                       <span class="help is-hidden-mobile">We'll make sure there's really a line.</span>
-                      <p class="help has-text-red" hidden={!("url" in this.submitError)}>
+                      <p class="help has-text-red" hidden={!( "url" in this.submitError )}>
                         {this.submitError.url}
                       </p>
                     </div>
@@ -604,7 +606,7 @@ export class PageDonate {
                       <div class="clearfix">
                         <div
                           id="file-input-button"
-                          class={"file " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + ("photo" in this.submitError ? "is-red" : "is-blue")}
+                          class={"file " + ( this.photoIsProcessing ? "is-loading is-disabled " : "" ) + ( "photo" in this.submitError ? "is-red" : "is-blue" )}
                         >
                           <label class="file-label">
                             <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} disabled={this.photoIsProcessing} />
@@ -618,7 +620,7 @@ export class PageDonate {
                           <div class="delete" onClick={removePhoto}></div>
                         </div>
                       </div>
-                      <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
+                      <p class="help has-text-red" hidden={!( "photo" in this.submitError )}>
                         {this.submitError.photo}
                       </p>
                       <p class="help">
@@ -647,7 +649,7 @@ export class PageDonate {
                         <option value="4+ hours">4+ hours&nbsp;&nbsp;🍕🍕🍕🍕🍕</option>
                       </select>
                     </div>
-                    <p class="help has-text-red" hidden={!("waitTime" in this.submitError)}>
+                    <p class="help has-text-red" hidden={!( "waitTime" in this.submitError )}>
                       {this.submitError.waitTime}
                     </p>
                   </div>
@@ -657,19 +659,19 @@ export class PageDonate {
                       Will you receive the order? <span class="required">*</span>
                     </label>
                     <div class="radio-group report-watchdog-distributor-radio-group">
-                      <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-distributor" onClick={handleCanDistributeChange}>
+                      <label class={"radio " + ( "canDistribute" in this.submitError ? "has-error" : "" )} htmlFor="report-distributor" onClick={handleCanDistributeChange}>
                         <input type="radio" value="true" id="report-distributor" name="canDistribute" />
                         <span class="label-text">Yes 🍕</span>
                         <span class="indicator"></span>
                       </label>
-                      <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-watchdog" onClick={handleCanDistributeChange}>
+                      <label class={"radio " + ( "canDistribute" in this.submitError ? "has-error" : "" )} htmlFor="report-watchdog" onClick={handleCanDistributeChange}>
                         <input type="radio" value="false" id="report-watchdog" name="canDistribute" />
                         <span class="label-text">No</span>
                         <span class="indicator"></span>
                       </label>
                     </div>
                     <span class="help">Note that we're prioritizing deliveries to places where someone can help make sure the food gets received and handed out safely.</span>
-                    <p class="help has-text-red" hidden={!("canDistribute" in this.submitError)}>
+                    <p class="help has-text-red" hidden={!( "canDistribute" in this.submitError )}>
                       {this.submitError.canDistribute}
                     </p>
                   </div>
@@ -678,7 +680,7 @@ export class PageDonate {
                     <div>
                       <div class="form-item">
                         <label
-                          class={"checkbox is-small is-marginless " + ("distributorDisclaimer" in this.submitError ? "has-error" : "")}
+                          class={"checkbox is-small is-marginless " + ( "distributorDisclaimer" in this.submitError ? "has-error" : "" )}
                           htmlFor="accept-distributor-disclaimer"
                         >
                           <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
@@ -690,7 +692,7 @@ export class PageDonate {
                           </span>
                           <span class="indicator"></span>
                         </label>
-                        <p class="help has-text-red" hidden={!("distributorDisclaimer" in this.submitError)}>
+                        <p class="help has-text-red" hidden={!( "distributorDisclaimer" in this.submitError )}>
                           {this.submitError.distributorDisclaimer}
                         </p>
                       </div>
@@ -700,9 +702,9 @@ export class PageDonate {
                           <label class="label" htmlFor="contactFirstName">
                             Your first name <span class="required">*</span>
                           </label>
-                          <input class={"input " + ("contactFirstName" in this.submitError ? "has-error" : "")} type="text" name="contactFirstName" />
+                          <input class={"input " + ( "contactFirstName" in this.submitError ? "has-error" : "" )} type="text" name="contactFirstName" />
                           <p class="help">To give to the delivery driver.</p>
-                          <p class="help has-text-red" hidden={!("contactFirstName" in this.submitError)}>
+                          <p class="help has-text-red" hidden={!( "contactFirstName" in this.submitError )}>
                             {this.submitError.contactFirstName}
                           </p>
                         </div>
@@ -710,9 +712,9 @@ export class PageDonate {
                           <label class="label" htmlFor="contactLastName">
                             Your last name <span class="required">*</span>
                           </label>
-                          <input class={"input " + ("contactLastName" in this.submitError ? "has-error" : "")} type="text" name="contactLastName" />
+                          <input class={"input " + ( "contactLastName" in this.submitError ? "has-error" : "" )} type="text" name="contactLastName" />
                           <p class="help">To give to the delivery driver.</p>
-                          <p class="help has-text-red" hidden={!("contactLastName" in this.submitError)}>
+                          <p class="help has-text-red" hidden={!( "contactLastName" in this.submitError )}>
                             {this.submitError.contactLastName}
                           </p>
                         </div>
@@ -724,9 +726,9 @@ export class PageDonate {
                     <label class="label" htmlFor="contactPhone">
                       Your phone number <span class="required">*</span>
                     </label>
-                    <input class={"input " + ("contactPhone" in this.submitError ? "has-error" : "")} type="tel" name="contactPhone" />
+                    <input class={"input " + ( "contactPhone" in this.submitError ? "has-error" : "" )} type="tel" name="contactPhone" />
                     <span class="help">So we can let you know when your order's sent!</span>
-                    <p class="help has-text-red" hidden={!("contactPhone" in this.submitError)}>
+                    <p class="help has-text-red" hidden={!( "contactPhone" in this.submitError )}>
                       {this.submitError.contactPhone}
                     </p>
                   </div>
@@ -735,8 +737,8 @@ export class PageDonate {
                     onClick={handleSubmit}
                     class={
                       "button is-teal is-fullwidth-mobile " +
-                      (this.isDisabled || this.isLoading || this.photoIsProcessing ? "is-disabled " : "") +
-                      (this.isLoading ? "is-loading" : "")
+                      ( this.isDisabled || this.isLoading || this.photoIsProcessing ? "is-disabled " : "" ) +
+                      ( this.isLoading ? "is-loading" : "" )
                     }
                     type="submit"
                     disabled={this.isDisabled || this.isLoading || this.photoIsProcessing}
@@ -859,7 +861,7 @@ export class PageDonate {
                     <b>Sorry, we couldn’t process your report! Please try submitting again or return to the beginning and resubmit.</b>
                   </p>
                   <button
-                    class={"button is-blue " + (this.isDisabled || this.isLoading ? "is-disabled " : "") + (this.isLoading ? "is-loading" : "")}
+                    class={"button is-blue " + ( this.isDisabled || this.isLoading ? "is-disabled " : "" ) + ( this.isLoading ? "is-loading" : "" )}
                     onClick={handleSubmit}
                     disabled={this.isLoading}
                   >

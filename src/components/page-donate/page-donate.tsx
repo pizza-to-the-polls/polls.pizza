@@ -1,6 +1,6 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
 
-import { scrollPageToTop } from "../../lib/base";
+import { scrollPageToTop } from "../../util";
 
 interface Token {
   email: string;
