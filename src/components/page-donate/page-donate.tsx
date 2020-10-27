@@ -229,7 +229,7 @@ export class PageDonate {
                           <span class="label-text" id="custom-amount-text">
                             Other: $
                           </span>
-                          <input class="input" type="text" name="amount" id="custom-amount" autocomplete="off" />
+                          <input class="input" type="text" name="amount" id="custom-amount" onInput={handleChange} autocomplete="off" />
                           <span class="indicator"></span>
                         </label>
                       </li>
