@@ -159,8 +159,14 @@ export class PageAbout {
                 </a>
                 <div id="is-this-a-charity" class="expand-section is-active">
                   <div class="expand-content">
-                    {/* prettier-ignore */}
-                    <p>We are incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible. Our activities are 501(c)(3) compliant. If you’d like to learn more about how you can contribute or work with us, <stencil-route-link url="/partners" anchorClass="has-text-teal">learn more here</stencil-route-link>.</p>
+                    <p>
+                      We are incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible. Our activities
+                      are 501(c)(3) compliant. If you’d like to learn more about how you can contribute or work with us,
+                      <stencil-route-link url="/partners" anchorClass="has-text-teal">
+                        learn more here
+                      </stencil-route-link>
+                      {/* display: inline */}.
+                    </p>
                   </div>
                 </div>
               </div>
