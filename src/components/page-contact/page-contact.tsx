@@ -1,5 +1,7 @@
 import { Component, Host, h } from "@stencil/core";
 
+import { scrollPageToTop } from "../../lib/base";
+
 @Component({
   tag: "page-contact",
 })
@@ -8,7 +10,13 @@ export class PageContact {
     document.title = `Donate | Pizza to the Polls`;
   }
 
-  render() {
+  public componentDidLoad() {
+    if (!window.location.hash) {
+      scrollPageToTop();
+    }
+  }
+
+  public render() {
     return (
       <Host>
         <section id="contact" class="page contact">
