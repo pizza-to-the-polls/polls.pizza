@@ -12,17 +12,34 @@ export class PageHome {
   @State() public locations: string = "";
   @State() public states: string = "";
   @State() public raised: string = "";
+  @State() public costs: string = "";
+  @State() public available: string = "";
 
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
     const { raised } = await getTotals();
 
-    const { pizzas, locations, states } = await baseFetch(`/totals/2020`);
+    const { pizzas, locations, states, costs } = await baseFetch(`/totals/2020`);
 
-    this.pizzas = pizzas;
-    this.locations = locations;
-    this.states = states;
+    this.pizzas = Number(pizzas).toLocaleString();
+    this.locations = Number(locations).toLocaleString();
+    this.states = Number(states).toLocaleString();
+    // Calculate available before transforming values
+    this.available =
+      raised && this.costs
+        ? "$" +
+          (Number(raised.replace(/,/gi, "")) - Number(costs)).toLocaleString(undefined, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          })
+        : "";
+    this.costs =
+      "$" +
+      Number(costs).toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      });
     this.raised = `\$${raised}`;
   }
 
@@ -35,52 +52,77 @@ export class PageHome {
   public render() {
     return (
       <div>
-        <section class="hero">
-          <div class="intro">
-            <div class="container">
-              <p>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</p>
-              <p>Send us reports of long lines and we'll send in the delicious reinforcements.</p>
-            </div>
-          </div>
-          <div class="dashboard">
-            <div class="container">
-              <div class="stats">
-                <h2 class="is-display">2020 Election Totals</h2>
-                <div class="stats__row">
-                  <div class="stat">
-                    <span class="stat__number">{this.pizzas}</span>
-                    <span class="stat__label">Pizzas sent</span>
-                  </div>
-                  <div class="stat">
-                    <span class="stat__number">{this.locations}</span>
-                    <span class="stat__label">Polling places</span>
-                  </div>
-                  <div class="stat">
-                    <span class="stat__number">{this.states}</span>
-                    <span class="stat__label">States</span>
-                  </div>
-                  <div class="stat">
-                    <span class="stat__number">{this.raised}</span>
-                    <span class="stat__label">Raised in 2020</span>
-                  </div>
-                </div>
-                <a href="/report" class="button is-teal is-fullwidth">
-                  Report a line
-                </a>
-                <a href="/activity" class="stat__link">
-                  View recent deliveries
-                </a>
+        <section class="hero-section">
+          <div class="container">
+            <h2 class="is-display has-text-centered">2020 Election Totals</h2>
+            <div class="stats-row">
+              <div class="stat">
+                <span class="stat-number">{this.pizzas}</span>
+                <span class="stat-label">Pizzas sent</span>
+              </div>
+              <div class="stat">
+                <span class="stat-number">{this.states}</span>
+                <span class="stat-label">States</span>
+              </div>
+              <div class="stat">
+                <span class="stat-number">{this.locations}</span>
+                <span class="stat-label">Polling places</span>
               </div>
             </div>
-            <div class="dashboard-bg"></div>
+          </div>
+          <div class="report">
+            <div class="container">
+              <div class="box report-content">
+                <h2 class="is-display">Report a line</h2>
+                <p>
+                  <strong>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</strong>
+                </p>
+                <p>Send us reports of long lines and we'll send in the delicious reinforcements.</p>
+                <stencil-route-link url="/report" anchorClass="button is-teal">
+                  Report a long line
+                </stencil-route-link>
+                <p>
+                  <stencil-route-link url="/activity" anchorClass="has-text-teal">
+                    View recent deliveries
+                  </stencil-route-link>
+                </p>
+              </div>
+            </div>
+            <div class="report-bg"></div>
           </div>
         </section>
-        <section class="home-secondary">
+        <section class="donate">
           <div class="container">
-            <p>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</p>
-            <a href="/donate" class="button is-red is-fullwidth">
-              Donate
-            </a>
+            <div class="box donate-content">
+              <h2 class="is-display">Donation Totals</h2>
+              <p>
+                <strong>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</strong>
+              </p>
+              {(this.raised || this.costs) && (
+                <div class="stats-row">
+                  {this.raised && (
+                    <div class="stat">
+                      <span class="stat-number">{this.raised}</span>
+                      <span class="stat-label">Raised in 2020</span>
+                    </div>
+                  )}
+                  {this.costs && (
+                    <div class="stat">
+                      <span class="stat-number">{this.costs}</span>
+                      <span class="stat-label">Total Spent</span>
+                    </div>
+                  )}
+                </div>
+              )}
+              <stencil-route-link url="/donate" anchorClass="button is-red">
+                Donate to feed democracy
+              </stencil-route-link>
+            </div>
+          </div>
+        </section>
+        <section class="how-we-do-it">
+          <div class="container">
+            <h2 class="has-text-white">How we do it</h2>
             <div class="cards">
               <div class="card">
                 <h3>Food trucks</h3>

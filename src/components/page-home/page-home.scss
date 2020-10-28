@@ -1,130 +1,6 @@
-$border: $blue;
-
-.hero {
-  background-image: url("/images/bg.png");
-  background-size: 400px;
-  background-color: $yellow;
-  background-attachment: fixed;
-  color: $blue;
-  padding: 20px 0 0 0;
-}
-
-.intro {
-  p {
-    font-size: 18px;
-    margin-top: 0;
-    display: block;
-    margin: 0 auto 30px;
-    font-weight: 600;
-    text-align: center;
-  }
-}
-
-.dashboard.launching {
-  .stats {
-    background-color: $blue;
-  }
-  h2,
-  p {
-    color: $white;
-  }
-  p {
-    font-size: 1.33rem;
-  }
+page-home {
   h2 {
-    border-bottom-color: $white;
-  }
-  .programs {
-    a {
-      font-size: 1.85rem;
-      display: block;
-      margin: 60px auto;
-      max-width: 72%;
-      text-decoration: none;
-
-      p {
-        font-weight: 400;
-        line-height: 1.25rem;
-      }
-
-      span {
-        font-weight: 600;
-      }
-
-      div {
-        background-color: $white;
-        padding: 14px 30px;
-        border-radius: 4px;
-      }
-
-      p,
-      &,
-      &:visited,
-      &:active {
-        color: $cyan;
-      }
-
-      &:hover {
-        p,
-        & {
-          color: $white;
-        }
-
-        div {
-          background-color: $cyan;
-        }
-
-        span {
-          text-decoration: underline;
-        }
-      }
-      p {
-        font-size: 1.2rem;
-      }
-    }
-  }
-}
-
-.dashboard-bg {
-  background-color: $blue;
-  background-image: url("/images/bg2.png");
-  background-attachment: fixed;
-  background-size: 400px;
-  width: 100%;
-  height: 53%;
-  position: absolute;
-  bottom: 0;
-  z-index: 0;
-}
-
-.dashboard {
-  color: $blue;
-  text-align: center;
-  position: relative;
-  padding: 0 0 20px 0;
-
-  h2 {
-    position: relative;
-    display: block;
-    padding: 0 0 20px 0;
-    margin: 0;
-    z-index: 101;
-    border-bottom: 4px solid $blue;
-    font-size: 32px;
-  }
-}
-
-.stats {
-  padding: 40px;
-  background: $white;
-  color: $blue;
-  position: relative;
-  z-index: 100;
-  border-radius: 10px;
-  box-shadow: 0 10px 40px 0 rgba($blue, 0.3);
-  text-align: center;
-
-  h2 {
+    margin-bottom: 1.5rem;
     font-size: 24px;
 
     @media ($tablet) {
@@ -132,113 +8,119 @@ $border: $blue;
     }
   }
 
-  .button {
-    max-width: 400px;
+  .hero-section {
+    background-image: url("/images/bg.png");
+    background-size: 400px;
+    background-color: $yellow;
+    background-attachment: fixed;
+    color: $blue;
+    padding: 10px 0 0 0;
   }
-}
 
-.stats__row {
-  padding-bottom: 10px;
-  display: flex;
-  flex-wrap: wrap;
-
-  &:first-of-type {
-    padding: 20px 0;
-    border-bottom: 4px solid $blue;
-    margin-bottom: 40px;
-  }
-}
-
-.stat__info {
-  display: block;
-  text-align: center;
-  font-size: 0.8em;
-}
-
-.stat {
-  text-align: center;
-  padding: 10px;
-  width: 50%;
-}
-
-.stat:last-of-type {
-  border-bottom: none;
-}
-
-.stat__number {
-  font-size: 24px;
-  font-family: $header-font;
-
-  @media ($tablet) {
-    font-size: 32px;
-  }
-}
-
-.stat__label {
-  display: block;
-}
-
-.stat__link {
-  color: $teal;
-  display: inline-block;
-  text-align: center;
-  font-weight: 600;
-
-  &:hover {
-    color: darken($teal, 10%);
-  }
-}
-
-@media ($tablet) {
-  .stats__row {
+  .stats-row {
     display: flex;
-  }
+    flex-wrap: nowrap;
+    justify-content: center;
+    border-top: 4px solid $blue;
 
-  .stat {
-    display: table-cell;
-    width: 24.5%;
-    text-align: center;
-    padding: 20px;
-    border-bottom: none;
-    margin-right: 2px;
-  }
+    .stat {
+      width: 33%;
+      text-align: center;
+      padding: 0.75rem;
 
-  .stat:last-of-type {
-    border-right: none;
-  }
-  .stat__info {
-    text-align: right;
-  }
-}
+      @media ($tablet) {
+        display: table-cell;
+        text-align: center;
+        padding: 1rem;
+        border-bottom: none;
+        margin-right: 2px;
 
-@media ($tablet) {
-  .intro {
-    padding: 20px 0;
-  }
+        &:last-of-type {
+          border-right: none;
+        }
+      }
 
-  .hero {
-    p {
-      font-size: 24px;
-      max-width: 80%;
+      &:last-of-type {
+        border-bottom: none;
+      }
+
+      .stat-number {
+        font-size: 24px;
+        font-family: $header-font;
+
+        @media ($tablet) {
+          font-size: 32px;
+        }
+      }
+
+      .stat-label {
+        display: block;
+        font-size: 14px;
+
+        @media ($tablet) {
+          font-size: 16px;
+        }
+      }
     }
   }
-}
 
-.home-secondary {
-  background: $blue;
-  background-image: url("/images/bg2.png");
-  background-attachment: fixed;
-  background-size: 400px;
-  text-align: center;
+  .donate {
+    color: $blue;
+    background: $cyan;
+    background-image: url("/images/bg2.png");
+    background-attachment: fixed;
+    background-size: 400px;
+    padding-bottom: 40px;
 
-  p {
-    color: $white;
-    font-size: 24px;
-    max-width: 600px;
-    margin: 0 auto 20px;
+    .stats-row {
+      margin-bottom: 0.5rem;
+      justify-content: left;
+
+      .stat {
+        text-align: left;
+
+        @media ($under-tablet) {
+          width: 50%;
+        }
+      }
+    }
   }
 
-  .button {
-    max-width: 400px;
+  .hero-section,
+  .report,
+  .donate {
+    color: $blue;
+    position: relative;
+  }
+
+  .report-content,
+  .donate-content {
+    position: relative;
+    margin-top: 1rem;
+    z-index: 100;
+  }
+
+  .report-bg {
+    background-color: $cyan;
+    background-image: url("/images/bg2.png");
+    background-attachment: fixed;
+    background-size: 400px;
+    width: 100%;
+    height: 14%;
+    position: absolute;
+    bottom: 0;
+    z-index: 0;
+  }
+
+  .how-we-do-it {
+    color: $blue;
+    background: $teal;
+    background-image: url("/images/bg2.png");
+    background-attachment: fixed;
+    background-size: 400px;
+
+    h2 {
+      margin-bottom: 0;
+    }
   }
 }
