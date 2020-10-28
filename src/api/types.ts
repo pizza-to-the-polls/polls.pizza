@@ -1,3 +1,7 @@
+export type OrderId = number;
+export type ReportId = number;
+export type LocationId = number;
+
 export type PizzaTotals = {
   raised: number;
   donors: number;
@@ -9,24 +13,25 @@ export type PizzaTotals = {
   states: number;
 };
 
-export type OrderQueryResults = {
-  results: OrderInfo[];
-  count: number;
-};
-
 export type OrderInfo = {
-  id: number;
+  id: OrderId;
   meals: number;
   quantity: number;
   orderType: string;
   pizzas: number;
   restaurant: string;
   createdAt: Date;
+};
+/**
+ * /orders/{id}
+ */
+export type OrderDetails = OrderInfo & {
   location: LocationInfo;
   reports: ReportInfo[];
 };
 
 export type LocationInfo = {
+  id: LocationId;
   city: string;
   state: string;
   zip: string;
@@ -34,14 +39,30 @@ export type LocationInfo = {
   fullAddress: string;
   lat: string;
   lng: string;
-  id: number;
   validatedAt: Date;
   stateName: string;
 };
 
 export type ReportInfo = {
+  id: ReportId;
   createdAt: Date;
-  id: number;
   reportURL: string;
   waitTime: string;
+};
+
+/**
+ * /locations/{address}
+ */
+export type LocationStatus = LocationInfo & {
+  hasTruck: boolean;
+  reports: any[];
+  orders: OrderInfo[];
+};
+
+/**
+ * /orders
+ */
+export type OrderQueryResults = {
+  results: OrderDetails[];
+  count: number;
 };
