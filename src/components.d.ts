@@ -45,9 +45,13 @@ export namespace Components {
         "isActive": boolean;
         "isCollapsible": boolean;
         "isSmall": boolean;
+        /**
+          * Set an `id` on the card element to allow navigating or scrolling to it
+         */
+        "scrollId": string;
     }
     interface UiDynamicText {
-        "format"?: (value: any) => string;
+        "format"?: ( value: any ) => string;
         "value": any | undefined;
     }
     interface UiGeoMap {
@@ -60,6 +64,8 @@ export namespace Components {
         "isActive": boolean;
     }
     interface UiPizzaList {
+        "hasIcon": boolean;
+        "isBordered": boolean;
     }
     interface UiSingleInput {
         "buttonLabel": string;
@@ -273,9 +279,13 @@ declare namespace LocalJSX {
         "isActive"?: boolean;
         "isCollapsible"?: boolean;
         "isSmall"?: boolean;
+        /**
+          * Set an `id` on the card element to allow navigating or scrolling to it
+         */
+        "scrollId"?: string;
     }
     interface UiDynamicText {
-        "format"?: (value: any) => string;
+        "format"?: ( value: any ) => string;
         "value"?: any | undefined;
     }
     interface UiGeoMap {
@@ -286,6 +296,8 @@ declare namespace LocalJSX {
         "isActive"?: boolean;
     }
     interface UiPizzaList {
+        "hasIcon"?: boolean;
+        "isBordered"?: boolean;
     }
     interface UiSingleInput {
         "buttonLabel"?: string;

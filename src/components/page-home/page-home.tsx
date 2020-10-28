@@ -1,77 +1,123 @@
 import { Component, h, State } from "@stencil/core";
 
 import { PizzaApi, PizzaTotals } from "../../api";
+import { scrollPageToTop } from "../../util";
 
-@Component({
+@Component( {
   tag: "page-home",
   styleUrl: "page-home.scss",
-})
+} )
 export class PageHome {
   @State() private totals?: PizzaTotals;
+  @State() public available: string = "";
 
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    PizzaApi.getTotals().then(totals => PizzaApi.getDonations().then(raised => (this.totals = { ...totals, raised })));
+    PizzaApi.getTotals().then( totals => PizzaApi.getDonations().then( raised => {
+      this.totals = { ...totals, raised };
+
+      // Calculate available before transforming values
+      this.available = raised && totals.costs
+        ? "$" +
+        ( raised - totals.costs ).toLocaleString( undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        } )
+        : "";
+    } ) );
+  }
+
+  public componentDidLoad() {
+    if( !window.location.hash ) {
+      scrollPageToTop();
+    }
   }
 
   public render() {
     return (
       <div>
-        <section class="hero">
-          <div class="intro">
-            <div class="container">
-              <p>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</p>
-              <p>Send us reports of long lines and we'll send in the delicious reinforcements.</p>
+        <section class="hero-section">
+          <div class="container">
+            <h2 class="is-display has-text-centered">2020 Election Totals</h2>
+            <div class="stats-row">
+              <div class="stat">
+                <span class="stat-number">
+                  <ui-dynamic-text value={this.totals?.pizzas} format={x => x.toLocaleString()} />
+                </span>
+                <span class="stat-label">Pizzas sent</span>
+              </div>
+              <div class="stat">
+                <span class="stat-number">
+                  <ui-dynamic-text value={this.totals?.states} format={x => x.toLocaleString()} />
+                </span>
+                <span class="stat-label">States</span>
+              </div>
+              <div class="stat">
+                <span class="stat-number">
+                  <ui-dynamic-text value={this.totals?.locations} format={x => x.toLocaleString()} />
+                </span>
+                <span class="stat-label">Polling places</span>
+              </div>
             </div>
           </div>
-          <div class="dashboard">
+          <div class="report">
             <div class="container">
-              <ui-card class="stats">
-                <h2 class="is-display">2020 Election Totals</h2>
-                <div class="stats__row">
-                  <div class="stat">
-                    <span class="stat__number">
-                      <ui-dynamic-text value={this.totals?.pizzas} />
-                    </span>
-                    <span class="stat__label">Pizzas sent</span>
-                  </div>
-                  <div class="stat">
-                    <span class="stat__number">
-                      <ui-dynamic-text value={this.totals?.locations} />
-                    </span>
-                    <span class="stat__label">Polling places</span>
-                  </div>
-                  <div class="stat">
-                    <span class="stat__number">
-                      <ui-dynamic-text value={this.totals?.states} />
-                    </span>
-                    <span class="stat__label">States</span>
-                  </div>
-                  <div class="stat">
-                    <span class="stat__number">
-                      <ui-dynamic-text value={this.totals?.raised} format={x => `\$${x}`} />
-                    </span>
-                    <span class="stat__label">Raised in 2020</span>
-                  </div>
-                </div>
-                <a href="/report" class="button is-teal is-fullwidth">
-                  Report a line
-                </a>
-                <a href="/activity" class="stat__link">
-                  View recent deliveries
-                </a>
+              <ui-card class="report-content">
+                <h2 class="is-display">Report a line</h2>
+                <p>
+                  <strong>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</strong>
+                </p>
+                <p>Send us reports of long lines and we'll send in the delicious reinforcements.</p>
+                <stencil-route-link url="/report" anchorClass="button is-teal">
+                  Report a long line
+                </stencil-route-link>
+                <p>
+                  <stencil-route-link url="/activity" anchorClass="has-text-teal">
+                    View recent deliveries
+                  </stencil-route-link>
+                </p>
               </ui-card>
             </div>
-            <div class="dashboard-bg"></div>
+            <div class="report-bg"></div>
           </div>
         </section>
-        <section class="home-secondary">
+        <section class="donate">
           <div class="container">
-            <p>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</p>
-            <a href="/donate" class="button is-red is-fullwidth">
-              Donate
-            </a>
+            <ui-card class="donate-content">
+              <h2 class="is-display">Donation Totals</h2>
+              <p>
+                <strong>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</strong>
+              </p>
+              <div class="stats-row">
+                <div class="stat">
+                  <span class="stat-number">
+                    <ui-dynamic-text
+                      value={this.totals?.raised}
+                      format={x => `\$${x.toLocaleString( undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 } )}`}
+                    />
+                  </span>
+                  <span class="stat-label">Raised in 2020</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-number">
+                    <ui-dynamic-text
+                      value={this.totals?.costs}
+                      format={x => `\$${x.toLocaleString( undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 } )}`}
+                    />
+                  </span>
+                  <span class="stat-label">Total Spent</span>
+                </div>
+              </div>
+              <stencil-route-link url="/donate" anchorClass="button is-red">
+                Donate to feed democracy
+              </stencil-route-link>
+            </ui-card>
+          </div>
+        </section>
+        <section class="how-we-do-it">
+          <div class="container">
+            <h2 class="has-text-white">How we do it</h2>
             <div class="cards">
               <div class="card">
                 <h3>Food trucks</h3>
