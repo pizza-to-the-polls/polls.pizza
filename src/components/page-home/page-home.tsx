@@ -31,12 +31,6 @@ export class PageHome {
     );
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public render() {
     return (
       <div>
