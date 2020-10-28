@@ -90,6 +90,11 @@ const rest = [
     url: "https://www.wetzels.com/",
   },
   {
+    img: "wishful.png",
+    name: "Wishful Roasting Co.",
+    url: "https://wishfulroasting.com/",
+  },
+  {
     img: "zendesk.png",
     name: "Zendesk",
     url: "https://zendesk.com/",

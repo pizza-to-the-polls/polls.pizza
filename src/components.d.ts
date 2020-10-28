@@ -13,6 +13,8 @@ export namespace Components {
     }
     interface PageActivity {
     }
+    interface PageContact {
+    }
     interface PageCovid {
     }
     interface PageDeliveries {
@@ -75,6 +77,12 @@ declare global {
     var HTMLPageActivityElement: {
         prototype: HTMLPageActivityElement;
         new (): HTMLPageActivityElement;
+    };
+    interface HTMLPageContactElement extends Components.PageContact, HTMLStencilElement {
+    }
+    var HTMLPageContactElement: {
+        prototype: HTMLPageContactElement;
+        new (): HTMLPageContactElement;
     };
     interface HTMLPageCovidElement extends Components.PageCovid, HTMLStencilElement {
     }
@@ -182,6 +190,7 @@ declare global {
         "app-root": HTMLAppRootElement;
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
+        "page-contact": HTMLPageContactElement;
         "page-covid": HTMLPageCovidElement;
         "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
@@ -207,6 +216,8 @@ declare namespace LocalJSX {
     interface PageAbout {
     }
     interface PageActivity {
+    }
+    interface PageContact {
     }
     interface PageCovid {
     }
@@ -255,6 +266,7 @@ declare namespace LocalJSX {
         "app-root": AppRoot;
         "page-about": PageAbout;
         "page-activity": PageActivity;
+        "page-contact": PageContact;
         "page-covid": PageCovid;
         "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
@@ -281,6 +293,7 @@ declare module "@stencil/core" {
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
+            "page-contact": LocalJSX.PageContact & JSXBase.HTMLAttributes<HTMLPageContactElement>;
             "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
             "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;

@@ -1,4 +1,4 @@
-import { Component, Host, h } from "@stencil/core";
+import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "ui-pizza-list",
@@ -6,7 +6,7 @@ import { Component, Host, h } from "@stencil/core";
   shadow: false,
 })
 export class UiPizzaList {
-  render() {
+  public render() {
     return (
       <Host>
         <slot></slot>

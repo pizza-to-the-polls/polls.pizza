@@ -86,6 +86,7 @@ export class AppRoot {
               <stencil-route url="/about" component="page-about" />
               <stencil-route url="/activity" component="page-activity" />
               <stencil-route url="/covid" component="page-covid" />
+              <stencil-route url="/contact" component="page-contact" />
               <stencil-route url="/deliveries" component="page-deliveries" />
               <stencil-route url="/donate" component="page-donate" />
               <stencil-route url="/guidelines" component="page-guidelines" />
@@ -146,7 +147,7 @@ export class AppRoot {
                   <stencil-route-link url="/press">Press</stencil-route-link>
                 </li>
                 <li>
-                  <a href="mailto:morequestions@polls.pizza">Contact us</a>
+                  <stencil-route-link url="/contact">Contact Us</stencil-route-link>
                 </li>
               </ul>
               <ul>
