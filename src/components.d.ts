@@ -54,6 +54,8 @@ export namespace Components {
     interface UiModal {
         "isActive": boolean;
     }
+    interface UiPizzaList {
+    }
 }
 declare global {
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
@@ -170,6 +172,12 @@ declare global {
         prototype: HTMLUiModalElement;
         new (): HTMLUiModalElement;
     };
+    interface HTMLUiPizzaListElement extends Components.UiPizzaList, HTMLStencilElement {
+    }
+    var HTMLUiPizzaListElement: {
+        prototype: HTMLUiPizzaListElement;
+        new (): HTMLUiPizzaListElement;
+    };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
         "page-about": HTMLPageAboutElement;
@@ -190,6 +198,7 @@ declare global {
         "ui-dynamic-text": HTMLUiDynamicTextElement;
         "ui-main-content": HTMLUiMainContentElement;
         "ui-modal": HTMLUiModalElement;
+        "ui-pizza-list": HTMLUiPizzaListElement;
     }
 }
 declare namespace LocalJSX {
@@ -240,6 +249,8 @@ declare namespace LocalJSX {
     interface UiModal {
         "isActive"?: boolean;
     }
+    interface UiPizzaList {
+    }
     interface IntrinsicElements {
         "app-root": AppRoot;
         "page-about": PageAbout;
@@ -260,6 +271,7 @@ declare namespace LocalJSX {
         "ui-dynamic-text": UiDynamicText;
         "ui-main-content": UiMainContent;
         "ui-modal": UiModal;
+        "ui-pizza-list": UiPizzaList;
     }
 }
 export { LocalJSX as JSX };
@@ -285,6 +297,7 @@ declare module "@stencil/core" {
             "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
             "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
             "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
+            "ui-pizza-list": LocalJSX.UiPizzaList & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;
         }
     }
 }

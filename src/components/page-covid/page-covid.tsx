@@ -29,7 +29,7 @@ export class PageCovid {
                     this year:
                   </strong>
                 </p>
-                <ul class="pizza-list">
+                <ui-pizza-list>
                   <li>
                     <a href="https://www.cdc.gov/coronavirus/2019-ncov/prevent-getting-sick/diy-cloth-face-coverings.html" target="_blank" rel="noopener noreferrer">
                       Wear a mask.
@@ -57,7 +57,7 @@ export class PageCovid {
                   </li>
                   <li>Stay home if you are sick, experiencing any symptoms, or after recent close contact with a person with COVID-19.</li>
                   <li>Make sure to comply with local guidance and COVID-19 protocols put in place by your city or election officials.</li>
-                </ul>
+                </ui-pizza-list>
                 <p>
                   Our <stencil-route-link url="/trucks">food truck</stencil-route-link> program will be staffed by professionals who’ve been trained in food safety and policies to
                   help reduce the spread of COVID-19, but please keep in mind that it isn’t possible to eliminate the risk of exposure.

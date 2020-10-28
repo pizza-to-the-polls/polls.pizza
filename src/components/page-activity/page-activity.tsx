@@ -41,7 +41,7 @@ export class PageActivity {
               {ordersByDay.map(({ date, orders }) => (
                 <div class="order-day">
                   <h3 class="date-header">{date}</h3>
-                  <ul class="pizza-list order-list">
+                  <ui-pizza-list class="order-list">
                     {orders.map(({ id, createdAt, pizzas, location: { fullAddress }, reports }: OrderInfo) => (
                       <li id={"order-id-" + id}>
                         <b>
@@ -65,7 +65,7 @@ export class PageActivity {
                         </ul>
                       </li>
                     ))}
-                  </ul>
+                  </ui-pizza-list>
                 </div>
               ))}
               {ordersByDay.length > 0 ? (

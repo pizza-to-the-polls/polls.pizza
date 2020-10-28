@@ -834,7 +834,7 @@ export class PageDonate {
                   <p>
                     <b>Thank you for your submission! Our team will review your report shortly. We'll reach out to you to verify delivery and pickup.</b>
                   </p>
-                  <ul class="pizza-list">
+                  <ui-pizza-list>
                     <li>
                       One of our volunteers will reach out to you to verify timing for delivery. Pizzas usually take around 90 minutes to be delivered after an order is placed.
                     </li>
@@ -843,7 +843,7 @@ export class PageDonate {
                       site know it's free for all: poll workers, voters, children, journalists, poll watchers, and anyone else who's out and about. Be sure to practice social
                       distancing and stay at least 6 feet apart from others.
                     </li>
-                  </ul>
+                  </ui-pizza-list>
                   <a href="/guidelines" class="button is-blue">
                     Learn more about best practices
                   </a>

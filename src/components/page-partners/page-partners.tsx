@@ -139,7 +139,7 @@ export class PagePartners {
             <ui-card>
               <h2>Become a partner</h2>
               <p>We’re looking for partners who can:</p>
-              <ul class="pizza-list">
+              <ui-pizza-list>
                 <li>
                   <strong>Promote @PizzatothePolls:</strong> Help spread the word by creating or sharing content across all channels of communication so people know they can report
                   a line or donate food.
@@ -153,7 +153,7 @@ export class PagePartners {
                 <li>
                   <strong>Participate in the November 3 Day of Action:</strong> Election Day
                 </li>
-              </ul>
+              </ui-pizza-list>
               <p>
                 If you’re interested in becoming a partner to help ease the pain of crowded polling places, get in touch today:{" "}
                 <a href="mailto:partners@polls.pizza" class="has-text-teal" target="_blank">

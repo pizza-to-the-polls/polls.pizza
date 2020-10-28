@@ -68,7 +68,7 @@ export class PageAbout {
 
                 <p>By the time the dust had settled and the ballots were cast, we had raised $43,307 from 1,728 donors, and over 25,000 slices of pizza were consumed!</p>
 
-                <ul class="pizza-list is-marginless">
+                <ui-pizza-list class="is-marginless">
                   <li>
                     <h3>2018</h3>
                     <p>
@@ -90,7 +90,7 @@ export class PageAbout {
                       !
                     </p>
                   </li>
-                </ul>
+                </ui-pizza-list>
               </ui-card>
 
               <ui-card is-collapsible={true} header-text="How we do it" scroll-id="how-we-do-it">
@@ -151,7 +151,7 @@ export class PageAbout {
               </ui-card>
               <ui-card is-collapsible={true} header-text="What precautions is Pizza to the Polls taking as a result of COVID&#8209;19?">
                 <p>Pizza to the Polls values the health and safety of our communities, and will be working to mitigate risk of disease transmission:</p>
-                <ul class="pizza-list">
+                <ui-pizza-list>
                   <li>
                     Our{" "}
                     <stencil-route-link url="/trucks" anchorClass="has-text-teal">
@@ -176,7 +176,7 @@ export class PageAbout {
                     </a>{" "}
                     with delivery drivers and restaurants, but it’s up to each person to consider their own personal risks.
                   </li>
-                </ul>
+                </ui-pizza-list>
                 <p>
                   You can learn more about safety precautions you can take to stay safe at the polls{" "}
                   <stencil-route-link url="/covid" anchorClass="has-text-teal">
