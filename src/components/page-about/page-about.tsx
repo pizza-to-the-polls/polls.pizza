@@ -328,13 +328,30 @@ export class PageAbout {
                 </a>
                 <div id="more-questions" class="expand-section">
                   <div class="expand-content">
-                    <p>
-                      That’s more of a statement, but please send them to us at{" "}
-                      <a href="mailto:morequestions@polls.pizza" class="has-text-teal" target="_blank" rel="noopener noreferrer">
-                        morequestions@polls.pizza
-                      </a>
-                      .
-                    </p>
+                    <p>That’s more of a statement, but find where to send your question below:</p>
+                    <ul class="pizza-list">
+                      <li>
+                        If you’d like to get in touch with us for a story send an email to{" "}
+                        <a href="mailto:press@polls.pizza" class="has-text-teal" target="_blank" rel="noopener noreferrer">
+                          press@polls.pizza
+                        </a>
+                        .
+                      </li>
+                      <li>
+                        If you’re interested in becoming a partner to help ease the pain of crowded polling places, get in touch by sending an email to{" "}
+                        <a href="mailto:partners@polls.pizza" class="has-text-teal" target="_blank" rel="noopener noreferrer">
+                          partners@polls.pizza
+                        </a>
+                        .
+                      </li>
+                      <li>
+                        If your question wasn’t answered in the FAQs above, get in touch at{" "}
+                        <a href="mailto:morequestions@polls.pizza" class="has-text-teal" target="_blank" rel="noopener noreferrer">
+                          morequestions@polls.pizza
+                        </a>
+                        . Due to the high volume of emails we receive, we may not be able to get back to you.
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
