@@ -45,11 +45,14 @@ export namespace Components {
         "isActive": boolean;
         "isCollapsible": boolean;
         "isSmall": boolean;
-        "scrollId": string;
     }
     interface UiDynamicText {
         "format"?: (value: any) => string;
         "value": any | undefined;
+    }
+    interface UiGeoMap {
+        "getCenter": () => Promise<google.maps.LatLng | undefined>;
+        "setCenter": (newCenter: google.maps.LatLngLiteral) => Promise<void>;
     }
     interface UiMainContent {
     }
@@ -168,6 +171,12 @@ declare global {
         prototype: HTMLUiDynamicTextElement;
         new (): HTMLUiDynamicTextElement;
     };
+    interface HTMLUiGeoMapElement extends Components.UiGeoMap, HTMLStencilElement {
+    }
+    var HTMLUiGeoMapElement: {
+        prototype: HTMLUiGeoMapElement;
+        new (): HTMLUiGeoMapElement;
+    };
     interface HTMLUiMainContentElement extends Components.UiMainContent, HTMLStencilElement {
     }
     var HTMLUiMainContentElement: {
@@ -205,6 +214,7 @@ declare global {
         "page-trucks": HTMLPageTrucksElement;
         "ui-card": HTMLUiCardElement;
         "ui-dynamic-text": HTMLUiDynamicTextElement;
+        "ui-geo-map": HTMLUiGeoMapElement;
         "ui-main-content": HTMLUiMainContentElement;
         "ui-modal": HTMLUiModalElement;
         "ui-pizza-list": HTMLUiPizzaListElement;
@@ -249,11 +259,12 @@ declare namespace LocalJSX {
         "isActive"?: boolean;
         "isCollapsible"?: boolean;
         "isSmall"?: boolean;
-        "scrollId"?: string;
     }
     interface UiDynamicText {
         "format"?: (value: any) => string;
         "value"?: any | undefined;
+    }
+    interface UiGeoMap {
     }
     interface UiMainContent {
     }
@@ -281,6 +292,7 @@ declare namespace LocalJSX {
         "page-trucks": PageTrucks;
         "ui-card": UiCard;
         "ui-dynamic-text": UiDynamicText;
+        "ui-geo-map": UiGeoMap;
         "ui-main-content": UiMainContent;
         "ui-modal": UiModal;
         "ui-pizza-list": UiPizzaList;
@@ -308,6 +320,7 @@ declare module "@stencil/core" {
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
             "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
             "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
+            "ui-geo-map": LocalJSX.UiGeoMap & JSXBase.HTMLAttributes<HTMLUiGeoMapElement>;
             "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
             "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
             "ui-pizza-list": LocalJSX.UiPizzaList & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;
