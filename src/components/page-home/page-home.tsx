@@ -25,15 +25,21 @@ export class PageHome {
     this.pizzas = Number(pizzas).toLocaleString();
     this.locations = Number(locations).toLocaleString();
     this.states = Number(states).toLocaleString();
-    this.costs = costs;
+    // Calculate available before transforming values
     this.available =
       raised && this.costs
         ? "$" +
-          (Number(raised.replace(/,/gi, "")) - Number(this.costs)).toLocaleString(undefined, {
+          (Number(raised.replace(/,/gi, "")) - Number(costs)).toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
           })
         : "";
+    this.costs =
+      "$" +
+      Number(costs).toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      });
     this.raised = `\$${raised}`;
   }
 
@@ -91,18 +97,22 @@ export class PageHome {
               <p>
                 <strong>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</strong>
               </p>
-              <div class="stats-row">
-                <div class="stat">
-                  <span class="stat-number">{this.raised}</span>
-                  <span class="stat-label">Raised in 2020</span>
+              {(this.raised || this.costs) && (
+                <div class="stats-row">
+                  {this.raised && (
+                    <div class="stat">
+                      <span class="stat-number">{this.raised}</span>
+                      <span class="stat-label">Raised in 2020</span>
+                    </div>
+                  )}
+                  {this.costs && (
+                    <div class="stat">
+                      <span class="stat-number">{this.costs}</span>
+                      <span class="stat-label">Total Spent</span>
+                    </div>
+                  )}
                 </div>
-                {this.available && (
-                  <div class="stat">
-                    <span class="stat-number">{this.available}</span>
-                    <span class="stat-label">Available Funds</span>
-                  </div>
-                )}
-              </div>
+              )}
               <stencil-route-link url="/donate" anchorClass="button is-red">
                 Donate to feed democracy
               </stencil-route-link>
