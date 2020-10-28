@@ -76,7 +76,7 @@ export class PageHome {
                 </stencil-route-link>
                 <p>
                   <stencil-route-link url="/activity" anchorClass="has-text-teal">
-                    View more recent deliveries
+                    View recent deliveries
                   </stencil-route-link>
                 </p>
               </div>
