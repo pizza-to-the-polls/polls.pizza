@@ -68,7 +68,7 @@ export class PageHome {
             <div class="container">
               <ui-card class="report-content">
                 <form-report>
-                  <h2 class="is-display">Report a line</h2>
+                  <h2 id="report" class="is-display is-scroll-to">Report a line</h2>
                   <p>
                     <strong>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</strong>
                   </p>
