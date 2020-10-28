@@ -3,10 +3,10 @@ import { Component, h, State } from "@stencil/core";
 import { PizzaApi, PizzaTotals } from "../../api";
 import { scrollPageToTop } from "../../util";
 
-@Component( {
+@Component({
   tag: "page-home",
   styleUrl: "page-home.scss",
-} )
+})
 export class PageHome {
   @State() private totals?: PizzaTotals;
   @State() public available: string = "";
@@ -14,22 +14,25 @@ export class PageHome {
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    PizzaApi.getTotals().then( totals => PizzaApi.getDonations().then( raised => {
-      this.totals = { ...totals, raised };
+    PizzaApi.getTotals().then(totals =>
+      PizzaApi.getDonations().then(raised => {
+        this.totals = { ...totals, raised };
 
-      // Calculate available before transforming values
-      this.available = raised && totals.costs
-        ? "$" +
-        ( raised - totals.costs ).toLocaleString( undefined, {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0,
-        } )
-        : "";
-    } ) );
+        // Calculate available before transforming values
+        this.available =
+          raised && totals.costs
+            ? "$" +
+              (raised - totals.costs).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })
+            : "";
+      }),
+    );
   }
 
   public componentDidLoad() {
-    if( !window.location.hash ) {
+    if (!window.location.hash) {
       scrollPageToTop();
     }
   }
@@ -92,19 +95,13 @@ export class PageHome {
               <div class="stats-row">
                 <div class="stat">
                   <span class="stat-number">
-                    <ui-dynamic-text
-                      value={this.totals?.raised}
-                      format={x => `\$${x.toLocaleString( undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 } )}`}
-                    />
+                    <ui-dynamic-text value={this.totals?.raised} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
                   </span>
                   <span class="stat-label">Raised in 2020</span>
                 </div>
                 <div class="stat">
                   <span class="stat-number">
-                    <ui-dynamic-text
-                      value={this.totals?.costs}
-                      format={x => `\$${x.toLocaleString( undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 } )}`}
-                    />
+                    <ui-dynamic-text value={this.totals?.costs} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
                   </span>
                   <span class="stat-label">Total Spent</span>
                 </div>

@@ -1,10 +1,10 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
 
-@Component( {
+@Component({
   tag: "ui-card",
   styleUrl: "ui-card.scss",
   shadow: false,
-} )
+})
 export class UiCard {
   @Prop() public isSmall: boolean;
   @Prop() public isCollapsible: boolean;
@@ -28,12 +28,12 @@ export class UiCard {
 
   public render() {
     // Expand/collapse section
-    const toggleCollapse = ( e?: Event ) => {
+    const toggleCollapse = (e?: Event) => {
       e?.preventDefault();
       const header = e?.target as HTMLInputElement;
-      const expandContent = header.parentNode?.querySelector( ".expand-section" ) as HTMLElement;
+      const expandContent = header.parentNode?.querySelector(".expand-section") as HTMLElement;
       this.isActive = !this.isActive;
-      if( this.isActive ) {
+      if (this.isActive) {
         this.maxHeight = expandContent ? expandContent.scrollHeight + 500 + "px" : "10000px";
       } else {
         this.maxHeight = "";
@@ -45,7 +45,7 @@ export class UiCard {
       <Host class={{ "is-small": this.isSmall }}>
         {this.isCollapsible ? (
           <div>
-            <a href="#" class={"expand-section-link is-header " + ( this.isActive ? "is-active" : "" )} onClick={toggleCollapse} aria-expanded={this.isActive ? "true" : "false"}>
+            <a href="#" class={"expand-section-link is-header " + (this.isActive ? "is-active" : "")} onClick={toggleCollapse} aria-expanded={this.isActive ? "true" : "false"}>
               {this.headerText || <span>&nbsp;</span>}
             </a>
             <div id={this.scrollId} class={{ "expand-section": true, "is-active": this.isActive }} style={{ maxHeight: this.maxHeight }}>
@@ -55,8 +55,8 @@ export class UiCard {
             </div>
           </div>
         ) : (
-            <slot />
-          )}
+          <slot />
+        )}
       </Host>
     );
   }
