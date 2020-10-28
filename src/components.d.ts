@@ -51,7 +51,7 @@ export namespace Components {
         "scrollId": string;
     }
     interface UiDynamicText {
-        "format"?: ( value: any ) => string;
+        "format"?: (value: any) => string;
         "value": any | undefined;
     }
     interface UiGeoMap {
@@ -285,7 +285,7 @@ declare namespace LocalJSX {
         "scrollId"?: string;
     }
     interface UiDynamicText {
-        "format"?: ( value: any ) => string;
+        "format"?: (value: any) => string;
         "value"?: any | undefined;
     }
     interface UiGeoMap {
