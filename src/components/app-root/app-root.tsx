@@ -76,6 +76,9 @@ export class AppRoot {
             </li>
              */}
             <li>
+              <stencil-route-link url="/activity">Deliveries</stencil-route-link>
+            </li>
+            <li>
               <stencil-route-link url="/about">About</stencil-route-link>
             </li>
           </ul>
