@@ -124,7 +124,7 @@ export class PageDonate {
 
     const handleReportTypeChange = () => {
       const reportType = document.querySelector("input[name=reportType]:checked") as HTMLInputElement;
-      // Clear errors
+      // Clear error
       delete this.submitError.reportType;
       // Clear if changing report type
       if (this.reportType !== reportType?.value) {
@@ -135,7 +135,7 @@ export class PageDonate {
 
     const handleCanDistributeChange = () => {
       const canDistribute = document.querySelector("input[name=canDistribute]:checked") as HTMLInputElement;
-      // Clear errors
+      // Clear error
       delete this.submitError.canDistribute;
       delete this.submitError.distributorDisclaimer;
       delete this.submitError.contactRole;

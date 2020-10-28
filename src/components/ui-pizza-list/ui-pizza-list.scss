@@ -1,5 +1,5 @@
 ui-pizza-list {
-  & > ul {
+  > ul {
     display: block;
     margin: 1rem 0 1.5rem;
     padding: 0;
@@ -8,21 +8,10 @@ ui-pizza-list {
 
     > li {
       position: relative;
-      margin: 1.5rem 0 1.5rem 2rem;
+      margin: 1rem 0 1rem;
 
       &:last-of-type {
         margin-bottom: 0;
-      }
-
-      &:before {
-        content: url("/images/icons/pizza-slice-yellow.svg");
-        position: absolute;
-        top: 3px;
-        left: -2rem;
-        width: 1.5rem;
-        height: 1.5rem;
-        display: inline-block;
-        text-align: center;
       }
 
       h3,
@@ -39,11 +28,40 @@ ui-pizza-list {
           color: darken($red, 5%);
         }
       }
+
+      .title {
+        font-weight: 600;
+        font-size: 16px;
+      }
     }
 
     ::marker {
       position: relative;
       text-align: left;
+    }
+
+    &.has-icon {
+      > li {
+        margin: 1rem 0 1rem 2rem;
+
+        &:before {
+          content: url("/images/icons/pizza-slice-yellow.svg");
+          position: absolute;
+          top: 3px;
+          left: -2rem;
+          width: 1.5rem;
+          height: 1.5rem;
+          display: inline-block;
+          text-align: center;
+        }
+      }
+    }
+
+    &.is-bordered {
+      > li:not(:last-of-type) {
+        padding: 0 0 1rem;
+        border-bottom: 1px solid $blue;
+      }
     }
   }
 }

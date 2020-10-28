@@ -68,7 +68,7 @@ export class PageAbout {
 
                 <p>By the time the dust had settled and the ballots were cast, we had raised $43,307 from 1,728 donors, and over 25,000 slices of pizza were consumed!</p>
 
-                <ui-pizza-list class="is-marginless">
+                <ui-pizza-list has-icon={false}>
                   <li>
                     <h3>2018</h3>
                     <p>
