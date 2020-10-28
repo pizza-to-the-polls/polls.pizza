@@ -6,6 +6,10 @@ page-deliveries {
     }
   }
 
+  a {
+    cursor: pointer;
+  }
+
   hr.heavy {
     width: 100%;
     background-color: $red;

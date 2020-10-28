@@ -1,0 +1,22 @@
+ui-single-input {
+  display: block;
+  & > div::after {
+    clear: both;
+    content: "";
+    display: block;
+  }
+
+  .input-value {
+    border: 0;
+    width: calc(100% - 100px);
+    float: left;
+    border-radius: $radius 0 0 $radius;
+  }
+
+  .submit-button {
+    float: left;
+    width: 100px;
+    margin: 0;
+    border-radius: 0 $radius $radius 0;
+  }
+}

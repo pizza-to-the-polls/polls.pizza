@@ -21,7 +21,7 @@ page-activity {
     }
   }
 
-  .order-list {
+  .order-list > ul {
     list-style-type: none;
     margin: 0;
     overflow-y: auto;

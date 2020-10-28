@@ -1,10 +1,10 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
 
-@Component( {
+@Component({
   tag: "ui-card",
   styleUrl: "ui-card.scss",
   shadow: false,
-} )
+})
 export class UiCard {
   @Prop() public isSmall: boolean;
   // Collapse Props
@@ -24,13 +24,13 @@ export class UiCard {
 
   public render() {
     // Expand/collapse section
-    const toggleCollapse = ( e?: Event ) => {
+    const toggleCollapse = (e?: Event) => {
       e?.preventDefault();
       const header = e?.target as HTMLInputElement;
-      const expandContent = header.parentNode?.querySelector( ".expand-section" ) as HTMLElement;
+      const expandContent = header.parentNode?.querySelector(".expand-section") as HTMLElement;
       this.isActive = !this.isActive;
-      if( this.isActive ) {
-        this.maxHeight = expandContent ? (expandContent.scrollHeight + 500) + "px" : "10000px";
+      if (this.isActive) {
+        this.maxHeight = expandContent ? expandContent.scrollHeight + 500 + "px" : "10000px";
       } else {
         this.maxHeight = "";
       }
@@ -39,25 +39,20 @@ export class UiCard {
 
     return (
       <Host class={{ "is-small": this.isSmall }}>
-        {this.isCollapsible ?
-          (
-            <div>
-              <a href="#"
-                class={"expand-section-link is-header " + ( this.isActive ? "is-active" : "" )}
-                onClick={toggleCollapse}
-                aria-expanded={this.isActive ? "true" : "false"}
-              >
-                {this.headerText || <span>&nbsp;</span>}
-              </a>
-              <div class={{ "expand-section": true, "is-active": this.isActive }} style={{ maxHeight: this.maxHeight }}>
-                <div class="expand-content">
-                  <slot />
-                </div>
+        {this.isCollapsible ? (
+          <div>
+            <a href="#" class={"expand-section-link is-header " + (this.isActive ? "is-active" : "")} onClick={toggleCollapse} aria-expanded={this.isActive ? "true" : "false"}>
+              {this.headerText || <span>&nbsp;</span>}
+            </a>
+            <div class={{ "expand-section": true, "is-active": this.isActive }} style={{ maxHeight: this.maxHeight }}>
+              <div class="expand-content">
+                <slot />
               </div>
             </div>
-          ) : (
-            <slot />
-          )}
+          </div>
+        ) : (
+          <slot />
+        )}
       </Host>
     );
   }

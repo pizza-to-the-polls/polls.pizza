@@ -13,15 +13,26 @@ export type PizzaTotals = {
   states: number;
 };
 
+export enum OrderTypes {
+  pizzas = "pizzas",
+  donuts = "donuts",
+}
+
+export enum OrderTypeMealCounts {
+  pizzas = 14,
+  donuts = 12,
+}
+
 export type OrderInfo = {
   id: OrderId;
   meals: number;
   quantity: number;
-  orderType: string;
+  orderType: OrderTypes;
   pizzas: number;
   restaurant: string;
   createdAt: Date;
 };
+
 /**
  * /orders/{id}
  */

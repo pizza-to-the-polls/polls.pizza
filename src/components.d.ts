@@ -61,6 +61,13 @@ export namespace Components {
     }
     interface UiPizzaList {
     }
+    interface UiSingleInput {
+        "buttonLabel": string;
+        "label": string;
+        "name": string;
+        "placeholder": string;
+        "type": string;
+    }
 }
 declare global {
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
@@ -195,6 +202,12 @@ declare global {
         prototype: HTMLUiPizzaListElement;
         new (): HTMLUiPizzaListElement;
     };
+    interface HTMLUiSingleInputElement extends Components.UiSingleInput, HTMLStencilElement {
+    }
+    var HTMLUiSingleInputElement: {
+        prototype: HTMLUiSingleInputElement;
+        new (): HTMLUiSingleInputElement;
+    };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
         "page-about": HTMLPageAboutElement;
@@ -218,6 +231,7 @@ declare global {
         "ui-main-content": HTMLUiMainContentElement;
         "ui-modal": HTMLUiModalElement;
         "ui-pizza-list": HTMLUiPizzaListElement;
+        "ui-single-input": HTMLUiSingleInputElement;
     }
 }
 declare namespace LocalJSX {
@@ -273,6 +287,14 @@ declare namespace LocalJSX {
     }
     interface UiPizzaList {
     }
+    interface UiSingleInput {
+        "buttonLabel"?: string;
+        "label"?: string;
+        "name"?: string;
+        "onButtonClicked"?: (event: CustomEvent<string>) => void;
+        "placeholder"?: string;
+        "type"?: string;
+    }
     interface IntrinsicElements {
         "app-root": AppRoot;
         "page-about": PageAbout;
@@ -296,6 +318,7 @@ declare namespace LocalJSX {
         "ui-main-content": UiMainContent;
         "ui-modal": UiModal;
         "ui-pizza-list": UiPizzaList;
+        "ui-single-input": UiSingleInput;
     }
 }
 export { LocalJSX as JSX };
@@ -324,6 +347,7 @@ declare module "@stencil/core" {
             "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
             "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
             "ui-pizza-list": LocalJSX.UiPizzaList & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;
+            "ui-single-input": LocalJSX.UiSingleInput & JSXBase.HTMLAttributes<HTMLUiSingleInputElement>;
         }
     }
 }
