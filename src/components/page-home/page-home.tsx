@@ -67,14 +67,14 @@ export class PageHome {
           <div class="report">
             <div class="container">
               <ui-card class="report-content">
-                <h2 class="is-display">Report a line</h2>
-                <p>
-                  <strong>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</strong>
-                </p>
-                <p>Send us reports of long lines and we'll send in the delicious reinforcements.</p>
-                <stencil-route-link url="/report" anchorClass="button is-teal">
-                  Report a long line
-                </stencil-route-link>
+                <form-report>
+                  <h2 class="is-display">Report a line</h2>
+                  <p>
+                    <strong>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</strong>
+                  </p>
+                  <p>Send us reports of long lines and we'll send in the delicious reinforcements.</p>
+                </form-report>
+                <br />
                 <p>
                   <stencil-route-link url="/activity" anchorClass="has-text-teal">
                     View recent deliveries

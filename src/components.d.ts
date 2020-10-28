@@ -9,6 +9,8 @@ import { LocationInfo } from "./api/types";
 export namespace Components {
     interface AppRoot {
     }
+    interface FormReport {
+    }
     interface PageAbout {
     }
     interface PageActivity {
@@ -81,6 +83,12 @@ declare global {
     var HTMLAppRootElement: {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
+    };
+    interface HTMLFormReportElement extends Components.FormReport, HTMLStencilElement {
+    }
+    var HTMLFormReportElement: {
+        prototype: HTMLFormReportElement;
+        new (): HTMLFormReportElement;
     };
     interface HTMLPageAboutElement extends Components.PageAbout, HTMLStencilElement {
     }
@@ -216,6 +224,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
+        "form-report": HTMLFormReportElement;
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
         "page-contact": HTMLPageContactElement;
@@ -242,6 +251,8 @@ declare global {
 }
 declare namespace LocalJSX {
     interface AppRoot {
+    }
+    interface FormReport {
     }
     interface PageAbout {
     }
@@ -309,6 +320,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "app-root": AppRoot;
+        "form-report": FormReport;
         "page-about": PageAbout;
         "page-activity": PageActivity;
         "page-contact": PageContact;
@@ -338,6 +350,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "form-report": LocalJSX.FormReport & JSXBase.HTMLAttributes<HTMLFormReportElement>;
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
             "page-contact": LocalJSX.PageContact & JSXBase.HTMLAttributes<HTMLPageContactElement>;

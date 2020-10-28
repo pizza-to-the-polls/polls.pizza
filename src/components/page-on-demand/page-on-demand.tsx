@@ -20,7 +20,7 @@ export class PageOnDemand {
               <h2>How to help</h2>
               <h3>1. Report a crowd</h3>
               <p>
-                If you’re at a crowded polling place that could use some snacks, let us know! Just <a href="/report">report the address and give us a bit of info</a> and we’ll get
+                If you’re at a crowded polling place that could use some snacks, let us know! Just <a href="/">report the address and give us a bit of info</a> and we’ll get
                 to work finding a restaurant that can deliver the goods.
               </p>
               <h3>2. Stick around</h3>
@@ -44,7 +44,7 @@ export class PageOnDemand {
                 If you’re not actually at the crowded polling place, you can still report the line. Just note that we’re prioritizing deliveries to places where someone can help
                 make sure the food gets received and handed out safely.
               </p>
-              <a class="button is-teal" href="/report">
+              <a class="button is-teal" href="/">
                 Report a line
               </a>
             </ui-card>
