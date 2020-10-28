@@ -20,8 +20,8 @@ export class PageOnDemand {
               <h2>How to help</h2>
               <h3>1. Report a crowd</h3>
               <p>
-                If you’re at a crowded polling place that could use some snacks, let us know! Just <a href="/">report the address and give us a bit of info</a> and we’ll get
-                to work finding a restaurant that can deliver the goods.
+                If you’re at a crowded polling place that could use some snacks, let us know! Just <a href="/">report the address and give us a bit of info</a> and we’ll get to
+                work finding a restaurant that can deliver the goods.
               </p>
               <h3>2. Stick around</h3>
               <p>
