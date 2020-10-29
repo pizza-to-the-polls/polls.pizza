@@ -1,7 +1,6 @@
 import { Component, h, State } from "@stencil/core";
 
 import { PizzaApi, PizzaTotals } from "../../api";
-import { scrollPageToTop } from "../../util";
 
 @Component({
   tag: "page-home",

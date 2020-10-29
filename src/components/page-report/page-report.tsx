@@ -1,7 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../util";
-
 @Component({
   tag: "page-report",
   styleUrl: "page-report.scss",
@@ -9,12 +7,6 @@ import { scrollPageToTop } from "../../util";
 export class PageDonate {
   public componentWillLoad() {
     document.title = `Report | Pizza to the Polls`;
-  }
-
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
   }
 
   public render() {
