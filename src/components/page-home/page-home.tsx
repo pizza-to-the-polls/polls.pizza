@@ -72,7 +72,7 @@ export class PageHome {
                     </strong>
                   </p>
                 </form-report>
-              </div>
+              </ui-card>
             </div>
             <div class="report-bg"></div>
           </div>
