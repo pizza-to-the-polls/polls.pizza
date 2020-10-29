@@ -1,15 +1,25 @@
-import { Component, h } from "@stencil/core";
+import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "page-report",
   styleUrl: "page-report.scss",
 })
-export class PageDonate {
+export class PageReport {
   public componentWillLoad() {
     document.title = `Report | Pizza to the Polls`;
   }
 
   public render() {
-    return <stencil-router-redirect url="/"></stencil-router-redirect>;
+    return (
+      <Host>
+        <div id="report" class="report">
+          <div class="container">
+            <div class="box">
+              <form-report></form-report>
+            </div>
+          </div>
+        </div>
+      </Host>
+    );
   }
 }

@@ -100,7 +100,7 @@ export class AppRoot {
               <stencil-route url="/partners" component="page-partners" />
               <stencil-route url="/press" component="page-press" />
               <stencil-route url="/privacy" component="page-privacy" />
-              <stencil-route url="/report" component="page-report" />
+              <stencil-route url="/report" routeRender={() => <stencil-router-redirect url="/" />} />
               <stencil-route url="/trucks" component="page-trucks" />
               <stencil-route component="page-home" />
             </stencil-route-switch>
