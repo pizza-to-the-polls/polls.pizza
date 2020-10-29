@@ -1,4 +1,4 @@
-import { Component, h, Host } from "@stencil/core";
+import { Component, h } from "@stencil/core";
 
 @Component({
   tag: "page-report",
@@ -10,16 +10,6 @@ export class PageDonate {
   }
 
   public render() {
-    return (
-      <Host>
-        <div id="report" class="report">
-          <div class="container">
-            <div class="box">
-              <form-report></form-report>
-            </div>
-          </div>
-        </div>
-      </Host>
-    );
+    return <stencil-router-redirect url="/"></stencil-router-redirect>;
   }
 }
