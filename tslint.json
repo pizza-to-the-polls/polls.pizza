@@ -5,23 +5,46 @@
   },
   "rules": {
     "class-name": true,
-    "comment-format": [true, "check-space"],
+    "comment-format": [
+      true,
+      "check-space"
+    ],
     "curly": true,
     "eofline": true,
     "forin": true,
-    "indent": [true, "spaces"],
+    "indent": [
+      true,
+      "spaces"
+    ],
     "label-position": true,
-    "max-line-length": [false, 999],
+    "max-line-length": [
+      false,
+      999
+    ],
     "member-access": true,
     "member-ordering": [
       true,
       {
-        "order": ["static-field", "instance-field", "constructor", "public-instance-method", "protected-instance-method", "private-instance-method"]
+        "order": [
+          "static-field",
+          "instance-field",
+          "constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method"
+        ]
       }
     ],
     "no-arg": true,
     "no-bitwise": true,
-    "no-console": [true, "debug", "info", "time", "timeEnd", "trace"],
+    "no-console": [
+      true,
+      "debug",
+      "info",
+      "time",
+      "timeEnd",
+      "trace"
+    ],
     "no-construct": true,
     "no-debugger": true,
     "no-duplicate-variable": true,
@@ -36,7 +59,14 @@
     "no-use-before-declare": false,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
-    "one-line": [true, "check-catch", "check-else", "check-finally", "check-whitespace", "check-open-brace"],
+    "one-line": [
+      true,
+      "check-catch",
+      "check-else",
+      "check-finally",
+      "check-whitespace",
+      "check-open-brace"
+    ],
     "ordered-imports": [
       true,
       {
@@ -46,9 +76,16 @@
         "module-source-path": "full"
       }
     ],
-    "quotemark": [true, "double", "avoid-escape"],
+    "quotemark": [
+      true,
+      "double",
+      "avoid-escape"
+    ],
     "radix": true,
-    "semicolon": [true, "always"],
+    "semicolon": [
+      true,
+      "always"
+    ],
     "trailing-comma": [
       true,
       {
@@ -56,7 +93,10 @@
         "multiline": "always"
       }
     ],
-    "triple-equals": [true, "allow-null-check"],
+    "triple-equals": [
+      true,
+      "allow-null-check"
+    ],
     "typedef-whitespace": [
       true,
       {
@@ -68,7 +108,13 @@
       }
     ],
     "variable-name": false,
-    "whitespace": [true, "check-decl", "check-operator", "check-separator", "check-type"]
+    "whitespace": [
+      true,
+      "check-decl",
+      "check-operator",
+      "check-separator",
+      "check-type"
+    ]
   },
   "ordered-imports": [
     true,

@@ -1,0 +1,41 @@
+page-deliveries {
+  ui-main-content {
+    .background {
+      background-color: $yellow;
+      background-image: url("/images/bg1.png");
+    }
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  hr.heavy {
+    width: 100%;
+    background-color: $red;
+    height: 12px;
+    margin: 0;
+  }
+
+  .food-choices {
+    ul {
+      display: flex;
+      margin: 0.5em 0;
+      padding: 0;
+      align-items: flex-start;
+      li {
+        margin-right: 1em;
+        list-style: none;
+        cursor: pointer;
+        padding: 0.25em 0.5em;
+        border-radius: 25px;
+        background-color: $gray1;
+        transition: all 0.2s ease-in-out;
+        &.selected {
+          background-color: $red;
+          color: $white;
+        }
+      }
+    }
+  }
+}

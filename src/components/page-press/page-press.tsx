@@ -1,19 +1,11 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../lib/base";
-
 @Component({
   tag: "page-press",
 })
 export class PagePress {
   public componentWillLoad() {
     document.title = `Press | Pizza to the Polls`;
-  }
-
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
   }
 
   public render() {

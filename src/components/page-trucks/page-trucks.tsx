@@ -1,7 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../lib/base";
-
 @Component({
   tag: "page-trucks",
   styleUrl: "page-trucks.scss",
@@ -9,12 +7,6 @@ import { scrollPageToTop } from "../../lib/base";
 export class PageTrucks {
   public componentWillLoad() {
     document.title = `Food Trucks | Pizza to the Polls`;
-  }
-
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
   }
 
   public render() {

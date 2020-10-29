@@ -1,46 +1,34 @@
 import { Component, h, State } from "@stencil/core";
 
-import { baseFetch, scrollPageToTop } from "../../lib/base";
-import { getTotals } from "../../lib/sheets";
+import { PizzaApi, PizzaTotals } from "../../api";
+import { scrollPageToTop } from "../../util";
 
 @Component({
   tag: "page-home",
   styleUrl: "page-home.scss",
 })
 export class PageHome {
-  @State() public pizzas: string = "";
-  @State() public locations: string = "";
-  @State() public states: string = "";
-  @State() public raised: string = "";
-  @State() public costs: string = "";
+  @State() private totals?: PizzaTotals;
   @State() public available: string = "";
 
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    const { raised } = await getTotals();
+    PizzaApi.getTotals().then(totals =>
+      PizzaApi.getDonations().then(raised => {
+        this.totals = { ...totals, raised };
 
-    const { pizzas, locations, states, costs } = await baseFetch(`/totals/2020`);
-
-    this.pizzas = Number(pizzas).toLocaleString();
-    this.locations = Number(locations).toLocaleString();
-    this.states = Number(states).toLocaleString();
-    // Calculate available before transforming values
-    this.available =
-      raised && this.costs
-        ? "$" +
-          (Number(raised.replace(/,/gi, "")) - Number(costs)).toLocaleString(undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          })
-        : "";
-    this.costs =
-      "$" +
-      Number(costs).toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      });
-    this.raised = `\$${raised}`;
+        // Calculate available before transforming values
+        this.available =
+          raised && totals.costs
+            ? "$" +
+              (raised - totals.costs).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })
+            : "";
+      }),
+    );
   }
 
   public componentDidLoad() {
@@ -57,22 +45,28 @@ export class PageHome {
             <h2 class="is-display has-text-centered">2020 Election Totals</h2>
             <div class="stats-row">
               <div class="stat">
-                <span class="stat-number">{this.pizzas}</span>
+                <span class="stat-number">
+                  <ui-dynamic-text value={this.totals?.pizzas} format={x => x.toLocaleString()} />
+                </span>
                 <span class="stat-label">Pizzas sent</span>
               </div>
               <div class="stat">
-                <span class="stat-number">{this.states}</span>
+                <span class="stat-number">
+                  <ui-dynamic-text value={this.totals?.states} format={x => x.toLocaleString()} />
+                </span>
                 <span class="stat-label">States</span>
               </div>
               <div class="stat">
-                <span class="stat-number">{this.locations}</span>
+                <span class="stat-number">
+                  <ui-dynamic-text value={this.totals?.locations} format={x => x.toLocaleString()} />
+                </span>
                 <span class="stat-label">Polling places</span>
               </div>
             </div>
           </div>
           <div class="report">
             <div class="container">
-              <div class="box report-content">
+              <ui-card class="report-content">
                 <h2 class="is-display">Report a line</h2>
                 <p>
                   <strong>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</strong>
@@ -86,38 +80,36 @@ export class PageHome {
                     View recent deliveries
                   </stencil-route-link>
                 </p>
-              </div>
+              </ui-card>
             </div>
             <div class="report-bg"></div>
           </div>
         </section>
         <section class="donate">
           <div class="container">
-            <div class="box donate-content">
+            <ui-card class="donate-content">
               <h2 class="is-display">Donation Totals</h2>
               <p>
                 <strong>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</strong>
               </p>
-              {(this.raised || this.costs) && (
-                <div class="stats-row">
-                  {this.raised && (
-                    <div class="stat">
-                      <span class="stat-number">{this.raised}</span>
-                      <span class="stat-label">Raised in 2020</span>
-                    </div>
-                  )}
-                  {this.costs && (
-                    <div class="stat">
-                      <span class="stat-number">{this.costs}</span>
-                      <span class="stat-label">Total Spent</span>
-                    </div>
-                  )}
+              <div class="stats-row">
+                <div class="stat">
+                  <span class="stat-number">
+                    <ui-dynamic-text value={this.totals?.raised} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
+                  </span>
+                  <span class="stat-label">Raised in 2020</span>
                 </div>
-              )}
+                <div class="stat">
+                  <span class="stat-number">
+                    <ui-dynamic-text value={this.totals?.costs} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
+                  </span>
+                  <span class="stat-label">Total Spent</span>
+                </div>
+              </div>
               <stencil-route-link url="/donate" anchorClass="button is-red">
                 Donate to feed democracy
               </stencil-route-link>
-            </div>
+            </ui-card>
           </div>
         </section>
         <section class="how-we-do-it">

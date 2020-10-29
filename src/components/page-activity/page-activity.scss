@@ -21,7 +21,7 @@ page-activity {
     }
   }
 
-  .order-list {
+  .order-list > ul {
     list-style-type: none;
     margin: 0;
     overflow-y: auto;
@@ -74,7 +74,7 @@ page-activity {
   #loading-container {
     min-height: 300px;
 
-    .box.is-small {
+    ui-card.is-small {
       border: 0;
       p {
         font-size: 16px !important;

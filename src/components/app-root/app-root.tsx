@@ -68,6 +68,11 @@ export class AppRoot {
             <li>
               <stencil-route-link url="/donate">Donate</stencil-route-link>
             </li>
+            {/*
+            <li>
+              <stencil-route-link url="/deliveries">Deliveries</stencil-route-link>
+            </li>
+             */}
             <li>
               <stencil-route-link url="/about">About</stencil-route-link>
             </li>
@@ -76,21 +81,22 @@ export class AppRoot {
 
         <main>
           <stencil-router>
-            <stencil-route-switch scrollTopOffset={0}>
+            <stencil-route-switch scrollTopOffset={1}>
               <stencil-route url="/" component="page-home" exact={true} />
-              <stencil-route url="/donate" component="page-donate" />
-              <stencil-route url="/report" component="page-report" />
               <stencil-route url="/about" component="page-about" />
-              <stencil-route url="/contact" component="page-contact" />
-              <stencil-route url="/trucks" component="page-trucks" />
-              <stencil-route url="/partners" component="page-partners" />
-              <stencil-route url="/on-demand" component="page-on-demand" />
-              <stencil-route url="/covid" component="page-covid" />
-              <stencil-route url="/press" component="page-press" />
-              <stencil-route url="/instructions" component="page-instructions" />
-              <stencil-route url="/guidelines" component="page-guidelines" />
               <stencil-route url="/activity" component="page-activity" />
+              <stencil-route url="/covid" component="page-covid" />
+              <stencil-route url="/contact" component="page-contact" />
+              <stencil-route url="/deliveries" component="page-deliveries" />
+              <stencil-route url="/donate" component="page-donate" />
+              <stencil-route url="/guidelines" component="page-guidelines" />
+              <stencil-route url="/instructions" component="page-instructions" />
+              <stencil-route url="/on-demand" component="page-on-demand" />
+              <stencil-route url="/partners" component="page-partners" />
+              <stencil-route url="/press" component="page-press" />
               <stencil-route url="/privacy" component="page-privacy" />
+              <stencil-route url="/report" component="page-report" />
+              <stencil-route url="/trucks" component="page-trucks" />
               <stencil-route component="page-home" />
             </stencil-route-switch>
           </stencil-router>
@@ -99,7 +105,6 @@ export class AppRoot {
         <footer>
           <div class="container">
             <div
-              id="mc_embed_signup"
               class="clearfix"
               style={{
                 clear: "left",
@@ -111,22 +116,15 @@ export class AppRoot {
               <form
                 action="https://pizza.us14.list-manage.com/subscribe/post?u=ff4b828d01c30e7ef1de2e24b&amp;id=a2d940b77b"
                 method="post"
-                id="mc-embedded-subscribe-form"
                 name="mc-embedded-subscribe-form"
-                class="validate"
                 target="_blank"
                 noValidate
               >
-                <div id="mc_embed_signup_scroll">
-                  <label class="label" htmlFor="mce-EMAIL">
-                    Sign up for updates
-                  </label>
-                  <input type="email" value="" name="EMAIL" class="input email email-signup-input" id="mce-EMAIL" placeholder="Your email address" autocomplete="on" required />
-                  <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="button is-teal email-signup-button" />
+                <ui-single-input label="Sign up for updates" buttonLabel="Sign up" type="email" name="EMAIL" placeholder="Your email address">
                   <div style={{ position: "absolute", left: "-5000px" }} aria-hidden="true">
                     <input type="text" name="b_ff4b828d01c30e7ef1de2e24b_a2d940b77b" tabindex="-1" value="" readOnly />
                   </div>
-                </div>
+                </ui-single-input>
               </form>
             </div>
             <div class="footer-nav">

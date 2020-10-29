@@ -1,7 +1,5 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../lib/base";
-
 @Component({
   tag: "page-contact",
 })
@@ -10,18 +8,12 @@ export class PageContact {
     document.title = `Donate | Pizza to the Polls`;
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public render() {
     return (
       <Host>
         <section id="contact" class="page contact">
           <div class="container">
-            <div class="box">
+            <ui-card>
               <h1>Contact Us</h1>
               <p>
                 <b>To find answers to our most common questions, take a look at our FAQ.</b>
@@ -30,7 +22,7 @@ export class PageContact {
                 View our FAQ
               </stencil-route-link>
               <hr />
-              <ul class="pizza-list">
+              <ui-pizza-list>
                 <li>
                   If you’d like to get in touch with us for a story send an email to{" "}
                   <a href="mailto:press@polls.pizza" class="has-text-teal" target="_blank" rel="noopener noreferrer">
@@ -56,8 +48,8 @@ export class PageContact {
                   </a>
                   .
                 </li>
-              </ul>
-            </div>
+              </ui-pizza-list>
+            </ui-card>
           </div>
         </section>
       </Host>

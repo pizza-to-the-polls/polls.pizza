@@ -1,6 +1,7 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
 
-import { baseFetch, scrollPageToTop } from "../../lib/base";
+import { baseFetch } from "../../api/PizzaApi";
+import { scrollPageToTop } from "../../util";
 
 // Shared with pizzabase
 const URL_REGEX = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
@@ -35,12 +36,6 @@ export class PageDonate {
 
   public componentWillLoad() {
     document.title = `Report | Pizza to the Polls`;
-  }
-
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
   }
 
   public componentDidRender() {
@@ -96,6 +91,7 @@ export class PageDonate {
       });
     }
   }
+
   public render() {
     // Determine if viewport is mobile.
     // Sets this.viewPortIsMobile: boolean when called.
@@ -128,7 +124,7 @@ export class PageDonate {
 
     const handleReportTypeChange = () => {
       const reportType = document.querySelector("input[name=reportType]:checked") as HTMLInputElement;
-      // Clear errors
+      // Clear error
       delete this.submitError.reportType;
       // Clear if changing report type
       if (this.reportType !== reportType?.value) {
@@ -139,7 +135,7 @@ export class PageDonate {
 
     const handleCanDistributeChange = () => {
       const canDistribute = document.querySelector("input[name=canDistribute]:checked") as HTMLInputElement;
-      // Clear errors
+      // Clear error
       delete this.submitError.canDistribute;
       delete this.submitError.distributorDisclaimer;
       delete this.submitError.contactRole;
@@ -493,9 +489,9 @@ export class PageDonate {
       <Host>
         <div id="report" class={"report " + (this.viewportIsMobile ? "is-mobile-report" : "")}>
           <div class="container">
-            <div class="box">
+            <ui-card>
               <form id="form" onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
-                <div id="form-step-1" hidden={!this.showLocationInput}>
+                <div hidden={!this.showLocationInput}>
                   <h1>Report a line</h1>
                   {/* Location */}
                   <div class="form-item">
@@ -838,7 +834,7 @@ export class PageDonate {
                   <p>
                     <b>Thank you for your submission! Our team will review your report shortly. We'll reach out to you to verify delivery and pickup.</b>
                   </p>
-                  <ul class="pizza-list">
+                  <ui-pizza-list>
                     <li>
                       One of our volunteers will reach out to you to verify timing for delivery. Pizzas usually take around 90 minutes to be delivered after an order is placed.
                     </li>
@@ -847,7 +843,7 @@ export class PageDonate {
                       site know it's free for all: poll workers, voters, children, journalists, poll watchers, and anyone else who's out and about. Be sure to practice social
                       distancing and stay at least 6 feet apart from others.
                     </li>
-                  </ul>
+                  </ui-pizza-list>
                   <a href="/guidelines" class="button is-blue">
                     Learn more about best practices
                   </a>
@@ -904,7 +900,7 @@ export class PageDonate {
                   </p>
                 </div>
               )}
-            </div>
+            </ui-card>
           </div>
         </div>
       </Host>

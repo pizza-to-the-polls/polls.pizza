@@ -1,19 +1,11 @@
 import { Component, h, Host } from "@stencil/core";
 
-import { scrollPageToTop } from "../../lib/base";
-
 @Component({
   tag: "page-privacy",
 })
 export class PagePrivacy {
   public componentWillLoad() {
     document.title = `Privacy Policy | Pizza to the Polls`;
-  }
-
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
   }
 
   public render() {

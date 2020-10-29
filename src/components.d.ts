@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { LocationInfo } from "./api/types";
 export namespace Components {
     interface AppRoot {
     }
@@ -15,6 +16,9 @@ export namespace Components {
     interface PageContact {
     }
     interface PageCovid {
+    }
+    interface PageDeliveries {
+        "selectedLocation"?: LocationInfo;
     }
     interface PageDonate {
     }
@@ -35,6 +39,40 @@ export namespace Components {
     interface PageReport {
     }
     interface PageTrucks {
+    }
+    interface UiCard {
+        "headerText": string;
+        "isActive": boolean;
+        "isCollapsible": boolean;
+        "isSmall": boolean;
+        /**
+          * Set an `id` on the card element to allow navigating or scrolling to it
+         */
+        "scrollId": string;
+    }
+    interface UiDynamicText {
+        "format"?: (value: any) => string;
+        "value": any | undefined;
+    }
+    interface UiGeoMap {
+        "getCenter": () => Promise<google.maps.LatLng | undefined>;
+        "setCenter": (newCenter: google.maps.LatLngLiteral) => Promise<void>;
+    }
+    interface UiMainContent {
+    }
+    interface UiModal {
+        "isActive": boolean;
+    }
+    interface UiPizzaList {
+        "hasIcon": boolean;
+        "isBordered": boolean;
+    }
+    interface UiSingleInput {
+        "buttonLabel": string;
+        "label": string;
+        "name": string;
+        "placeholder": string;
+        "type": string;
     }
 }
 declare global {
@@ -67,6 +105,12 @@ declare global {
     var HTMLPageCovidElement: {
         prototype: HTMLPageCovidElement;
         new (): HTMLPageCovidElement;
+    };
+    interface HTMLPageDeliveriesElement extends Components.PageDeliveries, HTMLStencilElement {
+    }
+    var HTMLPageDeliveriesElement: {
+        prototype: HTMLPageDeliveriesElement;
+        new (): HTMLPageDeliveriesElement;
     };
     interface HTMLPageDonateElement extends Components.PageDonate, HTMLStencilElement {
     }
@@ -128,12 +172,55 @@ declare global {
         prototype: HTMLPageTrucksElement;
         new (): HTMLPageTrucksElement;
     };
+    interface HTMLUiCardElement extends Components.UiCard, HTMLStencilElement {
+    }
+    var HTMLUiCardElement: {
+        prototype: HTMLUiCardElement;
+        new (): HTMLUiCardElement;
+    };
+    interface HTMLUiDynamicTextElement extends Components.UiDynamicText, HTMLStencilElement {
+    }
+    var HTMLUiDynamicTextElement: {
+        prototype: HTMLUiDynamicTextElement;
+        new (): HTMLUiDynamicTextElement;
+    };
+    interface HTMLUiGeoMapElement extends Components.UiGeoMap, HTMLStencilElement {
+    }
+    var HTMLUiGeoMapElement: {
+        prototype: HTMLUiGeoMapElement;
+        new (): HTMLUiGeoMapElement;
+    };
+    interface HTMLUiMainContentElement extends Components.UiMainContent, HTMLStencilElement {
+    }
+    var HTMLUiMainContentElement: {
+        prototype: HTMLUiMainContentElement;
+        new (): HTMLUiMainContentElement;
+    };
+    interface HTMLUiModalElement extends Components.UiModal, HTMLStencilElement {
+    }
+    var HTMLUiModalElement: {
+        prototype: HTMLUiModalElement;
+        new (): HTMLUiModalElement;
+    };
+    interface HTMLUiPizzaListElement extends Components.UiPizzaList, HTMLStencilElement {
+    }
+    var HTMLUiPizzaListElement: {
+        prototype: HTMLUiPizzaListElement;
+        new (): HTMLUiPizzaListElement;
+    };
+    interface HTMLUiSingleInputElement extends Components.UiSingleInput, HTMLStencilElement {
+    }
+    var HTMLUiSingleInputElement: {
+        prototype: HTMLUiSingleInputElement;
+        new (): HTMLUiSingleInputElement;
+    };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
         "page-contact": HTMLPageContactElement;
         "page-covid": HTMLPageCovidElement;
+        "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
         "page-guidelines": HTMLPageGuidelinesElement;
         "page-home": HTMLPageHomeElement;
@@ -144,6 +231,13 @@ declare global {
         "page-privacy": HTMLPagePrivacyElement;
         "page-report": HTMLPageReportElement;
         "page-trucks": HTMLPageTrucksElement;
+        "ui-card": HTMLUiCardElement;
+        "ui-dynamic-text": HTMLUiDynamicTextElement;
+        "ui-geo-map": HTMLUiGeoMapElement;
+        "ui-main-content": HTMLUiMainContentElement;
+        "ui-modal": HTMLUiModalElement;
+        "ui-pizza-list": HTMLUiPizzaListElement;
+        "ui-single-input": HTMLUiSingleInputElement;
     }
 }
 declare namespace LocalJSX {
@@ -156,6 +250,9 @@ declare namespace LocalJSX {
     interface PageContact {
     }
     interface PageCovid {
+    }
+    interface PageDeliveries {
+        "selectedLocation"?: LocationInfo;
     }
     interface PageDonate {
     }
@@ -177,12 +274,46 @@ declare namespace LocalJSX {
     }
     interface PageTrucks {
     }
+    interface UiCard {
+        "headerText"?: string;
+        "isActive"?: boolean;
+        "isCollapsible"?: boolean;
+        "isSmall"?: boolean;
+        /**
+          * Set an `id` on the card element to allow navigating or scrolling to it
+         */
+        "scrollId"?: string;
+    }
+    interface UiDynamicText {
+        "format"?: (value: any) => string;
+        "value"?: any | undefined;
+    }
+    interface UiGeoMap {
+    }
+    interface UiMainContent {
+    }
+    interface UiModal {
+        "isActive"?: boolean;
+    }
+    interface UiPizzaList {
+        "hasIcon"?: boolean;
+        "isBordered"?: boolean;
+    }
+    interface UiSingleInput {
+        "buttonLabel"?: string;
+        "label"?: string;
+        "name"?: string;
+        "onButtonClicked"?: (event: CustomEvent<string>) => void;
+        "placeholder"?: string;
+        "type"?: string;
+    }
     interface IntrinsicElements {
         "app-root": AppRoot;
         "page-about": PageAbout;
         "page-activity": PageActivity;
         "page-contact": PageContact;
         "page-covid": PageCovid;
+        "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
         "page-guidelines": PageGuidelines;
         "page-home": PageHome;
@@ -193,6 +324,13 @@ declare namespace LocalJSX {
         "page-privacy": PagePrivacy;
         "page-report": PageReport;
         "page-trucks": PageTrucks;
+        "ui-card": UiCard;
+        "ui-dynamic-text": UiDynamicText;
+        "ui-geo-map": UiGeoMap;
+        "ui-main-content": UiMainContent;
+        "ui-modal": UiModal;
+        "ui-pizza-list": UiPizzaList;
+        "ui-single-input": UiSingleInput;
     }
 }
 export { LocalJSX as JSX };
@@ -204,6 +342,7 @@ declare module "@stencil/core" {
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
             "page-contact": LocalJSX.PageContact & JSXBase.HTMLAttributes<HTMLPageContactElement>;
             "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
+            "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
             "page-guidelines": LocalJSX.PageGuidelines & JSXBase.HTMLAttributes<HTMLPageGuidelinesElement>;
             "page-home": LocalJSX.PageHome & JSXBase.HTMLAttributes<HTMLPageHomeElement>;
@@ -214,6 +353,13 @@ declare module "@stencil/core" {
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
             "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
+            "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
+            "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
+            "ui-geo-map": LocalJSX.UiGeoMap & JSXBase.HTMLAttributes<HTMLUiGeoMapElement>;
+            "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
+            "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
+            "ui-pizza-list": LocalJSX.UiPizzaList & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;
+            "ui-single-input": LocalJSX.UiSingleInput & JSXBase.HTMLAttributes<HTMLUiSingleInputElement>;
         }
     }
 }

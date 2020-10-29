@@ -1,0 +1,132 @@
+ui-card {
+  background-color: $white;
+  border-radius: $radius;
+  box-shadow: $box-shadow;
+  color: $blue;
+  display: block;
+  padding: 1.5rem;
+
+  ui-card + & {
+    margin-top: 1.5rem;
+  }
+
+  p + &,
+  .content + & {
+    margin-top: 1.5rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    &:first-child {
+      margin-top: 0;
+    }
+
+    margin-top: 1.5rem;
+
+    p + & {
+      margin-top: 0;
+    }
+  }
+
+  &.is-small {
+    padding: 0.5rem;
+    border: 1px solid $border-color;
+    box-shadow: none;
+    font-size: 14px;
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .expand-section-link {
+    color: $blue;
+    max-width: 100%;
+    position: relative;
+    margin-bottom: 0;
+    padding-right: 2.5rem;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
+    z-index: 1;
+    display: block;
+    font-weight: 600;
+    line-height: 1.3;
+    font-size: 1.15em;
+    margin-bottom: 0;
+    text-decoration: none;
+
+    @include unselectable;
+
+    &:hover,
+    &:focus {
+      color: $cyan !important;
+      outline: none;
+
+      &::after {
+        border-color: $cyan !important;
+      }
+    }
+
+    @include on-mobile() {
+      padding-top: 0;
+      font-size: 1.25em;
+    }
+
+    &::after {
+      @include arrow;
+      top: 40%;
+      border-color: $blue;
+      right: 0;
+      z-index: 4;
+      transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+
+    &.is-active {
+      color: $teal;
+
+      // rotate arrow
+      &::after {
+        border-color: $teal;
+        transform: rotate(135deg);
+        top: 60%;
+      }
+    }
+
+    &.is-header {
+      font-size: 1.3em;
+
+      @include on-mobile() {
+        font-size: 1.5em;
+      }
+    }
+  }
+
+  .expand-section {
+    margin-top: -192px; // allow scrolling for mobile header height
+    padding-top: 192px; // allow scrolling for mobile header height
+    max-height: 0;
+    overflow-y: hidden;
+    transition: max-height 0.2s ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+
+    @include on-mobile() {
+      margin-top: -72px; // allow scrolling for mobile header height
+      padding-top: 72px; // allow scrolling for mobile header height
+    }
+
+    &.is-active {
+      max-height: none;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .expand-content {
+      padding-top: 1.5rem;
+    }
+  }
+}

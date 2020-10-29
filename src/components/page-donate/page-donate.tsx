@@ -1,6 +1,6 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
 
-import { scrollPageToTop } from "../../lib/base";
+import { scrollPageToTop } from "../../util";
 
 interface Token {
   email: string;
@@ -22,12 +22,6 @@ export class PageDonate {
 
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
-  }
-
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
   }
 
   public render() {
@@ -178,7 +172,7 @@ export class PageDonate {
       <Host>
         <div class="donate">
           <div class="container">
-            <div class="box">
+            <ui-card>
               <h1>Donate</h1>
 
               {!this.showConfirmation && (
@@ -317,7 +311,7 @@ export class PageDonate {
                   </p>
                 </div>
               )}
-            </div>
+            </ui-card>
           </div>
         </div>
       </Host>

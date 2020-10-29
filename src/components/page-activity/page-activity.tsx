@@ -1,29 +1,14 @@
 import { Component, h, Host, State } from "@stencil/core";
 
-import { baseFetch, scrollPageToTop } from "../../lib/base";
-
-interface Order {
-  id: number;
-  pizzas: number;
-  createdAt: string;
-  location: {
-    fullAddress: string;
-    city: string;
-    state: string;
-  };
-  reports: Array<{
-    reportURL: string;
-    createdAt: string;
-    waitTime: string;
-  }>;
-}
+import { OrderDetails, PizzaApi } from "../../api";
+import { scrollPageToTop } from "../../util";
 
 @Component({
   tag: "page-activity",
   styleUrl: "page-activity.scss",
 })
 export class PageActivity {
-  @State() public orders: Order[] = [];
+  @State() public orders: OrderDetails[] = [];
   @State() public page: number = 0;
   @State() public hasMore: boolean = false;
   @State() public isRefreshing: boolean = false;
@@ -33,19 +18,13 @@ export class PageActivity {
     this.loadMore();
   }
 
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
-    }
-  }
-
   public render() {
     const ordersByDay = this.ordersByDay();
     return (
       <Host>
         <section class="page activity">
           <div class="container">
-            <div class="box">
+            <ui-card>
               <a class={"refresh-button button is-teal is-hidden-mobile " + (this.isRefreshing ? "is-loading is-disabled " : "")} onClick={(_e: Event) => this.refreshRecent()}>
                 Refresh
               </a>
@@ -62,16 +41,16 @@ export class PageActivity {
               {ordersByDay.map(({ date, orders }) => (
                 <div class="order-day">
                   <h3 class="date-header">{date}</h3>
-                  <ul class="pizza-list order-list">
-                    {orders.map(({ id, createdAt, pizzas, location: { fullAddress }, reports }: Order) => (
-                      <li id={"order-id-" + id}>
+                  <ui-pizza-list class="order-list">
+                    {orders.map(({ id, createdAt, pizzas, location: { fullAddress }, reports }: OrderDetails) => (
+                      <li id={"order-id-" + id} key={id}>
                         <b>
                           {pizzas} pizza{pizzas === 1 ? "" : "s"} ordered at {new Date(createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })} for{" "}
                           {fullAddress}
                         </b>
                         <ul>
                           {reports.map(({ reportURL, createdAt: reportCreatedAt, waitTime }) => (
-                            <li>
+                            <li key={reportURL}>
                               <a href={reportURL} target="_blank" rel="noopener noreferrer">
                                 Reported at {new Date(reportCreatedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
                               </a>
@@ -86,7 +65,7 @@ export class PageActivity {
                         </ul>
                       </li>
                     ))}
-                  </ul>
+                  </ui-pizza-list>
                 </div>
               ))}
               {ordersByDay.length > 0 ? (
@@ -99,12 +78,12 @@ export class PageActivity {
                 </button>
               ) : (
                 <div id="loading-container">
-                  <div class="box is-small has-background-blue">
+                  <ui-card is-small="true" class="has-background-blue">
                     <p class="has-text-centered has-text-white">Loading...</p>
-                  </div>
+                  </ui-card>
                 </div>
               )}
-            </div>
+            </ui-card>
           </div>
         </section>
       </Host>
@@ -120,16 +99,17 @@ export class PageActivity {
     }
     await this.loadMore(false);
   }
+
   private async loadMore(withScroll = true) {
     this.isRefreshing = true;
     // Get last visible order to scroll to after loading more
     const lastDay = document.querySelector(".order-day:last-of-type") as HTMLElement;
     const lastOrder = lastDay?.querySelector(".order-list > li:last-of-type") as HTMLElement;
 
-    const { count, results } = await await baseFetch(`/orders?page=${this.page}`);
+    const { count, results } = await PizzaApi.getOrders(this.page);
 
     this.orders = Object.values(
-      (this.orders || []).concat(results).reduce((combined: { [key: number]: Order }, order: Order) => {
+      (this.orders || []).concat(results).reduce((combined: { [key: number]: OrderDetails }, order: OrderDetails) => {
         combined[order.id] = combined[order.id] || order;
         return combined;
       }, {}),
@@ -145,9 +125,9 @@ export class PageActivity {
     this.isRefreshing = false;
   }
 
-  private ordersByDay(): Array<{ date: string; orders: Order[] }> {
+  private ordersByDay(): Array<{ date: string; orders: OrderDetails[] }> {
     return Object.values(
-      this.orders.reduce((byDate: { [key: string]: { date: string; orders: Array<Order> } }, order: Order) => {
+      this.orders.reduce((byDate: { [key: string]: { date: string; orders: Array<OrderDetails> } }, order: OrderDetails) => {
         const date = new Date(order.createdAt).toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
         byDate[date] = byDate[date] || { orders: [], date };
         byDate[date].orders.push(order);
