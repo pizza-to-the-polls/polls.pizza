@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "stencil build --dev --watch --serve",
     "build": "npm run clean && npm run lint && stencil build --prod --no-cache --prerender",
-    "bugsnag": "bugsnag-sourcemaps upload --api-key $BUGSNAG_KEY --directory dist/www",
+    "bugsnag": "bugsnag-sourcemaps upload --api-key $BUGSNAG_KEY --directory dist/www -F overwrite=true",
     "clean": "rimraf dist/www",
     "start": "npm run dev",
     "fix": "npm run prettier:fix && npm run lint:fix",
