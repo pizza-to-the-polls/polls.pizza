@@ -1,4 +1,4 @@
-import { Component, h, State } from "@stencil/core";
+import { Build, Component, h, State } from "@stencil/core";
 
 import { PizzaApi, PizzaTotals } from "../../api";
 
@@ -13,21 +13,23 @@ export class PageHome {
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    PizzaApi.getTotals().then(totals =>
-      PizzaApi.getDonations().then(raised => {
-        this.totals = { ...totals, raised };
+    if (Build.isBrowser) {
+      PizzaApi.getTotals().then(totals =>
+        PizzaApi.getDonations().then(raised => {
+          this.totals = { ...totals, raised };
 
-        // Calculate available before transforming values
-        this.available =
-          raised && totals.costs
-            ? "$" +
-              (raised - totals.costs).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })
-            : "";
-      }),
-    );
+          // Calculate available before transforming values
+          this.available =
+            raised && totals.costs
+              ? "$" +
+                (raised - totals.costs).toLocaleString(undefined, {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                })
+              : "";
+        }),
+      );
+    }
   }
 
   public render() {

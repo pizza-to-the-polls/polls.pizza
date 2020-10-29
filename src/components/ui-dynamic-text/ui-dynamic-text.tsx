@@ -1,4 +1,4 @@
-import { Build, Component, h, Prop } from "@stencil/core";
+import { Component, h, Prop } from "@stencil/core";
 
 /**
  * Displays a provided `value` or a loading bar if `null`-like
@@ -13,7 +13,7 @@ export class UiDynamicText {
   @Prop() public format?: (value: any) => string;
 
   public render() {
-    return this.value == null || !Build.isBrowser ? (
+    return this.value == null ? (
       <div class="placeholder">
         <div class="line"></div>
       </div>
