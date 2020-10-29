@@ -36,6 +36,7 @@ jobs:
         run: npm run build
         env:
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY_TEST }}
+          NODE_ENV: stage
           PIZZA_BASE_DOMAIN: https://base-next.polls.pizza
           DONATION_FORM: https://docs.google.com/forms/d/e/1FAIpQLSeCUE98I2bfLxBK4cVIRy2MduJzq3UaJ44TQ7iZ3Nzc2V5FYg/formResponse
           BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
@@ -48,6 +49,15 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.DEV_BUCKET }}
           AWS_REGION: "us-west-2"
           SOURCE_DIR: "dist/www"
+
+    - name: publish to bugsnag
+      run: npm run bugsnag
+
+    - name: Bugsnag Release
+      uses: psprings/bugsnag-release-action@v0.0.3
+      with:
+        apiKey: ${{ secrets.BUGSNAG_KEY }}
+        releaseStage: stage
 
       - name: Invalidate cache & wait for completion
         uses: muratiger/invalidate-cloudfront-and-wait-for-completion-action@master

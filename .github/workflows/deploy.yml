@@ -53,12 +53,9 @@ jobs:
         run: npm run build
         env:
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
-          NODE_ENV: stage
+          NODE_ENV: prod
           PIZZA_BASE_DOMAIN: https://base.polls.pizza
           DONATION_FORM: "https://docs.google.com/forms/d/e/1FAIpQLSf5RPXqXaVk8KwKC7kzthukydvA9vL7_bP9V9O9PIAiXl14cQ/formResponse"
-
-      - name: publish to bugsnag
-        run: npm run bugsnag
 
       - name: Push the site to S3
         uses: jakejarvis/s3-sync-action@master
@@ -68,6 +65,15 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.PROD_BUCKET }}
           AWS_REGION: "us-west-2"
           SOURCE_DIR: "dist/www"
+
+    - name: publish to bugsnag
+      run: npm run bugsnag
+
+    - name: Bugsnag Release
+      uses: psprings/bugsnag-release-action@v0.0.3
+      with:
+        apiKey: ${{ secrets.BUGSNAG_KEY }}
+        releaseStage: prod
 
       - name: Invalidate cache & wait for completion
         uses: muratiger/invalidate-cloudfront-and-wait-for-completion-action@master
