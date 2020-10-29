@@ -36,12 +36,12 @@ export class AppRoot {
     };
 
     this.scrollTop = getScrollTop();
-    if( window ) {
+    if (window) {
       window.addEventListener(
         "scroll",
-        debounce( () => {
+        debounce(() => {
           this.scrollTop = getScrollTop();
-        }, 200 ),
+        }, 200),
       );
     }
 
