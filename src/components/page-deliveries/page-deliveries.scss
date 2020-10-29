@@ -1,8 +1,22 @@
 page-deliveries {
   ui-main-content {
+    &:first-child .container {
+      padding-top: 0.1em;
+    }
     .background {
       background-color: $yellow;
       background-image: url("/images/bg1.png");
+      padding-bottom: 10px;
+    }
+    &.selected-location {
+      a,
+      h3 {
+        color: $white;
+      }
+      .background {
+        background-color: $teal;
+        background-image: url("/images/bg2.png");
+      }
     }
   }
 
@@ -13,18 +27,21 @@ page-deliveries {
   hr.heavy {
     width: 100%;
     background-color: $red;
-    height: 12px;
+    height: 8px;
     margin: 0;
   }
 
   .food-choices {
+    font-size: 0.9em;
+    font-weight: 600;
+    margin: 1.5em 0 1em 0;
     ul {
       display: flex;
-      margin: 0.5em 0;
+      margin: 0;
       padding: 0;
       align-items: flex-start;
       li {
-        margin-right: 1em;
+        margin: 0 1em 0 0;
         list-style: none;
         cursor: pointer;
         padding: 0.25em 0.5em;

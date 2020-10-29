@@ -36,12 +36,12 @@ export class AppRoot {
     };
 
     this.scrollTop = getScrollTop();
-    if (window) {
+    if( window ) {
       window.addEventListener(
         "scroll",
-        debounce(() => {
+        debounce( () => {
           this.scrollTop = getScrollTop();
-        }, 200),
+        }, 200 ),
       );
     }
 
@@ -87,7 +87,7 @@ export class AppRoot {
               <stencil-route url="/activity" component="page-activity" />
               <stencil-route url="/covid" component="page-covid" />
               <stencil-route url="/contact" component="page-contact" />
-              <stencil-route url="/deliveries" component="page-deliveries" />
+              <stencil-route url={["/deliveries/:location", "/deliveries"]} component="page-deliveries" />
               <stencil-route url="/donate" component="page-donate" />
               <stencil-route url="/guidelines" component="page-guidelines" />
               <stencil-route url="/instructions" component="page-instructions" />

@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { LocationInfo } from "./api/types";
+import { MatchResults, RouterHistory } from "@stencil/router";
 export namespace Components {
     interface AppRoot {
     }
@@ -18,7 +18,8 @@ export namespace Components {
     interface PageCovid {
     }
     interface PageDeliveries {
-        "selectedLocation"?: LocationInfo;
+        "history": RouterHistory;
+        "match": MatchResults;
     }
     interface PageDonate {
     }
@@ -41,14 +42,14 @@ export namespace Components {
     interface PageTrucks {
     }
     interface UiCard {
-        "headerText": string;
+        "headerText"?: string;
         "isActive": boolean;
         "isCollapsible": boolean;
         "isSmall": boolean;
         /**
           * Set an `id` on the card element to allow navigating or scrolling to it
          */
-        "scrollId": string;
+        "scrollId"?: string;
     }
     interface UiDynamicText {
         "format"?: (value: any) => string;
@@ -56,7 +57,7 @@ export namespace Components {
     }
     interface UiGeoMap {
         "getCenter": () => Promise<google.maps.LatLng | undefined>;
-        "setCenter": (newCenter: google.maps.LatLngLiteral) => Promise<void>;
+        "setCenter": (newCenter: google.maps.LatLngLiteral, showMarker?: boolean) => Promise<void>;
     }
     interface UiMainContent {
     }
@@ -252,7 +253,8 @@ declare namespace LocalJSX {
     interface PageCovid {
     }
     interface PageDeliveries {
-        "selectedLocation"?: LocationInfo;
+        "history": RouterHistory;
+        "match": MatchResults;
     }
     interface PageDonate {
     }
