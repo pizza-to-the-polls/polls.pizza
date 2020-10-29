@@ -50,14 +50,14 @@ jobs:
           AWS_REGION: "us-west-2"
           SOURCE_DIR: "dist/www"
 
-    - name: publish to bugsnag
-      run: npm run bugsnag
+      - name: publish to bugsnag
+        run: npm run bugsnag
 
-    - name: Bugsnag Release
-      uses: psprings/bugsnag-release-action@v0.0.3
-      with:
-        apiKey: ${{ secrets.BUGSNAG_KEY }}
-        releaseStage: stage
+      - name: Bugsnag Release
+        uses: psprings/bugsnag-release-action@v0.0.3
+        with:
+          apiKey: ${{ secrets.BUGSNAG_KEY }}
+          releaseStage: stage
 
       - name: Invalidate cache & wait for completion
         uses: muratiger/invalidate-cloudfront-and-wait-for-completion-action@master
