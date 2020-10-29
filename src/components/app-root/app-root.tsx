@@ -58,12 +58,14 @@ export class AppRoot {
     return (
       <Host>
         <header class="header">
-          <stencil-route-link url="/">
+          <stencil-route-link url="/" exact={true}>
             <img src="/images/lockup.png" alt="Pizza to the Polls" />
           </stencil-route-link>
           <ul class="menu" id="menu">
             <li>
-              <stencil-route-link url="/report">Report</stencil-route-link>
+              <stencil-route-link url="/" exact={true}>
+                Report
+              </stencil-route-link>
             </li>
             <li>
               <stencil-route-link url="/donate">Donate</stencil-route-link>
@@ -73,6 +75,9 @@ export class AppRoot {
               <stencil-route-link url="/deliveries">Deliveries</stencil-route-link>
             </li>
              */}
+            <li>
+              <stencil-route-link url="/activity">Deliveries</stencil-route-link>
+            </li>
             <li>
               <stencil-route-link url="/about">About</stencil-route-link>
             </li>
@@ -95,7 +100,9 @@ export class AppRoot {
               <stencil-route url="/partners" component="page-partners" />
               <stencil-route url="/press" component="page-press" />
               <stencil-route url="/privacy" component="page-privacy" />
-              <stencil-route url="/report" component="page-report" />
+              <stencil-route url="/report">
+                <stencil-router-redirect url="/" />
+              </stencil-route>
               <stencil-route url="/trucks" component="page-trucks" />
               <stencil-route component="page-home" />
             </stencil-route-switch>
