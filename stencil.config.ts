@@ -15,7 +15,7 @@ export const config: Config = {
       exclude: "node_modules/**",
       values: {
         "process.env.STRIPE_PUBLIC_KEY": process.env.STRIPE_PUBLIC_KEY ? `"${process.env.STRIPE_PUBLIC_KEY}"` : "process.env.STRIPE_PUBLIC_KEY",
-        "process.env.PIZZA_BASE_DOMAIN": process.env.PIZZA_BASE_DOMAIN ? `"${process.env.PIZZA_BASE_DOMAIN}"` : `"z"`,
+        "process.env.PIZZA_BASE_DOMAIN": process.env.PIZZA_BASE_DOMAIN ? `"${process.env.PIZZA_BASE_DOMAIN}"` : `"https://base-next.polls.pizza"`,
         "process.env.DONATION_FORM": process.env.DONATION_FORM ? `"${process.env.DONATION_FORM}"` : `"https://docs.google.com/forms/d/e/form-id/formResponse"`,
       },
     }),
