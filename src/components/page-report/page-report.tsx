@@ -4,7 +4,7 @@ import { Component, h, Host } from "@stencil/core";
   tag: "page-report",
   styleUrl: "page-report.scss",
 })
-export class PageDonate {
+export class PageReport {
   public componentWillLoad() {
     document.title = `Report | Pizza to the Polls`;
   }
