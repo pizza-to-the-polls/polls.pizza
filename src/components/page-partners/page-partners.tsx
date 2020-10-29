@@ -80,6 +80,11 @@ const rest = [
     url: "https://www.saltydonut.com/",
   },
   {
+    img: "usa.png",
+    name: "United Sodas of America",
+    url: "https://unitedsodas.com/",
+  },
+  {
     img: "voodoo.jpg",
     name: "Voodoo Doughnut",
     url: "https://www.voodoodoughnut.com/",
