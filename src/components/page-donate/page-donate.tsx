@@ -1,16 +1,5 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
 
-import { scrollPageToTop } from "../../util";
-
-interface Token {
-  email: string;
-  card: {
-    address_zip: string;
-  };
-  id: string;
-  amount: number;
-}
-
 @Component({
   tag: "page-donate",
   styleUrl: "page-donate.scss",
@@ -19,52 +8,48 @@ export class PageDonate {
   @State() private amount?: number | null;
   @State() private showConfirmation: boolean = false;
   @State() private canNativeShare: boolean = false;
+  @State() private referral?: string | null;
 
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
+    const urlParams = new URLSearchParams(window.location.search);
+    this.referral = urlParams.get("referral") || "";
+
+    if (urlParams.get("success") && urlParams.get("amount_usd")) {
+      this.amount = parseInt(urlParams.get("amount_usd") as string, 10);
+      this.showConfirmation = true;
+    }
+  }
+
+  public async donate(amount: number) {
+    const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/donations`, {
+      body: JSON.stringify({ amountUsd: amount, referrer: this.referral }),
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (resp.status === 200) {
+      const respJson = await resp.json();
+      if (respJson.success) {
+        const sessionId = respJson.checkoutSessionId;
+        const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
+
+        stripe
+          .redirectToCheckout({
+            sessionId,
+          })
+          .then(function (result: any) {
+            console.error(result.error.message);
+          });
+      }
+    }
   }
 
   public render() {
-    let handler: any = null;
-    const StripeCheckout: any = (window as any).StripeCheckout;
-
-    // Get referral from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const referral = urlParams.get("referral") || "";
-
     if (Build.isBrowser) {
       // Determine if `navigator.share` is supported in browser (native device sharing)
       this.canNativeShare = navigator && navigator.share ? true : false;
-    }
-
-    if (Build.isBrowser && StripeCheckout) {
-      const tokenHandler = async (token: Token) => {
-        const params: { [key: string]: any } = {
-          "entry.1599572815": token.email,
-          "entry.690252188": token.card.address_zip,
-          "entry.1474063298": token.id,
-          "entry.1036377864": this.amount,
-          "entry.104127523": document.domain,
-          "entry.901888082": referral,
-        };
-
-        const body = Object.keys(params).reduce((form, key) => {
-          form.append(key, params[key]);
-          return form;
-        }, new FormData());
-
-        await fetch(`${process.env.DONATION_FORM}`, { body, mode: "no-cors", method: "POST" });
-
-        this.showConfirmation = true;
-        scrollPageToTop();
-      };
-
-      handler = StripeCheckout.configure({
-        key: process.env.STRIPE_PUBLIC_KEY,
-        image: "https://polls.pizza/images/logo.png",
-        locale: "auto",
-        token: tokenHandler,
-      });
     }
 
     const activateCustomAmountRadio = () => {
@@ -90,15 +75,7 @@ export class PageDonate {
     const handleChange = () => (this.amount = getAmount());
     const handleCheckout = (e: Event) => {
       if (this.amount) {
-        const pizzas = Math.ceil(this.amount / 20);
-
-        handler?.open({
-          name: "Pizza to the Polls",
-          description: "About " + pizzas + " Pizza" + (pizzas > 1 ? "s" : ""),
-          zipCode: true,
-          amount: this.amount * 100,
-          image: "https://polls.pizza/images/logo.png",
-        });
+        this.donate(this.amount);
       }
       e.preventDefault();
     };
