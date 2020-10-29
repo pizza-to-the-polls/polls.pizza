@@ -52,9 +52,15 @@ jobs:
         run: npm run build
         env:
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
-          NODE_ENV: prod
+          NODE_ENV: stage
           PIZZA_BASE_DOMAIN: https://base.polls.pizza
           DONATION_FORM: "https://docs.google.com/forms/d/e/1FAIpQLSf5RPXqXaVk8KwKC7kzthukydvA9vL7_bP9V9O9PIAiXl14cQ/formResponse"
+          BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
+
+      - name: publish to bugsnag
+        run: npm run bugsnag
+        env:
+          BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
 
       - name: Push the site to S3
         uses: jakejarvis/s3-sync-action@master
