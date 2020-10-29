@@ -1,49 +1,67 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
+import getUrlParam from "../../util/getUrlParam";
 
 @Component({
   tag: "page-donate",
   styleUrl: "page-donate.scss",
 })
+
 export class PageDonate {
   @State() private amount?: number | null;
   @State() private showConfirmation: boolean = false;
   @State() private canNativeShare: boolean = false;
   @State() private referral?: string | null;
+  @State() private error?: string | null;
 
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
-    const urlParams = new URLSearchParams(window.location.search);
-    this.referral = urlParams.get("referral") || "";
+    this.referral = getUrlParam(window.location.search, "referral") || "";
 
-    if (urlParams.get("success") && urlParams.get("amount_usd")) {
-      this.amount = parseInt(urlParams.get("amount_usd") as string, 10);
+    const isPostDonate = !!getUrlParam(window.location.search, "success");
+    const amountDonatedUsd = getUrlParam(window.location.search, "amount_usd");
+    if (isPostDonate && amountDonatedUsd) {
+      this.amount = parseFloat(amountDonatedUsd as string);
       this.showConfirmation = true;
     }
   }
 
   public async donate(amount: number) {
-    const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/donations`, {
-      body: JSON.stringify({ amountUsd: amount, referrer: this.referral }),
-      method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-    });
+    const showError = this.showError;
+    try {
+      const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/donations`, {
+        body: JSON.stringify({ amountUsd: amount, referrer: this.referral }),
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      });
 
-    if (resp.status === 200) {
-      const respJson = await resp.json();
-      if (respJson.success) {
-        const sessionId = respJson.checkoutSessionId;
-        const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
+      if (resp.status === 200) {
+        const respJson = await resp.json();
+        if (respJson.success) {
+          const sessionId = respJson.checkoutSessionId;
+          const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
 
-        stripe
-          .redirectToCheckout({
-            sessionId,
-          })
-          .then(function (result: any) {
-            console.error(result.error.message);
-          });
+          stripe
+            .redirectToCheckout({
+              sessionId,
+            })
+            .then(function (result: any) {
+              console.error(result.error.message);
+              showError(result.error.message);
+            });
+        } else {
+          console.error(respJson.message);
+          this.showError(respJson.message);
+        }
       }
+    } catch (e) {
+      console.error(e);
+      this.showError("Error initiating payment.")
     }
+  }
+
+  public showError(error: string) {
+    this.error = error;
   }
 
   public render() {
