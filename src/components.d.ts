@@ -44,6 +44,11 @@ export namespace Components {
     interface PageTrucks {
     }
     interface UiAddressInput {
+        "buttonLabel": string;
+        "getFormattedAddress": () => Promise<string>;
+        "label": string;
+        "name": string;
+        "placeholder": string;
     }
     interface UiCard {
         "headerText"?: string;
@@ -298,6 +303,10 @@ declare namespace LocalJSX {
     interface PageTrucks {
     }
     interface UiAddressInput {
+        "buttonLabel"?: string;
+        "label"?: string;
+        "name"?: string;
+        "placeholder"?: string;
     }
     interface UiCard {
         "headerText"?: string;
