@@ -28,7 +28,7 @@ export const config: Config = {
   outputTargets: [
     {
       type: "www",
-      baseUrl: "https://polls.pizza/",
+      baseUrl: process.env.ROOT_URL,
       dir: "dist/www",
       prerenderConfig: "./prerender.config.ts",
       copy: [{ src: "../public", dest: "." }],
