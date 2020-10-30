@@ -43,6 +43,8 @@ export namespace Components {
     }
     interface PageTrucks {
     }
+    interface UiAddressInput {
+    }
     interface UiCard {
         "headerText"?: string;
         "isActive": boolean;
@@ -72,6 +74,7 @@ export namespace Components {
     }
     interface UiSingleInput {
         "buttonLabel": string;
+        "getInputId": () => Promise<string>;
         "label": string;
         "name": string;
         "placeholder": string;
@@ -181,6 +184,12 @@ declare global {
         prototype: HTMLPageTrucksElement;
         new (): HTMLPageTrucksElement;
     };
+    interface HTMLUiAddressInputElement extends Components.UiAddressInput, HTMLStencilElement {
+    }
+    var HTMLUiAddressInputElement: {
+        prototype: HTMLUiAddressInputElement;
+        new (): HTMLUiAddressInputElement;
+    };
     interface HTMLUiCardElement extends Components.UiCard, HTMLStencilElement {
     }
     var HTMLUiCardElement: {
@@ -241,6 +250,7 @@ declare global {
         "page-privacy": HTMLPagePrivacyElement;
         "page-report": HTMLPageReportElement;
         "page-trucks": HTMLPageTrucksElement;
+        "ui-address-input": HTMLUiAddressInputElement;
         "ui-card": HTMLUiCardElement;
         "ui-dynamic-text": HTMLUiDynamicTextElement;
         "ui-geo-map": HTMLUiGeoMapElement;
@@ -286,6 +296,8 @@ declare namespace LocalJSX {
     interface PageReport {
     }
     interface PageTrucks {
+    }
+    interface UiAddressInput {
     }
     interface UiCard {
         "headerText"?: string;
@@ -338,6 +350,7 @@ declare namespace LocalJSX {
         "page-privacy": PagePrivacy;
         "page-report": PageReport;
         "page-trucks": PageTrucks;
+        "ui-address-input": UiAddressInput;
         "ui-card": UiCard;
         "ui-dynamic-text": UiDynamicText;
         "ui-geo-map": UiGeoMap;
@@ -368,6 +381,7 @@ declare module "@stencil/core" {
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
             "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
+            "ui-address-input": LocalJSX.UiAddressInput & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;
             "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
             "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
             "ui-geo-map": LocalJSX.UiGeoMap & JSXBase.HTMLAttributes<HTMLUiGeoMapElement>;

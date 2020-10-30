@@ -1,4 +1,6 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
+// @ts-ignore
+import {} from "googlemaps";
 
 import { baseFetch } from "../../api/PizzaApi";
 
@@ -12,31 +14,54 @@ const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s
   styleUrl: "form-report.scss",
 })
 export class FormReport {
-  // Show/hide form & confirmations
-  @State() private showConfirmation: boolean = false; // *Always* required to hide form, regardless of other show booleans
-  @State() private showFoodTruckOnSiteConfirmation: boolean = false; // Enable to show food truck already at location
-  @State() private showDistributorConfirmation: boolean = false; // Enable to show distributor confirmation & guidelines
-  @State() private showSuccessfulReportConfirmation: boolean = false; // Enable to show successful report confirmation
-  @State() private showDuplicateReportConfirmation: boolean = false; // Enable to show duplicate report message
-  @State() private showServerError: boolean = false; // Enable to show submission error
-  // Other vars
-  @State() private isDisabled: boolean = false; // Disable form and submit
-  @State() private isLoading: boolean = false; // Submit button loading state
-  @State() private photoIsProcessing: boolean = false; // Submit button loading state
+  /**
+   * *Always* required to hide form, regardless of other show booleans
+   */
+  @State() private showConfirmation: boolean = false;
+  /**
+   * Enable to show food truck already at location
+   */
+  @State() private showFoodTruckOnSiteConfirmation: boolean = false;
+  /**
+   * Enable to show distributor confirmation & guidelines
+   */
+  @State() private showDistributorConfirmation: boolean = false;
+  /**
+   * Enable to show successful report confirmation
+   */
+  @State() private showSuccessfulReportConfirmation: boolean = false;
+  /**
+   * Enable to show duplicate report message
+   */
+  @State() private showDuplicateReportConfirmation: boolean = false;
+  /**
+   * Enable to show submission error
+   */
+  @State() private showServerError: boolean = false;
+  /**
+   * Disable form and submit
+   */
+  @State() private isDisabled: boolean = false;
+  /**
+   * Submit button loading state
+   */
+  @State() private isLoading: boolean = false;
+  /**
+   * Submit button loading state
+   */
+  @State() private photoIsProcessing: boolean = false;
   @State() private submitResponse: { [key: string]: string } = {};
   @State() private submitError: { [key: string]: string } = {};
   @State() private showLocationInput: boolean = true;
   @State() private locationName: string = "";
-  @State() private reportType: string = ""; // 'social' or 'photo'
+  @State() private reportType: string = ""; // "social" | "photo"
   @State() private hasPhoto: boolean = false;
   @State() private photoUrl: string = "";
   @State() private canDistribute: string = ""; // watchdog or distributor
 
   public componentDidRender() {
-    const google: any = (window as any).google;
-
-    if (Build.isBrowser && google && document.getElementById("autocomplete")) {
-      const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
+    if (Build.isBrowser && google && document.getElementById("autocomplete-input")) {
+      const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete-input") as HTMLInputElement, {
         types: ["geocode", "establishment"],
         componentRestrictions: { country: "us" },
       });
@@ -61,7 +86,7 @@ export class FormReport {
           }
         });
 
-        place.address_components.forEach((address_component: { [key: string]: any }) => {
+        place.address_components!.forEach((address_component: { [key: string]: any }) => {
           const addressType: string = address_component.types[0];
           const mapping = componentForm[addressType];
           const elem = document.getElementById(addressType) as HTMLInputElement;
@@ -77,7 +102,7 @@ export class FormReport {
         const formatted_address = document.getElementById("formatted_address") as HTMLInputElement;
 
         if (formatted_address) {
-          formatted_address.value = place.formatted_address;
+          formatted_address.value = place.formatted_address || "";
         }
 
         // Get readable address (either name or the address; remove USA)
@@ -88,7 +113,7 @@ export class FormReport {
 
   public render() {
     const handleAddressChange = () => {
-      const address = document.getElementById("autocomplete") as HTMLInputElement;
+      const address = document.getElementById("autocomplete-input") as HTMLInputElement;
       if (address && !address.value) {
         this.locationName = "";
       }
@@ -493,7 +518,7 @@ export class FormReport {
                 <input
                   class={"input " + ("address" in this.submitError ? "has-error" : "")}
                   type="text"
-                  id="autocomplete"
+                  id="autocomplete-input"
                   name="full_place"
                   placeholder="ex. St. John's Library"
                   onInput={handleAddressChange}

@@ -1,4 +1,6 @@
-import { Component, Event, EventEmitter, h, Prop, State } from "@stencil/core";
+import { Component, Event, EventEmitter, h, Method, Prop, State } from "@stencil/core";
+// @ts-ignore
+import {} from "googlemaps";
 
 @Component({
   tag: "ui-single-input",
@@ -25,8 +27,13 @@ export class UiSingleInput {
     this.type = "text";
     this.value = "";
 
-    this.id = "input-" + Math.random();
+    this.id = "input-" + Math.floor(Math.random() * 1000000);
     this.name = this.id;
+  }
+
+  @Method()
+  public getInputId(): Promise<string> {
+    return Promise.resolve(this.id);
   }
 
   public render() {

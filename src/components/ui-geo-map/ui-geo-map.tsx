@@ -1,4 +1,4 @@
-import { Component, Element, h, Host, Method } from "@stencil/core";
+import { Build, Component, Element, h, Host, Method } from "@stencil/core";
 // @ts-ignore
 import {} from "googlemaps";
 
@@ -16,6 +16,9 @@ export class UiGeoMap {
   private marker?: google.maps.Marker;
 
   public componentDidLoad() {
+    if (!Build.isBrowser) {
+      return;
+    }
     const m = this.el.shadowRoot!.querySelector("#map");
     this.map = new google.maps.Map(m as HTMLElement, {
       center: { lat: 38.8899, lng: -77.0091 },

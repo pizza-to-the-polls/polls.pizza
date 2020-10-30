@@ -2,6 +2,12 @@ export type OrderId = number;
 export type ReportId = number;
 export type LocationId = number;
 
+export type ApiError = {
+  isError: true;
+  status: number;
+  messages: string[];
+};
+
 export type PizzaTotals = {
   raised: number;
   donors: number;
