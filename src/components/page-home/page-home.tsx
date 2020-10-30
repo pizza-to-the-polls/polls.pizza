@@ -1,7 +1,6 @@
-import { Component, h, State } from "@stencil/core";
+import { Build, Component, h, State } from "@stencil/core";
 
 import { PizzaApi, PizzaTotals } from "../../api";
-import { scrollPageToTop } from "../../util";
 
 @Component({
   tag: "page-home",
@@ -14,26 +13,22 @@ export class PageHome {
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    PizzaApi.getTotals().then(totals =>
-      PizzaApi.getDonations().then(raised => {
-        this.totals = { ...totals, raised };
+    if (Build.isBrowser) {
+      PizzaApi.getTotals().then(totals =>
+        PizzaApi.getDonations().then(raised => {
+          this.totals = { ...totals, raised };
 
-        // Calculate available before transforming values
-        this.available =
-          raised && totals.costs
-            ? "$" +
-              (raised - totals.costs).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })
-            : "";
-      }),
-    );
-  }
-
-  public componentDidLoad() {
-    if (!window.location.hash) {
-      scrollPageToTop();
+          // Calculate available before transforming values
+          this.available =
+            raised && totals.costs
+              ? "$" +
+                (raised - totals.costs).toLocaleString(undefined, {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                })
+              : "";
+        }),
+      );
     }
   }
 
@@ -67,19 +62,17 @@ export class PageHome {
           <div class="report">
             <div class="container">
               <ui-card class="report-content">
-                <h2 class="is-display">Report a line</h2>
-                <p>
-                  <strong>Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines.</strong>
-                </p>
-                <p>Send us reports of long lines and we'll send in the delicious reinforcements.</p>
-                <stencil-route-link url="/report" anchorClass="button is-teal">
-                  Report a long line
-                </stencil-route-link>
-                <p>
-                  <stencil-route-link url="/activity" anchorClass="has-text-teal">
-                    View recent deliveries
-                  </stencil-route-link>
-                </p>
+                <form-report>
+                  <h2 id="report" class="is-display is-scroll-to">
+                    Report a line
+                  </h2>
+                  <p>
+                    <strong>
+                      Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines. Send us reports of long lines and we'll
+                      send in the delicious reinforcements.
+                    </strong>
+                  </p>
+                </form-report>
               </ui-card>
             </div>
             <div class="report-bg"></div>

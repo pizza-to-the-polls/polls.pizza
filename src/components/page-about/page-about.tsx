@@ -84,7 +84,7 @@ export class PageAbout {
                         donating
                       </stencil-route-link>{" "}
                       and{" "}
-                      <stencil-route-link url="/report" anchorClass="has-text-teal">
+                      <stencil-route-link url="/#report" anchorClass="has-text-teal">
                         reporting long lines
                       </stencil-route-link>
                       !
@@ -133,7 +133,7 @@ export class PageAbout {
               <ui-card is-collapsible={true} header-text="How do I report a line?">
                 <p>
                   You can submit a report of a long line through our{" "}
-                  <stencil-route-link url="/report" anchorClass="has-text-teal">
+                  <stencil-route-link url="/#report" anchorClass="has-text-teal">
                     submission form
                   </stencil-route-link>
                   . We’ll ask for a delivery address, photo or link to a social media post to verify the line, an estimate of the line’s wait time, and your phone number. Once you
