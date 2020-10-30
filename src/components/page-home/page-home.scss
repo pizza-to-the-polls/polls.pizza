@@ -26,7 +26,7 @@ page-home {
     .stat {
       width: 33%;
       text-align: center;
-      padding: 0.75rem;
+      padding: 0.75rem 0;
 
       @media ($tablet) {
         display: table-cell;
