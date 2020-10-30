@@ -25,8 +25,9 @@ export class UiGeoMap {
       streetViewControl: false,
       scrollwheel: false,
     });
+
     this.marker = new google.maps.Marker({
-      // icon: ,
+      icon: "/images/pin-pizza@1x.png",
       map: this.map,
       visible: false,
     });

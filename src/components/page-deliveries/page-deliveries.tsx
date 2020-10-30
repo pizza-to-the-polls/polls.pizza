@@ -69,22 +69,28 @@ export class PageDeliveries {
 
   public componentWillLoad() {
     document.title = `Deliveries | Pizza to the Polls`;
-    if (this.match.params.location != null) {
-      this.selectedAddress = decodeURIComponent(this.match.params.location);
-    }
+    this.setAddressFromUrl(this.match);
     PizzaApi.getOrders().then(orders => (this.recentOrders = orders.results));
+  }
+
+  @Watch("match")
+  public matchChanged(newMatch: MatchResults) {
+    this.setAddressFromUrl(newMatch);
   }
 
   @Watch("selectedAddress")
   public onSelectedAddressChanged(newLocation?: string, oldLocation?: string) {
     const ownPathFragment = this.history.location.pathname.split("/").filter(x => x !== "")[0];
     if (newLocation == null && oldLocation != null) {
+      const path = `/${ownPathFragment}`;
       this.selectedLocation = undefined;
-      // this.history.push( `/${ownPathFragment}`, {} );
+      if (this.history.location.pathname !== path) {
+        this.history.push(path, {});
+      }
     } else if (newLocation != null && newLocation !== oldLocation) {
       const path = `/${ownPathFragment}/${newLocation}`;
       if (this.history.location.pathname !== path) {
-        // this.history.push( path, {} );
+        this.history.push(path, {});
       }
       PizzaApi.getLocationStatus(newLocation).then(x => (this.selectedLocation = x));
     }
@@ -214,5 +220,10 @@ export class PageDeliveries {
         </ui-main-content>
       </Host>
     );
+  }
+
+  private setAddressFromUrl(match: MatchResults) {
+    const location = match.params.location;
+    this.selectedAddress = location != null ? decodeURIComponent(location) : undefined;
   }
 }
