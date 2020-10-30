@@ -16,14 +16,12 @@ export class PageHome {
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    const { raised } = await getTotals();
-
-    const { pizzas, locations, states } = await baseFetch(`/totals/2020`);
+    const { pizzas, locations, states, raised } = await baseFetch(`/totals/2020`);
 
     this.pizzas = pizzas;
     this.locations = locations;
     this.states = states;
-    this.raised = `\$${raised}`;
+    this.raised = raised;
   }
 
   public componentDidLoad() {
