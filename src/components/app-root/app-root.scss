@@ -112,7 +112,7 @@
       display: inline-block;
       font-size: 14px;
       font-weight: 600;
-      margin: 0 0.5rem 0 0.75rem;
+      margin: 0 0.5rem 0 0.45rem;
       position: relative;
       color: $blue;
 
@@ -127,7 +127,7 @@
       @media ($tablet) {
         display: inline-block;
         width: auto;
-        padding: 0 0.75rem;
+        padding: 0 0.75rem 0 0.5rem;
         font-size: 24px;
       }
 
