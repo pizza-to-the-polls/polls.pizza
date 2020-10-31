@@ -1,5 +1,3 @@
-import { getTotals } from "../lib/sheets";
-
 import { LocationId, LocationStatus, OrderDetails, OrderId, OrderQueryResults, PizzaTotals } from "./types";
 
 const BASE_URL = process.env.PIZZA_BASE_DOMAIN;
@@ -26,14 +24,6 @@ export const baseFetch = async (path: string, options: { [key: string]: string }
  * NOTE: Keep all public methods sorted alphabetically
  */
 class PizzaApi {
-  /**
-   * TODO: This should go away when `getTotals` returns the proper value for `raised`
-   */
-  public async getDonations(): Promise<number> {
-    const { raised } = await getTotals();
-    return parseInt(raised.replace(",", ""), 10);
-  }
-
   public async getLocationStatus(normalizedAddress: string | LocationId): Promise<LocationStatus> {
     return await baseFetch(`/locations/${encodeURIComponent(normalizedAddress)}`);
   }
