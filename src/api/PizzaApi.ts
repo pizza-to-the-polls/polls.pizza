@@ -1,5 +1,3 @@
-import { getTotals } from "../lib/sheets";
-
 import { ApiError, LocationId, LocationStatus, OrderDetails, OrderId, OrderQueryResults, PizzaTotals } from "./types";
 
 const BASE_URL = process.env.PIZZA_BASE_DOMAIN;
@@ -34,14 +32,6 @@ const reviver: (this: any, key: string, value: any) => any = (key, value) => {
  * NOTE: Keep all public methods sorted alphabetically
  */
 class PizzaApi {
-  /**
-   * TODO: This should go away when `getTotals` returns the proper value for `raised`
-   */
-  public async getDonations(): Promise<number> {
-    const { raised } = await getTotals();
-    return parseInt(raised.replace(",", ""), 10);
-  }
-
   public async getLocationStatus(normalizedAddress: string | LocationId, errorHandler?: (error: ApiError) => void): Promise<LocationStatus | null> {
     return this.handleResponse(await baseFetch<LocationStatus>(`/locations/${encodeURIComponent(normalizedAddress)}`), errorHandler);
   }

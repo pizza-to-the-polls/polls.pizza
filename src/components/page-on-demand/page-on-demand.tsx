@@ -1,9 +1,9 @@
 import { Component, h } from "@stencil/core";
 
-@Component( {
+@Component({
   tag: "page-on-demand",
   styleUrl: "page-on-demand.scss",
-} )
+})
 export class PageOnDemand {
   public componentWillLoad() {
     document.title = `On-demand | Pizza to the Polls`;

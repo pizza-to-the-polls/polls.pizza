@@ -40,6 +40,11 @@ const rest = [
     url: "https://www.kindsnacks.com/",
   },
   {
+    img: "lemonade.png",
+    name: "Lemonade",
+    url: "https://www.lemonade.com/",
+  },
+  {
     img: "levis.png",
     name: "Levi Strauss & Co.",
     url: "https://levi.com",
@@ -65,14 +70,29 @@ const rest = [
     url: "https://www.somebodyfeedthepeople.org/",
   },
   {
+    img: "scf.png",
+    name: "Social Change Fund",
+    url: "https://www.thesocialchangefund.org/",
+  },
+  {
     img: "stickys.png",
     name: "Sticky's Finger Joint",
     url: "https://www.stickys.com/",
   },
   {
+    img: "ap.png",
+    name: "The Advancement Project",
+    url: "https://advancementproject.org/",
+  },
+  {
     img: "gato.png",
     name: "The Great American Takeout",
     url: "https://thegreatamericantakeout.com/",
+  },
+  {
+    img: "lcef.png",
+    name: "The Leadership Conference Education Fund",
+    url: "https://civilrights.org/edfund/",
   },
   {
     img: "thesalty.png",
@@ -106,10 +126,10 @@ const rest = [
   },
 ];
 
-@Component( {
+@Component({
   tag: "page-partners",
   styleUrl: "page-partners.scss",
-} )
+})
 export class PagePartners {
   public componentWillLoad() {
     document.title = `Partners | Pizza to the Polls`;
@@ -122,7 +142,7 @@ export class PagePartners {
           <h1>Partners</h1>
           <p>Pizza to the Polls is grateful for the support of its partners:</p>
           <ul class="partners">
-            {top.map( l => {
+            {top.map(l => {
               return (
                 <li>
                   <a href={l.url} target="blank">
@@ -130,10 +150,10 @@ export class PagePartners {
                   </a>
                 </li>
               );
-            } )}
+            })}
           </ul>
           <ul class="partners">
-            {rest.map( l => {
+            {rest.map(l => {
               return (
                 <li>
                   <a href={l.url} target="blank">
@@ -141,7 +161,7 @@ export class PagePartners {
                   </a>
                 </li>
               );
-            } )}
+            })}
           </ul>
         </ui-card>
         <ui-card>
