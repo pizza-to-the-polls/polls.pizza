@@ -1,4 +1,5 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
+
 import getUrlParam from "../../util/getUrlParam";
 
 @Component({
