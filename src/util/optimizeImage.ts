@@ -21,7 +21,7 @@ const readOrientation = (file: File) =>
         (() => {
           const view = new DataView(reader.result as ArrayBuffer);
 
-          if (view.getUint16(0, false) != 0xffd8) {
+          if (view.getUint16(0, false) !== 0xffd8) {
             return;
           }
 
@@ -34,16 +34,16 @@ const readOrientation = (file: File) =>
 
             offset += 2;
 
-            if (marker == 0xffe1) {
+            if (marker === 0xffe1) {
               offset += 2;
 
-              if (view.getUint32(offset, false) != 0x45786966) {
+              if (view.getUint32(offset, false) !== 0x45786966) {
                 return;
               }
 
               offset += 6;
 
-              const little = view.getUint16(offset, false) == 0x4949;
+              const little = view.getUint16(offset, false) === 0x4949;
 
               offset += view.getUint32(offset + 4, little);
 
@@ -51,12 +51,14 @@ const readOrientation = (file: File) =>
 
               offset += 2;
 
-              for (var i = 0; i < tags; i++) {
-                if (view.getUint16(offset + i * 12, little) == 0x0112) {
+              for (let i = 0; i < tags; i++) {
+                if (view.getUint16(offset + i * 12, little) === 0x0112) {
                   return view.getUint16(offset + i * 12 + 8, little);
                 }
               }
-            } else if ((marker & 0xff00) != 0xff00) {
+              /* tslint:disable:no-bitwise */
+            } else if ((marker & 0xff00) !== 0xff00) {
+              /* tslint:enable:no-bitwise */
               break;
             } else {
               offset += view.getUint16(offset, false);
