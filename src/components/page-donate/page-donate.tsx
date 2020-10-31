@@ -11,7 +11,7 @@ export class PageDonate {
   @State() private canNativeShare: boolean = false;
   @State() private referral?: string | null;
   @State() private error?: string | null;
-  @Prop() history?: RouterHistory;
+  @Prop() public history?: RouterHistory;
 
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
