@@ -6,6 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { LocationInfo } from "./api/types";
+import { RouterHistory } from "@stencil/router";
 export namespace Components {
     interface AppRoot {
     }
@@ -23,6 +24,7 @@ export namespace Components {
         "selectedLocation"?: LocationInfo;
     }
     interface PageDonate {
+        "history"?: RouterHistory;
     }
     interface PageGuidelines {
     }
@@ -266,6 +268,7 @@ declare namespace LocalJSX {
         "selectedLocation"?: LocationInfo;
     }
     interface PageDonate {
+        "history"?: RouterHistory;
     }
     interface PageGuidelines {
     }

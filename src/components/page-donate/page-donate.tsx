@@ -1,6 +1,5 @@
-import { Build, Component, h, Host, State } from "@stencil/core";
-
-import getUrlParam from "../../util/getUrlParam";
+import { Build, Component, h, Host, Prop, State } from "@stencil/core";
+import { RouterHistory } from "@stencil/router";
 
 @Component({
   tag: "page-donate",
@@ -12,13 +11,14 @@ export class PageDonate {
   @State() private canNativeShare: boolean = false;
   @State() private referral?: string | null;
   @State() private error?: string | null;
+  @Prop() public history?: RouterHistory;
 
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
-    this.referral = getUrlParam(window.location.search, "referral") || "";
+    this.referral = this.history?.location.query.referral || "";
 
-    const isPostDonate = !!getUrlParam(window.location.search, "success");
-    const amountDonatedUsd = getUrlParam(window.location.search, "amount_usd");
+    const isPostDonate = !!this.history?.location.query.success;
+    const amountDonatedUsd = this.history?.location.query.amount_usd;
     if (isPostDonate && amountDonatedUsd) {
       this.amount = parseFloat(amountDonatedUsd as string);
       this.showConfirmation = true;
