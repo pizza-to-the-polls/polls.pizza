@@ -167,6 +167,8 @@ export class PageDonate {
       if (form) {
         form.reset();
       }
+      // Remove any query parameters
+      this.history?.replace("/donate/", {});
       e.preventDefault();
     };
 
