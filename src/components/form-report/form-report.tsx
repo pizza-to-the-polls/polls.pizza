@@ -1,6 +1,7 @@
 import { Build, Component, h, Host, State } from "@stencil/core";
 
 import { baseFetch } from "../../api/PizzaApi";
+import { getImageUrl } from "../../util";
 
 // Shared with pizzabase
 const URL_REGEX = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
@@ -192,13 +193,49 @@ export class FormReport {
       this.photoUrl = window.URL.createObjectURL(file);
       // Generate file preview
       if (imagePreview) {
-        imagePreview.style.backgroundImage = "url(" + this.photoUrl + ")";
+        imagePreview.style.backgroundImage = `url(${this.photoUrl})`;
       }
 
+      // Prepare image
+      let optimizedImage: string = "";
+      console.log("before: file size", file.size);
+      try {
+        optimizedImage = await getImageUrl(file, 2000); // pass max-width in pixels
+        if (imagePreview) {
+          // Prevent memory leak
+          window.URL.revokeObjectURL(this.photoUrl);
+          // Replace image preview
+          this.photoUrl = optimizedImage;
+          imagePreview.style.backgroundImage = `url(${this.photoUrl})`;
+        }
+      } catch (error) {
+        removePhoto();
+        this.submitError.photo = error?.fileName || "Whoops! We could not upload that photo";
+        // Reset
+        this.isDisabled = false;
+        return false;
+      }
+
+      const optimizedFile: File = await fetch(this.photoUrl)
+        .then(res => {
+          return res.arrayBuffer();
+        })
+        .then(buf => {
+          return new File([buf], file.name, { type: file.type });
+        })
+        .catch(error => {
+          removePhoto();
+          this.submitError.photo = error?.fileName || "Whoops! We could not upload that photo";
+          // Reset
+          this.isDisabled = false;
+          return new File([], file.name, { type: file.type });
+        });
+
       const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
-      if (addressInput.value && file) {
+      // if (addressInput.value && file) {
+      if (addressInput.value && optimizedFile && optimizedFile.size) {
         try {
-          await uploadPhoto(file, addressInput.value);
+          await uploadPhoto(optimizedFile, addressInput.value);
         } catch (error) {
           removePhoto();
           this.submitError.photo = error?.fileName || "Whoops! We could not upload that photo";
@@ -210,8 +247,6 @@ export class FormReport {
       } else {
         this.submitError.photo = "Whoops! We could not upload that photo. Try adding a link to a social media report instead.";
         removePhoto();
-        // Always reset
-        this.photoIsProcessing = false;
         this.isDisabled = false;
       }
     };
