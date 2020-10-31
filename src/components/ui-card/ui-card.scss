@@ -71,7 +71,7 @@ ui-card {
       }
     }
 
-    @include on-mobile() {
+    @media ($tablet) {
       padding-top: 0;
       font-size: 1.25em;
     }
@@ -99,7 +99,7 @@ ui-card {
     &.is-header {
       font-size: 1.3em;
 
-      @include on-mobile() {
+      @media ($tablet) {
         font-size: 1.5em;
       }
     }
@@ -114,7 +114,7 @@ ui-card {
     opacity: 0;
     pointer-events: none;
 
-    @include on-mobile() {
+    @media ($tablet) {
       margin-top: -72px; // allow scrolling for mobile header height
       padding-top: 72px; // allow scrolling for mobile header height
     }
