@@ -4,18 +4,12 @@ page-deliveries {
       padding-top: 0.1em;
     }
     .background {
-      background-color: $yellow;
-      background-image: url("/images/bg1.png");
       padding-bottom: 10px;
     }
     &.selected-location {
       a,
       h3 {
         color: $white;
-      }
-      .background {
-        background-color: $teal;
-        background-image: url("/images/bg2.png");
       }
     }
   }
@@ -29,6 +23,14 @@ page-deliveries {
     background-color: $red;
     height: 8px;
     margin: 0;
+  }
+
+  .now-feeding {
+    padding: 0.5em;
+    font-size: 0.8em;
+    font-weight: 600;
+    max-width: 800px;
+    margin: 0 auto;
   }
 
   .food-choices {

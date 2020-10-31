@@ -60,6 +60,11 @@ class PizzaApi {
     );
   }
 
+  /**
+   *
+   * @param result
+   * @param errorHandler Optional function that will receive the response if it is an error, else the error will throw
+   */
   private handleResponse<T>(result: (T & { isError: undefined }) | ApiError, errorHandler?: (error: ApiError) => void) {
     if (result?.isError === true) {
       if (errorHandler != null) {

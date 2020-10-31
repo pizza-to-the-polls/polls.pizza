@@ -39,13 +39,10 @@ export namespace Components {
     }
     interface PagePrivacy {
     }
-    interface PageReport {
-    }
     interface PageTrucks {
     }
     interface UiAddressInput {
         "buttonLabel": string;
-        "getFormattedAddress": () => Promise<string>;
         "label": string;
         "name": string;
         "placeholder": string;
@@ -61,14 +58,15 @@ export namespace Components {
         "scrollId"?: string;
     }
     interface UiDynamicText {
-        "format"?: (value: any) => string;
-        "value": any | undefined;
+        "format"?: (value: any /*T*/) => string;
+        "value": any | /*T*/ undefined;
     }
     interface UiGeoMap {
         "getCenter": () => Promise<google.maps.LatLng | undefined>;
         "setCenter": (newCenter: google.maps.LatLngLiteral, showMarker?: boolean) => Promise<void>;
     }
     interface UiMainContent {
+        "background": "yellow" | "cyan" | "teal" | "red" | "none";
     }
     interface UiModal {
         "isActive": boolean;
@@ -79,10 +77,12 @@ export namespace Components {
     }
     interface UiSingleInput {
         "buttonLabel": string;
-        "getInputId": () => Promise<string>;
+        "getCurrentValue": () => Promise<string>;
+        "getInputElement": () => Promise<HTMLInputElement | null>;
         "label": string;
         "name": string;
         "placeholder": string;
+        "setValue": (value: string) => Promise<void>;
         "type": string;
     }
 }
@@ -177,12 +177,6 @@ declare global {
         prototype: HTMLPagePrivacyElement;
         new (): HTMLPagePrivacyElement;
     };
-    interface HTMLPageReportElement extends Components.PageReport, HTMLStencilElement {
-    }
-    var HTMLPageReportElement: {
-        prototype: HTMLPageReportElement;
-        new (): HTMLPageReportElement;
-    };
     interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
     }
     var HTMLPageTrucksElement: {
@@ -253,7 +247,6 @@ declare global {
         "page-partners": HTMLPagePartnersElement;
         "page-press": HTMLPagePressElement;
         "page-privacy": HTMLPagePrivacyElement;
-        "page-report": HTMLPageReportElement;
         "page-trucks": HTMLPageTrucksElement;
         "ui-address-input": HTMLUiAddressInputElement;
         "ui-card": HTMLUiCardElement;
@@ -298,14 +291,13 @@ declare namespace LocalJSX {
     }
     interface PagePrivacy {
     }
-    interface PageReport {
-    }
     interface PageTrucks {
     }
     interface UiAddressInput {
         "buttonLabel"?: string;
         "label"?: string;
         "name"?: string;
+        "onAddressSelected"?: (event: CustomEvent<{ address: string; lat: number; lng: number }>) => void;
         "placeholder"?: string;
     }
     interface UiCard {
@@ -319,12 +311,13 @@ declare namespace LocalJSX {
         "scrollId"?: string;
     }
     interface UiDynamicText {
-        "format"?: (value: any) => string;
-        "value"?: any | undefined;
+        "format"?: (value: any /*T*/) => string;
+        "value"?: any | /*T*/ undefined;
     }
     interface UiGeoMap {
     }
     interface UiMainContent {
+        "background"?: "yellow" | "cyan" | "teal" | "red" | "none";
     }
     interface UiModal {
         "isActive"?: boolean;
@@ -357,7 +350,6 @@ declare namespace LocalJSX {
         "page-partners": PagePartners;
         "page-press": PagePress;
         "page-privacy": PagePrivacy;
-        "page-report": PageReport;
         "page-trucks": PageTrucks;
         "ui-address-input": UiAddressInput;
         "ui-card": UiCard;
@@ -388,7 +380,6 @@ declare module "@stencil/core" {
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
-            "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
             "ui-address-input": LocalJSX.UiAddressInput & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;
             "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
