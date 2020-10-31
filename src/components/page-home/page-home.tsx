@@ -63,7 +63,7 @@ export class PageHome {
             <div class="container">
               <ui-card class="report-content">
                 <form-report>
-                  <h2 id="report" class="is-display is-scroll-to">
+                  <h2 id="report" class="is-display is-scroll-to no-pointer-events">
                     Report a line
                   </h2>
                   <p>

@@ -48,6 +48,7 @@ page-deliveries {
         border-radius: 25px;
         background-color: $gray1;
         transition: all 0.2s ease-in-out;
+        @include unselectable;
         &.selected {
           background-color: $red;
           color: $white;
