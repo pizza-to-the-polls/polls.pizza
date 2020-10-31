@@ -3,9 +3,28 @@ ui-main-content {
     background-attachment: fixed;
     background-size: 400px;
     padding-bottom: 40px;
+    &.bg-yellow {
+      background-color: $yellow;
+      background-image: url("/images/bg1.png");
+    }
+    &.bg-cyan {
+      background-color: $cyan;
+      background-image: url("/images/bg2.png");
+    }
+    &.bg-teal {
+      background-color: $teal;
+      background-image: url("/images/bg2.png");
+    }
+    &.bg-red {
+      background-color: $red;
+      color: $white;
+      background-image: url("/images/bg2.png");
+    }
   }
 
   .container {
-    padding-top: 30px;
+    max-width: 800px;
+    padding: 30px 20px 0 20px;
+    margin: 0 auto;
   }
 }

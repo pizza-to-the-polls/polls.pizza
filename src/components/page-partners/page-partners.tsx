@@ -1,4 +1,4 @@
-import { Component, h, Host } from "@stencil/core";
+import { Component, h } from "@stencil/core";
 
 const top = [
   {
@@ -106,10 +106,10 @@ const rest = [
   },
 ];
 
-@Component({
+@Component( {
   tag: "page-partners",
   styleUrl: "page-partners.scss",
-})
+} )
 export class PagePartners {
   public componentWillLoad() {
     document.title = `Partners | Pizza to the Polls`;
@@ -117,64 +117,60 @@ export class PagePartners {
 
   public render() {
     return (
-      <Host>
-        <section id="partners" class="page">
-          <div class="container">
-            <ui-card>
-              <h1>Partners</h1>
-              <p>Pizza to the Polls is grateful for the support of its partners:</p>
-              <ul class="partners">
-                {top.map(l => {
-                  return (
-                    <li>
-                      <a href={l.url} target="blank">
-                        <img src={`/images/logos/${l.img}`} alt={l.name} />
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-              <ul class="partners">
-                {rest.map(l => {
-                  return (
-                    <li>
-                      <a href={l.url} target="blank">
-                        <img src={`/images/logos/${l.img}`} alt={l.name} />
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </ui-card>
-            <ui-card>
-              <h2>Become a partner</h2>
-              <p>We’re looking for partners who can:</p>
-              <ui-pizza-list>
+      <ui-main-content id="partners" class="page" background="cyan">
+        <ui-card>
+          <h1>Partners</h1>
+          <p>Pizza to the Polls is grateful for the support of its partners:</p>
+          <ul class="partners">
+            {top.map( l => {
+              return (
                 <li>
-                  <strong>Promote @PizzatothePolls:</strong> Help spread the word by creating or sharing content across all channels of communication so people know they can report
-                  a line or donate food.
+                  <a href={l.url} target="blank">
+                    <img src={`/images/logos/${l.img}`} alt={l.name} />
+                  </a>
                 </li>
+              );
+            } )}
+          </ul>
+          <ul class="partners">
+            {rest.map( l => {
+              return (
                 <li>
-                  <strong>Feed Hungry Folks:</strong> Donate snacks, food, or beverages to be delivered to polling locations.
+                  <a href={l.url} target="blank">
+                    <img src={`/images/logos/${l.img}`} alt={l.name} />
+                  </a>
                 </li>
-                <li>
-                  <strong>Engage Employees & Audience Members:</strong> Make sure people know that spotting lines is a great way to make a difference in 2020!
-                </li>
-                <li>
-                  <strong>Participate in the November 3 Day of Action:</strong> Election Day
-                </li>
-              </ui-pizza-list>
-              <p>
-                If you’re interested in becoming a partner to help ease the pain of crowded polling places, get in touch today:{" "}
-                <a href="mailto:partners@polls.pizza" class="has-text-teal" target="_blank">
-                  partners@polls.pizza
-                </a>
-                .
-              </p>
-            </ui-card>
-          </div>
-        </section>
-      </Host>
+              );
+            } )}
+          </ul>
+        </ui-card>
+        <ui-card>
+          <h2>Become a partner</h2>
+          <p>We’re looking for partners who can:</p>
+          <ui-pizza-list>
+            <li>
+              <strong>Promote @PizzatothePolls:</strong> Help spread the word by creating or sharing content across all channels of communication so people know they can report a
+              line or donate food.
+            </li>
+            <li>
+              <strong>Feed Hungry Folks:</strong> Donate snacks, food, or beverages to be delivered to polling locations.
+            </li>
+            <li>
+              <strong>Engage Employees & Audience Members:</strong> Make sure people know that spotting lines is a great way to make a difference in 2020!
+            </li>
+            <li>
+              <strong>Participate in the November 3 Day of Action:</strong> Election Day
+            </li>
+          </ui-pizza-list>
+          <p>
+            If you’re interested in becoming a partner to help ease the pain of crowded polling places, get in touch today:{" "}
+            <a href="mailto:partners@polls.pizza" class="has-text-teal" target="_blank">
+              partners@polls.pizza
+            </a>
+            .
+          </p>
+        </ui-card>
+      </ui-main-content>
     );
   }
 }

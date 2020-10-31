@@ -81,7 +81,7 @@ export class AppRoot {
         </main>
 
         <footer>
-          <div class="container">
+          <ui-main-content background="none">
             <div
               class="clearfix"
               style={{
@@ -152,7 +152,7 @@ export class AppRoot {
                 </li>
               </ul>
             </div>
-          </div>
+          </ui-main-content>
         </footer>
         <span onClick={scrollBackToTop} class={`back-to-top${showBackToTop ? " is-active" : ""}`} title="Back to top"></span>
       </Host>

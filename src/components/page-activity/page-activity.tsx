@@ -22,70 +22,64 @@ export class PageActivity {
     const ordersByDay = this.ordersByDay();
     return (
       <Host>
-        <section class="page activity">
-          <div class="container">
-            <ui-card>
-              <a class={"refresh-button button is-teal is-hidden-mobile " + (this.isRefreshing ? "is-loading is-disabled " : "")} onClick={(_e: Event) => this.refreshRecent()}>
-                Refresh
-              </a>
-              <h1>Recent Deliveries</h1>
-              <a
-                class={"refresh-button button is-teal is-fullwidth is-hidden-tablet " + (this.isRefreshing ? "is-loading is-disabled " : "")}
-                onClick={(_e: Event) => this.refreshRecent()}
-              >
-                Refresh
-              </a>
-              <p>
-                If you'd like to help keep the pizza flowing, <stencil-route-link url="/donate">make a donation!</stencil-route-link>
-              </p>
-              {ordersByDay.map(({ date, orders }) => (
-                <div class="order-day">
-                  <h3 class="date-header">{date}</h3>
-                  <ui-pizza-list class="order-list">
-                    {orders.map(({ id, createdAt, pizzas, location: { fullAddress }, reports }: OrderDetails) => (
-                      <li id={"order-id-" + id} key={id}>
-                        <b>
-                          {pizzas} pizza{pizzas === 1 ? "" : "s"} ordered at {new Date(createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })} for{" "}
-                          {fullAddress}
-                        </b>
-                        <ul>
-                          {reports.map(({ reportURL, createdAt: reportCreatedAt, waitTime }) => (
-                            <li key={reportURL}>
-                              <a href={reportURL} target="_blank" rel="noopener noreferrer">
-                                Reported at {new Date(reportCreatedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
-                              </a>
-                              {waitTime && (
-                                <span>
-                                  {" "}
-                                  with an est. wait time <span class="has-no-word-break">of {waitTime.toLowerCase()}</span>
-                                </span>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      </li>
-                    ))}
-                  </ui-pizza-list>
-                </div>
-              ))}
-              {ordersByDay.length > 0 ? (
-                <button
-                  hidden={!this.hasMore}
-                  class={"button is-teal is-fullwidth " + (this.isRefreshing ? "is-loading is-disabled " : "")}
-                  onClick={(_e: Event) => this.loadMore()}
-                >
-                  Load More
-                </button>
-              ) : (
-                <div id="loading-container">
-                  <ui-card is-small="true" class="has-background-blue">
-                    <p class="has-text-centered has-text-white">Loading...</p>
-                  </ui-card>
-                </div>
-              )}
-            </ui-card>
-          </div>
-        </section>
+        <ui-main-content background="teal">
+          <ui-card>
+            <a class={"refresh-button button is-teal is-hidden-mobile " + (this.isRefreshing ? "is-loading is-disabled " : "")} onClick={(_e: Event) => this.refreshRecent()}>
+              Refresh
+            </a>
+            <h1>Recent Deliveries</h1>
+            <a
+              class={"refresh-button button is-teal is-fullwidth is-hidden-tablet " + (this.isRefreshing ? "is-loading is-disabled " : "")}
+              onClick={(_e: Event) => this.refreshRecent()}
+            >
+              Refresh
+            </a>
+            <p>
+              If you'd like to help keep the pizza flowing, <stencil-route-link url="/donate">make a donation!</stencil-route-link>
+            </p>
+            {ordersByDay.map(({ date, orders }) => (
+              <div class="order-day">
+                <h3 class="date-header">{date}</h3>
+                <ui-pizza-list class="order-list">
+                  {orders.map(({ id, createdAt, pizzas, location: { fullAddress }, reports }: OrderDetails) => (
+                    <li id={"order-id-" + id} key={id}>
+                      <b>
+                        {pizzas} pizza{pizzas === 1 ? "" : "s"} ordered at {new Date(createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })} for{" "}
+                        {fullAddress}
+                      </b>
+                      <ul>
+                        {reports.map(({ reportURL, createdAt: reportCreatedAt, waitTime }) => (
+                          <li key={reportURL}>
+                            <a href={reportURL} target="_blank" rel="noopener noreferrer">
+                              Reported at {new Date(reportCreatedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                            </a>
+                            {waitTime && (
+                              <span>
+                                {" "}
+                                with an est. wait time <span class="has-no-word-break">of {waitTime.toLowerCase()}</span>
+                              </span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ui-pizza-list>
+              </div>
+            ))}
+            {ordersByDay.length > 0 ? (
+              <button hidden={!this.hasMore} class={"button is-teal is-fullwidth " + (this.isRefreshing ? "is-loading is-disabled " : "")} onClick={(_e: Event) => this.loadMore()}>
+                Load More
+              </button>
+            ) : (
+              <div id="loading-container">
+                <ui-card is-small="true" class="has-background-blue">
+                  <p class="has-text-centered has-text-white">Loading...</p>
+                </ui-card>
+              </div>
+            )}
+          </ui-card>
+        </ui-main-content>
       </Host>
     );
   }
