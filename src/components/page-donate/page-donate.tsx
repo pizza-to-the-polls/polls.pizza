@@ -26,6 +26,7 @@ export class PageDonate {
   }
 
   public async donate(amount: number) {
+    this.error = null;
     const showError = this.showError;
     try {
       const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/donations`, {
@@ -53,10 +54,12 @@ export class PageDonate {
           console.error(respJson.message);
           this.showError(respJson.message);
         }
+      } else {
+        this.showError("Error initiating payment.");
       }
     } catch (e) {
       console.error(e);
-      this.showError("Error initiating payment.")
+      this.showError("Error initiating payment.");
     }
   }
 
@@ -93,7 +96,11 @@ export class PageDonate {
     const handleChange = () => (this.amount = getAmount());
     const handleCheckout = (e: Event) => {
       if (this.amount) {
-        this.donate(this.amount);
+        if (this.amount >= 0.50) {
+          this.donate(this.amount);
+        } else {
+          this.showError("Whoops! Donations must be $0.50 or greater.");
+        }
       }
       e.preventDefault();
     };
@@ -235,6 +242,12 @@ export class PageDonate {
                     >
                       Donate
                     </button>
+                    { this.error && (
+                      <div id="donation-error" class="help has-text-red">
+                        <p>{this.error}</p>
+                        <p>Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.</p>
+                      </div>
+                    )}
                     <p>
                       Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
                       Our activities are 501(c)(3) compliant.
