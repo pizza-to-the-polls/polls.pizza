@@ -19,6 +19,7 @@ export class UiSingleInput {
   @State() private value: string;
 
   private id: string;
+  private inputElement?: HTMLInputElement;
 
   constructor() {
     this.label = "";
@@ -32,8 +33,19 @@ export class UiSingleInput {
   }
 
   @Method()
-  public getInputId(): Promise<string> {
-    return Promise.resolve(this.id);
+  public getInputElement(): Promise<HTMLInputElement | null> {
+    return Promise.resolve(this.inputElement || null);
+  }
+
+  @Method()
+  public getCurrentValue(): Promise<string> {
+    return Promise.resolve(this.value);
+  }
+
+  @Method()
+  public setValue(value: string): Promise<void> {
+    this.value = value;
+    return Promise.resolve();
   }
 
   public render() {
@@ -59,6 +71,7 @@ export class UiSingleInput {
         <label htmlFor={this.id}>{this.label}</label>
         <input
           id={this.id}
+          ref={x => (this.inputElement = x)}
           type={this.type}
           value={this.value}
           name={this.name}

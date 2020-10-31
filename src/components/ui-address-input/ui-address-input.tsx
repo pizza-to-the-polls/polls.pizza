@@ -1,4 +1,4 @@
-import { Build, Component, h, Method, Prop } from "@stencil/core";
+import { Build, Component, Event, EventEmitter, h, Prop } from "@stencil/core";
 
 /**
  * TODO: THIS IS INCOMPLETE AND STILL UNDER DEVELOPMENT
@@ -7,7 +7,7 @@ import { Build, Component, h, Method, Prop } from "@stencil/core";
 @Component({
   tag: "ui-address-input",
   styleUrl: "ui-address-input.scss",
-  shadow: true,
+  shadow: false,
 })
 export class UiAddressInput {
   @Prop() public label: string;
@@ -15,50 +15,56 @@ export class UiAddressInput {
   @Prop() public name: string;
   @Prop() public placeholder: string;
 
-  // @Event( { cancelable: false } ) public addressSubmitted:EventEmitter;
+  @Event() public addressSelected!: EventEmitter<{ address: string; lat: number; lng: number }>;
 
-  private addressInput?: HTMLUiSingleInputElement;
-  private formattedAddress: string;
+  private inputElement?: HTMLUiSingleInputElement;
+  private place?: google.maps.places.PlaceResult;
 
   constructor() {
     this.label = "";
     this.name = "";
     this.buttonLabel = "";
     this.placeholder = "";
-    this.formattedAddress = "";
   }
 
   public async componentDidRender() {
-    if (Build.isBrowser && google && this.addressInput != null) {
-      const id = await this.addressInput.getInputId();
-      const autocomplete = new google.maps.places.Autocomplete(document.getElementById(id) as HTMLInputElement, {
+    const { inputElement: addressInput } = this;
+    if (Build.isBrowser && google && addressInput != null) {
+      const el = await addressInput.getInputElement();
+      if (el == null) {
+        return;
+      }
+
+      const autocomplete = new google.maps.places.Autocomplete(el, {
         types: ["geocode", "establishment"],
         componentRestrictions: { country: "us" },
       });
 
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
-        this.formattedAddress = place.formatted_address ? place.formatted_address.replace(/, USA/gi, "") : place.name ? place.name : "the location";
+        this.place = place;
+        addressInput.setValue(place.formatted_address ? place.formatted_address.replace(/, USA/gi, "") : place.name ? place.name : "the location");
       });
     }
-  }
-
-  @Method()
-  public getFormattedAddress(): Promise<string> {
-    return Promise.resolve(this.formattedAddress);
   }
 
   public render() {
     return (
       <ui-single-input
-        ref={(x?: HTMLUiSingleInputElement) => (this.addressInput = x)}
+        ref={(x?: HTMLUiSingleInputElement) => (this.inputElement = x)}
         label={this.label}
         buttonLabel={this.buttonLabel}
         placeholder={this.placeholder}
         name={this.name}
         onButtonClicked={e => {
-          e.preventDefault();
-          // this.selectedAddress = e.detail;
+          const evt = this.addressSelected.emit({
+            address: e.detail,
+            lat: this.place?.geometry?.location.lat() || 0,
+            lng: this.place?.geometry?.location.lng() || 0,
+          });
+          if (evt.defaultPrevented) {
+            e.preventDefault();
+          }
         }}
       />
     );
