@@ -1,15 +1,5 @@
-import { Build, Component, h, Host, State } from "@stencil/core";
-
-import { scrollPageToTop } from "../../util";
-
-interface Token {
-  email: string;
-  card: {
-    address_zip: string;
-  };
-  id: string;
-  amount: number;
-}
+import { Build, Component, h, Host, Prop, State } from "@stencil/core";
+import { RouterHistory } from "@stencil/router";
 
 @Component({
   tag: "page-donate",
@@ -19,52 +9,68 @@ export class PageDonate {
   @State() private amount?: number | null;
   @State() private showConfirmation: boolean = false;
   @State() private canNativeShare: boolean = false;
+  @State() private referral?: string | null;
+  @State() private error?: string | null;
+  @Prop() public history?: RouterHistory;
 
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
+    this.referral = this.history?.location.query.referral || "";
+
+    const isPostDonate = !!this.history?.location.query.success;
+    const amountDonatedUsd = this.history?.location.query.amount_usd;
+    if (isPostDonate && amountDonatedUsd) {
+      this.amount = parseFloat(amountDonatedUsd as string);
+      this.showConfirmation = true;
+    }
+  }
+
+  public async donate(amount: number) {
+    this.error = null;
+    const showError = this.showError;
+    try {
+      const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/donations`, {
+        body: JSON.stringify({ amountUsd: amount, referrer: this.referral }),
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      });
+
+      if (resp.status === 200) {
+        const respJson = await resp.json();
+        if (respJson.success) {
+          const sessionId = respJson.checkoutSessionId;
+          const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
+
+          stripe
+            .redirectToCheckout({
+              sessionId,
+            })
+            .then(function (result: any) {
+              console.error(result.error.message);
+              showError(result.error.message);
+            });
+        } else {
+          console.error(respJson.message);
+          this.showError(respJson.message);
+        }
+      } else {
+        this.showError("Error initiating payment.");
+      }
+    } catch (e) {
+      console.error(e);
+      this.showError("Error initiating payment.");
+    }
+  }
+
+  public showError(error: string) {
+    this.error = error;
   }
 
   public render() {
-    let handler: any = null;
-    const StripeCheckout: any = (window as any).StripeCheckout;
-
-    // Get referral from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const referral = urlParams.get("referral") || "";
-
     if (Build.isBrowser) {
       // Determine if `navigator.share` is supported in browser (native device sharing)
       this.canNativeShare = navigator && navigator.share ? true : false;
-    }
-
-    if (Build.isBrowser && StripeCheckout) {
-      const tokenHandler = async (token: Token) => {
-        const params: { [key: string]: any } = {
-          "entry.1599572815": token.email,
-          "entry.690252188": token.card.address_zip,
-          "entry.1474063298": token.id,
-          "entry.1036377864": this.amount,
-          "entry.104127523": document.domain,
-          "entry.901888082": referral,
-        };
-
-        const body = Object.keys(params).reduce((form, key) => {
-          form.append(key, params[key]);
-          return form;
-        }, new FormData());
-
-        await fetch(`${process.env.DONATION_FORM}`, { body, mode: "no-cors", method: "POST" });
-
-        this.showConfirmation = true;
-        scrollPageToTop();
-      };
-
-      handler = StripeCheckout.configure({
-        key: process.env.STRIPE_PUBLIC_KEY,
-        image: "https://polls.pizza/images/logo.png",
-        locale: "auto",
-        token: tokenHandler,
-      });
     }
 
     const activateCustomAmountRadio = () => {
@@ -90,15 +96,11 @@ export class PageDonate {
     const handleChange = () => (this.amount = getAmount());
     const handleCheckout = (e: Event) => {
       if (this.amount) {
-        const pizzas = Math.ceil(this.amount / 20);
-
-        handler?.open({
-          name: "Pizza to the Polls",
-          description: "About " + pizzas + " Pizza" + (pizzas > 1 ? "s" : ""),
-          zipCode: true,
-          amount: this.amount * 100,
-          image: "https://polls.pizza/images/logo.png",
-        });
+        if (this.amount >= 0.5) {
+          this.donate(this.amount);
+        } else {
+          this.showError("Whoops! Donations must be $0.50 or greater.");
+        }
       }
       e.preventDefault();
     };
@@ -165,6 +167,8 @@ export class PageDonate {
       if (form) {
         form.reset();
       }
+      // Remove any query parameters
+      this.history?.replace("/donate/", {});
       e.preventDefault();
     };
 
@@ -240,6 +244,14 @@ export class PageDonate {
                     >
                       Donate
                     </button>
+                    {this.error && (
+                      <div id="donation-error" class="help has-text-red">
+                        <p>{this.error}</p>
+                        <p>
+                          Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
+                        </p>
+                      </div>
+                    )}
                     <p>
                       Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
                       Our activities are 501(c)(3) compliant.
