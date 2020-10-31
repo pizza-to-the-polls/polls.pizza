@@ -40,6 +40,11 @@ const rest = [
     url: "https://www.kindsnacks.com/",
   },
   {
+    img: "lemonade.png",
+    name: "Lemonade",
+    url: "https://www.lemonade.com/",
+  },
+  {
     img: "levis.png",
     name: "Levi Strauss & Co.",
     url: "https://levi.com",
@@ -65,14 +70,29 @@ const rest = [
     url: "https://www.somebodyfeedthepeople.org/",
   },
   {
+    img: "scf.png",
+    name: "Social Change Fund",
+    url: "https://www.thesocialchangefund.org/",
+  },
+  {
     img: "stickys.png",
     name: "Sticky's Finger Joint",
     url: "https://www.stickys.com/",
   },
   {
+    img: "ap.png",
+    name: "The Advancement Project",
+    url: "https://advancementproject.org/",
+  },
+  {
     img: "gato.png",
     name: "The Great American Takeout",
     url: "https://thegreatamericantakeout.com/",
+  },
+  {
+    img: "lcef.png",
+    name: "The Leadership Conference Education Fund",
+    url: "https://civilrights.org/edfund/",
   },
   {
     img: "thesalty.png",
