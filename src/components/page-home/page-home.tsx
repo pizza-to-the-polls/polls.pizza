@@ -14,21 +14,20 @@ export class PageHome {
     document.title = `Home | Pizza to the Polls`;
 
     if (Build.isBrowser) {
-      PizzaApi.getTotals().then(totals =>
-        PizzaApi.getDonations().then(raised => {
-          this.totals = { ...totals, raised };
+      PizzaApi.getTotals().then(totals => {
+        this.totals = totals;
+        const { raised, costs } = totals;
 
-          // Calculate available before transforming values
-          this.available =
-            raised && totals.costs
-              ? "$" +
-                (raised - totals.costs).toLocaleString(undefined, {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                })
-              : "";
-        }),
-      );
+        // Calculate available before transforming values
+        this.available =
+          raised && costs
+            ? "$" +
+              (raised - costs).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })
+            : "";
+      });
     }
   }
 
