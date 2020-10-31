@@ -1,6 +1,6 @@
 /**
  * Return the value of a URL parameter
- * @param url String 
+ * @param url String
  * @param key String
  */
 export default (url: string, key: string) => {

@@ -5,7 +5,6 @@ import getUrlParam from "../../util/getUrlParam";
   tag: "page-donate",
   styleUrl: "page-donate.scss",
 })
-
 export class PageDonate {
   @State() private amount?: number | null;
   @State() private showConfirmation: boolean = false;
@@ -96,7 +95,7 @@ export class PageDonate {
     const handleChange = () => (this.amount = getAmount());
     const handleCheckout = (e: Event) => {
       if (this.amount) {
-        if (this.amount >= 0.50) {
+        if (this.amount >= 0.5) {
           this.donate(this.amount);
         } else {
           this.showError("Whoops! Donations must be $0.50 or greater.");
@@ -242,10 +241,12 @@ export class PageDonate {
                     >
                       Donate
                     </button>
-                    { this.error && (
+                    {this.error && (
                       <div id="donation-error" class="help has-text-red">
                         <p>{this.error}</p>
-                        <p>Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.</p>
+                        <p>
+                          Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
+                        </p>
                       </div>
                     )}
                     <p>
