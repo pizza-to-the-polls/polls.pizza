@@ -1,57 +1,35 @@
-import { Component, h, Host, State } from "@stencil/core";
+import { Component, h, Host, Listen, State } from "@stencil/core";
 
-// Debounce function for back-to-top scroll event
-const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-  const debounced = (...args: Parameters<F>) => {
-    if (timeout !== null) {
-      clearTimeout(timeout);
-      timeout = null;
-    }
-    timeout = setTimeout(() => func(...args), waitFor);
-  };
-  return debounced as (...args: Parameters<F>) => ReturnType<F>;
-};
+import { debounce } from "../../util";
 
 @Component({
   tag: "app-root",
   styleUrl: "app-root.scss",
 })
 export class AppRoot {
-  @State() private scrollTop: number = 0;
-  @State() private scrollTopThreshold: number = 300;
-  @State() private longPageThreshold: number = 2200;
-  @State() private showBackToTop: boolean = false;
+  public static readonly LONG_PAGE_THRESHOLD: number = 2200;
+  public static readonly SCROLL_TOP_THRESHOLD: number = 300;
+
+  @State() private showBackToTop: boolean;
+
+  constructor() {
+    this.showBackToTop = false;
+    this.recalculateScrollTop = debounce(this.recalculateScrollTop.bind(this), 50);
+  }
+
+  @Listen("scroll", { target: "window" })
+  public onScroll(_: Event) {
+    this.recalculateScrollTop();
+  }
 
   public render() {
-    const getScrollTop = () => {
-      // Determine if long page
-      if (document.body.scrollHeight || document.documentElement.scrollHeight) {
-        this.showBackToTop = Math.max(document.body.scrollHeight || 0, document.documentElement.scrollTop || 0) > this.longPageThreshold;
-      } else {
-        this.showBackToTop = false;
-      }
-      // Get offset
-      return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    };
-
-    this.scrollTop = getScrollTop();
-    if (window) {
-      window.addEventListener(
-        "scroll",
-        debounce(() => {
-          this.scrollTop = getScrollTop();
-        }, 200),
-      );
-    }
+    const { showBackToTop } = this;
 
     const scrollBackToTop = (e?: Event) => {
       e?.preventDefault();
       (e?.target as HTMLElement)?.blur();
       if (window) {
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: "smooth" });
-        this.scrollTop = 0;
       }
     };
 
@@ -176,10 +154,15 @@ export class AppRoot {
             </div>
           </div>
         </footer>
-        {this.scrollTop > this.scrollTopThreshold && this.showBackToTop && (
-          <span onClick={scrollBackToTop} class={"back-to-top " + (this.scrollTop > this.scrollTopThreshold && this.showBackToTop ? "is-active" : "")} title="Back to top"></span>
-        )}
+        <span onClick={scrollBackToTop} class={`back-to-top${showBackToTop ? " is-active" : ""}`} title="Back to top"></span>
       </Host>
     );
+  }
+
+  private recalculateScrollTop() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const pageHeight = Math.max(document.body.scrollHeight || 0, document.documentElement.scrollTop || 0);
+    // Determine if long page
+    this.showBackToTop = scrollTop > AppRoot.SCROLL_TOP_THRESHOLD && pageHeight > AppRoot.LONG_PAGE_THRESHOLD;
   }
 }
