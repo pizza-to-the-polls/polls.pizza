@@ -1,4 +1,14 @@
 form-report {
+  #form-report-component {
+    margin-top: -192px; // allow scrolling for mobile header height
+    padding-top: 192px; // allow scrolling for mobile header height
+
+    @media ($tablet) {
+      margin-top: -72px; // allow scrolling for mobile header height
+      padding-top: 72px; // allow scrolling for mobile header height
+    }
+  }
+
   #form-report {
     #form-step-2 {
       h2 {
