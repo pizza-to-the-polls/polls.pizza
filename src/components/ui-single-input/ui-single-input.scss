@@ -11,6 +11,11 @@ ui-single-input {
     width: calc(100% - 100px);
     float: left;
     border-radius: $radius 0 0 $radius;
+    &:focus {
+      border-color: $teal;
+      border-width: 2px;
+      border-style: solid;
+    }
   }
 
   .submit-button {

@@ -71,6 +71,7 @@ export namespace Components {
     }
     interface UiMainContent {
         "background": "yellow" | "cyan" | "teal" | "red" | "none";
+        "fullBleed": boolean;
     }
     interface UiModal {
         "isActive": boolean;
@@ -332,6 +333,7 @@ declare namespace LocalJSX {
     }
     interface UiMainContent {
         "background"?: "yellow" | "cyan" | "teal" | "red" | "none";
+        "fullBleed"?: boolean;
     }
     interface UiModal {
         "isActive"?: boolean;

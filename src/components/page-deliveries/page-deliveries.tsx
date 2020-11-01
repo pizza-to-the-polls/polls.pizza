@@ -37,7 +37,7 @@ const FoodChoices: FunctionalComponent<{
 );
 
 const OrderDetailDisplay: FunctionalComponent<{ order: OrderDetails | null; noIcon?: boolean; onClick?: () => void }> = ({ order, onClick, noIcon }) => (
-  <li class={noIcon === true ? "" : "pizza-icon"} style={{ cursor: onClick != null ? "pointer" : "default" }} onClick={onClick}>
+  <li class={{ "pizza-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={order} format={x => x.location.fullAddress} />
     </span>
@@ -48,7 +48,7 @@ const OrderDetailDisplay: FunctionalComponent<{ order: OrderDetails | null; noIc
 );
 
 const OrderInfoDisplay: FunctionalComponent<{ order: OrderInfo | null; reportCount: number; noIcon?: boolean }> = ({ order, reportCount, noIcon }) => (
-  <li class={noIcon === true ? "" : "pizza-icon"}>
+  <li class={{ "pizza-icon": noIcon !== true }}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} en route`} />
     </span>
@@ -59,7 +59,7 @@ const OrderInfoDisplay: FunctionalComponent<{ order: OrderInfo | null; reportCou
 );
 
 const TruckInfoDisplay: FunctionalComponent<{ truck: TruckInfo | null; noIcon?: boolean; onClick?: () => void }> = ({ truck, noIcon, onClick }) => (
-  <li class={noIcon === true ? "" : "truck-icon"} style={{ cursor: onClick != null ? "pointer" : "default" }} onClick={onClick}>
+  <li class={{ "truck-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={truck} format={x => x.location.fullAddress} />
     </span>
@@ -216,7 +216,7 @@ export class PageDeliveries {
       .map(x => ({ type: "truck", data: x } as OrderOrTruckItem));
     const items = [...orders, ...trucks].sort((l, r) => (l.data!.createdAt > r.data!.createdAt ? -1 : 1));
 
-    const currentAddress = selectedAddress != null ? foundLocation?.fullAddress || selectedAddress : this.recentOrders?.find(_ => true)?.location.fullAddress;
+    const currentAddress = selectedAddress != null ? foundLocation?.fullAddress || selectedAddress : items?.find(_ => true)?.data?.location.fullAddress;
     const nowFeeding = currentAddress != null ? ": " + currentAddress : null;
 
     return (
@@ -226,7 +226,7 @@ export class PageDeliveries {
             {selectedAddress != null ? (
               <div style={{ padding: "1em 0 0 0" }}>
                 <a onClick={() => (this.selectedAddress = undefined)}>Back to all deliveries</a>
-                <h3>{selectedAddress}</h3>
+                <h2>{selectedAddress}</h2>
               </div>
             ) : (
               <Fragment>
@@ -250,48 +250,50 @@ export class PageDeliveries {
           <FoodChoices selected={selectedFood} onSelected={x => (this.selectedFood = x)} />
         </ui-main-content>
 
-        <hr class="heavy" />
-        <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
-        <div style={{ width: "100%", height: "200px" }}>
-          <ui-geo-map
-            center={mapCenterPoint}
-            zoom={mapZoom}
-            deliveries={
-              selectedFood === FoodChoice.all || selectedFood === FoodChoice.pizza
-                ? this.recentOrders?.slice(0, 30).map(x => ({
-                    coords: {
-                      lat: parseFloat(x.location.lat),
-                      lng: parseFloat(x.location.lng),
-                    },
-                    id: x.location.id,
-                  }))
-                : undefined
-            }
-            trucks={
-              selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks
-                ? this.recentTrucks?.slice(0, 20).map(x => ({
-                    coords: {
-                      lat: parseFloat(x.location.lat),
-                      lng: parseFloat(x.location.lng),
-                    },
-                    id: x.location.id,
-                  }))
-                : undefined
-            }
-            onMarkerSelected={({ detail: { type, location } }) => {
-              let locationInfo: LocationInfo | undefined;
-              switch (type) {
-                case "pizza":
-                  locationInfo = this.recentOrders?.find(x => x.location.id === location)?.location;
-                  break;
-                case "truck":
-                  locationInfo = this.recentTrucks?.find(x => x.location.id === location)?.location;
-                  break;
+        <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
+          <hr class="heavy" />
+          <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
+          <div style={{ width: "100%", height: "200px" }}>
+            <ui-geo-map
+              center={mapCenterPoint}
+              zoom={mapZoom}
+              deliveries={
+                selectedFood === FoodChoice.all || selectedFood === FoodChoice.pizza
+                  ? this.recentOrders?.slice(0, 30).map(x => ({
+                      coords: {
+                        lat: parseFloat(x.location.lat),
+                        lng: parseFloat(x.location.lng),
+                      },
+                      id: x.location.id,
+                    }))
+                  : undefined
               }
-              this.selectLocation(locationInfo);
-            }}
-          />
-        </div>
+              trucks={
+                selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks
+                  ? this.recentTrucks?.slice(0, 20).map(x => ({
+                      coords: {
+                        lat: parseFloat(x.location.lat),
+                        lng: parseFloat(x.location.lng),
+                      },
+                      id: x.location.id,
+                    }))
+                  : undefined
+              }
+              onMarkerSelected={({ detail: { type, location } }) => {
+                let locationInfo: LocationInfo | undefined;
+                switch (type) {
+                  case "pizza":
+                    locationInfo = this.recentOrders?.find(x => x.location.id === location)?.location;
+                    break;
+                  case "truck":
+                    locationInfo = this.recentTrucks?.find(x => x.location.id === location)?.location;
+                    break;
+                }
+                this.selectLocation(locationInfo);
+              }}
+            />
+          </div>
+        </ui-main-content>
 
         <ui-main-content background="yellow">
           <ui-card>
