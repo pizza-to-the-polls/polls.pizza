@@ -1,61 +1,128 @@
-import { Build, Component, Element, h, Host, Method } from "@stencil/core";
+import { Build, Component, Event, EventEmitter, h, Prop, Watch } from "@stencil/core";
 // @ts-ignore
-import {} from "googlemaps";
+import { } from "googlemaps";
 
-const DONE = Promise.resolve();
+import { LocationId } from "../../api";
 
-@Component({
+@Component( {
   tag: "ui-geo-map",
   styleUrl: "ui-geo-map.scss",
   shadow: true,
-})
+} )
 export class UiGeoMap {
-  @Element() private el!: HTMLElement;
+
+  public static readonly US_CAPITOL: google.maps.LatLngLiteral = { lat: 38.8899, lng: -77.0091 };
+  public static readonly US_CENTER: google.maps.LatLngLiteral = { lat: 39.8283, lng: -98.5795 };
+  public static readonly DEFAULT_CENTER: google.maps.LatLngLiteral = UiGeoMap.US_CENTER;
+  public static readonly DEFAULT_ZOOM = 16;
+
+  @Prop() public center?: google.maps.LatLngLiteral;
+  @Prop() public zoom?: number;
+  @Prop() public deliveries?: { coords: google.maps.LatLngLiteral, id: LocationId }[];
+  @Prop() public trucks?: { coords: google.maps.LatLngLiteral, id: LocationId }[];
+
+  @Event( { cancelable: false } ) public markerSelected!: EventEmitter<{
+    type: "pizza" | "truck",
+    coords: google.maps.LatLngLiteral,
+    location: LocationId,
+  }>;
 
   private map?: google.maps.Map;
-  private marker?: google.maps.Marker;
+  private mapElement?: HTMLElement;
+  private truckMarkers: google.maps.Marker[];
+  private deliveryMarkers: google.maps.Marker[];
+
+  constructor() {
+    this.zoom = 16;
+    this.center = UiGeoMap.US_CAPITOL;
+    this.truckMarkers = [];
+    this.deliveryMarkers = [];
+    // this.id = "map-" + Math.floor( Math.random() * 100000 );
+  }
 
   public componentDidLoad() {
-    if (!Build.isBrowser) {
+    if( !Build.isBrowser ) {
       return;
     }
-    const m = this.el.shadowRoot!.querySelector("#map");
-    this.map = new google.maps.Map(m as HTMLElement, {
-      center: { lat: 38.8899, lng: -77.0091 },
-      zoom: 16,
+
+    this.map = new google.maps.Map( this.mapElement!, {
+      center: this.center || UiGeoMap.DEFAULT_CENTER,
+      zoom: this.zoom || UiGeoMap.DEFAULT_ZOOM,
       fullscreenControl: false,
       mapTypeControl: false,
       streetViewControl: false,
       scrollwheel: false,
-    });
-
-    this.marker = new google.maps.Marker({
-      icon: "/images/pin-pizza@1x.png",
-      map: this.map,
-      visible: false,
-    });
+    } );
   }
 
-  @Method()
-  public setCenter(newCenter: google.maps.LatLngLiteral, showMarker: boolean = false) {
-    if (this.map) {
-      this.map.setCenter(newCenter);
-      this.marker?.setPosition(newCenter);
-      this.marker?.setVisible(showMarker);
-    }
-    return DONE;
+  @Watch( "deliveries" )
+  public deliveriesChanged( newDeliveries?: { coords: google.maps.LatLngLiteral, id: LocationId }[] ) {
+    this.modifyMarkers( "pizza", this.deliveryMarkers, newDeliveries || [] );
   }
 
-  @Method()
-  public getCenter() {
-    return Promise.resolve(this.map?.getCenter());
+  @Watch( "trucks" )
+  public trucksChanged( newTrucks?: { coords: google.maps.LatLngLiteral, id: LocationId }[] ) {
+    this.modifyMarkers( "truck", this.truckMarkers, newTrucks || [] );
+  }
+
+  @Watch( "center" )
+  public centerChanged( newCenter?: google.maps.LatLngLiteral ) {
+    this.map?.setCenter( newCenter || UiGeoMap.DEFAULT_CENTER );
+  }
+
+  @Watch( "zoom" )
+  public zoomChanged( zoom?: number ) {
+    this.map?.setZoom( zoom || UiGeoMap.DEFAULT_ZOOM );
   }
 
   public render() {
-    return (
-      <Host>
-        <div id="map"></div>
-      </Host>
-    );
+    return <div id="map" ref={x => this.mapElement = x}></div>;
+  }
+
+  private modifyMarkers( type: "pizza" | "truck", existingMarkers: google.maps.Marker[], newMarkers: { coords: google.maps.LatLngLiteral, id: LocationId }[] ) {
+    let index = 0;
+    for( let newMarker of newMarkers ) {
+      // create a new marker if we've received a location beyond our current marker count
+      if( index > existingMarkers.length - 1 ) {
+        const m = new google.maps.Marker( {
+          icon: type === "pizza" ? "/images/pin-pizza@1x.png" : "/images/pin-truck@1x.png",
+          map: this.map,
+          visible: false,
+        } );
+        const i = index;
+        const t = type;
+        m.addListener( "click", () => this.selectMarker( t, i ) );
+        existingMarkers.push( m );
+      }
+      const marker = existingMarkers[index];
+      marker.setPosition( newMarker.coords );
+      marker.setVisible( true );
+      index += 1;
+    }
+
+    // hide any extra markers instead of creating and destroying them
+    for( ; index < existingMarkers.length; ++index ) {
+      existingMarkers[index].setVisible( false );
+    }
+  }
+
+  private selectMarker( type: "pizza" | "truck", index: number ): void {
+    switch( type ) {
+      case "pizza":
+        this.markerSelected.emit( {
+          type,
+          coords: this.deliveries![index].coords,
+          location: this.deliveries![index].id,
+        } );
+        break;
+
+      case "truck":
+        this.markerSelected.emit( {
+          type,
+          coords: this.trucks![index].coords,
+          location: this.trucks![index].id,
+        } );
+        break;
+    }
   }
 }
