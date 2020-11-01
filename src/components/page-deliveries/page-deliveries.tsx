@@ -36,7 +36,7 @@ const FoodChoices: FunctionalComponent<{
   </div>
 );
 
-const OrderDetailDisplay: FunctionalComponent<{ order: OrderDetails | null; noIcon?: boolean; onClick?: () => void }> = ({ order, onClick, noIcon }) => (
+const OrderDetailDisplay: FunctionalComponent<{ order: OrderDetails | null | undefined; noIcon?: boolean; onClick?: () => void }> = ({ order, onClick, noIcon }) => (
   <li class={{ "pizza-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={order} format={x => x.location.fullAddress} />
@@ -47,7 +47,7 @@ const OrderDetailDisplay: FunctionalComponent<{ order: OrderDetails | null; noIc
   </li>
 );
 
-const OrderInfoDisplay: FunctionalComponent<{ order: OrderInfo | null; reportCount: number; noIcon?: boolean }> = ({ order, reportCount, noIcon }) => (
+const OrderInfoDisplay: FunctionalComponent<{ order: OrderInfo | null | undefined; reportCount: number; noIcon?: boolean }> = ({ order, reportCount, noIcon }) => (
   <li class={{ "pizza-icon": noIcon !== true }}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} en route`} />
@@ -58,7 +58,7 @@ const OrderInfoDisplay: FunctionalComponent<{ order: OrderInfo | null; reportCou
   </li>
 );
 
-const TruckInfoDisplay: FunctionalComponent<{ truck: TruckInfo | null; noIcon?: boolean; onClick?: () => void }> = ({ truck, noIcon, onClick }) => (
+const TruckInfoDisplay: FunctionalComponent<{ truck: TruckInfo | null | undefined; noIcon?: boolean; onClick?: () => void }> = ({ truck, noIcon, onClick }) => (
   <li class={{ "truck-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={truck} format={x => x.location.fullAddress} />
@@ -253,7 +253,7 @@ export class PageDeliveries {
         <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
           <hr class="heavy" />
           <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
-          <div style={{ width: "100%", height: "200px" }}>
+          <div class="map-container">
             <ui-geo-map
               center={mapCenterPoint}
               zoom={mapZoom}
@@ -327,9 +327,9 @@ export class PageDeliveries {
                     selectedLocation={selectedLocation}
                   />
                 ) : (
-                  (items?.slice(0, 3) || ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
+                  (items?.length > 0 ? items?.slice(0, 3) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
                     .map(x =>
-                      x?.type === "truck" ? (
+                      x != null && x.type === "truck" ? (
                         <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} />
                       ) : (
                         <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} />
@@ -347,9 +347,9 @@ export class PageDeliveries {
                 {selectedLocation != null ? (
                   <OrderAndTruckInfoList items={previousItems.slice(0, 3)} selectedLocation={selectedLocation} />
                 ) : (
-                  (items?.slice(3, 6) || ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
+                  (items?.length > 3 ? items?.slice(3, 6) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
                     .map(x =>
-                      x?.type === "truck" ? (
+                      x != null && x.type === "truck" ? (
                         <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />
                       ) : (
                         <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />

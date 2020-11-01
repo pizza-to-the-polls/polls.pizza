@@ -39,6 +39,12 @@ page-deliveries {
     margin: 0;
   }
 
+  .map-container {
+    background-color: $gray1;
+    width: 100%;
+    height: 200px;
+  }
+
   .now-feeding {
     padding: 0.5em 0 0.5em 1.5em;
     font-size: 0.8em;
