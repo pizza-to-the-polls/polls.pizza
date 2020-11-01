@@ -78,12 +78,12 @@ export type ReportInfo = {
  * /locations/{address}
  */
 export type LocationStatus =
-  | ( LocationInfo & {
-    notFound: undefined;
-    hasTruck: boolean;
-    reports: any[];
-    orders: OrderInfo[];
-  } )
+  | (LocationInfo & {
+      notFound: undefined;
+      hasTruck: boolean;
+      reports: any[];
+      orders: OrderInfo[];
+    })
   // allow us to store the results of a 404
   | { notFound: true };
 

@@ -65,8 +65,8 @@ export namespace Components {
     }
     interface UiGeoMap {
         "center"?: google.maps.LatLngLiteral;
-        "deliveries"?: { coords: google.maps.LatLngLiteral, id: LocationId }[];
-        "trucks"?: { coords: google.maps.LatLngLiteral, id: LocationId }[];
+        "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
+        "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "zoom"?: number;
     }
     interface UiMainContent {
@@ -321,13 +321,13 @@ declare namespace LocalJSX {
     }
     interface UiGeoMap {
         "center"?: google.maps.LatLngLiteral;
-        "deliveries"?: { coords: google.maps.LatLngLiteral, id: LocationId }[];
+        "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "onMarkerSelected"?: (event: CustomEvent<{
-    type: "pizza" | "truck",
-    coords: google.maps.LatLngLiteral,
-    location: LocationId,
+    type: "pizza" | "truck";
+    coords: google.maps.LatLngLiteral;
+    location: LocationId;
   }>) => void;
-        "trucks"?: { coords: google.maps.LatLngLiteral, id: LocationId }[];
+        "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "zoom"?: number;
     }
     interface UiMainContent {
