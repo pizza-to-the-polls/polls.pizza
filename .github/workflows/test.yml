@@ -55,7 +55,7 @@ jobs:
         env:
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY_TEST }}
           NODE_ENV: stage
-          PIZZA_BASE_DOMAIN: https://base-next.polls.pizza
+          PIZZA_BASE_DOMAIN: https://base.polls.pizza
           DONATION_FORM: https://docs.google.com/forms/d/e/1FAIpQLSeCUE98I2bfLxBK4cVIRy2MduJzq3UaJ44TQ7iZ3Nzc2V5FYg/formResponse
           BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
 
