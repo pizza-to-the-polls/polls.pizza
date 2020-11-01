@@ -47,6 +47,13 @@ export type OrderDetails = OrderInfo & {
   reports: ReportInfo[];
 };
 
+export type TruckInfo = {
+  isActive: boolean;
+  createdAt: Date;
+  region: string;
+  location: LocationInfo;
+};
+
 export type LocationInfo = {
   id: LocationId;
   city: string;
@@ -71,12 +78,12 @@ export type ReportInfo = {
  * /locations/{address}
  */
 export type LocationStatus =
-  | (LocationInfo & {
-      notFound: undefined;
-      hasTruck: boolean;
-      reports: any[];
-      orders: OrderInfo[];
-    })
+  | ( LocationInfo & {
+    notFound: undefined;
+    hasTruck: boolean;
+    reports: any[];
+    orders: OrderInfo[];
+  } )
   // allow us to store the results of a 404
   | { notFound: true };
 
@@ -85,5 +92,13 @@ export type LocationStatus =
  */
 export type OrderQueryResults = {
   results: OrderDetails[];
+  count: number;
+};
+
+/**
+ * /trucks
+ */
+export type TruckQueryResults = {
+  results: TruckInfo[];
   count: number;
 };
