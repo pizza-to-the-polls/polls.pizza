@@ -3,7 +3,7 @@ import { MatchResults, RouterHistory } from "@stencil/router";
 // @ts-ignore
 import {} from "googlemaps";
 
-import { LocationInfo, LocationStatus, OrderDetails, OrderInfo, OrderTypes, PizzaApi, TruckDetails, TruckInfo } from "../../api";
+import { LocationInfo, LocationStatus, OrderDetails, OrderTypes, PizzaApi, TruckDetails, TruckInfo } from "../../api";
 import { scrollPageToTop } from "../../util";
 import { UiGeoMap } from "../ui-geo-map/ui-geo-map";
 
@@ -36,23 +36,8 @@ const FoodChoices: FunctionalComponent<{
   </div>
 );
 
-const OrderDetailDisplay: FunctionalComponent<{
+const OrderDetailsDisplay: FunctionalComponent<{
   order: OrderDetails | null | undefined;
-  noIcon?: boolean;
-  onClick?: () => void;
-}> = ({ order, onClick, noIcon }) => (
-  <li class={{ "pizza-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
-    <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
-      <ui-dynamic-text value={order} format={x => x.location.fullAddress} />
-    </span>
-    <div>
-      <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} at ${formatDate(x.createdAt)} ${formatTime(x.createdAt)}`} />
-    </div>
-  </li>
-);
-
-const OrderInfoDisplay: FunctionalComponent<{
-  order: OrderInfo | null | undefined;
   reportCount: number;
   noIcon?: boolean;
   onClick?: () => void;
@@ -89,13 +74,13 @@ const OrderAndTruckInfoList: FunctionalComponent<{
   items: OrderOrTruckItem[];
   selectedLocation?: LocationStatus;
   noIcon?: boolean;
-  onOrderSelected?: (order: OrderInfo) => void;
+  onOrderSelected?: (order: OrderDetails) => void;
 }> = ({ items, selectedLocation, noIcon, onOrderSelected }) =>
   items.map(x =>
     x != null && x.type === "truck" ? (
       <TruckInfoDisplay noIcon={noIcon} truck={x.data} />
     ) : (
-      <OrderInfoDisplay
+      <OrderDetailsDisplay
         noIcon={noIcon}
         order={x?.data}
         reportCount={selectedLocation?.notFound ? 0 : x?.data?.reports?.length || 0}
@@ -105,7 +90,7 @@ const OrderAndTruckInfoList: FunctionalComponent<{
   );
 
 const DEFAULT_ZOOM = 4;
-const SELECTED_LOCATION_ZOOM = 16;
+const SELECTED_LOCATION_ZOOM = 15;
 
 @Component({
   tag: "page-deliveries",
@@ -223,8 +208,8 @@ export class PageDeliveries {
   public render() {
     const { mapCenterPoint, mapZoom, selectedAddress, selectedFood, selectedLocation, selectedOrder } = this;
     const now = new Date();
-    const orderFilter = (order: OrderInfo | null) =>
-      order == null || selectedFood === FoodChoice.all || (selectedFood === FoodChoice.pizza && order.orderType === OrderTypes.pizzas);
+    const orderFilter = (order: OrderDetails | null) =>
+      order == null || order.cancelledAt || selectedFood === FoodChoice.all || (selectedFood === FoodChoice.pizza && order.orderType === OrderTypes.pizzas);
 
     const foundLocation = selectedLocation != null && selectedLocation.notFound == null ? selectedLocation : null;
 
@@ -242,9 +227,30 @@ export class PageDeliveries {
           .slice(0, 10)
           .map(x => ({ type: "truck", data: x } as OrderOrTruckItem))) ||
       [];
-    const allLocationItems = [...locationOrders, ...locationTrucks].sort((l, r) => (l.data!.createdAt > r.data!.createdAt ? -1 : 1));
-    const locationItems = allLocationItems.filter(x => x.data?.createdAt.getDate() === now.getDate());
-    const previousItems = allLocationItems.filter(x => x.data?.createdAt.getDate() !== now.getDate());
+    const ORDER_CURRENT = Number(now) - 1000 * 60 * 60 * 2.5;
+    const TRUCK_CURRENT = Number(now) - 1000 * 60 * 60 * 4;
+    const [locationCurrentOrders, locationPreviousOrders] = locationOrders.reduce(
+      (sorted: [OrderOrTruckItem[], OrderOrTruckItem[]], x: OrderOrTruckItem) => {
+        if (x.data) {
+          sorted[x.data?.createdAt?.getDate() > ORDER_CURRENT ? 0 : 1].push(x);
+        }
+        return sorted;
+      },
+      [[], []],
+    );
+    const [locationCurrentTrucks, locationPreviousTrucks] = locationTrucks.reduce(
+      (sorted: [OrderOrTruckItem[], OrderOrTruckItem[]], x: OrderOrTruckItem) => {
+        if (x.data) {
+          sorted[x.data?.createdAt?.getDate() > TRUCK_CURRENT ? 0 : 1].push(x);
+        }
+        return sorted;
+      },
+      [[], []],
+    );
+
+    const locationItems = [...locationCurrentOrders, ...locationCurrentTrucks].sort((l, r) => (l.data!.createdAt > r.data!.createdAt ? -1 : 1)).slice(0, 3);
+    const previousItems = [...locationItems.slice(3, 10000), ...locationPreviousOrders, ...locationPreviousTrucks].sort((l, r) => (l.data!.createdAt > r.data!.createdAt ? -1 : 1));
+
     const orders = (this.recentOrders || [])
       .filter(orderFilter)
       .slice(0, 10)
@@ -252,9 +258,22 @@ export class PageDeliveries {
     const trucks = (this.recentTrucks != null && (selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks) ? this.recentTrucks : [])
       .slice(0, 10)
       .map(x => ({ type: "truck", data: x } as OrderOrTruckItem));
-    const items = [...orders, ...trucks].sort((l, r) => (l.data!.createdAt > r.data!.createdAt ? -1 : 1));
 
-    const currentAddress = selectedAddress != null ? foundLocation?.fullAddress || selectedAddress : items?.find(_ => true)?.data?.location.fullAddress;
+    const [currentItems, pastItems] = [...orders, ...trucks]
+      .sort((l, r) => (l.data!.createdAt > r.data!.createdAt ? -1 : 1))
+      .reduce(
+        (sorted: [OrderOrTruckItem[], OrderOrTruckItem[]], x: OrderOrTruckItem) => {
+          if (x.data) {
+            const TIME_LIMIT = x.type === "pizza" ? ORDER_CURRENT : TRUCK_CURRENT;
+            sorted[x.data?.createdAt?.getDate() > TIME_LIMIT ? 0 : 1].push(x);
+          }
+          return sorted;
+        },
+        [[], []],
+      );
+    const combinedItems = [...currentItems.slice(3, 1000), ...pastItems];
+
+    const currentAddress = selectedAddress != null ? foundLocation?.fullAddress || selectedAddress : currentItems?.find(_ => true)?.data?.location.fullAddress;
     const nowFeeding = currentAddress != null ? ": " + currentAddress : null;
 
     return (
@@ -355,17 +374,16 @@ export class PageDeliveries {
                     <OrderAndTruckInfoList
                       items={locationItems.length > 0 ? locationItems.slice(0, 3) : []}
                       selectedLocation={selectedLocation}
-                      onOrderSelected={order => (this.selectedOrder = this.recentOrders?.find(x => x.id === order.id))}
+                      onOrderSelected={order => (this.selectedOrder = order)}
                     />
                   ) : (
-                    (items?.length > 0 ? items?.slice(0, 3) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
-                      .map(x =>
-                        x != null && x.type === "truck" ? (
-                          <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} />
-                        ) : (
-                          <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} />
-                        ),
-                      )
+                    (currentItems?.length > 0 ? currentItems : []).map(x =>
+                      x != null && x.type === "truck" ? (
+                        <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} />
+                      ) : (
+                        <OrderDetailsDisplay order={x?.data} reportCount={x?.data?.reports?.length || 0} onClick={() => this.selectLocation(x?.data?.location)} />
+                      ),
+                    )
                   )}
                 </ul>
               )}
@@ -377,18 +395,14 @@ export class PageDeliveries {
               <h3>Previous Deliveries</h3>
               <ul>
                 {selectedLocation != null ? (
-                  <OrderAndTruckInfoList
-                    items={previousItems.slice(0, 3)}
-                    selectedLocation={selectedLocation}
-                    onOrderSelected={order => (this.selectedOrder = this.recentOrders?.find(x => x.id === order.id))}
-                  />
+                  <OrderAndTruckInfoList items={previousItems.slice(0, 3)} selectedLocation={selectedLocation} onOrderSelected={order => (this.selectedOrder = order)} />
                 ) : (
-                  (items?.length > 3 ? items?.slice(3, 6) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
+                  (combinedItems?.length > 0 ? combinedItems?.slice(0, 6) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
                     .map(x =>
                       x != null && x.type === "truck" ? (
                         <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />
                       ) : (
-                        <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />
+                        <OrderDetailsDisplay reportCount={x?.data?.reports?.length || 0} order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />
                       ),
                     )
                 )}

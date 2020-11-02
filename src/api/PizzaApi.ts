@@ -24,7 +24,7 @@ export const baseFetch = async <T = any>(path: string, options: { [key: string]:
 };
 
 const reviver: (this: any, key: string, value: any) => any = (key, value) => {
-  if (key === "createdAt" || key === "validatedAt") {
+  if (key === "createdAt" || key === "validatedAt" || key === "cancelledAt") {
     return new Date(Date.parse(value));
   }
   return value;

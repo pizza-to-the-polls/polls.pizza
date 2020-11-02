@@ -37,6 +37,7 @@ export type OrderInfo = {
   pizzas: number;
   restaurant: string;
   createdAt: Date;
+  cancelledAt: Date;
 };
 
 /**
@@ -86,7 +87,7 @@ export type LocationStatus =
       notFound: undefined;
       hasTruck: boolean;
       reports: any[];
-      orders: OrderInfo[];
+      orders: OrderDetails[];
     })
   // allow us to store the results of a 404
   | { notFound: true };
