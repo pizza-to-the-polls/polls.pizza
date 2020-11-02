@@ -10,9 +10,11 @@ import { Component, h, Prop } from "@stencil/core";
 })
 export class UiMainContent {
   @Prop() public background: "yellow" | "cyan" | "teal" | "red" | "none";
+  @Prop() public fullBleed: boolean;
 
   constructor() {
     this.background = "none";
+    this.fullBleed = false;
   }
 
   public render() {
@@ -26,7 +28,7 @@ export class UiMainContent {
           "bg-yellow": this.background === "yellow",
         }}
       >
-        <div class="container">
+        <div class={`container${this.fullBleed === true ? " full-bleed" : ""}`}>
           <slot />
         </div>
       </div>

@@ -71,11 +71,11 @@ export class UiSingleInput {
         <label htmlFor={this.id}>{this.label}</label>
         <input
           id={this.id}
+          class="input input-value"
           ref={x => (this.inputElement = x)}
           type={this.type}
           value={this.value}
           name={this.name}
-          class="input input-value"
           placeholder={this.placeholder}
           onKeyUp={onKeyUp}
           onChange={onInputChange}

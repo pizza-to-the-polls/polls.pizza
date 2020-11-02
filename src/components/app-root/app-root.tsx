@@ -1,38 +1,11 @@
-import { Component, h, Host, Listen, State } from "@stencil/core";
-
-import { debounce } from "../../util";
+import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "app-root",
   styleUrl: "app-root.scss",
 })
 export class AppRoot {
-  public static readonly LONG_PAGE_THRESHOLD: number = 2200;
-  public static readonly SCROLL_TOP_THRESHOLD: number = 300;
-
-  @State() private showBackToTop: boolean;
-
-  constructor() {
-    this.showBackToTop = false;
-    this.recalculateScrollTop = debounce(this.recalculateScrollTop.bind(this), 50);
-  }
-
-  @Listen("scroll", { target: "window" })
-  public onScroll(_: Event) {
-    this.recalculateScrollTop();
-  }
-
   public render() {
-    const { showBackToTop } = this;
-
-    const scrollBackToTop = (e?: Event) => {
-      e?.preventDefault();
-      (e?.target as HTMLElement)?.blur();
-      if (window) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    };
-
     return (
       <Host>
         <header class="header">
@@ -154,15 +127,8 @@ export class AppRoot {
             </div>
           </ui-main-content>
         </footer>
-        <span onClick={scrollBackToTop} class={`back-to-top${showBackToTop ? " is-active" : ""}`} title="Back to top"></span>
+        <ui-scroll-to-top-button />
       </Host>
     );
-  }
-
-  private recalculateScrollTop() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    const pageHeight = Math.max(document.body.scrollHeight || 0, document.documentElement.scrollTop || 0);
-    // Determine if long page
-    this.showBackToTop = scrollTop > AppRoot.SCROLL_TOP_THRESHOLD && pageHeight > AppRoot.LONG_PAGE_THRESHOLD;
   }
 }

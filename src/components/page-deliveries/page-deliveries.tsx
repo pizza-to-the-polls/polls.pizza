@@ -1,10 +1,11 @@
-import { Component, Fragment, FunctionalComponent, h, Host, Prop, State, Watch } from "@stencil/core";
+import { Build, Component, Fragment, FunctionalComponent, h, Host, Listen, Prop, State, Watch } from "@stencil/core";
 import { MatchResults, RouterHistory } from "@stencil/router";
 // @ts-ignore
 import {} from "googlemaps";
 
-import { LocationStatus, OrderDetails, OrderInfo, OrderTypes, PizzaApi } from "../../api";
+import { LocationInfo, LocationStatus, OrderDetails, OrderInfo, OrderTypes, PizzaApi, TruckInfo } from "../../api";
 import { scrollPageToTop } from "../../util";
+import { UiGeoMap } from "../ui-geo-map/ui-geo-map";
 
 enum FoodChoice {
   all = "All food",
@@ -12,9 +13,11 @@ enum FoodChoice {
   trucks = "Food trucks",
 }
 
-const formatTime = (date: Date) => date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+type OrderOrTruckItem = { type: "pizza"; data: OrderDetails | null } | { type: "truck"; data: TruckInfo | null };
 
-const formatDate = (date: Date) => date.toLocaleDateString([], { year: "2-digit", month: "2-digit" });
+const formatTime = (date: Date) => date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+
+const formatDate = (date: Date) => date.toLocaleDateString([], { day: "2-digit", month: "2-digit" });
 
 const ReportLink = () => <stencil-route-link url="/report">Make a report</stencil-route-link>;
 
@@ -33,8 +36,12 @@ const FoodChoices: FunctionalComponent<{
   </div>
 );
 
-const OrderDetailDisplay: FunctionalComponent<{ order: OrderDetails | null; onClick?: () => void }> = ({ order, onClick }) => (
-  <li style={{ cursor: "pointer" }} onClick={onClick}>
+const OrderDetailDisplay: FunctionalComponent<{
+  order: OrderDetails | null | undefined;
+  noIcon?: boolean;
+  onClick?: () => void;
+}> = ({ order, onClick, noIcon }) => (
+  <li class={{ "pizza-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={order} format={x => x.location.fullAddress} />
     </span>
@@ -44,8 +51,13 @@ const OrderDetailDisplay: FunctionalComponent<{ order: OrderDetails | null; onCl
   </li>
 );
 
-const OrderInfoDisplay: FunctionalComponent<{ order: OrderInfo | null; reportCount: number }> = ({ order, reportCount }) => (
-  <li>
+const OrderInfoDisplay: FunctionalComponent<{
+  order: OrderInfo | null | undefined;
+  reportCount: number;
+  noIcon?: boolean;
+  onClick?: () => void;
+}> = ({ order, reportCount, noIcon, onClick }) => (
+  <li class={{ "pizza-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} en route`} />
     </span>
@@ -55,8 +67,42 @@ const OrderInfoDisplay: FunctionalComponent<{ order: OrderInfo | null; reportCou
   </li>
 );
 
-const OrderInfoList: FunctionalComponent<{ items: OrderInfo[]; selectedLocation: LocationStatus }> = ({ items, selectedLocation }) =>
-  items.map(x => <OrderInfoDisplay order={x} reportCount={selectedLocation.notFound ? 0 : selectedLocation.reports.length} />);
+const TruckInfoDisplay: FunctionalComponent<{
+  truck: TruckInfo | null | undefined;
+  noIcon?: boolean;
+  onClick?: () => void;
+}> = ({ truck, noIcon, onClick }) => (
+  <li class={{ "truck-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
+    <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
+      <ui-dynamic-text value={truck} format={x => x.location.fullAddress} />
+    </span>
+    <div>
+      <ui-dynamic-text value={truck} format={x => `Food truck on location since ${formatDate(x.createdAt)} ${formatTime(x.createdAt)}`} />
+    </div>
+  </li>
+);
+
+const OrderAndTruckInfoList: FunctionalComponent<{
+  items: OrderOrTruckItem[];
+  selectedLocation?: LocationStatus;
+  noIcon?: boolean;
+  onOrderSelected?: (order: OrderInfo) => void;
+}> = ({ items, selectedLocation, noIcon, onOrderSelected }) =>
+  items.map(x =>
+    x != null && x.type === "truck" ? (
+      <TruckInfoDisplay noIcon={noIcon} truck={x.data} />
+    ) : (
+      <OrderInfoDisplay
+        noIcon={noIcon}
+        order={x?.data}
+        reportCount={selectedLocation?.notFound ? 0 : selectedLocation?.reports.length || 0}
+        onClick={onOrderSelected == null || x == null || x.data == null ? undefined : () => onOrderSelected(x.data!)}
+      />
+    ),
+  );
+
+const DEFAULT_ZOOM = 4;
+const SELECTED_LOCATION_ZOOM = 16;
 
 @Component({
   tag: "page-deliveries",
@@ -68,47 +114,73 @@ export class PageDeliveries {
   @Prop() public match!: MatchResults;
 
   @State() private selectedAddress?: string;
+  /**
+   * Watched and used to re-center the map
+   */
   // @ts-ignore
-  @State() private selectedAddressLatLng?: { lat: number; lng: number };
+  @State() private mapCenterPoint: { lat: number; lng: number };
   @State() private selectedFood: FoodChoice;
   @State() private selectedLocation?: LocationStatus;
+  @State() private selectedOrder?: OrderDetails;
   @State() private recentOrders?: OrderDetails[];
-
-  private map?: HTMLUiGeoMapElement;
+  @State() private recentTrucks?: TruckInfo[];
+  @State() private mapZoom: number;
 
   constructor() {
     this.selectedFood = FoodChoice.all;
+    this.mapZoom = DEFAULT_ZOOM;
+    this.mapCenterPoint = UiGeoMap.US_CENTER;
   }
 
   public componentWillLoad() {
     document.title = `Deliveries | Pizza to the Polls`;
     this.setAddressFromUrl(this.match);
 
-    PizzaApi.getOrders().then(orders => (this.recentOrders = orders.results));
+    if (Build.isBrowser) {
+      PizzaApi.getOrders().then(orders => (this.recentOrders = orders.results));
+      PizzaApi.getTrucks(true).then(trucks => (this.recentTrucks = trucks.results));
+    }
   }
 
   /**
-   * Watch for changes in the URL by watching for the match prop and make sure we are viewing that address
+   * Watch for changes in the URL to make sure we are viewing that location
    */
   @Watch("match")
   public matchChanged(newMatch: MatchResults) {
     this.setAddressFromUrl(newMatch);
   }
 
+  @Listen("hashchange", { target: "window" })
+  public hashChanged() {
+    const choice: FoodChoice | undefined = (FoodChoice as any)[window.location.hash.replace("#", "")];
+    if (choice != null) {
+      this.selectedFood = choice == null ? FoodChoice.all : choice;
+    }
+  }
+
+  /*
+  @Watch( "selectedFood" )
+  public selectedFoodChanged( filter: FoodChoice ) {
+    const val = filter === FoodChoice.all
+      ? ""
+      : Object.keys( FoodChoice ).find( k => ( FoodChoice as any )[k] === filter ) + "";
+    if( window.location.hash !== val ) {
+      window.location.hash = val;
+    }
+  }
+  */
+
   /**
    * Lookup location info when the selected address value changes
    */
   @Watch("selectedAddress")
-  public onSelectedAddressChanged(newAddress?: string, oldAddress?: string) {
+  public selectedAddressChanged(newAddress?: string, oldAddress?: string) {
     const ownPathFragment = this.history.location.pathname.split("/").filter(x => x !== "")[0];
     if (newAddress == null && oldAddress != null) {
       const path = `/${ownPathFragment}`;
       this.selectedLocation = undefined;
       if (this.history.location.pathname !== path) {
         this.history.push(path, {});
-      }
-      if (this.recentOrders != null) {
-        this.onOrdersChanged(this.recentOrders);
       }
     } else if (newAddress != null && newAddress !== oldAddress) {
       const path = `/${ownPathFragment}/${newAddress}`;
@@ -125,61 +197,63 @@ export class PageDeliveries {
   }
 
   @Watch("selectedLocation")
-  public onSelectedLocation(newLocation: LocationStatus) {
+  public selectedLocationChanged(newLocation: LocationStatus) {
     if (newLocation != null && newLocation.notFound == null) {
       // make sure we have the correct lat/lng selected
-      this.selectedAddressLatLng = {
+      this.mapCenterPoint = {
         lat: parseFloat(newLocation.lat),
         lng: parseFloat(newLocation.lng),
       };
     }
   }
 
-  @Watch("selectedAddressLatLng")
-  public onSelectedAddressLatLngChanges(coords?: { lat: number; lng: number }) {
-    // center map when selected location changes
-    if (coords?.lat == null) {
-      const { recentOrders } = this;
-      if (recentOrders != null && recentOrders.length > 0) {
-        this.onOrdersChanged(recentOrders);
-      }
+  @Watch("mapCenterPoint")
+  public mapCenterPointChanged(coords?: { lat: number; lng: number }) {
+    if (coords?.lat === UiGeoMap.US_CENTER.lat) {
+      this.mapZoom = DEFAULT_ZOOM;
     } else {
-      this.recenterMap(coords);
+      this.mapZoom = SELECTED_LOCATION_ZOOM;
     }
-  }
-
-  /**
-   * Center map on the first location when the recent order list changes (unless we're viewing a specific address)
-   */
-  @Watch("recentOrders")
-  public onOrdersChanged(orders: OrderDetails[]) {
-    if (orders && orders.length > 0 && this.selectedAddress == null) {
-      this.recenterMap({
-        lat: parseFloat(orders[0].location.lat),
-        lng: parseFloat(orders[0].location.lng),
-      });
-    }
-  }
-
-  public recenterMap(location: { lat: number; lng: number }) {
-    const map = this.map;
-    if (map) {
-      map.setCenter(location, true);
-      scrollPageToTop();
-    }
+    scrollPageToTop();
   }
 
   public render() {
-    const { recentOrders, selectedAddress, selectedLocation, selectedFood } = this;
+    const { mapCenterPoint, mapZoom, selectedAddress, selectedFood, selectedLocation, selectedOrder } = this;
+    const now = new Date();
+    const orderFilter = (order: OrderInfo | null) =>
+      order == null || selectedFood === FoodChoice.all || (selectedFood === FoodChoice.pizza && order.orderType === OrderTypes.pizzas);
+
     const foundLocation = selectedLocation != null && selectedLocation.notFound == null ? selectedLocation : null;
-    const orderFilter = (order: OrderInfo | null) => {
-      return order == null || selectedFood === FoodChoice.all || (selectedFood === FoodChoice.pizza && order.orderType === OrderTypes.pizzas);
-      // || ( selectedFood === FoodChoice.trucks && order. === OrderTypes.pizzas );
-    };
-    const locationOrders = (foundLocation && foundLocation.orders.filter(orderFilter).slice(0, 3)) || [];
-    const locationOrdersPrevious = (foundLocation && foundLocation.orders.filter(orderFilter).slice(3, 6)) || [];
-    const currentAddress = selectedAddress != null ? foundLocation?.fullAddress || selectedAddress : recentOrders?.find(_ => true)?.location.fullAddress;
+
+    // TODO: This data manipulation should have its own field and be triggered by @Watch on the relevant input fields
+    const locationOrders =
+      foundLocation?.orders
+        .filter(orderFilter)
+        .slice(0, 10)
+        .map(x => ({ type: "pizza", data: x } as OrderOrTruckItem)) || [];
+    const locationTrucks =
+      (foundLocation != null &&
+        (selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks) &&
+        this.recentTrucks
+          ?.filter(x => x.location.id === foundLocation.id)
+          .slice(0, 10)
+          .map(x => ({ type: "truck", data: x } as OrderOrTruckItem))) ||
+      [];
+    const allLocationItems = [...locationOrders, ...locationTrucks].sort((l, r) => (l.data!.createdAt > r.data!.createdAt ? -1 : 1));
+    const locationItems = allLocationItems.filter(x => x.data?.createdAt.getDate() === now.getDate());
+    const previousItems = allLocationItems.filter(x => x.data?.createdAt.getDate() !== now.getDate());
+    const orders = (this.recentOrders || [])
+      .filter(orderFilter)
+      .slice(0, 10)
+      .map(x => ({ type: "pizza", data: x } as OrderOrTruckItem));
+    const trucks = (this.recentTrucks != null && (selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks) ? this.recentTrucks : [])
+      .slice(0, 10)
+      .map(x => ({ type: "truck", data: x } as OrderOrTruckItem));
+    const items = [...orders, ...trucks].sort((l, r) => (l.data!.createdAt > r.data!.createdAt ? -1 : 1));
+
+    const currentAddress = selectedAddress != null ? foundLocation?.fullAddress || selectedAddress : items?.find(_ => true)?.data?.location.fullAddress;
     const nowFeeding = currentAddress != null ? ": " + currentAddress : null;
+
     return (
       <Host>
         <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
@@ -187,7 +261,7 @@ export class PageDeliveries {
             {selectedAddress != null ? (
               <div style={{ padding: "1em 0 0 0" }}>
                 <a onClick={() => (this.selectedAddress = undefined)}>Back to all deliveries</a>
-                <h3>{selectedAddress}</h3>
+                <h2>{selectedAddress}</h2>
               </div>
             ) : (
               <Fragment>
@@ -198,8 +272,11 @@ export class PageDeliveries {
                   placeholder="1600 Pennsylvania Ave. Washington, D.C."
                   onAddressSelected={e => {
                     e.preventDefault();
-                    this.selectedAddress = e.detail.address;
-                    this.selectedAddressLatLng = { lat: e.detail.lat, lng: e.detail.lng };
+                    this.selectLocation({
+                      fullAddress: e.detail.address,
+                      lat: e.detail.lat,
+                      lng: e.detail.lng,
+                    });
                   }}
                 />
               </Fragment>
@@ -208,81 +285,121 @@ export class PageDeliveries {
           <FoodChoices selected={selectedFood} onSelected={x => (this.selectedFood = x)} />
         </ui-main-content>
 
-        <hr class="heavy" />
-        <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
-        <div style={{ width: "100%", height: "200px" }}>
-          <ui-geo-map ref={x => (this.map = x)} />
-        </div>
+        <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
+          <hr class="heavy" />
+          <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
+          <div class="map-container">
+            <ui-geo-map
+              center={mapCenterPoint}
+              zoom={mapZoom}
+              deliveries={
+                selectedFood === FoodChoice.all || selectedFood === FoodChoice.pizza
+                  ? this.recentOrders?.slice(0, 30).map(x => ({
+                      coords: {
+                        lat: parseFloat(x.location.lat),
+                        lng: parseFloat(x.location.lng),
+                      },
+                      id: x.location.id,
+                    }))
+                  : undefined
+              }
+              trucks={
+                selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks
+                  ? this.recentTrucks?.slice(0, 20).map(x => ({
+                      coords: {
+                        lat: parseFloat(x.location.lat),
+                        lng: parseFloat(x.location.lng),
+                      },
+                      id: x.location.id,
+                    }))
+                  : undefined
+              }
+              onMarkerSelected={({ detail: { type, location } }) => {
+                let locationInfo: LocationInfo | undefined;
+                switch (type) {
+                  case "pizza":
+                    locationInfo = this.recentOrders?.find(x => x.location.id === location)?.location;
+                    break;
+                  case "truck":
+                    locationInfo = this.recentTrucks?.find(x => x.location.id === location)?.location;
+                    break;
+                }
+                this.selectLocation(locationInfo);
+              }}
+            />
+          </div>
+        </ui-main-content>
 
         <ui-main-content background="yellow">
           <ui-card>
-            <h3>Current Deliveries</h3>
-            {selectedLocation != null && selectedFood === FoodChoice.trucks && locationOrders.length < 1 ? (
-              <p>
-                There are no food trucks currently at this location.
-                <br />
-                <ReportLink />
-              </p>
-            ) : selectedLocation != null && selectedLocation.notFound === true ? (
-              <p>
-                There are no reports of lines at this location.
-                <br />
-                <ReportLink />
-              </p>
-            ) : (
-              <ui-pizza-list>
-                {selectedLocation != null ? (
-                  <OrderInfoList items={locationOrders} selectedLocation={selectedLocation} />
-                ) : (
-                  (recentOrders || ([null, null, null] as (OrderDetails | null)[])) // show placeholders if no data
-                    .filter(orderFilter)
-                    .slice(0, 3)
-                    .map(x => (
-                      <OrderDetailDisplay
-                        order={x}
-                        onClick={() => {
-                          if (x != null) {
-                            this.selectedAddress = x.location.fullAddress;
-                            this.selectedAddressLatLng = {
-                              lat: parseFloat(x.location.lat),
-                              lng: parseFloat(x.location.lng),
-                            };
-                          }
-                        }}
-                      />
-                    ))
-                )}
-              </ui-pizza-list>
-            )}
+            <div>
+              <h3>Current Deliveries</h3>
+              {selectedLocation != null && selectedFood === FoodChoice.trucks && locationItems.length < 1 ? (
+                <p>
+                  There are no food trucks currently at this location.
+                  <br />
+                  <ReportLink />
+                </p>
+              ) : selectedLocation != null && ((selectedFood === FoodChoice.pizza && locationItems.length < 1) || selectedLocation.notFound === true) ? (
+                <p>
+                  There are no reports of lines at this location.
+                  <br />
+                  <ReportLink />
+                </p>
+              ) : (
+                <ul>
+                  {selectedAddress != null ? (
+                    <OrderAndTruckInfoList
+                      items={
+                        locationItems.length > 0
+                          ? locationItems.slice(0, 3)
+                          : // show placeholders if no data
+                            [
+                              { type: "pizza", data: null },
+                              { type: "pizza", data: null },
+                              { type: "pizza", data: null },
+                            ]
+                      }
+                      selectedLocation={selectedLocation}
+                      onOrderSelected={order => (this.selectedOrder = this.recentOrders?.find(x => x.id === order.id))}
+                    />
+                  ) : (
+                    (items?.length > 0 ? items?.slice(0, 3) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
+                      .map(x =>
+                        x != null && x.type === "truck" ? (
+                          <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} />
+                        ) : (
+                          <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} />
+                        ),
+                      )
+                  )}
+                </ul>
+              )}
+            </div>
           </ui-card>
 
-          {((selectedLocation != null && locationOrdersPrevious.length > 0) || selectedLocation == null) && (
+          {((selectedLocation != null && previousItems.length > 0) || selectedLocation == null) && (
             <ui-card>
               <h3>Previous Deliveries</h3>
-              <ui-pizza-list hasIcon={false}>
+              <ul>
                 {selectedLocation != null ? (
-                  <OrderInfoList items={locationOrdersPrevious} selectedLocation={selectedLocation} />
+                  <OrderAndTruckInfoList
+                    items={previousItems.slice(0, 3)}
+                    selectedLocation={selectedLocation}
+                    onOrderSelected={order => (this.selectedOrder = this.recentOrders?.find(x => x.id === order.id))}
+                  />
                 ) : (
-                  (recentOrders || ([null, null, null, null, null, null] as (OrderDetails | null)[])) // show placeholders if no data
-                    .filter(orderFilter)
-                    .slice(3, 6)
-                    .map(x => (
-                      <OrderDetailDisplay
-                        order={x}
-                        onClick={() => {
-                          if (x != null) {
-                            this.selectedAddress = x.location.fullAddress;
-                            this.selectedAddressLatLng = {
-                              lat: parseFloat(x.location.lat),
-                              lng: parseFloat(x.location.lng),
-                            };
-                          }
-                        }}
-                      />
-                    ))
+                  (items?.length > 3 ? items?.slice(3, 6) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
+                    .map(x =>
+                      x != null && x.type === "truck" ? (
+                        <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />
+                      ) : (
+                        <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />
+                      ),
+                    )
                 )}
-              </ui-pizza-list>
-              {selectedLocation == null && recentOrders != null && <stencil-route-link url="/activity">view more</stencil-route-link>}
+              </ul>
+              {selectedLocation == null && this.recentOrders != null && <stencil-route-link url="/activity">view more</stencil-route-link>}
             </ui-card>
           )}
 
@@ -292,16 +409,57 @@ export class PageDeliveries {
             </ui-card>
           )}
         </ui-main-content>
+
+        {selectedOrder && (
+          <ui-modal isActive={selectedOrder != null} onRequestClose={() => (this.selectedOrder = undefined)}>
+            <div>
+              <h3>{selectedOrder!.pizzas} Pizzas</h3>
+              <p>
+                <strong>
+                  {formatDate(selectedOrder!.createdAt)}, {formatTime(selectedOrder!.createdAt)}
+                </strong>
+              </p>
+              <p>From {selectedOrder!.restaurant}</p>
+              <ul>
+                {selectedOrder!.reports.map(x => (
+                  <li>
+                    Reported at{" "}
+                    <a href={x.reportURL} target="_blank">
+                      {formatTime(x.createdAt)}
+                    </a>{" "}
+                    ({x.waitTime} wait expected)
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </ui-modal>
+        )}
       </Host>
     );
+  }
+
+  /**
+   * Assign the selected address and map center point from `location` or no-op if `location` is `null`
+   */
+  private selectLocation(location: { fullAddress: string; lat: string | number; lng: string | number } | null | undefined): void {
+    if (location == null) {
+      return;
+    }
+    this.selectedAddress = location.fullAddress;
+    this.mapCenterPoint = {
+      lat: typeof location.lat === "number" ? location.lat : parseFloat(location.lat),
+      lng: typeof location.lng === "number" ? location.lng : parseFloat(location.lng),
+    };
   }
 
   private setAddressFromUrl(match: MatchResults) {
     const location = match.params.location;
     if (location !== this.selectedAddress) {
-      this.selectedAddress = location; // != null ? decodeURIComponent( location ) : undefined;
-      // TODO: Lookup address lat/lng
-      this.selectedAddressLatLng = undefined;
+      this.selectedAddress = location;
+      // TODO: Lookup address lat/lng from selectedAddress
+      this.mapCenterPoint = UiGeoMap.US_CENTER;
+    } else if (location == null) {
+      this.mapCenterPoint = UiGeoMap.US_CENTER;
     }
   }
 }

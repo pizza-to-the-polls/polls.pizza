@@ -1,4 +1,6 @@
-import { ApiError, LocationId, LocationStatus, OrderDetails, OrderId, OrderQueryResults, PizzaTotals } from "./types";
+import { toQueryString } from "../util";
+
+import { ApiError, LocationId, LocationStatus, OrderDetails, OrderId, OrderQueryResults, PizzaTotals, TruckQueryResults } from "./types";
 
 const BASE_URL = process.env.PIZZA_BASE_DOMAIN;
 
@@ -48,6 +50,20 @@ class PizzaApi {
     return (
       this.handleResponse(await baseFetch<PizzaTotals>(`/totals/2020`), errorHandler) || { costs: 0, donors: 0, locations: 0, meals: 0, orders: 0, pizzas: 0, raised: 0, states: 0 }
     );
+  }
+
+  public async getTrucks(showHistorical: boolean = false, locationId?: LocationId, errorHandler?: (error: ApiError) => void): Promise<TruckQueryResults> {
+    const result = await baseFetch<TruckQueryResults>(
+      `/trucks` +
+        toQueryString(
+          {
+            location: locationId,
+            past: showHistorical === true ? true : undefined,
+          },
+          true,
+        ),
+    );
+    return this.handleResponse(result, errorHandler) || { results: [], count: 0 };
   }
 
   /**
