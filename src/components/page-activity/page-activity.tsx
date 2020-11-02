@@ -45,7 +45,7 @@ export class PageActivity {
                     <li id={"order-id-" + id} key={id}>
                       <b>
                         {pizzas} pizza{pizzas === 1 ? "" : "s"} ordered at {new Date(createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })} for{" "}
-                        {fullAddress}
+                        <stencil-route-link url={`/deliveries/${encodeURI(fullAddress)}`}>{fullAddress}</stencil-route-link>
                       </b>
                       <ul>
                         {reports.map(({ reportURL, createdAt: reportCreatedAt, waitTime }) => (
