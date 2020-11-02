@@ -3,7 +3,7 @@ import { MatchResults, RouterHistory } from "@stencil/router";
 // @ts-ignore
 import {} from "googlemaps";
 
-import { LocationInfo, LocationStatus, OrderDetails, OrderInfo, OrderTypes, PizzaApi, TruckInfo } from "../../api";
+import { LocationInfo, LocationStatus, OrderDetails, OrderInfo, OrderTypes, PizzaApi, TruckDetails, TruckInfo } from "../../api";
 import { scrollPageToTop } from "../../util";
 import { UiGeoMap } from "../ui-geo-map/ui-geo-map";
 
@@ -13,7 +13,7 @@ enum FoodChoice {
   trucks = "Food trucks",
 }
 
-type OrderOrTruckItem = { type: "pizza"; data: OrderDetails | null } | { type: "truck"; data: TruckInfo | null };
+type OrderOrTruckItem = { type: "pizza"; data: OrderDetails | null } | { type: "truck"; data: TruckDetails | null };
 
 const formatTime = (date: Date) => date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
 
@@ -62,7 +62,10 @@ const OrderInfoDisplay: FunctionalComponent<{
       <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} en route`} />
     </span>
     <div>
-      <ui-dynamic-text value={order} format={x => `${formatDate(x.createdAt)} ${formatTime(x.createdAt)} • ${reportCount} reports`} />
+      <ui-dynamic-text
+        value={order}
+        format={x => `${formatDate(x.createdAt)} ${formatTime(x.createdAt)}${reportCount > 0 ? ` • ${reportCount} report${reportCount === 1 ? "" : ""}` : ""}`}
+      />
     </div>
   </li>
 );
@@ -95,7 +98,7 @@ const OrderAndTruckInfoList: FunctionalComponent<{
       <OrderInfoDisplay
         noIcon={noIcon}
         order={x?.data}
-        reportCount={selectedLocation?.notFound ? 0 : selectedLocation?.reports.length || 0}
+        reportCount={selectedLocation?.notFound ? 0 : x?.data?.reports?.length || 0}
         onClick={onOrderSelected == null || x == null || x.data == null ? undefined : () => onOrderSelected(x.data!)}
       />
     ),
@@ -350,16 +353,7 @@ export class PageDeliveries {
                 <ul>
                   {selectedAddress != null ? (
                     <OrderAndTruckInfoList
-                      items={
-                        locationItems.length > 0
-                          ? locationItems.slice(0, 3)
-                          : // show placeholders if no data
-                            [
-                              { type: "pizza", data: null },
-                              { type: "pizza", data: null },
-                              { type: "pizza", data: null },
-                            ]
-                      }
+                      items={locationItems.length > 0 ? locationItems.slice(0, 3) : []}
                       selectedLocation={selectedLocation}
                       onOrderSelected={order => (this.selectedOrder = this.recentOrders?.find(x => x.id === order.id))}
                     />

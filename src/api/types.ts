@@ -54,6 +54,10 @@ export type TruckInfo = {
   location: LocationInfo;
 };
 
+export type TruckDetails = TruckInfo & {
+  reports: ReportInfo[];
+};
+
 export type LocationInfo = {
   id: LocationId;
   city: string;
