@@ -310,7 +310,7 @@ export class PageDeliveries {
         <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
           <hr class="heavy" />
           <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
-          <div class="map-container">
+          <div id="deliveries-map-container" class={{ "is-single-location": selectedAddress != null }}>
             <ui-geo-map
               center={mapCenterPoint}
               zoom={mapZoom}
