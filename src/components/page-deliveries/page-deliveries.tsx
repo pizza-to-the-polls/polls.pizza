@@ -1,4 +1,4 @@
-import { Component, Fragment, FunctionalComponent, h, Host, Prop, State, Watch } from "@stencil/core";
+import { Build, Component, Fragment, FunctionalComponent, h, Host, Listen, Prop, State, Watch } from "@stencil/core";
 import { MatchResults, RouterHistory } from "@stencil/router";
 // @ts-ignore
 import {} from "googlemaps";
@@ -36,7 +36,11 @@ const FoodChoices: FunctionalComponent<{
   </div>
 );
 
-const OrderDetailDisplay: FunctionalComponent<{ order: OrderDetails | null | undefined; noIcon?: boolean; onClick?: () => void }> = ({ order, onClick, noIcon }) => (
+const OrderDetailDisplay: FunctionalComponent<{
+  order: OrderDetails | null | undefined;
+  noIcon?: boolean;
+  onClick?: () => void;
+}> = ({ order, onClick, noIcon }) => (
   <li class={{ "pizza-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={order} format={x => x.location.fullAddress} />
@@ -47,8 +51,13 @@ const OrderDetailDisplay: FunctionalComponent<{ order: OrderDetails | null | und
   </li>
 );
 
-const OrderInfoDisplay: FunctionalComponent<{ order: OrderInfo | null | undefined; reportCount: number; noIcon?: boolean }> = ({ order, reportCount, noIcon }) => (
-  <li class={{ "pizza-icon": noIcon !== true }}>
+const OrderInfoDisplay: FunctionalComponent<{
+  order: OrderInfo | null | undefined;
+  reportCount: number;
+  noIcon?: boolean;
+  onClick?: () => void;
+}> = ({ order, reportCount, noIcon, onClick }) => (
+  <li class={{ "pizza-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} en route`} />
     </span>
@@ -58,7 +67,11 @@ const OrderInfoDisplay: FunctionalComponent<{ order: OrderInfo | null | undefine
   </li>
 );
 
-const TruckInfoDisplay: FunctionalComponent<{ truck: TruckInfo | null | undefined; noIcon?: boolean; onClick?: () => void }> = ({ truck, noIcon, onClick }) => (
+const TruckInfoDisplay: FunctionalComponent<{
+  truck: TruckInfo | null | undefined;
+  noIcon?: boolean;
+  onClick?: () => void;
+}> = ({ truck, noIcon, onClick }) => (
   <li class={{ "truck-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
     <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
       <ui-dynamic-text value={truck} format={x => x.location.fullAddress} />
@@ -73,12 +86,18 @@ const OrderAndTruckInfoList: FunctionalComponent<{
   items: OrderOrTruckItem[];
   selectedLocation?: LocationStatus;
   noIcon?: boolean;
-}> = ({ items, selectedLocation, noIcon }) =>
+  onOrderSelected?: (order: OrderInfo) => void;
+}> = ({ items, selectedLocation, noIcon, onOrderSelected }) =>
   items.map(x =>
-    x?.type === "truck" ? (
+    x != null && x.type === "truck" ? (
       <TruckInfoDisplay noIcon={noIcon} truck={x.data} />
     ) : (
-      <OrderInfoDisplay noIcon={noIcon} order={x?.data} reportCount={selectedLocation?.notFound ? 0 : selectedLocation?.reports.length || 0} />
+      <OrderInfoDisplay
+        noIcon={noIcon}
+        order={x?.data}
+        reportCount={selectedLocation?.notFound ? 0 : selectedLocation?.reports.length || 0}
+        onClick={onOrderSelected == null || x == null || x.data == null ? undefined : () => onOrderSelected(x.data!)}
+      />
     ),
   );
 
@@ -102,6 +121,7 @@ export class PageDeliveries {
   @State() private mapCenterPoint: { lat: number; lng: number };
   @State() private selectedFood: FoodChoice;
   @State() private selectedLocation?: LocationStatus;
+  @State() private selectedOrder?: OrderDetails;
   @State() private recentOrders?: OrderDetails[];
   @State() private recentTrucks?: TruckInfo[];
   @State() private mapZoom: number;
@@ -116,23 +136,33 @@ export class PageDeliveries {
     document.title = `Deliveries | Pizza to the Polls`;
     this.setAddressFromUrl(this.match);
 
-    PizzaApi.getOrders().then(orders => (this.recentOrders = orders.results));
-    PizzaApi.getTrucks(true).then(trucks => (this.recentTrucks = trucks.results));
+    if (Build.isBrowser) {
+      PizzaApi.getOrders().then(orders => (this.recentOrders = orders.results));
+      PizzaApi.getTrucks(true).then(trucks => (this.recentTrucks = trucks.results));
+    }
   }
 
   /**
-   * Watch for changes in the URL by watching for the match prop and make sure we are viewing that address
+   * Watch for changes in the URL to make sure we are viewing that location
    */
   @Watch("match")
   public matchChanged(newMatch: MatchResults) {
     this.setAddressFromUrl(newMatch);
   }
 
+  @Listen("hashchange", { target: "window" })
+  public hashChanged() {
+    const choice: FoodChoice | undefined = (FoodChoice as any)[window.location.hash.replace("#", "")];
+    if (choice != null) {
+      this.selectedFood = choice == null ? FoodChoice.all : choice;
+    }
+  }
+
   /**
    * Lookup location info when the selected address value changes
    */
   @Watch("selectedAddress")
-  public onSelectedAddressChanged(newAddress?: string, oldAddress?: string) {
+  public selectedAddressChanged(newAddress?: string, oldAddress?: string) {
     const ownPathFragment = this.history.location.pathname.split("/").filter(x => x !== "")[0];
     if (newAddress == null && oldAddress != null) {
       const path = `/${ownPathFragment}`;
@@ -154,16 +184,8 @@ export class PageDeliveries {
     }
   }
 
-  /**
-   * Center map on the first location when the recent order list changes (unless we're viewing a specific address)
-   */
-  @Watch("recentOrders")
-  public onOrdersChanged(_: OrderDetails[]) {
-    // TODO
-  }
-
   @Watch("selectedLocation")
-  public onSelectedLocation(newLocation: LocationStatus) {
+  public selectedLocationChanged(newLocation: LocationStatus) {
     if (newLocation != null && newLocation.notFound == null) {
       // make sure we have the correct lat/lng selected
       this.mapCenterPoint = {
@@ -174,7 +196,7 @@ export class PageDeliveries {
   }
 
   @Watch("mapCenterPoint")
-  public onMapCenterPointChanged(coords?: { lat: number; lng: number }) {
+  public mapCenterPointChanged(coords?: { lat: number; lng: number }) {
     if (coords?.lat === UiGeoMap.US_CENTER.lat) {
       this.mapZoom = DEFAULT_ZOOM;
     } else {
@@ -184,13 +206,14 @@ export class PageDeliveries {
   }
 
   public render() {
-    const { mapCenterPoint, mapZoom, selectedAddress, selectedFood, selectedLocation } = this;
+    const { mapCenterPoint, mapZoom, selectedAddress, selectedFood, selectedLocation, selectedOrder } = this;
     const now = new Date();
     const orderFilter = (order: OrderInfo | null) =>
       order == null || selectedFood === FoodChoice.all || (selectedFood === FoodChoice.pizza && order.orderType === OrderTypes.pizzas);
 
     const foundLocation = selectedLocation != null && selectedLocation.notFound == null ? selectedLocation : null;
 
+    // TODO: This data manipulation should have its own field and be triggered by @Watch on the relevant input fields
     const locationOrders =
       foundLocation?.orders
         .filter(orderFilter)
@@ -297,47 +320,50 @@ export class PageDeliveries {
 
         <ui-main-content background="yellow">
           <ui-card>
-            <h3>Current Deliveries</h3>
-            {selectedLocation != null && selectedFood === FoodChoice.trucks && locationItems.length < 1 ? (
-              <p>
-                There are no food trucks currently at this location.
-                <br />
-                <ReportLink />
-              </p>
-            ) : selectedLocation != null && ((selectedFood === FoodChoice.pizza && locationItems.length < 1) || selectedLocation.notFound === true) ? (
-              <p>
-                There are no reports of lines at this location.
-                <br />
-                <ReportLink />
-              </p>
-            ) : (
-              <ul>
-                {selectedAddress != null ? (
-                  <OrderAndTruckInfoList
-                    items={
-                      locationItems.length > 0
-                        ? locationItems.slice(0, 3)
-                        : // show placeholders if no data
-                          [
-                            { type: "pizza", data: null },
-                            { type: "pizza", data: null },
-                            { type: "pizza", data: null },
-                          ]
-                    }
-                    selectedLocation={selectedLocation}
-                  />
-                ) : (
-                  (items?.length > 0 ? items?.slice(0, 3) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
-                    .map(x =>
-                      x != null && x.type === "truck" ? (
-                        <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} />
-                      ) : (
-                        <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} />
-                      ),
-                    )
-                )}
-              </ul>
-            )}
+            <div>
+              <h3>Current Deliveries</h3>
+              {selectedLocation != null && selectedFood === FoodChoice.trucks && locationItems.length < 1 ? (
+                <p>
+                  There are no food trucks currently at this location.
+                  <br />
+                  <ReportLink />
+                </p>
+              ) : selectedLocation != null && ((selectedFood === FoodChoice.pizza && locationItems.length < 1) || selectedLocation.notFound === true) ? (
+                <p>
+                  There are no reports of lines at this location.
+                  <br />
+                  <ReportLink />
+                </p>
+              ) : (
+                <ul>
+                  {selectedAddress != null ? (
+                    <OrderAndTruckInfoList
+                      items={
+                        locationItems.length > 0
+                          ? locationItems.slice(0, 3)
+                          : // show placeholders if no data
+                            [
+                              { type: "pizza", data: null },
+                              { type: "pizza", data: null },
+                              { type: "pizza", data: null },
+                            ]
+                      }
+                      selectedLocation={selectedLocation}
+                      onOrderSelected={order => (this.selectedOrder = this.recentOrders?.find(x => x.id === order.id))}
+                    />
+                  ) : (
+                    (items?.length > 0 ? items?.slice(0, 3) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
+                      .map(x =>
+                        x != null && x.type === "truck" ? (
+                          <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} />
+                        ) : (
+                          <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} />
+                        ),
+                      )
+                  )}
+                </ul>
+              )}
+            </div>
           </ui-card>
 
           {((selectedLocation != null && previousItems.length > 0) || selectedLocation == null) && (
@@ -345,7 +371,11 @@ export class PageDeliveries {
               <h3>Previous Deliveries</h3>
               <ul>
                 {selectedLocation != null ? (
-                  <OrderAndTruckInfoList items={previousItems.slice(0, 3)} selectedLocation={selectedLocation} />
+                  <OrderAndTruckInfoList
+                    items={previousItems.slice(0, 3)}
+                    selectedLocation={selectedLocation}
+                    onOrderSelected={order => (this.selectedOrder = this.recentOrders?.find(x => x.id === order.id))}
+                  />
                 ) : (
                   (items?.length > 3 ? items?.slice(3, 6) : ([null, null, null] as (OrderOrTruckItem | null)[])) // show placeholders if no data
                     .map(x =>
@@ -367,6 +397,31 @@ export class PageDeliveries {
             </ui-card>
           )}
         </ui-main-content>
+
+        {selectedOrder && (
+          <ui-modal isActive={selectedOrder != null} onRequestClose={() => (this.selectedOrder = undefined)}>
+            <div>
+              <h3>{selectedOrder!.pizzas} Pizzas</h3>
+              <p>
+                <strong>
+                  {formatDate(selectedOrder!.createdAt)}, {formatTime(selectedOrder!.createdAt)}
+                </strong>
+              </p>
+              <p>From {selectedOrder!.restaurant}</p>
+              <ul>
+                {selectedOrder!.reports.map(x => (
+                  <li>
+                    Reported at{" "}
+                    <a href={x.reportURL} target="_blank">
+                      {formatTime(x.createdAt)}
+                    </a>{" "}
+                    ({x.waitTime} wait expected)
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </ui-modal>
+        )}
       </Host>
     );
   }

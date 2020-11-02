@@ -337,6 +337,7 @@ declare namespace LocalJSX {
     }
     interface UiModal {
         "isActive"?: boolean;
+        "onRequestClose"?: (event: CustomEvent<any>) => void;
     }
     interface UiPizzaList {
         "hasIcon"?: boolean;

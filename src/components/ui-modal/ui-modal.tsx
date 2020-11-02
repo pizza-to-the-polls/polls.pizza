@@ -1,4 +1,4 @@
-import { Component, h, Host, Prop } from "@stencil/core";
+import { Component, Event, EventEmitter, h, Host, Prop } from "@stencil/core";
 
 @Component({
   tag: "ui-modal",
@@ -7,16 +7,11 @@ import { Component, h, Host, Prop } from "@stencil/core";
 })
 export class UiModal {
   @Prop() public isActive: boolean = false;
-
-  constructor() {
-    this.isActive = false;
-  }
+  @Event({ cancelable: false }) public requestClose!: EventEmitter;
 
   public render() {
-    // Close modal
-    const closeModal = (e?: Event) => {
-      e?.preventDefault();
-      this.isActive = false;
+    const closeModal = () => {
+      this.requestClose.emit();
     };
 
     return (
