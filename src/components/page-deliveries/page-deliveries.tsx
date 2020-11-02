@@ -158,6 +158,18 @@ export class PageDeliveries {
     }
   }
 
+  /*
+  @Watch( "selectedFood" )
+  public selectedFoodChanged( filter: FoodChoice ) {
+    const val = filter === FoodChoice.all
+      ? ""
+      : Object.keys( FoodChoice ).find( k => ( FoodChoice as any )[k] === filter ) + "";
+    if( window.location.hash !== val ) {
+      window.location.hash = val;
+    }
+  }
+  */
+
   /**
    * Lookup location info when the selected address value changes
    */
