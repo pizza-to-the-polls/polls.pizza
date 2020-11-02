@@ -1,8 +1,4 @@
 page-donate {
-  .container {
-    padding-top: 30px;
-  }
-
   ul {
     margin-bottom: 24px;
     padding: 0;
@@ -11,15 +7,6 @@ page-donate {
       list-style: none;
       margin: 0;
     }
-  }
-
-  .donate {
-    background-color: $red;
-    color: $white;
-    background-image: url("/images/bg2.png");
-    background-attachment: fixed;
-    background-size: 400px;
-    padding-bottom: 40px;
   }
 
   .donation-intro {

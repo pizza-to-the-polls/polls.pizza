@@ -1,4 +1,6 @@
-import { Component, Event, EventEmitter, h, Prop, State } from "@stencil/core";
+import { Component, Event, EventEmitter, h, Method, Prop, State } from "@stencil/core";
+// @ts-ignore
+import {} from "googlemaps";
 
 @Component({
   tag: "ui-single-input",
@@ -17,6 +19,7 @@ export class UiSingleInput {
   @State() private value: string;
 
   private id: string;
+  private inputElement?: HTMLInputElement;
 
   constructor() {
     this.label = "";
@@ -25,8 +28,24 @@ export class UiSingleInput {
     this.type = "text";
     this.value = "";
 
-    this.id = "input-" + Math.random();
+    this.id = "input-" + Math.floor(Math.random() * 1000000);
     this.name = this.id;
+  }
+
+  @Method()
+  public getInputElement(): Promise<HTMLInputElement | null> {
+    return Promise.resolve(this.inputElement || null);
+  }
+
+  @Method()
+  public getCurrentValue(): Promise<string> {
+    return Promise.resolve(this.value);
+  }
+
+  @Method()
+  public setValue(value: string): Promise<void> {
+    this.value = value;
+    return Promise.resolve();
   }
 
   public render() {
@@ -52,10 +71,11 @@ export class UiSingleInput {
         <label htmlFor={this.id}>{this.label}</label>
         <input
           id={this.id}
+          class="input input-value"
+          ref={x => (this.inputElement = x)}
           type={this.type}
           value={this.value}
           name={this.name}
-          class="input input-value"
           placeholder={this.placeholder}
           onKeyUp={onKeyUp}
           onChange={onInputChange}

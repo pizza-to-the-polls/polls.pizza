@@ -5,8 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { LocationInfo } from "./api/types";
-import { RouterHistory } from "@stencil/router";
+import { MatchResults, RouterHistory } from "@stencil/router";
+import { LocationId } from "./api";
 export namespace Components {
     interface AppRoot {
     }
@@ -21,7 +21,8 @@ export namespace Components {
     interface PageCovid {
     }
     interface PageDeliveries {
-        "selectedLocation"?: LocationInfo;
+        "history": RouterHistory;
+        "match": MatchResults;
     }
     interface PageDonate {
         "history"?: RouterHistory;
@@ -40,29 +41,37 @@ export namespace Components {
     }
     interface PagePrivacy {
     }
-    interface PageReport {
-    }
     interface PageTrucks {
     }
+    interface UiAddressInput {
+        "buttonLabel": string;
+        "label": string;
+        "name": string;
+        "placeholder": string;
+    }
     interface UiCard {
-        "headerText": string;
+        "headerText"?: string;
         "isActive": boolean;
         "isCollapsible": boolean;
         "isSmall": boolean;
         /**
           * Set an `id` on the card element to allow navigating or scrolling to it
          */
-        "scrollId": string;
+        "scrollId"?: string;
     }
     interface UiDynamicText {
-        "format"?: (value: any) => string;
-        "value": any | undefined;
+        "format"?: (value: any /*T*/) => string;
+        "value": any | /*T*/ undefined;
     }
     interface UiGeoMap {
-        "getCenter": () => Promise<google.maps.LatLng | undefined>;
-        "setCenter": (newCenter: google.maps.LatLngLiteral) => Promise<void>;
+        "center"?: google.maps.LatLngLiteral;
+        "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
+        "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
+        "zoom"?: number;
     }
     interface UiMainContent {
+        "background": "yellow" | "cyan" | "teal" | "red" | "none";
+        "fullBleed": boolean;
     }
     interface UiModal {
         "isActive": boolean;
@@ -73,9 +82,12 @@ export namespace Components {
     }
     interface UiSingleInput {
         "buttonLabel": string;
+        "getCurrentValue": () => Promise<string>;
+        "getInputElement": () => Promise<HTMLInputElement | null>;
         "label": string;
         "name": string;
         "placeholder": string;
+        "setValue": (value: string) => Promise<void>;
         "type": string;
     }
 }
@@ -170,17 +182,17 @@ declare global {
         prototype: HTMLPagePrivacyElement;
         new (): HTMLPagePrivacyElement;
     };
-    interface HTMLPageReportElement extends Components.PageReport, HTMLStencilElement {
-    }
-    var HTMLPageReportElement: {
-        prototype: HTMLPageReportElement;
-        new (): HTMLPageReportElement;
-    };
     interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
     }
     var HTMLPageTrucksElement: {
         prototype: HTMLPageTrucksElement;
         new (): HTMLPageTrucksElement;
+    };
+    interface HTMLUiAddressInputElement extends Components.UiAddressInput, HTMLStencilElement {
+    }
+    var HTMLUiAddressInputElement: {
+        prototype: HTMLUiAddressInputElement;
+        new (): HTMLUiAddressInputElement;
     };
     interface HTMLUiCardElement extends Components.UiCard, HTMLStencilElement {
     }
@@ -240,8 +252,8 @@ declare global {
         "page-partners": HTMLPagePartnersElement;
         "page-press": HTMLPagePressElement;
         "page-privacy": HTMLPagePrivacyElement;
-        "page-report": HTMLPageReportElement;
         "page-trucks": HTMLPageTrucksElement;
+        "ui-address-input": HTMLUiAddressInputElement;
         "ui-card": HTMLUiCardElement;
         "ui-dynamic-text": HTMLUiDynamicTextElement;
         "ui-geo-map": HTMLUiGeoMapElement;
@@ -265,7 +277,8 @@ declare namespace LocalJSX {
     interface PageCovid {
     }
     interface PageDeliveries {
-        "selectedLocation"?: LocationInfo;
+        "history": RouterHistory;
+        "match": MatchResults;
     }
     interface PageDonate {
         "history"?: RouterHistory;
@@ -284,9 +297,14 @@ declare namespace LocalJSX {
     }
     interface PagePrivacy {
     }
-    interface PageReport {
-    }
     interface PageTrucks {
+    }
+    interface UiAddressInput {
+        "buttonLabel"?: string;
+        "label"?: string;
+        "name"?: string;
+        "onAddressSelected"?: (event: CustomEvent<{ address: string; lat: number; lng: number }>) => void;
+        "placeholder"?: string;
     }
     interface UiCard {
         "headerText"?: string;
@@ -299,15 +317,27 @@ declare namespace LocalJSX {
         "scrollId"?: string;
     }
     interface UiDynamicText {
-        "format"?: (value: any) => string;
-        "value"?: any | undefined;
+        "format"?: (value: any /*T*/) => string;
+        "value"?: any | /*T*/ undefined;
     }
     interface UiGeoMap {
+        "center"?: google.maps.LatLngLiteral;
+        "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
+        "onMarkerSelected"?: (event: CustomEvent<{
+    type: "pizza" | "truck";
+    coords: google.maps.LatLngLiteral;
+    location: LocationId;
+  }>) => void;
+        "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
+        "zoom"?: number;
     }
     interface UiMainContent {
+        "background"?: "yellow" | "cyan" | "teal" | "red" | "none";
+        "fullBleed"?: boolean;
     }
     interface UiModal {
         "isActive"?: boolean;
+        "onRequestClose"?: (event: CustomEvent<any>) => void;
     }
     interface UiPizzaList {
         "hasIcon"?: boolean;
@@ -337,8 +367,8 @@ declare namespace LocalJSX {
         "page-partners": PagePartners;
         "page-press": PagePress;
         "page-privacy": PagePrivacy;
-        "page-report": PageReport;
         "page-trucks": PageTrucks;
+        "ui-address-input": UiAddressInput;
         "ui-card": UiCard;
         "ui-dynamic-text": UiDynamicText;
         "ui-geo-map": UiGeoMap;
@@ -367,8 +397,8 @@ declare module "@stencil/core" {
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
-            "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
+            "ui-address-input": LocalJSX.UiAddressInput & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;
             "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
             "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
             "ui-geo-map": LocalJSX.UiGeoMap & JSXBase.HTMLAttributes<HTMLUiGeoMapElement>;

@@ -1,0 +1,38 @@
+:host {
+  .back-to-top {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    bottom: 1.5rem;
+    right: 2rem;
+    z-index: 999999;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    background-color: $white;
+    border-radius: 50%;
+    border: 2px solid $teal;
+    box-shadow: $box-shadow;
+    transition: border-color 0.2s ease-in-out, transform 0.3s cubic-bezier(0.65, 0.5, 0.65, 1.75);
+    cursor: pointer;
+    pointer-events: none;
+    transform: scale(0);
+
+    &:after {
+      @include arrow;
+      top: 1.3333rem;
+      right: 0.75rem;
+      border-color: $teal;
+      transition: border-color 0.2s ease-in-out;
+      transform: rotate(135deg);
+    }
+
+    &:hover,
+    &:hover:after {
+      border-color: $cyan;
+    }
+
+    &.is-active {
+      pointer-events: auto;
+      transform: scale(1);
+    }
+  }
+}

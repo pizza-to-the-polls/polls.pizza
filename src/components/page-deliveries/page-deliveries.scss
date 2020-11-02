@@ -1,8 +1,44 @@
 page-deliveries {
   ui-main-content {
+    &:first-child .container {
+      padding-top: 0.1em;
+    }
+    &:last-child .container {
+      padding-bottom: 20px;
+    }
+    &:nth-child(2) .container {
+      padding-top: 0;
+      padding-left: 0;
+      padding-right: 0;
+      @media ($tablet) {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
+    &.selected-location {
+      &:nth-child(2) {
+        .container {
+          padding-bottom: 0;
+          @media ($tablet) {
+            padding-bottom: 20px;
+          }
+        }
+        .background {
+          padding-bottom: 0;
+        }
+      }
+    }
     .background {
-      background-color: $yellow;
-      background-image: url("/images/bg1.png");
+      padding-bottom: 10px;
+    }
+    &.selected-location {
+      a,
+      h1,
+      h2,
+      h3,
+      h4 {
+        color: $white;
+      }
     }
   }
 
@@ -13,18 +49,34 @@ page-deliveries {
   hr.heavy {
     width: 100%;
     background-color: $red;
-    height: 12px;
+    height: 8px;
     margin: 0;
   }
 
+  .map-container {
+    background-color: $gray1;
+    width: 100%;
+    height: 200px;
+  }
+
+  .now-feeding {
+    padding: 0.5em 0 0.5em 1.5em;
+    font-size: 0.8em;
+    font-weight: 600;
+    background-color: $white;
+  }
+
   .food-choices {
+    font-size: 0.9em;
+    font-weight: 600;
+    margin: 1.5em 0 1em 0;
     ul {
       display: flex;
-      margin: 0.5em 0;
+      margin: 0;
       padding: 0;
       align-items: flex-start;
       li {
-        margin-right: 1em;
+        margin: 0 1em 0 0;
         list-style: none;
         cursor: pointer;
         padding: 0.25em 0.5em;
@@ -37,6 +89,60 @@ page-deliveries {
           color: $white;
         }
       }
+    }
+  }
+
+  li {
+    transition: background-color 0.2s ease-in-out;
+    &.interactive {
+      cursor: pointer;
+      &:hover {
+        background-color: $gray1;
+      }
+    }
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+
+    &.pizza-icon,
+    &.truck-icon {
+      margin: 1rem 0 1rem 2rem;
+
+      &:before {
+        position: absolute;
+        top: 0.5rem;
+        left: -2rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        display: inline-block;
+        text-align: center;
+      }
+    }
+
+    &.pizza-icon {
+      &:before {
+        content: url("/images/icons/pizza-slice-yellow.svg");
+      }
+    }
+
+    &.truck-icon {
+      &:before {
+        content: url("/images/icons/truck.svg");
+      }
+    }
+  }
+
+  ul {
+    display: block;
+    margin: 1rem 0 1.5rem;
+    padding: 0;
+    text-align: left;
+    list-style: none;
+    > li {
+      position: relative;
+      margin: 0.5rem 0 0.5rem;
+      padding: 0.25rem 0.5rem;
     }
   }
 }

@@ -1,18 +1,7 @@
-import { Component, h } from "@stencil/core";
+import { Component, h, Prop } from "@stencil/core";
 
 /**
  * Container for the main content section between the top nav and the footer (see app-root.tsx)
- * @example
- * Set a color or image on the background class:
- * ```
- * ui-main-content {
- *   .background {
- *     background-color: $cyan;
- *     background-image: url("/images/bg2.png");
- *   }
- * }
- * ```
- * TODO: Add a prop to toggle the background and colors instead of setting via CSS
  */
 @Component({
   tag: "ui-main-content",
@@ -20,10 +9,26 @@ import { Component, h } from "@stencil/core";
   shadow: false,
 })
 export class UiMainContent {
+  @Prop() public background: "yellow" | "cyan" | "teal" | "red" | "none";
+  @Prop() public fullBleed: boolean;
+
+  constructor() {
+    this.background = "none";
+    this.fullBleed = false;
+  }
+
   public render() {
     return (
-      <div class="background">
-        <div class="container">
+      <div
+        class={{
+          "background": this.background !== "none",
+          "bg-cyan": this.background === "cyan",
+          "bg-red": this.background === "red",
+          "bg-teal": this.background === "teal",
+          "bg-yellow": this.background === "yellow",
+        }}
+      >
+        <div class={`container${this.fullBleed === true ? " full-bleed" : ""}`}>
           <slot />
         </div>
       </div>

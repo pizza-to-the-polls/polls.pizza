@@ -246,45 +246,7 @@ footer {
     display: inline;
   }
 
-  p,
-  li {
+  p {
     font-size: 18px;
-  }
-}
-
-.back-to-top {
-  position: fixed;
-  width: 40px;
-  height: 40px;
-  bottom: 1.5rem;
-  right: 2rem;
-  z-index: 999999;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-  background-color: $white;
-  border-radius: 50%;
-  border: 2px solid $teal;
-  box-shadow: $box-shadow;
-  transition: opacity 0.2s ease-in-out, border-color 0.2s ease-in-out;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-
-  &:after {
-    @include arrow;
-    top: 1.3333rem;
-    right: 0.75rem;
-    border-color: $teal;
-    transition: border-color 0.2s ease-in-out;
-    transform: rotate(135deg);
-  }
-
-  &:hover,
-  &:hover:after {
-    border-color: $cyan;
-  }
-
-  &.is-active {
-    opacity: 1;
-    pointer-events: auto;
   }
 }

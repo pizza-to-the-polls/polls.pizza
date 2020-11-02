@@ -8,9 +8,9 @@ import { Component, h, Prop } from "@stencil/core";
   styleUrl: "ui-dynamic-text.scss",
   shadow: false,
 })
-export class UiDynamicText {
-  @Prop() public value: any | undefined;
-  @Prop() public format?: (value: any) => string;
+export class UiDynamicText /*<T>*/ {
+  @Prop() public value: any | /*T*/ undefined;
+  @Prop() public format?: (value: any /*T*/) => string;
 
   public render() {
     return this.value == null ? (

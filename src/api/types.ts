@@ -2,6 +2,12 @@ export type OrderId = number;
 export type ReportId = number;
 export type LocationId = number;
 
+export type ApiError = {
+  isError: true;
+  status: number;
+  messages: string[];
+};
+
 export type PizzaTotals = {
   raised: number;
   donors: number;
@@ -41,6 +47,13 @@ export type OrderDetails = OrderInfo & {
   reports: ReportInfo[];
 };
 
+export type TruckInfo = {
+  isActive: boolean;
+  createdAt: Date;
+  region: string;
+  location: LocationInfo;
+};
+
 export type LocationInfo = {
   id: LocationId;
   city: string;
@@ -64,16 +77,28 @@ export type ReportInfo = {
 /**
  * /locations/{address}
  */
-export type LocationStatus = LocationInfo & {
-  hasTruck: boolean;
-  reports: any[];
-  orders: OrderInfo[];
-};
+export type LocationStatus =
+  | (LocationInfo & {
+      notFound: undefined;
+      hasTruck: boolean;
+      reports: any[];
+      orders: OrderInfo[];
+    })
+  // allow us to store the results of a 404
+  | { notFound: true };
 
 /**
  * /orders
  */
 export type OrderQueryResults = {
   results: OrderDetails[];
+  count: number;
+};
+
+/**
+ * /trucks
+ */
+export type TruckQueryResults = {
+  results: TruckInfo[];
   count: number;
 };

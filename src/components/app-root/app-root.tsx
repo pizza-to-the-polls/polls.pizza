@@ -1,60 +1,11 @@
-import { Component, h, Host, State } from "@stencil/core";
-
-// Debounce function for back-to-top scroll event
-const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-  const debounced = (...args: Parameters<F>) => {
-    if (timeout !== null) {
-      clearTimeout(timeout);
-      timeout = null;
-    }
-    timeout = setTimeout(() => func(...args), waitFor);
-  };
-  return debounced as (...args: Parameters<F>) => ReturnType<F>;
-};
+import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "app-root",
   styleUrl: "app-root.scss",
 })
 export class AppRoot {
-  @State() private scrollTop: number = 0;
-  @State() private scrollTopThreshold: number = 300;
-  @State() private longPageThreshold: number = 2200;
-  @State() private showBackToTop: boolean = false;
-
   public render() {
-    const getScrollTop = () => {
-      // Determine if long page
-      if (document.body.scrollHeight || document.documentElement.scrollHeight) {
-        this.showBackToTop = Math.max(document.body.scrollHeight || 0, document.documentElement.scrollTop || 0) > this.longPageThreshold;
-      } else {
-        this.showBackToTop = false;
-      }
-      // Get offset
-      return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    };
-
-    this.scrollTop = getScrollTop();
-    if (window) {
-      window.addEventListener(
-        "scroll",
-        debounce(() => {
-          this.scrollTop = getScrollTop();
-        }, 200),
-      );
-    }
-
-    const scrollBackToTop = (e?: Event) => {
-      e?.preventDefault();
-      (e?.target as HTMLElement)?.blur();
-      if (window) {
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        this.scrollTop = 0;
-      }
-    };
-
     return (
       <Host>
         <header class="header">
@@ -70,13 +21,8 @@ export class AppRoot {
             <li>
               <stencil-route-link url="/donate">Donate</stencil-route-link>
             </li>
-            {/*
             <li>
               <stencil-route-link url="/deliveries">Deliveries</stencil-route-link>
-            </li>
-             */}
-            <li>
-              <stencil-route-link url="/activity">Deliveries</stencil-route-link>
             </li>
             <li>
               <stencil-route-link url="/about">About</stencil-route-link>
@@ -92,7 +38,7 @@ export class AppRoot {
               <stencil-route url="/activity" component="page-activity" />
               <stencil-route url="/covid" component="page-covid" />
               <stencil-route url="/contact" component="page-contact" />
-              <stencil-route url="/deliveries" component="page-deliveries" />
+              <stencil-route url={["/deliveries/:location", "/deliveries"]} component="page-deliveries" />
               <stencil-route url="/donate" component="page-donate" />
               <stencil-route url="/guidelines" component="page-guidelines" />
               <stencil-route url="/instructions" component="page-instructions" />
@@ -108,7 +54,7 @@ export class AppRoot {
         </main>
 
         <footer>
-          <div class="container">
+          <ui-main-content background="none">
             <div
               class="clearfix"
               style={{
@@ -179,11 +125,9 @@ export class AppRoot {
                 </li>
               </ul>
             </div>
-          </div>
+          </ui-main-content>
         </footer>
-        {this.scrollTop > this.scrollTopThreshold && this.showBackToTop && (
-          <span onClick={scrollBackToTop} class={"back-to-top " + (this.scrollTop > this.scrollTopThreshold && this.showBackToTop ? "is-active" : "")} title="Back to top"></span>
-        )}
+        <ui-scroll-to-top-button />
       </Host>
     );
   }

@@ -9,11 +9,11 @@ export class UiCard {
   @Prop() public isSmall: boolean;
   @Prop() public isCollapsible: boolean;
   @Prop() public isActive: boolean;
-  @Prop() public headerText: string;
+  @Prop() public headerText?: string;
   /**
    * Set an `id` on the card element to allow navigating or scrolling to it
    */
-  @Prop() public scrollId: string;
+  @Prop() public scrollId?: string;
   @State() private maxHeight: string;
 
   constructor() {
@@ -21,8 +21,6 @@ export class UiCard {
     // Collapse Props
     this.isCollapsible = false;
     this.isActive = false;
-    this.scrollId = "";
-    this.headerText = "";
     this.maxHeight = "";
   }
 

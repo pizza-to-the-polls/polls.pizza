@@ -174,158 +174,156 @@ export class PageDonate {
 
     return (
       <Host>
-        <div class="donate">
-          <div class="container">
-            <ui-card>
-              <h1>Donate</h1>
+        <ui-main-content background="red">
+          <ui-card>
+            <h1>Donate</h1>
 
-              {!this.showConfirmation && (
-                <div>
-                  <div class="donation-intro">
-                    <p>Waiting in line sucks. Waiting in line with pizza sucks a little less.</p>
-                    <p>Keep our polling places joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
-                  </div>
-
-                  <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
-                    <label class="label">
-                      Choose an amount <span class="required">*</span>
-                    </label>
-                    <ul class="donation-amount-list">
-                      <li>
-                        <label class="radio" htmlFor="radio-1">
-                          <input type="radio" value="20" id="radio-1" name="amount" />
-                          <span class="label-text">$20 🍕</span>
-                          <span class="indicator"></span>
-                        </label>
-                      </li>
-                      <li>
-                        <label class="radio" htmlFor="radio-2">
-                          <input type="radio" value="40" id="radio-2" name="amount" />
-                          <span class="label-text">$40 🍕🍕</span>
-                          <span class="indicator"></span>
-                        </label>
-                      </li>
-                      <li>
-                        <label class="radio" htmlFor="radio-3">
-                          <input type="radio" value="60" id="radio-3" name="amount" />
-                          <span class="label-text">$60 🍕🍕🍕</span>
-                          <span class="indicator"></span>
-                        </label>
-                      </li>
-                      <li>
-                        <label class="radio" htmlFor="radio-4">
-                          <input type="radio" value="100" id="radio-4" name="amount" />
-                          <span class="label-text">$100 🍕🍕🍕🍕🍕</span>
-                          <span class="indicator"></span>
-                        </label>
-                      </li>
-                      <li>
-                        <label class="radio" htmlFor="radio-5">
-                          <input type="radio" value="200" id="radio-5" name="amount" />
-                          <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
-                          <span class="indicator"></span>
-                        </label>
-                      </li>
-                      <li>
-                        <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
-                          <input type="radio" id="custom-amount-radio" name="amount" value="" />
-                          <span class="label-text" id="custom-amount-text">
-                            Other: $
-                          </span>
-                          <input class="input" type="text" name="amount" id="custom-amount" onInput={handleChange} autocomplete="off" />
-                          <span class="indicator"></span>
-                        </label>
-                      </li>
-                    </ul>
-                    <button
-                      onClick={handleCheckout}
-                      class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
-                      disabled={!this.amount || isNaN(this.amount)}
-                    >
-                      Donate
-                    </button>
-                    {this.error && (
-                      <div id="donation-error" class="help has-text-red">
-                        <p>{this.error}</p>
-                        <p>
-                          Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
-                        </p>
-                      </div>
-                    )}
-                    <p>
-                      Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
-                      Our activities are 501(c)(3) compliant.
-                    </p>
-                  </form>
+            {!this.showConfirmation && (
+              <div>
+                <div class="donation-intro">
+                  <p>Waiting in line sucks. Waiting in line with pizza sucks a little less.</p>
+                  <p>Keep our polling places joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
                 </div>
-              )}
 
-              {this.showConfirmation && (
-                <div id="donate-confirmation">
-                  <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
-                  <p>
-                    Thanks for donating{" "}
-                    {this.amount
-                      ? " $" +
-                        Number(this.amount)
-                          .toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
-                          .replace(/\.00/g, "")
-                      : null}{" "}
-                    to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.
-                  </p>
-
-                  <p>Help spread the word by sharing your donation!</p>
-
-                  {this.canNativeShare && (
-                    <button id="share-donation" onClick={nativeShare} class="button is-blue is-fullwidth-mobile">
-                      <img class="icon" alt="Share" src="/images/icons/share.svg" />
-                      <span>Share your donation!</span>
-                    </button>
+                <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
+                  <label class="label">
+                    Choose an amount <span class="required">*</span>
+                  </label>
+                  <ul class="donation-amount-list">
+                    <li>
+                      <label class="radio" htmlFor="radio-1">
+                        <input type="radio" value="20" id="radio-1" name="amount" />
+                        <span class="label-text">$20 🍕</span>
+                        <span class="indicator"></span>
+                      </label>
+                    </li>
+                    <li>
+                      <label class="radio" htmlFor="radio-2">
+                        <input type="radio" value="40" id="radio-2" name="amount" />
+                        <span class="label-text">$40 🍕🍕</span>
+                        <span class="indicator"></span>
+                      </label>
+                    </li>
+                    <li>
+                      <label class="radio" htmlFor="radio-3">
+                        <input type="radio" value="60" id="radio-3" name="amount" />
+                        <span class="label-text">$60 🍕🍕🍕</span>
+                        <span class="indicator"></span>
+                      </label>
+                    </li>
+                    <li>
+                      <label class="radio" htmlFor="radio-4">
+                        <input type="radio" value="100" id="radio-4" name="amount" />
+                        <span class="label-text">$100 🍕🍕🍕🍕🍕</span>
+                        <span class="indicator"></span>
+                      </label>
+                    </li>
+                    <li>
+                      <label class="radio" htmlFor="radio-5">
+                        <input type="radio" value="200" id="radio-5" name="amount" />
+                        <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
+                        <span class="indicator"></span>
+                      </label>
+                    </li>
+                    <li>
+                      <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
+                        <input type="radio" id="custom-amount-radio" name="amount" value="" />
+                        <span class="label-text" id="custom-amount-text">
+                          Other: $
+                        </span>
+                        <input class="input" type="text" name="amount" id="custom-amount" onInput={handleChange} autocomplete="off" />
+                        <span class="indicator"></span>
+                      </label>
+                    </li>
+                  </ul>
+                  <button
+                    onClick={handleCheckout}
+                    class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                    disabled={!this.amount || isNaN(this.amount)}
+                  >
+                    Donate
+                  </button>
+                  {this.error && (
+                    <div id="donation-error" class="help has-text-red">
+                      <p>{this.error}</p>
+                      <p>
+                        Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
+                      </p>
+                    </div>
                   )}
-
-                  <div class={"share-donation-link-container " + (this.canNativeShare ? "can-native-share" : "")}>
-                    <ul class="share-donation-links">
-                      <li>
-                        <a
-                          class="share-donation-link button is-twitter is-fullwidth-mobile"
-                          href={shareTwitterLink}
-                          rel="noopener noreferrer"
-                          target="popup"
-                          onClick={openSharePopup}
-                          title="Share to Twitter"
-                        >
-                          <img class="icon" alt="Twitter" src="/images/icons/twitter.svg" />
-                          <span>Share on Twitter</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          class="share-donation-link button is-facebook is-fullwidth-mobile"
-                          href={shareFacebookLink}
-                          rel="noopener noreferrer"
-                          target="popup"
-                          onClick={openSharePopup}
-                          title="Share to Facebook"
-                        >
-                          <img class="icon" alt="Facebook" src="/images/icons/facebook.svg" />
-                          <span>Share on Facebook</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
                   <p>
-                    <a href="#" class="has-text-teal" onClick={resetDonationForm}>
-                      Make another donation
-                    </a>
+                    Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
+                    Our activities are 501(c)(3) compliant.
                   </p>
+                </form>
+              </div>
+            )}
+
+            {this.showConfirmation && (
+              <div id="donate-confirmation">
+                <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
+                <p>
+                  Thanks for donating{" "}
+                  {this.amount
+                    ? " $" +
+                      Number(this.amount)
+                        .toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                        .replace(/\.00/g, "")
+                    : null}{" "}
+                  to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.
+                </p>
+
+                <p>Help spread the word by sharing your donation!</p>
+
+                {this.canNativeShare && (
+                  <button id="share-donation" onClick={nativeShare} class="button is-blue is-fullwidth-mobile">
+                    <img class="icon" alt="Share" src="/images/icons/share.svg" />
+                    <span>Share your donation!</span>
+                  </button>
+                )}
+
+                <div class={"share-donation-link-container " + (this.canNativeShare ? "can-native-share" : "")}>
+                  <ul class="share-donation-links">
+                    <li>
+                      <a
+                        class="share-donation-link button is-twitter is-fullwidth-mobile"
+                        href={shareTwitterLink}
+                        rel="noopener noreferrer"
+                        target="popup"
+                        onClick={openSharePopup}
+                        title="Share to Twitter"
+                      >
+                        <img class="icon" alt="Twitter" src="/images/icons/twitter.svg" />
+                        <span>Share on Twitter</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="share-donation-link button is-facebook is-fullwidth-mobile"
+                        href={shareFacebookLink}
+                        rel="noopener noreferrer"
+                        target="popup"
+                        onClick={openSharePopup}
+                        title="Share to Facebook"
+                      >
+                        <img class="icon" alt="Facebook" src="/images/icons/facebook.svg" />
+                        <span>Share on Facebook</span>
+                      </a>
+                    </li>
+                  </ul>
                 </div>
-              )}
-            </ui-card>
-          </div>
-        </div>
+                <p>
+                  <a href="#" class="has-text-teal" onClick={resetDonationForm}>
+                    Make another donation
+                  </a>
+                </p>
+              </div>
+            )}
+          </ui-card>
+        </ui-main-content>
       </Host>
     );
   }
