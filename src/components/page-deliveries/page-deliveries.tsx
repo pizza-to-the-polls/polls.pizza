@@ -49,7 +49,7 @@ const OrderDetailsDisplay: FunctionalComponent<{
     <div>
       <ui-dynamic-text
         value={order}
-        format={x => `${formatDate(x.createdAt)} ${formatTime(x.createdAt)}${reportCount > 0 ? ` • ${reportCount} report${reportCount === 1 ? "" : ""}` : ""}`}
+        format={x => `${formatDate(x.createdAt)} ${formatTime(x.createdAt)}${reportCount > 0 ? ` • ${reportCount} report${reportCount === 1 ? "" : "s"}` : ""}`}
       />
     </div>
   </li>
