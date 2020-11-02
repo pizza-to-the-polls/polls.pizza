@@ -3,7 +3,7 @@ import { MatchResults, RouterHistory } from "@stencil/router";
 // @ts-ignore
 import {} from "googlemaps";
 
-import { LocationInfo, LocationStatus, OrderDetails, OrderTypes, PizzaApi, TruckDetails, TruckInfo } from "../../api";
+import { LocationInfo, LocationStatus, OrderDetails, OrderInfo, OrderTypes, PizzaApi, TruckDetails, TruckInfo } from "../../api";
 import { scrollPageToTop } from "../../util";
 import { UiGeoMap } from "../ui-geo-map/ui-geo-map";
 
@@ -36,8 +36,23 @@ const FoodChoices: FunctionalComponent<{
   </div>
 );
 
-const OrderDetailsDisplay: FunctionalComponent<{
+const OrderDetailDisplay: FunctionalComponent<{
   order: OrderDetails | null | undefined;
+  noIcon?: boolean;
+  onClick?: () => void;
+}> = ({ order, onClick, noIcon }) => (
+  <li class={{ "pizza-icon": noIcon !== true, "interactive": onClick != null }} onClick={onClick}>
+    <span style={{ fontSize: "0.8em", fontWeight: "600" }}>
+      <ui-dynamic-text value={order} format={x => x.location.fullAddress} />
+    </span>
+    <div>
+      <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} at ${formatDate(x.createdAt)} ${formatTime(x.createdAt)}`} />
+    </div>
+  </li>
+);
+
+const OrderInfoDisplay: FunctionalComponent<{
+  order: OrderInfo | null | undefined;
   reportCount: number;
   noIcon?: boolean;
   onClick?: () => void;
@@ -80,7 +95,7 @@ const OrderAndTruckInfoList: FunctionalComponent<{
     x != null && x.type === "truck" ? (
       <TruckInfoDisplay noIcon={noIcon} truck={x.data} />
     ) : (
-      <OrderDetailsDisplay
+      <OrderInfoDisplay
         noIcon={noIcon}
         order={x?.data}
         reportCount={selectedLocation?.notFound ? 0 : x?.data?.reports?.length || 0}
@@ -109,7 +124,7 @@ export class PageDeliveries {
   @State() private mapCenterPoint: { lat: number; lng: number };
   @State() private selectedFood: FoodChoice;
   @State() private selectedLocation?: LocationStatus;
-  @State() private selectedOrder?: OrderDetails;
+  @State() private selectedOrder?: OrderInfo;
   @State() private recentOrders?: OrderDetails[];
   @State() private recentTrucks?: TruckInfo[];
   @State() private mapZoom: number;
@@ -381,7 +396,7 @@ export class PageDeliveries {
                       x != null && x.type === "truck" ? (
                         <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} />
                       ) : (
-                        <OrderDetailsDisplay order={x?.data} reportCount={x?.data?.reports?.length || 0} onClick={() => this.selectLocation(x?.data?.location)} />
+                        <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} />
                       ),
                     )
                   )}
@@ -402,7 +417,7 @@ export class PageDeliveries {
                       x != null && x.type === "truck" ? (
                         <TruckInfoDisplay truck={x.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />
                       ) : (
-                        <OrderDetailsDisplay reportCount={x?.data?.reports?.length || 0} order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />
+                        <OrderDetailDisplay order={x?.data} onClick={() => this.selectLocation(x?.data?.location)} noIcon={true} />
                       ),
                     )
                 )}

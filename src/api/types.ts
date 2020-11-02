@@ -38,6 +38,7 @@ export type OrderInfo = {
   restaurant: string;
   createdAt: Date;
   cancelledAt: Date;
+  reports: ReportInfo[];
 };
 
 /**
@@ -45,7 +46,6 @@ export type OrderInfo = {
  */
 export type OrderDetails = OrderInfo & {
   location: LocationInfo;
-  reports: ReportInfo[];
 };
 
 export type TruckInfo = {
