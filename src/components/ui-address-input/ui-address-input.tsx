@@ -1,5 +1,30 @@
 import { Build, Component, Event, EventEmitter, h, Prop } from "@stencil/core";
 
+const GMAPS_COMPONENT_MAPPING: { [key: string]: string } = {
+  sublocality: "city",
+  locality: "city",
+  postal_code: "zip",
+  route: "street",
+  street_number: "num",
+  administrative_area_level_1: "state",
+};
+
+const toFullAddress = (addressComponents: Array<{ short_name: string; types: Array<string> }>) => {
+  const { city, state, zip, num, street }: { [key: string]: string } = addressComponents.reduce((obj: { [key: string]: string }, { short_name, types }) => {
+    for (const type of types) {
+      if (Object.keys(GMAPS_COMPONENT_MAPPING).includes(type)) {
+        obj[`${GMAPS_COMPONENT_MAPPING[type]}`] = short_name;
+      }
+    }
+    return obj;
+  }, {});
+  if (!num || !street || !city || !state || !zip) {
+    return null;
+  }
+
+  return `${num} ${street} ${city} ${state} ${zip}`;
+};
+
 /**
  * TODO: THIS IS INCOMPLETE AND STILL UNDER DEVELOPMENT
  * AN auto-complete input for street addresses, using the Google Maps API
@@ -43,7 +68,8 @@ export class UiAddressInput {
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         this.place = place;
-        addressInput.setValue(place.formatted_address ? place.formatted_address.replace(/, USA/gi, "") : place.name ? place.name : "the location");
+        const fullAddress = place.address_components ? toFullAddress(place.address_components) : null;
+        addressInput.setValue(fullAddress ? fullAddress : place.name ? place.name : "the location");
       });
     }
   }
