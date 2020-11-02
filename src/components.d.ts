@@ -80,8 +80,6 @@ export namespace Components {
         "hasIcon": boolean;
         "isBordered": boolean;
     }
-    interface UiScrollToTopButton {
-    }
     interface UiSingleInput {
         "buttonLabel": string;
         "getCurrentValue": () => Promise<string>;
@@ -232,12 +230,6 @@ declare global {
         prototype: HTMLUiPizzaListElement;
         new (): HTMLUiPizzaListElement;
     };
-    interface HTMLUiScrollToTopButtonElement extends Components.UiScrollToTopButton, HTMLStencilElement {
-    }
-    var HTMLUiScrollToTopButtonElement: {
-        prototype: HTMLUiScrollToTopButtonElement;
-        new (): HTMLUiScrollToTopButtonElement;
-    };
     interface HTMLUiSingleInputElement extends Components.UiSingleInput, HTMLStencilElement {
     }
     var HTMLUiSingleInputElement: {
@@ -268,7 +260,6 @@ declare global {
         "ui-main-content": HTMLUiMainContentElement;
         "ui-modal": HTMLUiModalElement;
         "ui-pizza-list": HTMLUiPizzaListElement;
-        "ui-scroll-to-top-button": HTMLUiScrollToTopButtonElement;
         "ui-single-input": HTMLUiSingleInputElement;
     }
 }
@@ -352,8 +343,6 @@ declare namespace LocalJSX {
         "hasIcon"?: boolean;
         "isBordered"?: boolean;
     }
-    interface UiScrollToTopButton {
-    }
     interface UiSingleInput {
         "buttonLabel"?: string;
         "label"?: string;
@@ -386,7 +375,6 @@ declare namespace LocalJSX {
         "ui-main-content": UiMainContent;
         "ui-modal": UiModal;
         "ui-pizza-list": UiPizzaList;
-        "ui-scroll-to-top-button": UiScrollToTopButton;
         "ui-single-input": UiSingleInput;
     }
 }
@@ -417,7 +405,6 @@ declare module "@stencil/core" {
             "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
             "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
             "ui-pizza-list": LocalJSX.UiPizzaList & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;
-            "ui-scroll-to-top-button": LocalJSX.UiScrollToTopButton & JSXBase.HTMLAttributes<HTMLUiScrollToTopButtonElement>;
             "ui-single-input": LocalJSX.UiSingleInput & JSXBase.HTMLAttributes<HTMLUiSingleInputElement>;
         }
     }

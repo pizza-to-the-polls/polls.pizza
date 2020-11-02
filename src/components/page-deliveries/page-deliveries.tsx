@@ -15,7 +15,7 @@ enum FoodChoice {
 
 type OrderOrTruckItem = { type: "pizza"; data: OrderDetails | null } | { type: "truck"; data: TruckInfo | null };
 
-const formatTime = (date: Date) => date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+const formatTime = (date: Date) => date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
 
 const formatDate = (date: Date) => date.toLocaleDateString([], { day: "2-digit", month: "2-digit" });
 
