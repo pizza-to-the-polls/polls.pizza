@@ -1,5 +1,6 @@
 .button {
   @include base-control;
+  max-width: 100%;
   background-color: $teal;
   border-color: $teal;
   border-width: 1px;
