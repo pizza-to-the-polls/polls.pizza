@@ -239,22 +239,19 @@ export class PageDonate {
                   <button
                     onClick={handleCheckout}
                     class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
-                    disabled={!this.amount || isNaN(this.amount)}
+                    disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
                   >
                     Donate
                   </button>
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">
                       <p>{this.error}</p>
+                      <a class="button is-blue is-fullwidth-mobile" target="_blank" href={`https://paypal.me/pizzatothepolls/${this.amount}`}>
+                        Donate via PayPal
+                      </a>
                       <p>
                         Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
                       </p>
-                      <h2>
-                        <a target="_blank" href="https://paypal.me/pizzatothepolls">
-                          You can also donate via PayPal
-                        </a>
-                        .
-                      </h2>
                     </div>
                   )}
                   <p>
@@ -322,7 +319,7 @@ export class PageDonate {
                   </ul>
                 </div>
                 <p>
-                  <a href="#" class="has-text-teal" onClick={resetDonationForm}>
+                  <a href="#" class="button has-text-teal" onClick={resetDonationForm}>
                     Make another donation
                   </a>
                 </p>
