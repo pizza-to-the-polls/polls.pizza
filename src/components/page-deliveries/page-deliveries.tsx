@@ -247,7 +247,7 @@ export class PageDeliveries {
     const [locationCurrentOrders, locationPreviousOrders] = locationOrders.reduce(
       (sorted: [OrderOrTruckItem[], OrderOrTruckItem[]], x: OrderOrTruckItem) => {
         if (x.data) {
-          sorted[x.data?.createdAt?.getDate() > ORDER_CURRENT ? 0 : 1].push(x);
+          sorted[Number(x.data.createdAt) > ORDER_CURRENT ? 0 : 1].push(x);
         }
         return sorted;
       },
@@ -256,7 +256,7 @@ export class PageDeliveries {
     const [locationCurrentTrucks, locationPreviousTrucks] = locationTrucks.reduce(
       (sorted: [OrderOrTruckItem[], OrderOrTruckItem[]], x: OrderOrTruckItem) => {
         if (x.data) {
-          sorted[x.data?.createdAt?.getDate() > TRUCK_CURRENT ? 0 : 1].push(x);
+          sorted[Number(x.data.createdAt) > TRUCK_CURRENT ? 0 : 1].push(x);
         }
         return sorted;
       },
@@ -280,7 +280,7 @@ export class PageDeliveries {
         (sorted: [OrderOrTruckItem[], OrderOrTruckItem[]], x: OrderOrTruckItem) => {
           if (x.data) {
             const TIME_LIMIT = x.type === "pizza" ? ORDER_CURRENT : TRUCK_CURRENT;
-            sorted[x.data?.createdAt?.getDate() > TIME_LIMIT ? 0 : 1].push(x);
+            sorted[Number(x.data.createdAt) > TIME_LIMIT ? 0 : 1].push(x);
           }
           return sorted;
         },
