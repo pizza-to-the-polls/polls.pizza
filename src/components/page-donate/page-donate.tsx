@@ -55,11 +55,11 @@ export class PageDonate {
           this.showError(respJson.message);
         }
       } else {
-        this.showError("Error initiating payment.");
+        this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
       }
     } catch (e) {
       console.error(e);
-      this.showError("Error initiating payment.");
+      this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
     }
   }
 
@@ -249,6 +249,12 @@ export class PageDonate {
                       <p>
                         Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
                       </p>
+                      <h2>
+                        <a target="_blank" href="https://paypal.me/pizzatothepolls">
+                          You can also donate via PayPal
+                        </a>
+                        .
+                      </h2>
                     </div>
                   )}
                   <p>
