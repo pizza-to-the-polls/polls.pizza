@@ -53,10 +53,18 @@ page-deliveries {
     margin: 0;
   }
 
-  .map-container {
+  #deliveries-map-container {
     background-color: $gray1;
     width: 100%;
-    height: 200px;
+    height: 300px;
+
+    @media ($tablet) {
+      height: 420px;
+    }
+
+    &.is-single-location {
+      height: 200px;
+    }
   }
 
   .now-feeding {

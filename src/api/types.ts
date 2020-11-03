@@ -37,6 +37,8 @@ export type OrderInfo = {
   pizzas: number;
   restaurant: string;
   createdAt: Date;
+  cancelledAt: Date;
+  reports: ReportInfo[];
 };
 
 /**
@@ -44,7 +46,6 @@ export type OrderInfo = {
  */
 export type OrderDetails = OrderInfo & {
   location: LocationInfo;
-  reports: ReportInfo[];
 };
 
 export type TruckInfo = {
@@ -52,6 +53,10 @@ export type TruckInfo = {
   createdAt: Date;
   region: string;
   location: LocationInfo;
+};
+
+export type TruckDetails = TruckInfo & {
+  reports: ReportInfo[];
 };
 
 export type LocationInfo = {
@@ -82,7 +87,7 @@ export type LocationStatus =
       notFound: undefined;
       hasTruck: boolean;
       reports: any[];
-      orders: OrderInfo[];
+      orders: OrderDetails[];
     })
   // allow us to store the results of a 404
   | { notFound: true };

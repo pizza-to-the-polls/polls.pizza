@@ -1,4 +1,5 @@
 import replace from "@rollup/plugin-replace";
+import sourcemaps from "rollup-plugin-sourcemaps";
 import { Config } from "@stencil/core";
 import { sass } from "@stencil/sass";
 
@@ -11,6 +12,7 @@ export const config: Config = {
   globalScript: "src/app.ts",
   taskQueue: "async",
   plugins: [
+    sourcemaps(),
     replace({
       exclude: "node_modules/**",
       values: {
@@ -32,6 +34,7 @@ export const config: Config = {
       dir: "dist/www",
       prerenderConfig: "./prerender.config.ts",
       copy: [{ src: "../public", dest: "." }],
+      sourcemap: true,
     },
   ],
   extras: {
