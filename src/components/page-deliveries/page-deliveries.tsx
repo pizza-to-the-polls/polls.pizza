@@ -80,7 +80,7 @@ const TruckInfoDisplay: FunctionalComponent<{
       <ui-dynamic-text value={truck} format={x => x.location.fullAddress} />
     </span>
     <div>
-      <ui-dynamic-text value={truck} format={x => `Food truck on location since ${formatDate(x.createdAt)} ${formatTime(x.createdAt)}`} />
+      <ui-dynamic-text value={truck} format={x => `Food truck on location ${formatDate(x.createdAt)} @ ${formatTime(x.createdAt)}`} />
     </div>
   </li>
 );
@@ -104,7 +104,7 @@ const OrderAndTruckInfoList: FunctionalComponent<{
     ),
   );
 
-const DEFAULT_ZOOM = 4;
+const DEFAULT_ZOOM = 3;
 const SELECTED_LOCATION_ZOOM = 15;
 
 @Component({
@@ -324,8 +324,8 @@ export class PageDeliveries {
 
         <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
           <hr class="heavy" />
-          <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
-          <div id="deliveries-map-container" class={{ "is-single-location": selectedAddress != null }}>
+          <div class="current-location">Currently feeding{nowFeeding || " American voters"}</div>
+          <div class={{ "map-container": true, "is-single-location": selectedAddress != null }}>
             <ui-geo-map
               center={mapCenterPoint}
               zoom={mapZoom}

@@ -1,5 +1,5 @@
 :host {
-  .back-to-top {
+  span {
     position: fixed;
     width: 40px;
     height: 40px;
@@ -11,15 +11,15 @@
     border-radius: 50%;
     border: 2px solid $teal;
     box-shadow: $box-shadow;
-    transition: border-color 0.2s ease-in-out, transform 0.3s cubic-bezier(0.65, 0.5, 0.65, 1.75);
+    transition: border-color 0.2s ease-in-out, transform 0.4s cubic-bezier(0.65, 0.5, 0.65, 1.8);
     cursor: pointer;
     pointer-events: none;
     transform: scale(0);
 
     &:after {
       @include arrow;
-      top: 1.3333rem;
-      right: 0.75rem;
+      top: 1.4em;
+      right: 0.8em;
       border-color: $teal;
       transition: border-color 0.2s ease-in-out;
       transform: rotate(135deg);
