@@ -246,17 +246,17 @@ export class PageDonate {
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">
                       <p>{this.error}</p>
-                      <a class="button is-blue is-fullwidth-mobile" target="_blank" href={`https://paypal.me/pizzatothepolls/${this.amount}`}>
+                      <a class="button is-blue is-fullwidth-mobile" target="_blank" href={`https://paypal.me/pizzatothepolls/${this.amount || "0.0"}`}>
                         Donate via PayPal
                       </a>
-                      <p>
-                        Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
-                      </p>
                     </div>
                   )}
                   <p>
                     Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
                     Our activities are 501(c)(3) compliant.
+                  </p>
+                  <p>
+                    Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
                   </p>
                 </form>
               </div>
