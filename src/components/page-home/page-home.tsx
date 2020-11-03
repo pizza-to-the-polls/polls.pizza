@@ -2,10 +2,10 @@ import { Build, Component, h, State } from "@stencil/core";
 
 import { PizzaApi, PizzaTotals } from "../../api";
 
-@Component( {
+@Component({
   tag: "page-home",
   styleUrl: "page-home.scss",
-} )
+})
 export class PageHome {
   @State() private totals?: PizzaTotals;
   @State() public available: string = "";
@@ -15,17 +15,17 @@ export class PageHome {
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    if( Build.isBrowser ) {
+    if (Build.isBrowser) {
       this.refreshTotals();
     }
   }
 
   public connectedCallback() {
-    this.refreshTotalIntervalId = setInterval( () => this.refreshTotals(), 10000 );
+    this.refreshTotalIntervalId = setInterval(() => this.refreshTotals(), 10000);
   }
 
   public disconnectedCallback() {
-    clearInterval( this.refreshTotalIntervalId );
+    clearInterval(this.refreshTotalIntervalId);
   }
 
   public render() {
@@ -84,13 +84,13 @@ export class PageHome {
               <div class="stats-row">
                 <div class="stat">
                   <span class="stat-number">
-                    <ui-dynamic-text value={this.totals?.raised} format={x => `\$${x.toLocaleString( undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 } )}`} />
+                    <ui-dynamic-text value={this.totals?.raised} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
                   </span>
                   <span class="stat-label">Raised in 2020</span>
                 </div>
                 <div class="stat">
                   <span class="stat-number">
-                    <ui-dynamic-text value={this.totals?.costs} format={x => `\$${x.toLocaleString( undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 } )}`} />
+                    <ui-dynamic-text value={this.totals?.costs} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
                   </span>
                   <span class="stat-label">Total Spent</span>
                 </div>
@@ -125,7 +125,7 @@ export class PageHome {
   }
 
   private refreshTotals(): void {
-    PizzaApi.getTotals().then( totals => {
+    PizzaApi.getTotals().then(totals => {
       this.totals = totals;
       const { raised, costs } = totals;
 
@@ -133,11 +133,11 @@ export class PageHome {
       this.available =
         raised && costs
           ? "$" +
-          ( raised - costs ).toLocaleString( undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          } )
+            (raised - costs).toLocaleString(undefined, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })
           : "";
-    } );
+    });
   }
 }
