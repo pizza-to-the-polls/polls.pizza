@@ -239,27 +239,24 @@ export class PageDonate {
                   <button
                     onClick={handleCheckout}
                     class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
-                    disabled={!this.amount || isNaN(this.amount)}
+                    disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
                   >
                     Donate
                   </button>
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">
                       <p>{this.error}</p>
-                      <p>
-                        Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
-                      </p>
-                      <h2>
-                        <a target="_blank" href="https://paypal.me/pizzatothepolls">
-                          You can also donate via PayPal
-                        </a>
-                        .
-                      </h2>
+                      <a class="button is-blue is-fullwidth-mobile" target="_blank" href={`https://paypal.me/pizzatothepolls/${this.amount || "0.0"}`}>
+                        Donate via PayPal
+                      </a>
                     </div>
                   )}
                   <p>
                     Pizza to the Polls is incorporated as a 501(c)(4) nonprofit social welfare organization. Contributions or gifts to Pizza to the Polls are not tax deductible.
                     Our activities are 501(c)(3) compliant.
+                  </p>
+                  <p>
+                    Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
                   </p>
                 </form>
               </div>
@@ -322,7 +319,7 @@ export class PageDonate {
                   </ul>
                 </div>
                 <p>
-                  <a href="#" class="has-text-teal" onClick={resetDonationForm}>
+                  <a href="#" class="button has-text-teal" onClick={resetDonationForm}>
                     Make another donation
                   </a>
                 </p>
