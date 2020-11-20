@@ -9,6 +9,68 @@ export class PagePress {
   }
 
   public render() {
+    const press2020 = [
+      {
+        url: "https://www.nytimes.com/2020/11/03/opinion/volunteers-election-2020.html",
+        title: "New York Times Opinion",
+      },
+      {
+        url: "https://www.facebook.com/watch/?extid=0&v=760120704846575",
+        title: "NowThis",
+      },
+      {
+        url: "https://www.today.com/video/59-million-voters-have-already-cast-ballots-a-us-record-94645317535",
+        title: "Today Show",
+      },
+      {
+        url: "https://www.kcrw.com/culture/shows/good-food/smells-flavors-tortilla-tournament-winner-pizza-polls/scott-duncombe-pizza-polls",
+        title: "KCRW",
+      },
+      {
+        url: "https://www.cnn.com/2020/09/21/politics/pizza-polling-early-voting-election/index.html",
+        title: "CNN",
+      },
+      {
+        url: "https://www.today.com/food/pizza-polls-hopes-free-pizza-will-keep-voters-line-t196771",
+        title: "Today.com",
+      },
+      {
+        url: "https://www.inc.com/gabrielle-bienasz/pipcorn-nuchas-sticky-fingers-pizza-to-the-polls.html",
+        title: "Inc",
+      },
+      {
+        url: "https://time.com/5904611/early-voting-long-lines-entertainment/",
+        title: "Time",
+      },
+      {
+        url: "https://www.eater.com/21539118/do-food-at-the-polls-initiatives-work-voter-turnout-election-voting",
+        title: "Eater",
+      },
+      {
+        url: "https://www.grubstreet.com/2020/10/pizza-to-the-polls-early-voting-lines-nyc.html",
+        title: "Grub Street",
+      },
+      {
+        url: "https://www.thrillist.com/eat/nation/pizza-to-the-polls-nonprofit-scott-duncombe-interview",
+        title: "Thrillist",
+      },
+      {
+        url: "https://www.shondaland.com/act/news-politics/a34535143/delivering-pizza-to-voters-at-the-polls/",
+        title: "Shondaland",
+      },
+      {
+        url: "https://www.oprahmag.com/life/a34483172/pizza-to-the-polls-long-lines/",
+        title: "Oprah Magazine",
+      },
+      {
+        url: "https://www.buzzfeednews.com/article/skbaer/long-lines-election-day-2020",
+        title: "BuzzFeed",
+      },
+      {
+        url: "https://www.eater.com/21539118/do-food-at-the-polls-initiatives-work-voter-turnout-election-voting",
+        title: "Eater",
+      },
+    ];
     return (
       <Host>
         <section id="trucks" class="page">
@@ -25,6 +87,17 @@ export class PagePress {
                 Learn more about our story.
               </a>
             </p>
+            <h2>2020 Press</h2>
+            <ul>
+              {press2020.map(p => (
+                <li>
+                  <a href={p.url} target="_blank">
+                    {p.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a href="https://drive.google.com/drive/u/2/folders/1O3XUukhW6Er33HzM-3CRMO_ekgTc_7R2">Post Election Assets</a>
             <hr />
             <h2>2018 press</h2>
             <ul>
