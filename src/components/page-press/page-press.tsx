@@ -2,6 +2,7 @@ import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "page-press",
+  styleUrl: "page-press.scss",
 })
 export class PagePress {
   public componentWillLoad() {
@@ -88,6 +89,12 @@ export class PagePress {
               </a>
             </p>
             <h2>2020 Press</h2>
+            <div class="photos">
+              <img src="/images/pics/2020_photo_1.jpg" alt="Person holding pizza" />
+              <img src="/images/pics/2020_photo_2.jpg" alt="Person receiving pizza" />
+              <img src="/images/pics/2020_photo_3.jpg" alt="Person delivering pizza" />
+              <p> Photo Credit: Nina Roberts for Grub Street</p>
+            </div>
             <ul>
               {press2020.map(p => (
                 <li>
@@ -97,7 +104,6 @@ export class PagePress {
                 </li>
               ))}
             </ul>
-            <a href="https://drive.google.com/drive/u/2/folders/1O3XUukhW6Er33HzM-3CRMO_ekgTc_7R2">Post Election Assets</a>
             <hr />
             <h2>2018 press</h2>
             <ul>
