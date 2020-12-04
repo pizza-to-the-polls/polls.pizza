@@ -90,9 +90,9 @@ export class PagePress {
             </p>
             <h2>2020 Press</h2>
             <div class="photos">
-              <img src="/images/pics/2020_photo_1.jpg" alt="Person holding pizza" />
-              <img src="/images/pics/2020_photo_2.jpg" alt="Person receiving pizza" />
-              <img src="/images/pics/2020_photo_3.jpg" alt="Person delivering pizza" />
+              <img src="/images/pics/2020_photo_1.JPG" alt="Person holding pizza" />
+              <img src="/images/pics/2020_photo_2.JPG" alt="Person receiving pizza" />
+              <img src="/images/pics/2020_photo_3.JPG" alt="Person delivering pizza" />
               <p> Photo Credit: Nina Roberts for Grub Street</p>
             </div>
             <ul>
