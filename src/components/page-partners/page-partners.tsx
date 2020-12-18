@@ -90,6 +90,11 @@ const rest = [
     url: "https://www.stickys.com/",
   },
   {
+    img: "symphony.png",
+    name: "Symphony Potato Chips",
+    url: "https://symphonychips.com/",
+  },
+  {
     img: "ap.png",
     name: "The Advancement Project",
     url: "https://advancementproject.org/",
