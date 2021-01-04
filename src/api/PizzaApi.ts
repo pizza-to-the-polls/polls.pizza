@@ -47,9 +47,37 @@ class PizzaApi {
   }
 
   public async getTotals(errorHandler?: (error: ApiError) => void): Promise<PizzaTotals> {
-    return (
-      this.handleResponse(await baseFetch<PizzaTotals>(`/totals/2020`), errorHandler) || { costs: 0, donors: 0, locations: 0, meals: 0, orders: 0, pizzas: 0, raised: 0, states: 0 }
-    );
+    const totals2020 = this.handleResponse(await baseFetch<PizzaTotals>(`/totals/2020`), errorHandler) || {
+      costs: 0,
+      donors: 0,
+      locations: 0,
+      meals: 0,
+      orders: 0,
+      pizzas: 0,
+      raised: 0,
+      states: 0,
+    };
+    const totals2021 = this.handleResponse(await baseFetch<PizzaTotals>(`/totals/2020`), errorHandler) || {
+      costs: 0,
+      donors: 0,
+      locations: 0,
+      meals: 0,
+      orders: 0,
+      pizzas: 0,
+      raised: 0,
+      states: 0,
+    };
+
+    return {
+      costs: totals2020.costs + totals2021.costs,
+      donors: totals2020.donors + totals2021.donors,
+      locations: totals2020.locations + totals2021.locations,
+      meals: totals2020.meals + totals2021.meals,
+      orders: totals2020.orders + totals2021.orders,
+      pizzas: totals2020.pizzas + totals2021.pizzas,
+      raised: totals2020.raised + totals2021.raised,
+      states: totals2020.states + totals2021.states,
+    };
   }
 
   public async getTrucks(showHistorical: boolean = false, locationId?: LocationId, errorHandler?: (error: ApiError) => void): Promise<TruckQueryResults> {
