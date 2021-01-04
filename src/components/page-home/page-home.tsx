@@ -36,7 +36,7 @@ export class PageHome {
       <div>
         <section class="hero-section">
           <div class="container">
-            <h2 class="is-display has-text-centered">2020 Election Totals</h2>
+            <h2 class="is-display has-text-centered">2020/21 Election Totals</h2>
             <div class="stats-row">
               <div class="stat">
                 <span class="stat-number">
@@ -89,7 +89,7 @@ export class PageHome {
                   <span class="stat-number">
                     <ui-dynamic-text value={this.totals?.raised} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
                   </span>
-                  <span class="stat-label">Raised in 2020</span>
+                  <span class="stat-label">Raised in 2020/21</span>
                 </div>
                 <div class="stat">
                   <span class="stat-number">
