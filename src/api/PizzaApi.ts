@@ -57,7 +57,7 @@ class PizzaApi {
       raised: 0,
       states: 0,
     };
-    const totals2021 = this.handleResponse(await baseFetch<PizzaTotals>(`/totals/2020`), errorHandler) || {
+    const totals2021 = this.handleResponse(await baseFetch<PizzaTotals>(`/totals/2021`), errorHandler) || {
       costs: 0,
       donors: 0,
       locations: 0,
