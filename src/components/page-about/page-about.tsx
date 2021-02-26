@@ -161,7 +161,11 @@ export class PageAbout {
                   <stencil-route-link url="/on-demand" anchorClass="has-text-teal">
                     on-demand
                   </stencil-route-link>{" "}
-                  pizza deliveries, we will be supporting local pizzerias with our pizza delivery partners at Slice. We plan to share{" "}
+                  pizza deliveries, we will be supporting local pizzerias with our pizza delivery partners at{" "}
+                  <a href="https://slicelife.com/" target="_blank">
+                    Slice
+                  </a>
+                  . We plan to share{" "}
                   <a
                     href="https://www.cdc.gov/coronavirus/2019-ncov/community/organizations/business-employers/bars-restaurants.html"
                     class="has-text-teal"
@@ -198,7 +202,13 @@ export class PageAbout {
               <p>No. Ain’t nothing partisan about trying to make voting less of a drag.</p>
             </ui-card>
             <ui-card is-collapsible={true} header-text="Where do you get your pizzas?">
-              <p>We often use Slice to find a pizza place close to each polling location. We love to support local businesses in each city! We’ll also order from larger chains.</p>
+              <p>
+                We often use{" "}
+                <a href="https://slicelife.com/" target="_blank">
+                  Slice
+                </a>{" "}
+                to find a pizza place close to each polling location. We love to support local businesses in each city! We’ll also order from larger chains.
+              </p>
             </ui-card>
             <ui-card is-collapsible={true} header-text="I have more questions?">
               <p>
