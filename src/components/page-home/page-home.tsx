@@ -22,10 +22,10 @@ export class PageHome {
         this.available =
           raised && costs
             ? "$" +
-            (raised - costs).toLocaleString(undefined, {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            })
+              (raised - costs).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })
             : "";
       });
     }
@@ -134,10 +134,16 @@ const VaxAndSnacks = () => (
     <div class="container">
       <span class="badge">New!</span>
       <h2>Vax and Snacks</h2>
-      <p>Pizza to the Polls is back in action and we have a new mission: We’re sending pizzas and other snacks to vaccination sites with long lines. Want to get involved? Learn more about the program below or kick in some pizza money today!</p>
-      <a class="button" href="/vax-and-snacks">Learn More</a>
-      <a class="button is-red" href="/donate">Donate</a>
+      <p>
+        Pizza to the Polls is back in action and we have a new mission: We’re sending pizzas and other snacks to vaccination sites with long lines. Want to get involved? Learn more
+        about the program below or kick in some pizza money today!
+      </p>
+      <a class="button" href="/vax-and-snacks">
+        Learn More
+      </a>
+      <a class="button is-red" href="/donate">
+        Donate
+      </a>
     </div>
   </div>
-
-)
+);
