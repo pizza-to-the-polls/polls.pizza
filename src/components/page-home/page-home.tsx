@@ -22,10 +22,10 @@ export class PageHome {
         this.available =
           raised && costs
             ? "$" +
-              (raised - costs).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })
+            (raised - costs).toLocaleString(undefined, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })
             : "";
       });
     }
@@ -34,9 +34,10 @@ export class PageHome {
   public render() {
     return (
       <div>
+        <VaxAndSnacks />
         <section class="hero-section">
           <div class="container">
-            <h2 class="is-display has-text-centered">2020/21 Election Totals</h2>
+            <h2 class="is-display has-text-centered">2020 Election Totals</h2>
             <div class="stats-row">
               <div class="stat">
                 <span class="stat-number">
@@ -116,7 +117,7 @@ export class PageHome {
               </div>
               <div class="card">
                 <h3>On-demand</h3>
-                <img src="/images/pics/photo_5.jpg" alt="Pizza at a polling location" />
+                <img src="/images/on-demand.jpg" alt="Pizza at a polling location" />
                 <p>Our signature program is back and we need you to help by reporting crowded polling places and then sticking around to make sure food gets delivered safely.</p>
                 <a href="/on-demand">Learn more</a>
               </div>
@@ -127,3 +128,16 @@ export class PageHome {
     );
   }
 }
+
+const VaxAndSnacks = () => (
+  <div class="vax">
+    <div class="container">
+      <span class="badge">New!</span>
+      <h2>Vax and Snacks</h2>
+      <p>Pizza to the Polls is back in action and we have a new mission: We’re sending pizzas and other snacks to vaccination sites with long lines. Want to get involved? Learn more about the program below or kick in some pizza money today!</p>
+      <a class="button" href="/vax-and-snacks">Learn More</a>
+      <a class="button is-red" href="/donate">Donate</a>
+    </div>
+  </div>
+
+)
