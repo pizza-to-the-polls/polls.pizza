@@ -48,6 +48,7 @@ export class AppRoot {
               <stencil-route url="/privacy" component="page-privacy" />
               <stencil-route url="/report" routeRender={() => <stencil-router-redirect url="/" />} />
               <stencil-route url="/trucks" component="page-trucks" />
+              <stencil-route url="/vax-and-snacks" component="page-vax-and-snacks" />
               <stencil-route component="page-home" />
             </stencil-route-switch>
           </stencil-router>
