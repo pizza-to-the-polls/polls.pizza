@@ -43,6 +43,8 @@ export namespace Components {
     }
     interface PageTrucks {
     }
+    interface PageVaxAndSnacks {
+    }
     interface UiAddressInput {
         "buttonLabel": string;
         "label": string;
@@ -190,6 +192,12 @@ declare global {
         prototype: HTMLPageTrucksElement;
         new (): HTMLPageTrucksElement;
     };
+    interface HTMLPageVaxAndSnacksElement extends Components.PageVaxAndSnacks, HTMLStencilElement {
+    }
+    var HTMLPageVaxAndSnacksElement: {
+        prototype: HTMLPageVaxAndSnacksElement;
+        new (): HTMLPageVaxAndSnacksElement;
+    };
     interface HTMLUiAddressInputElement extends Components.UiAddressInput, HTMLStencilElement {
     }
     var HTMLUiAddressInputElement: {
@@ -261,6 +269,7 @@ declare global {
         "page-press": HTMLPagePressElement;
         "page-privacy": HTMLPagePrivacyElement;
         "page-trucks": HTMLPageTrucksElement;
+        "page-vax-and-snacks": HTMLPageVaxAndSnacksElement;
         "ui-address-input": HTMLUiAddressInputElement;
         "ui-card": HTMLUiCardElement;
         "ui-dynamic-text": HTMLUiDynamicTextElement;
@@ -307,6 +316,8 @@ declare namespace LocalJSX {
     interface PagePrivacy {
     }
     interface PageTrucks {
+    }
+    interface PageVaxAndSnacks {
     }
     interface UiAddressInput {
         "buttonLabel"?: string;
@@ -379,6 +390,7 @@ declare namespace LocalJSX {
         "page-press": PagePress;
         "page-privacy": PagePrivacy;
         "page-trucks": PageTrucks;
+        "page-vax-and-snacks": PageVaxAndSnacks;
         "ui-address-input": UiAddressInput;
         "ui-card": UiCard;
         "ui-dynamic-text": UiDynamicText;
@@ -410,6 +422,7 @@ declare module "@stencil/core" {
             "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
+            "page-vax-and-snacks": LocalJSX.PageVaxAndSnacks & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
             "ui-address-input": LocalJSX.UiAddressInput & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;
             "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
             "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;

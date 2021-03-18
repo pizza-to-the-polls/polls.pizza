@@ -48,6 +48,7 @@ export class AppRoot {
               <stencil-route url="/privacy" component="page-privacy" />
               <stencil-route url="/report" routeRender={() => <stencil-router-redirect url="/" />} />
               <stencil-route url="/trucks" component="page-trucks" />
+              <stencil-route url="/vax-and-snacks" component="page-vax-and-snacks" />
               <stencil-route component="page-home" />
             </stencil-route-switch>
           </stencil-router>
@@ -95,10 +96,10 @@ export class AppRoot {
               </ul>
               <ul>
                 <li>
-                  <stencil-route-link url="/trucks">Food trucks</stencil-route-link>
+                  <stencil-route-link url="/trucks">Food Trucks</stencil-route-link>
                 </li>
                 <li>
-                  <stencil-route-link url="/on-demand">On-demand</stencil-route-link>
+                  <stencil-route-link url="/on-demand">On Demand</stencil-route-link>
                 </li>
                 <li>
                   <stencil-route-link url="/covid">COVID safety</stencil-route-link>

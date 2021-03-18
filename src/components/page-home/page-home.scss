@@ -118,9 +118,34 @@ page-home {
     background-image: url("/images/bg2.png");
     background-attachment: fixed;
     background-size: 400px;
+  }
+}
 
-    h2 {
-      margin-bottom: 0;
-    }
+.vax {
+  background: $blue;
+  color: $white;
+  padding: 40px 0 60px 0;
+  text-align: center;
+
+  .badge {
+    border: 2px solid $yellow;
+    font-size: 12px;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    margin-top: 10px;
+  }
+
+  p {
+    font-size: 20px;
+  }
+
+  .button {
+    min-width: 200px;
+    margin: 5px;
   }
 }
