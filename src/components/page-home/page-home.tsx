@@ -135,7 +135,7 @@ const VaxAndSnacks = () => (
   <div class="vax">
     <div class="container">
       <span class="badge">New!</span>
-      <h2>Vax and Snacks</h2>
+      <img src="/images/vax-and-snacks.png" class="vax-logo" alt="Vax and Snacks" />
       <p>
         Pizza to the Polls is back in action with a new twist: we’re sending pizzas and other snacks to vaccination sites with long lines. Want to get involved? Learn more about
         the program below or kick in some pizza money today!

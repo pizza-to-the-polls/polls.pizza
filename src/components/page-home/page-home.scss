@@ -126,6 +126,9 @@ page-home {
   color: $white;
   padding: 40px 0 60px 0;
   text-align: center;
+  background-image: url("/images/bg2.png");
+  background-attachment: fixed;
+  background-size: 400px;
 
   .badge {
     border: 2px solid $yellow;
@@ -134,6 +137,10 @@ page-home {
     border-radius: 20px;
     font-weight: bold;
     text-transform: uppercase;
+  }
+
+  .vax-logo {
+    max-height: 200px;
   }
 
   h2 {

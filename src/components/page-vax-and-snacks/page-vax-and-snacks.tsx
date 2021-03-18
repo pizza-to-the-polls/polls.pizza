@@ -13,6 +13,7 @@ export class PageVaxAndSnacks {
       <Host>
         <section id="trucks" class="page">
           <div class="container intro">
+            <img class="vax-logo" src="/images/vax-and-snacks.png" alt="Vax and Snacks" />
             <h1>Pizza to the Polls Vax and Snacks program</h1>
             <p>
               When long lines during the 2020 Election were set to deter Americans from exercising their right to vote, Pizza to the Polls stepped up to the plate to help people
