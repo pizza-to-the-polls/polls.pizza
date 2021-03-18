@@ -83,14 +83,16 @@ export class PageHome {
             <ui-card class="donate-content">
               <h2 class="is-display">Donation Totals</h2>
               <p>
-                <strong>Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to crowded polling locations.</strong>
+                <strong>
+                  Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to people participating in civic life.
+                </strong>
               </p>
               <div class="stats-row">
                 <div class="stat">
                   <span class="stat-number">
                     <ui-dynamic-text value={this.totals?.raised} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
                   </span>
-                  <span class="stat-label">Raised in 2020/21</span>
+                  <span class="stat-label">Raised in 2020</span>
                 </div>
                 <div class="stat">
                   <span class="stat-number">
@@ -110,13 +112,13 @@ export class PageHome {
             <h2 class="has-text-white">How we do it</h2>
             <div class="cards">
               <div class="card">
-                <h3>Food trucks</h3>
+                <h3>Food Trucks</h3>
                 <img src="/images/truck.jpg" alt="Food truck" />
                 <p>For the 2020 election season, we’re launching a food truck program in 25 cities around the country for early voting and election day. </p>
                 <a href="/trucks">Learn more</a>
               </div>
               <div class="card">
-                <h3>On-demand</h3>
+                <h3>On Demand</h3>
                 <img src="/images/on-demand.jpg" alt="Pizza at a polling location" />
                 <p>Our signature program is back and we need you to help by reporting crowded polling places and then sticking around to make sure food gets delivered safely.</p>
                 <a href="/on-demand">Learn more</a>

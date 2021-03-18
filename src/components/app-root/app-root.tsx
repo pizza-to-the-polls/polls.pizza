@@ -96,10 +96,10 @@ export class AppRoot {
               </ul>
               <ul>
                 <li>
-                  <stencil-route-link url="/trucks">Food trucks</stencil-route-link>
+                  <stencil-route-link url="/trucks">Food Trucks</stencil-route-link>
                 </li>
                 <li>
-                  <stencil-route-link url="/on-demand">On-demand</stencil-route-link>
+                  <stencil-route-link url="/on-demand">On Demand</stencil-route-link>
                 </li>
                 <li>
                   <stencil-route-link url="/covid">COVID safety</stencil-route-link>

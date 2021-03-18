@@ -6,14 +6,14 @@ import { Component, h } from "@stencil/core";
 })
 export class PageOnDemand {
   public componentWillLoad() {
-    document.title = `On-demand | Pizza to the Polls`;
+    document.title = `On Demand | Pizza to the Polls`;
   }
 
   public render() {
     return (
       <ui-main-content background="teal" class="page">
         <ui-card>
-          <h1>On-demand</h1>
+          <h1>On Demand</h1>
           <img src="/images/pics/photo_5.jpg" alt="Pizzas at a polling place" class="image" />
           <h2>How to help</h2>
           <h3>1. Report a crowd</h3>
