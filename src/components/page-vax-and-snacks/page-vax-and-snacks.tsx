@@ -29,7 +29,7 @@ export class PageVaxAndSnacks {
             </p>
             <h3>Report long lines</h3>
             <p>
-              Are you a healthcare worker at a vaccination site or do you know someone administering vaccines? Let us know how we can help! Email:{" "}
+              Are you a healthcare worker at a vaccination site or do you know someone administering vaccines? Let us know how we can help! Email{" "}
               <a href="mailto:amirah@polls.pizza">amirah@polls.pizza</a> & <a href="mailto:lee@polls.pizza">lee@polls.pizza</a> to coordinate food delivery!
             </p>
             <h3>Help spread the word on social media</h3>
@@ -40,7 +40,7 @@ export class PageVaxAndSnacks {
             </p>
             <h2>Contact Info</h2>
             <p>
-              For more information on how to partner, contact <a href="mailto:amirah@polls.pizza">amirah@polls.pizza</a>.
+              For more information on how to partner, contact <a href="mailto:amirah@polls.pizza">amirah@polls.pizza</a>
             </p>
             <p>
               For press requests, please contact <a href="mailto:press@polls.pizza">press@polls.pizza</a>
