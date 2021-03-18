@@ -182,7 +182,7 @@ export class PageDonate {
               <div>
                 <div class="donation-intro">
                   <p>Waiting in line sucks. Waiting in line with pizza sucks a little less.</p>
-                  <p>Keep our polling places joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
+                  <p>Keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
                 </div>
 
                 <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
