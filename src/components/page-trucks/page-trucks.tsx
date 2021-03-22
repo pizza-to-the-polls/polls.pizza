@@ -32,24 +32,20 @@ export class PageTrucks {
           <div class="about">
             <div class="container">
               <p>
-                Since the COVID-19 pandemic began in March, we’ve seen in-person voting locations struggle. Poll worker shortages are reducing the number of polling places — and
-                social distancing measures are limiting the number of people who can vote at one time. As a result, lines are getting longer. By launching food trucks in cities
-                with a history of long lines, we plan to safely provide free, individually wrapped snacks and beverages to everyone.
+                Since the COVID-19 pandemic began in March 2020, we saw in-person voting locations struggle. Poll worker shortages reduced the number of polling places — and social
+                distancing measures limited the number of people who could vote at one time. As a result, lines got longer.
               </p>
               <p>
-                Our food trucks will be staffed with trained professionals who will be wearing masks and gloves and will be equipped with hand sanitizer, soap, disinfectant, and
-                additional cleaning supplies.
+                We launched our Food Truck program to safely provide free, individually wrapped snacks and beverages to everyone. Our food trucks were staffed with trained
+                professionals wearing masks and gloves and equipped with hand sanitizer, soap, disinfectant, and additional cleaning supplies. We had many partners that ensured the
+                success of this program, including Impactual, Tinsel Experiential Design, Roaming Hunger, Uber Eats, and various food / drink vendors. In the end, we delivered 1m+
+                snacks to 29 Cities over 290+ truck rolling days. We plan to continue our Food Truck program in future election cycles.”
               </p>
             </div>
           </div>
           <div class="hashtag">#democracyisdelicious</div>
-          <div class="instructions">
-            <div class="container">
-              If you spot a long line in one of the cities below, report it <a href="/">here</a> and we'll send along a truck!
-            </div>
-          </div>
           <div class="container schedule">
-            <h2>Locations and schedule</h2>
+            <h2>2020 Locations and Schedule</h2>
             <ul>
               <li>
                 <strong>Phoenix, AZ</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3

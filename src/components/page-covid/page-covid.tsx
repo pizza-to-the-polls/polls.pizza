@@ -69,6 +69,12 @@ export class PageCovid {
                 </a>{" "}
                 with delivery drivers and restaurants, but it’s up to each person to consider their own personal risks.
               </p>
+              <p>
+                For our <a href="/vax-and-snacks">Vax and Snacks program</a>, we are partnering with CORE staff on the ground, who are experts in the field, to safely follow all
+                recommended CDC guidelines at vaccination sites. All deliveries are pre-arranged with on site staff and we are not taking requests for snacks from the general
+                public. All volunteers and staff will be wearing masks and other protective equipment, while pizza and additional snacks handed out will be individually wrapped. We
+                will be encouraging anyone who receives food to practice social distancing while eating.
+              </p>
               <hr />
               <h3 class="instructions-subheader">Are you a restaurant or helping distribute food?</h3>
               <stencil-route-link url="/guidelines" anchorClass="button is-teal">

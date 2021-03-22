@@ -68,9 +68,13 @@ export class PageHome {
                   </h2>
                   <p>
                     <strong>
-                      Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines. Send us reports of long lines and we'll
-                      send in the delicious reinforcements.
+                      Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines. Send us reports of long election lines and
+                      we'll send in the delicious reinforcements.
                     </strong>
+                  </p>
+                  <p>
+                    We are not accepting on demand requests for our Vax and Snacks program. Please email <a href="mailto:partners@polls.pizza">partners@polls.pizza</a> if you are a
+                    healthcare worker interested in coordinating food delivery to your vaccination site.
                   </p>
                 </form-report>
               </ui-card>
@@ -114,7 +118,7 @@ export class PageHome {
               <div class="card">
                 <h3>Food Trucks</h3>
                 <img src="/images/truck.jpg" alt="Food truck" />
-                <p>For the 2020 election season, we’re launching a food truck program in 25 cities around the country for early voting and election day. </p>
+                <p>For the 2020 election season, we launched a food truck program in 29 cities around the country for early voting and election day. </p>
                 <a href="/trucks">Learn more</a>
               </div>
               <div class="card">

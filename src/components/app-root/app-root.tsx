@@ -102,6 +102,9 @@ export class AppRoot {
                   <stencil-route-link url="/on-demand">On Demand</stencil-route-link>
                 </li>
                 <li>
+                  <stencil-route-link url="/vax-and-snacks">Vax and Snacks</stencil-route-link>
+                </li>
+                <li>
                   <stencil-route-link url="/covid">COVID safety</stencil-route-link>
                 </li>
                 <li>

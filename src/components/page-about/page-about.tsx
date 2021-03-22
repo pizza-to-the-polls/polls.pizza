@@ -60,32 +60,25 @@ export class PageAbout {
               </p>
 
               <p>
-                By the morning of Election Day, we had raised $10,000 and were confronted with the seemingly impossible task of spending it all before the polls closed. We
-                recruited and trained a team of over twenty volunteers to order and coordinate the delivery of 2,368 pizzas to 128 polling places across 24 states.
+                By the morning of Election Day, we had raised $10k and were confronted with the seemingly impossible task of spending it all before the polls closed. We recruited
+                and trained a team of 20+ volunteers to order and coordinate the delivery of 2k+ pizzas to 100+ polling places across 24 states.
               </p>
 
-              <p>By the time the dust had settled and the ballots were cast, we had raised $43,307 from 1,728 donors, and over 25,000 slices of pizza were consumed!</p>
+              <p>By the time the dust had settled and the ballots were cast, we had raised $40k from 1.5k donors, and over 20k+ slices of pizza were consumed!</p>
 
               <ui-pizza-list has-icon={false}>
                 <li>
                   <h3>2018</h3>
                   <p>
-                    Two years later Pizza to the Polls was back and bigger than before. With the momentum we gained after the 2016 election, we were able to send 10,820 pizzas to
-                    611 polling places across 41 states and to raise $426,622 from 10,885 donors.
+                    With the momentum we gained after the 2016 election, we were able to send 10k+ pizzas to 600+ polling places across 41 states and to raise $400k+ from 10k+
+                    donors.
                   </p>
                 </li>
                 <li>
                   <h3>2020</h3>
                   <p>
-                    This year, we’re delivering pizzas across the country and sending food trucks with snacks to lines in 25 cities. Help us make this our biggest year yet by{" "}
-                    <stencil-route-link url="/donate" anchorClass="has-text-teal">
-                      donating
-                    </stencil-route-link>{" "}
-                    and{" "}
-                    <stencil-route-link url="/#report" anchorClass="has-text-teal">
-                      reporting long lines
-                    </stencil-route-link>
-                    !
+                    We delivered 70k+ pizzas to 3k+ polling sites across 48 states and raised $1.5m+ from 30k+ donors. We also launched a Food Truck program in response to the
+                    COVID-19 pandemic with 1m+ snacks distributed in 29 cities across 290+ truck rolling days.
                   </p>
                 </li>
               </ui-pizza-list>
