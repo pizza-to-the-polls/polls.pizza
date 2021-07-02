@@ -17,7 +17,7 @@ export class PageVaxAndSnacks {
             <h1>Pizza to the Polls Vax and Snacks program</h1>
             <p>
               When long lines during the 2020 Election were set to deter Americans from exercising their right to vote, Pizza to the Polls stepped up to the plate to help people
-              perform their civic duties. COVID vaccination lines wee no exception. While following all recommended{" "}
+              perform their civic duties. COVID vaccination lines were no exception. While following all recommended{" "}
               <a href="https://www.cdc.gov/coronavirus/2019-ncov/community/organizations/business-employers/bars-restaurants.html">CDC</a> and state health guidelines, Pizza to the
               Polls used its technology, expertise, and network of passionate supporters to get food to vaccination locations where it was needed the most.
             </p>

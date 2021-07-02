@@ -25,8 +25,8 @@ export class PageTrucks {
               <img src="/images/food.png" alt="Free food" />
             </div>
             <p>
-              For the 2020 election season, Pizza to the Polls is launching a food truck program in partnership with Uber Eats and restaurant partners like Milk Bar, Shake Shack,
-              and more. We’ll be sending out food trucks in 25 cities, delivering treats to polling locations with long lines throughout early voting and Election Day.
+              For the 2020 election season, Pizza to the Polls launched a food truck program in partnership with Uber Eats and vendors such as Milk Bar, Shake Shack, and Pipcorn.
+              We sent our food trucks to 29 cities, delivering treats to polling locations with long lines throughout early voting and Election Day.
             </p>
           </div>
           <div class="about">
@@ -37,9 +37,10 @@ export class PageTrucks {
               </p>
               <p>
                 We launched our Food Truck program to safely provide free, individually wrapped snacks and beverages to everyone. Our food trucks were staffed with trained
-                professionals wearing masks and gloves and equipped with hand sanitizer, soap, disinfectant, and additional cleaning supplies. We had many partners that ensured the
-                success of this program, including Impactual, Tinsel Experiential Design, Roaming Hunger, Uber Eats, and various food / drink vendors. In the end, we delivered 1m+
-                snacks to 29 Cities over 290+ truck rolling days. We plan to continue our Food Truck program in future election cycles.”
+                professionals wearing masks and gloves and equipped with hand sanitizer, soap, disinfectant, and additional cleaning supplies. We had many{" "}
+                <a href="/partners">partners</a> that ensured the success of this program, including Impactual, Tinsel Experiential Design, Roaming Hunger, Uber Eats, and dozens of
+                food & drink vendors. In the end, we delivered 1m+ snacks to 29 Cities over 290+ truck rolling days. We plan to continue our Food Truck program in future election
+                cycles.
               </p>
             </div>
           </div>
