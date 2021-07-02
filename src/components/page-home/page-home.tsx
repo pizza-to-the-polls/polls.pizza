@@ -42,7 +42,7 @@ export class PageHome {
         </div>
         <section class="hero-section">
           <div class="container">
-            <h2 class="is-display has-text-centered">2020 Election Totals</h2>
+            <h2 class="is-display has-text-centered">All-Time Totals</h2>
             <div class="stats-row">
               <div class="stat">
                 <span class="stat-number">

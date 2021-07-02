@@ -88,7 +88,7 @@ export class PageAbout {
               <img src="/images/truck.jpg" alt="Democracy is Delicious food truck" class="image" />
               <h3>Food trucks</h3>
               <p>
-                For the 2020 election season, we’re launching a food truck program in 25 cities around the country for early voting and election day.
+                For the 2020 election season, we launched a food truck program in 29 cities around the country for early voting and election day.
                 <br />
                 <stencil-route-link url="/trucks" anchorClass="has-text-teal">
                   Learn more
