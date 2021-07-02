@@ -140,6 +140,12 @@ page-home {
   p {
     font-size: 24px;
     font-weight: bold;
+
+    strong {
+      display: block;
+      text-transform: uppercase;
+      font-style: italic;
+    }
   }
 
   img {
@@ -156,7 +162,7 @@ page-home {
     }
 
     p {
-      width: 40%;
+      width: 50%;
       margin: 0;
     }
 

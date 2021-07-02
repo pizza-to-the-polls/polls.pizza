@@ -36,7 +36,9 @@ export class PageHome {
       <div>
         <div class="hero">
           <div class="container">
-            <p>Our mission: deliver pizza and other tasty treats wherever people are participating in their civic duties!</p>
+            <p>
+              <strong>Our mission</strong> <span>Deliver free food to people in lines, participating in civic life</span>
+            </p>
             <img src="/images/hero.jpeg" alt="People dancing" />
           </div>
         </div>
