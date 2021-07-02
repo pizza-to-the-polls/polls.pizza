@@ -22,10 +22,10 @@ export class PageHome {
         this.available =
           raised && costs
             ? "$" +
-            (raised - costs).toLocaleString(undefined, {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            })
+              (raised - costs).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })
             : "";
       });
     }
@@ -36,9 +36,7 @@ export class PageHome {
       <div>
         <div class="hero">
           <div class="container">
-            <p>
-              Our mission: deliver pizza and other tasty treats wherever people are participating in their civic duties!
-            </p>
+            <p>Our mission: deliver pizza and other tasty treats wherever people are participating in their civic duties!</p>
             <img src="/images/hero.jpeg" alt="People dancing" />
           </div>
         </div>
@@ -134,4 +132,3 @@ export class PageHome {
     );
   }
 }
-
