@@ -118,41 +118,51 @@ page-home {
     background-image: url("/images/bg2.png");
     background-attachment: fixed;
     background-size: 400px;
+
+    h2 {
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1200px;
+    }
   }
 }
 
-.vax {
+.hero {
   background: $blue;
   color: $white;
-  padding: 40px 0 60px 0;
-  text-align: center;
+  padding: 40px 0 40px 0;
   background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
-
-  .badge {
-    border: 2px solid $yellow;
-    font-size: 12px;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-
-  .vax-logo {
-    max-height: 200px;
-  }
-
-  h2 {
-    margin-top: 10px;
-  }
-
+  
   p {
-    font-size: 20px;
+    font-size: 24px;
+    font-weight: bold;
   }
 
-  .button {
-    min-width: 200px;
-    margin: 5px;
+  img {
+    border-radius: 10px;
+    margin-top: 20px;
+  }
+
+  @media ($tablet) {
+    .container {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+  
+    p {
+      width: 40%;
+      margin: 0;
+    }
+  
+    img {
+      width: 50%;
+      margin: 0;
+    }
   }
 }

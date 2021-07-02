@@ -22,10 +22,10 @@ export class PageHome {
         this.available =
           raised && costs
             ? "$" +
-              (raised - costs).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })
+            (raised - costs).toLocaleString(undefined, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })
             : "";
       });
     }
@@ -34,7 +34,14 @@ export class PageHome {
   public render() {
     return (
       <div>
-        <VaxAndSnacks />
+        <div class="hero">
+          <div class="container">
+            <p>
+              Our mission: deliver pizza and other tasty treats wherever people are participating in their civic duties!
+            </p>
+            <img src="/images/hero.jpeg" alt="People dancing" />
+          </div>
+        </div>
         <section class="hero-section">
           <div class="container">
             <h2 class="is-display has-text-centered">2020 Election Totals</h2>
@@ -88,23 +95,10 @@ export class PageHome {
               <h2 class="is-display">Donation Totals</h2>
               <p>
                 <strong>
-                  Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 with a simple mission: deliver food to people participating in civic life.
+                  Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 that relies on small dollar donations. Chip in some dough to our pizza fund today!
                 </strong>
               </p>
-              <div class="stats-row">
-                <div class="stat">
-                  <span class="stat-number">
-                    <ui-dynamic-text value={this.totals?.raised} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
-                  </span>
-                  <span class="stat-label">Raised in 2020</span>
-                </div>
-                <div class="stat">
-                  <span class="stat-number">
-                    <ui-dynamic-text value={this.totals?.costs} format={x => `\$${x.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`} />
-                  </span>
-                  <span class="stat-label">Total Spent</span>
-                </div>
-              </div>
+
               <stencil-route-link url="/donate" anchorClass="button is-red">
                 Donate to feed democracy
               </stencil-route-link>
@@ -127,6 +121,12 @@ export class PageHome {
                 <p>Our signature program is back and we need you to help by reporting crowded polling places and then sticking around to make sure food gets delivered safely.</p>
                 <a href="/on-demand">Learn more</a>
               </div>
+              <div class="card">
+                <h3>Vax and Snacks</h3>
+                <img src="/images/vax.jpg" alt="People holding slices of pizza" />
+                <p>Pizza to the Polls switched gears in 2021 to fulfill another need: sending pizzas and other snacks to COVID-19 vaccination sites with long lines!</p>
+                <a href="/vax-and-snacks">Learn more</a>
+              </div>
             </div>
           </div>
         </section>
@@ -135,21 +135,3 @@ export class PageHome {
   }
 }
 
-const VaxAndSnacks = () => (
-  <div class="vax">
-    <div class="container">
-      <span class="badge">New!</span>
-      <img src="/images/vax-and-snacks.png" class="vax-logo" alt="Vax and Snacks" />
-      <p>
-        Pizza to the Polls is back in action with a new twist: we’re sending pizzas and other snacks to vaccination sites with long lines. Want to get involved? Learn more about
-        the program below or kick in some pizza money today!
-      </p>
-      <a class="button" href="/vax-and-snacks">
-        Learn More
-      </a>
-      <a class="button is-red" href="/donate">
-        Donate
-      </a>
-    </div>
-  </div>
-);
