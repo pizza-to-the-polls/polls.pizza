@@ -1,10 +1,8 @@
 // From Stack Overflow https://stackoverflow.com/a/53490958
 
-const shaFile = async (message: string): Promise<string> => {
-  const msgBuffer = new TextEncoder().encode(message);
-
+const shaFile = async (file: File): Promise<string> => {
   // hash the message
-  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", new Uint8Array(await file.arrayBuffer()));
 
   // convert ArrayBuffer to Array
   const hashArray = Array.from(new Uint8Array(hashBuffer));

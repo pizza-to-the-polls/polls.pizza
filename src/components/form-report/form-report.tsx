@@ -243,7 +243,7 @@ export class FormReport {
     };
 
     const uploadPhoto = async (file: File, address: string): Promise<void> => {
-      const fileHash = await hashPhoto(file);
+      const fileHash = await shaFile(file);
 
       const {
         id,
@@ -278,7 +278,6 @@ export class FormReport {
 
       this.photoUrl = `https://polls.pizza/${filePath}`;
     };
-    const hashPhoto = async (file: File): Promise<string> => shaFile(await file.text());
 
     const removePhoto = () => {
       const fileInput = document.getElementById("photo") as HTMLInputElement;
