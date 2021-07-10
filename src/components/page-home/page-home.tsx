@@ -79,10 +79,6 @@ export class PageHome {
                       we'll send in the delicious reinforcements.
                     </strong>
                   </p>
-                  <p>
-                    We are not accepting on demand requests for our Vax and Snacks program. Please email <a href="mailto:partners@polls.pizza">partners@polls.pizza</a> if you are a
-                    healthcare worker interested in coordinating food delivery to your vaccination site.
-                  </p>
                 </form-report>
               </ui-card>
             </div>
