@@ -3,6 +3,7 @@ import { Build, Component, h, Host, State } from "@stencil/core";
 import {} from "googlemaps";
 
 import { baseFetch } from "../../api/PizzaApi";
+import shaFile from "../../util/shaFile";
 
 // Shared with pizzabase
 const URL_REGEX = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
@@ -242,32 +243,39 @@ export class FormReport {
     };
 
     const uploadPhoto = async (file: File, address: string): Promise<void> => {
+      const fileHash = await shaFile(file);
+
       const {
         id,
         filePath,
+        isDuplicate,
         presigned: { url, fields },
-      } = await baseFetch("/upload", { method: "POST", body: JSON.stringify({ fileName: file.name, address }) });
-      const formData = new FormData();
+      } = await baseFetch("/upload", { method: "POST", body: JSON.stringify({ fileHash, fileName: file.name, address }) });
 
-      formData.append("ACL", "public-read");
-      formData.append("x-amz-acl", "public-read");
-      formData.append("x-amz-meta-user-id", id);
-      formData.append("Content-Type", file.type);
+      if (!isDuplicate) {
+        const formData = new FormData();
 
-      Object.entries(fields).forEach(([k, v]: [string, any]) => {
-        formData.append(k, v);
-      });
+        formData.append("ACL", "public-read");
+        formData.append("x-amz-acl", "public-read");
+        formData.append("x-amz-meta-user-id", id);
+        formData.append("Content-Type", file.type);
 
-      formData.append("file", file);
+        Object.entries(fields).forEach(([k, v]: [string, any]) => {
+          formData.append(k, v);
+        });
 
-      const awsReq = await fetch(url, {
-        method: "POST",
-        mode: "cors",
-        body: formData,
-      });
-      if (awsReq.status > 299) {
-        throw { fileName: "Whoops! That did not work - try again!" };
+        formData.append("file", file);
+
+        const awsReq = await fetch(url, {
+          method: "POST",
+          mode: "cors",
+          body: formData,
+        });
+        if (awsReq.status > 299) {
+          throw { fileName: "Whoops! That did not work - try again!" };
+        }
       }
+
       this.photoUrl = `https://polls.pizza/${filePath}`;
     };
 
