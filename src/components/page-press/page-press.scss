@@ -9,3 +9,23 @@
     font-style: italic;
   }
 }
+
+.press-logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 60px 0;
+
+  li {
+    margin: 0;
+    width: 50%;
+    padding: 20px;
+
+    @media ($tablet) {
+      width: 25%;
+    }
+  }
+}
