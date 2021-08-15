@@ -22,10 +22,10 @@ export class PageHome {
         this.available =
           raised && costs
             ? "$" +
-              (raised - costs).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })
+            (raised - costs).toLocaleString(undefined, {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })
             : "";
       });
     }
@@ -36,13 +36,12 @@ export class PageHome {
       <div>
         <div class="hero">
           <div class="container">
-            <p>
+            <div class="tagline">
               <strong>Our mission</strong> <span>Deliver free food to people in lines, participating in civic life</span>
-            </p>
-            <img src="/images/hero.jpeg" alt="People dancing" />
+            </div>
           </div>
         </div>
-        <section class="hero-section">
+        <section class="totals">
           <div class="container">
             <h2 class="is-display has-text-centered">All-Time Totals</h2>
             <div class="stats-row">

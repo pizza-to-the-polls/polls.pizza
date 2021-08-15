@@ -8,13 +8,72 @@ page-home {
     }
   }
 
-  .hero-section {
+  .hero {
+    background: url("images/hero-styled.jpg");
+    color: $white;
+    background-size: cover;
+
+    .container {
+      padding-bottom: 40%;
+      position: relative;
+      min-height: 400px;
+
+    }
+
+    .tagline {
+      font-size: 24px;
+      font-weight: bold;
+      background-color: $cyan;
+      position: absolute;
+      bottom: 30%;
+      left: 0;
+      text-align: center;
+      width: 100%;
+      color: $white;
+      padding: 30px 10px;
+      
+      strong {
+        display: block;
+        text-transform: uppercase;
+        font-style: italic;
+        font-weight: 900;
+      }
+    }
+  
+    img {
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+  
+    @media ($tablet) {
+      .container {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+      }
+  
+      p {
+        width: 60%;
+        margin: 0;
+      }
+  
+      img {
+        width: 40%;
+        margin: 0;
+      }
+    }
+  }
+
+
+  .totals {
     background-image: url("/images/bg1.png");
     background-size: 400px;
     background-color: $yellow;
     background-attachment: fixed;
     color: $blue;
     padding: 10px 0 0 0;
+    border-top: 10px solid $cyan;
   }
 
   .stats-row {
@@ -129,52 +188,12 @@ page-home {
   }
 }
 
-.hero {
-  background: $blue;
-  color: $white;
-  padding: 40px 0 40px 0;
+.press {
+  background-color: $gray2;
   background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
 
-  p {
-    font-size: 24px;
-    font-weight: bold;
-
-    strong {
-      display: block;
-      text-transform: uppercase;
-      font-style: italic;
-      font-weight: 900;
-    }
-  }
-
-  img {
-    border-radius: 10px;
-    margin-top: 20px;
-  }
-
-  @media ($tablet) {
-    .container {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    p {
-      width: 60%;
-      margin: 0;
-    }
-
-    img {
-      width: 40%;
-      margin: 0;
-    }
-  }
-}
-
-.press {
   h2 {
     text-align: center;
   }
