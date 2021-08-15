@@ -126,6 +126,23 @@ export class PageHome {
             </div>
           </div>
         </section>
+        <section class="press">
+          <h2>Learn more about our work</h2>
+          <div class="container">
+            <a href="https://www.nytimes.com/2020/11/03/opinion/volunteers-election-2020.html" target="_blank">
+              <img src="/images/press/nyt.png" alt="New York Times" />
+            </a>
+            <a href="https://www.cnn.com/2020/09/21/politics/pizza-polling-early-voting-election/index.html" target="_blank">
+              <img src="/images/press/cnn.png" alt="CNN" />
+            </a>
+            <a href="https://www.buzzfeednews.com/article/skbaer/long-lines-election-day-2020" target="_blank">
+              <img src="/images/press/buzzfeed.png" alt="Buzzfeed" />
+            </a>
+            <a href="https://www.oprahdaily.com/life/a34483172/pizza-to-the-polls-long-lines/" target="_blank">
+              <img src="/images/press/oprah.png" alt="Oprah Daily" />
+            </a>
+          </div>
+        </section>
       </div>
     );
   }

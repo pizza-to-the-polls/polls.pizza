@@ -173,3 +173,28 @@ page-home {
     }
   }
 }
+
+.press {
+  h2 {
+    text-align: center;
+  }
+
+  .container {
+    padding: 20px;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  a {
+    width: 40%;
+    display: inline-block;
+  }
+
+  @media ($tablet) {
+    a {
+      width: 20%;
+    }
+  }
+}
