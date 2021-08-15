@@ -87,7 +87,7 @@ export class PageHome {
         <section class="donate">
           <div class="container">
             <ui-card class="donate-content">
-              <h2 class="is-display">Donation Totals</h2>
+              <h2 class="is-display">Donate</h2>
               <p>
                 <strong>
                   Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 that relies on small dollar donations. Chip in some dough to our pizza fund today!
