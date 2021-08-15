@@ -22,10 +22,10 @@ export class PageHome {
         this.available =
           raised && costs
             ? "$" +
-            (raised - costs).toLocaleString(undefined, {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            })
+              (raised - costs).toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })
             : "";
       });
     }

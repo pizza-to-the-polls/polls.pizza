@@ -17,7 +17,6 @@ page-home {
       padding-bottom: 40%;
       position: relative;
       min-height: 400px;
-
     }
 
     .tagline {
@@ -31,7 +30,7 @@ page-home {
       width: 100%;
       color: $white;
       padding: 30px 10px;
-      
+
       strong {
         display: block;
         text-transform: uppercase;
@@ -39,12 +38,12 @@ page-home {
         font-weight: 900;
       }
     }
-  
+
     img {
       border-radius: 10px;
       margin-top: 20px;
     }
-  
+
     @media ($tablet) {
       .container {
         display: flex;
@@ -52,19 +51,18 @@ page-home {
         align-items: center;
         justify-content: space-between;
       }
-  
+
       p {
         width: 60%;
         margin: 0;
       }
-  
+
       img {
         width: 40%;
         margin: 0;
       }
     }
   }
-
 
   .totals {
     background-image: url("/images/bg1.png");
