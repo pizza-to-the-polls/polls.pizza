@@ -74,30 +74,14 @@ export class PageHome {
                   </h2>
                   <p>
                     <strong>
-                      Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines. Send us reports of long election lines and
-                      we'll send in the delicious reinforcements.
+                      Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines. We're also sending 'za and tasty snacks to
+                      people who are waiting in long lines while participating in other forms of civic life. Send us reports of long lines wherever people are doing their civic
+                      duty and we'll send in the delicious reinforcements.
                     </strong>
                   </p>
                 </form-report>
               </ui-card>
             </div>
-            <div class="report-bg"></div>
-          </div>
-        </section>
-        <section class="donate">
-          <div class="container">
-            <ui-card class="donate-content">
-              <h2 class="is-display">Donate</h2>
-              <p>
-                <strong>
-                  Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 that relies on small dollar donations. Chip in some dough to our pizza fund today!
-                </strong>
-              </p>
-
-              <stencil-route-link url="/donate" anchorClass="button is-red">
-                Donate to feed democracy
-              </stencil-route-link>
-            </ui-card>
           </div>
         </section>
         <section class="how-we-do-it">
