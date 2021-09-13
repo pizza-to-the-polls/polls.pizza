@@ -37,7 +37,10 @@ export class PageHome {
         <div class="hero">
           <div class="container">
             <div class="tagline">
-              <strong>Our mission</strong> <span>Deliver free food to people in lines, participating in civic life</span>
+              <p>Our mission is to deliver free food to people who are waiting in long lines while participating in civic life.</p>
+              <a class="button is-red" href="/donate">
+                Donate to feed democracy
+              </a>
             </div>
           </div>
         </div>
