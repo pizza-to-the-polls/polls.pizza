@@ -97,11 +97,13 @@ export class PagePress {
         <section id="trucks" class="page">
           <div class="container">
             <h1>Press</h1>
-            <div class="photos">
-              <img src="/images/pics/2020_photo_1.JPG" alt="Person holding pizza" />
-              <img src="/images/pics/2020_photo_2.JPG" alt="Person receiving pizza" />
-              <img src="/images/pics/2020_photo_3.JPG" alt="Person delivering pizza" />
-              <p> Photo Credit: Nina Roberts for Grub Street</p>
+            <div class="video">
+              <iframe
+                src="https://www.youtube.com/embed/s5GzA03edtg"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              ></iframe>
             </div>
             <ul class="press-logos">
               {press.map(p => (
