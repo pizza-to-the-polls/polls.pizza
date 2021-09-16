@@ -35,13 +35,12 @@ export class PageHome {
     return (
       <div>
         <div class="hero">
-          <div class="container">
-            <div class="tagline">
-              <p>Our mission is to deliver free food to people who are waiting in long lines while participating in civic life.</p>
-              <a class="button is-red" href="/donate">
-                Donate to feed democracy
-              </a>
-            </div>
+          <img src="/images/hero.jpg" alt="Person handing out food from a food truck" />
+          <div class="tagline">
+            <p>Our mission is to deliver free food to people who are waiting in long lines while participating in civic life.</p>
+            <a class="button is-red" href="/donate">
+              Donate to feed democracy
+            </a>
           </div>
         </div>
         <section class="totals">
