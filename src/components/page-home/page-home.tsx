@@ -35,14 +35,17 @@ export class PageHome {
     return (
       <div>
         <div class="hero">
-          <div class="container">
-            <p>
-              <strong>Our mission</strong> <span>Deliver free food to people in lines, participating in civic life</span>
-            </p>
-            <img src="/images/hero.jpeg" alt="People dancing" />
+          <div class="hero-image-container"></div>
+          <div class="tagline">
+            <div class="container">
+              <p>Our mission is to deliver free food to people who are waiting in long lines while participating in civic life.</p>
+              <a class="button is-red" href="/donate">
+                Donate to feed democracy
+              </a>
+            </div>
           </div>
         </div>
-        <section class="hero-section">
+        <section class="totals">
           <div class="container">
             <h2 class="is-display has-text-centered">All-Time Totals</h2>
             <div class="stats-row">
@@ -75,30 +78,14 @@ export class PageHome {
                   </h2>
                   <p>
                     <strong>
-                      Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines. Send us reports of long election lines and
-                      we'll send in the delicious reinforcements.
+                      Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines. We're also sending 'za and tasty snacks to
+                      people who are waiting in long lines while participating in other forms of civic life. Send us reports of long lines wherever people are doing their civic
+                      duty and we'll send in the delicious reinforcements.
                     </strong>
                   </p>
                 </form-report>
               </ui-card>
             </div>
-            <div class="report-bg"></div>
-          </div>
-        </section>
-        <section class="donate">
-          <div class="container">
-            <ui-card class="donate-content">
-              <h2 class="is-display">Donation Totals</h2>
-              <p>
-                <strong>
-                  Pizza to the Polls is a nonpartisan, nonprofit initiative founded in 2016 that relies on small dollar donations. Chip in some dough to our pizza fund today!
-                </strong>
-              </p>
-
-              <stencil-route-link url="/donate" anchorClass="button is-red">
-                Donate to feed democracy
-              </stencil-route-link>
-            </ui-card>
           </div>
         </section>
         <section class="how-we-do-it">
@@ -124,6 +111,23 @@ export class PageHome {
                 <a href="/vax-and-snacks">Learn more</a>
               </div>
             </div>
+          </div>
+        </section>
+        <section class="press">
+          <h2>Learn more about our work</h2>
+          <div class="container">
+            <a href="https://www.nytimes.com/2020/11/03/opinion/volunteers-election-2020.html" target="_blank">
+              <img src="/images/press/nyt.png" alt="New York Times" />
+            </a>
+            <a href="https://www.cnn.com/2020/09/21/politics/pizza-polling-early-voting-election/index.html" target="_blank">
+              <img src="/images/press/cnn.png" alt="CNN" />
+            </a>
+            <a href="https://www.buzzfeednews.com/article/skbaer/long-lines-election-day-2020" target="_blank">
+              <img src="/images/press/buzzfeed.png" alt="Buzzfeed" />
+            </a>
+            <a href="https://www.oprahdaily.com/life/a34483172/pizza-to-the-polls-long-lines/" target="_blank">
+              <img src="/images/press/oprah.png" alt="Oprah Daily" />
+            </a>
           </div>
         </section>
       </div>

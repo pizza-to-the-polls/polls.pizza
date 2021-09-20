@@ -521,7 +521,7 @@ export class FormReport {
               {/* Location */}
               <div class="form-item">
                 <label class="label" htmlFor="address">
-                  Polling place address <span class="required">*</span>
+                  Where should we send pizza? <span class="required">*</span>
                 </label>
                 <input
                   class={"input " + ("address" in this.submitError ? "has-error" : "")}

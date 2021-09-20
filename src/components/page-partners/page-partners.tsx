@@ -154,7 +154,7 @@ export class PagePartners {
     return (
       <ui-main-content id="partners" class="page" background="cyan">
         <ui-card>
-          <h1>Partners</h1>
+          <h1>2020 Partners</h1>
           <p>Pizza to the Polls is grateful for the support of its partners:</p>
           <ul class="partners">
             {top.map(l => {
@@ -191,10 +191,7 @@ export class PagePartners {
               <strong>Feed Hungry Folks:</strong> Donate snacks, food, or beverages to be delivered to polling locations.
             </li>
             <li>
-              <strong>Engage Employees & Audience Members:</strong> Make sure people know that spotting lines is a great way to make a difference in 2020!
-            </li>
-            <li>
-              <strong>Participate in the November 3 Day of Action:</strong> Election Day
+              <strong>Engage Employees & Audience Members:</strong> Make sure people know that spotting lines is a great way to make a difference!
             </li>
           </ui-pizza-list>
           <p>

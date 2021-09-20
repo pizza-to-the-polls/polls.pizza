@@ -8,13 +8,81 @@ page-home {
     }
   }
 
-  .hero-section {
+  .hero {
+    color: $white;
+    position: relative;
+
+    .hero-image-container {
+      display: block;
+      background: url("images/hero.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: 50% 25%;
+      min-height: 300px;
+      width: 100%;
+    }
+
+    .tagline {
+      font-weight: bold;
+      background-color: $blue;
+      text-align: center;
+      width: 100%;
+      color: $white;
+      left: 0;
+      bottom: 0;
+      padding: 20px;
+      border-top: 10px solid $cyan;
+      margin: 0 auto;
+      font-size: 18px;
+
+      p {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .button {
+        display: inline-block;
+        margin-top: 30px;
+      }
+    }
+
+    @media ($tablet) {
+      .hero-image-container {
+        min-height: 500px;
+        overflow: hidden;
+      }
+
+      .tagline {
+        p {
+          font-size: 24px;
+        }
+      }
+    }
+
+    @media ($desktop) {
+      .hero-image-container {
+        height: 60vh;
+        max-height: 900px;
+      }
+
+      .tagline {
+        width: 800px;
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        margin-left: -400px;
+        border: 10px solid $cyan;
+      }
+    }
+  }
+
+  .totals {
     background-image: url("/images/bg1.png");
     background-size: 400px;
     background-color: $yellow;
     background-attachment: fixed;
     color: $blue;
-    padding: 10px 0 0 0;
+    padding: 10px 0 60px 0;
   }
 
   .stats-row {
@@ -129,47 +197,32 @@ page-home {
   }
 }
 
-.hero {
-  background: $blue;
-  color: $white;
-  padding: 40px 0 40px 0;
+.press {
+  background-color: $gray2;
   background-image: url("/images/bg2.png");
   background-attachment: fixed;
   background-size: 400px;
 
-  p {
-    font-size: 24px;
-    font-weight: bold;
-
-    strong {
-      display: block;
-      text-transform: uppercase;
-      font-style: italic;
-      font-weight: 900;
-    }
+  h2 {
+    text-align: center;
   }
 
-  img {
-    border-radius: 10px;
-    margin-top: 20px;
+  .container {
+    padding: 20px;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  a {
+    width: 40%;
+    display: inline-block;
   }
 
   @media ($tablet) {
-    .container {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    p {
-      width: 60%;
-      margin: 0;
-    }
-
-    img {
-      width: 40%;
-      margin: 0;
+    a {
+      width: 20%;
     }
   }
 }
