@@ -9,16 +9,17 @@ page-home {
   }
 
   .hero {
-    // background: url("images/hero.jpg");
     color: $white;
-    background-size: contain;
-    overflow: hidden;
     position: relative;
-    overflow: hidden;
 
-    img {
-      border-radius: 0;
-      margin: 0 0 -10px 0;
+    .hero-image-container {
+      display: block;
+      background: url("images/hero.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: 50% 25%;
+      min-height: 300px;
+      width: 100%;
     }
 
     .tagline {
@@ -31,7 +32,6 @@ page-home {
       bottom: 0;
       padding: 20px;
       border-top: 10px solid $cyan;
-      max-width: 800px;
       margin: 0 auto;
       font-size: 18px;
 
@@ -47,17 +47,31 @@ page-home {
     }
 
     @media ($tablet) {
-      max-height: 80vh;
+      .hero-image-container {
+        min-height: 500px;
+        overflow: hidden;
+      }
 
       .tagline {
-        margin: 0 0 30px -400px;
-        border: 10px solid $cyan;
-        position: absolute;
-        left: 50%;
-
         p {
           font-size: 24px;
         }
+      }
+    }
+
+    @media ($desktop) {
+      .hero-image-container {
+        height: 60vh;
+        max-height: 900px;
+      }
+
+      .tagline {
+        width: 800px;
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        margin-left: -400px;
+        border: 10px solid $cyan;
       }
     }
   }
