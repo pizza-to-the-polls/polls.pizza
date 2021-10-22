@@ -162,7 +162,7 @@ footer {
   background: $blue;
   border-top: 5px solid $red;
   color: $white;
-  padding: 40px 0;
+  padding: 20px 0;
 
   a:not(.button) {
     color: $white;
@@ -174,6 +174,13 @@ footer {
       color: darken($white, 10%);
       border-color: transparent;
     }
+  }
+
+  .disclaimer {
+    font-size: 14px;
+    font-style: italic;
+    border-bottom: 3px solid #fff;
+    padding-bottom: 50px;
   }
 
   .email-signup-input {

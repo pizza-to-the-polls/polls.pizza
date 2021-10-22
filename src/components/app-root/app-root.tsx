@@ -56,6 +56,10 @@ export class AppRoot {
 
         <footer>
           <ui-main-content background="none">
+            <p class="disclaimer">
+              Pizza to the Polls is a nonpartisan, nonprofit organization whose purposes are (i) to educate individuals about America's institutions, citizens' civic duties and
+              opportunities, and (ii) to increase turnout and ensure all people are well-informed about their civic obligations.
+            </p>
             <div
               class="clearfix"
               style={{
