@@ -319,7 +319,7 @@ export class PageDonate {
                   </ul>
                 </div>
                 <p>
-                  <a href="#" class="button has-text-teal" onClick={resetDonationForm}>
+                  <a href="#" class="button" onClick={resetDonationForm}>
                     Make another donation
                   </a>
                 </p>
