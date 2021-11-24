@@ -7,6 +7,7 @@ import { RouterHistory } from "@stencil/router";
 })
 export class PageDonate {
   @State() private amount?: number | null;
+  @State() private gift?: string | null;
   @State() private showConfirmation: boolean = false;
   @State() private canNativeShare: boolean = false;
   @State() private referral?: string | null;
@@ -16,7 +17,7 @@ export class PageDonate {
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
     this.referral = this.history?.location.query.referral || "";
-    console.log(this.referral);
+
     const isPostDonate = !!this.history?.location.query.success;
     const amountDonatedUsd = this.history?.location.query.amount_usd;
     if (isPostDonate && amountDonatedUsd) {
@@ -30,16 +31,21 @@ export class PageDonate {
     const showError = this.showError;
     try {
       const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/donations`, {
-        body: JSON.stringify({ amountUsd: amount, referrer: this.referral }),
+        body: JSON.stringify({
+          amountUsd: amount,
+          referrer: this.referral,
+          gift: this.gift,
+          url: `${document.location}`,
+        }),
         method: "POST",
         mode: "cors",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
       });
 
       if (resp.status === 200) {
-        const respJson = await resp.json();
-        if (respJson.success) {
-          const sessionId = respJson.checkoutSessionId;
+        const { success, checkoutSessionId, message } = await resp.json();
+        if (success) {
+          const sessionId = checkoutSessionId;
           const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
 
           stripe
@@ -51,8 +57,8 @@ export class PageDonate {
               showError(result.error.message);
             });
         } else {
-          console.error(respJson.message);
-          this.showError(respJson.message);
+          console.error(message);
+          this.showError(message);
         }
       } else {
         this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
@@ -93,7 +99,15 @@ export class PageDonate {
       return amount.length > 0 ? Number(amount) : null;
     };
 
-    const handleChange = () => (this.amount = getAmount());
+    const getGift = (): string | null => {
+      const gift = document.querySelector("input[name=gift]") as HTMLInputElement;
+      return (gift?.value || "").length > 0 ? gift?.value : null;
+    };
+
+    const handleChange = () => {
+      this.amount = getAmount();
+      this.gift = getGift();
+    };
     const handleCheckout = (e: Event) => {
       if (this.amount) {
         if (this.amount >= 0.5) {
@@ -243,6 +257,10 @@ export class PageDonate {
                   >
                     Donate
                   </button>
+                  <p>
+                    <label htmlFor="gift">Give a donation as a gift</label>
+                    <input class="input" type="text" name="gift" id="gift" placeholder="In honor of..." onInput={handleChange} autocomplete="off" />
+                  </p>
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">
                       <p>{this.error}</p>

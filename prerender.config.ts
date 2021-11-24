@@ -5,7 +5,7 @@ export const config: PrerenderConfig = {
     return {
       prettyHtml: true,
       staticSite: true,
-      trailingSlash: true,
+      trailingSlash: false,
     };
   },
 };
