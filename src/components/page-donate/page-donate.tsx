@@ -16,7 +16,7 @@ export class PageDonate {
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
     this.referral = this.history?.location.query.referral || "";
-
+    console.log(this.referral);
     const isPostDonate = !!this.history?.location.query.success;
     const amountDonatedUsd = this.history?.location.query.amount_usd;
     if (isPostDonate && amountDonatedUsd) {
