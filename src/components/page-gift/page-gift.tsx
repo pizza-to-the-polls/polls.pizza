@@ -2,11 +2,13 @@ import { Build, Component, h, Host, Prop, State } from "@stencil/core";
 import { RouterHistory } from "@stencil/router";
 
 @Component({
-  tag: "page-donate",
-  styleUrl: "page-donate.scss",
+  tag: "page-gift",
+  styleUrl: "page-gift.scss",
 })
-export class PageDonate {
+export class PageGift {
   @State() private amount?: number | null;
+  @State() private giftName?: string | null;
+  @State() private giftEmail?: string | null;
   @State() private showConfirmation: boolean = false;
   @State() private canNativeShare: boolean = false;
   @State() private referral?: string | null;
@@ -14,13 +16,16 @@ export class PageDonate {
   @Prop() public history?: RouterHistory;
 
   public componentWillLoad() {
-    document.title = `Donate | Pizza to the Polls`;
+    document.title = `Give Pizza | Pizza to the Polls`;
     this.referral = this.history?.location.query.referral || "";
 
     const isPostDonate = !!this.history?.location.query.success;
     const amountDonatedUsd = this.history?.location.query.amount_usd;
+    const giftName = this.history?.location.query.gift_name;
+
     if (isPostDonate && amountDonatedUsd) {
       this.amount = parseFloat(amountDonatedUsd as string);
+      this.giftName = giftName as string;
       this.showConfirmation = true;
     }
   }
@@ -30,16 +35,22 @@ export class PageDonate {
     const showError = this.showError;
     try {
       const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/donations`, {
-        body: JSON.stringify({ amountUsd: amount, referrer: this.referral }),
+        body: JSON.stringify({
+          amountUsd: amount,
+          referrer: this.referral,
+          giftName: this.giftName,
+          giftEmail: this.giftEmail,
+          url: `${document.location}`,
+        }),
         method: "POST",
         mode: "cors",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
       });
 
       if (resp.status === 200) {
-        const respJson = await resp.json();
-        if (respJson.success) {
-          const sessionId = respJson.checkoutSessionId;
+        const { success, checkoutSessionId, message } = await resp.json();
+        if (success) {
+          const sessionId = checkoutSessionId;
           const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
 
           stripe
@@ -51,8 +62,8 @@ export class PageDonate {
               showError(result.error.message);
             });
         } else {
-          console.error(respJson.message);
-          this.showError(respJson.message);
+          console.error(message);
+          this.showError(message);
         }
       } else {
         this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
@@ -93,7 +104,16 @@ export class PageDonate {
       return amount.length > 0 ? Number(amount) : null;
     };
 
-    const handleChange = () => (this.amount = getAmount());
+    const getGift = (name: string): string | null => {
+      const elem = document.querySelector(`input[name=${name}]`) as HTMLInputElement;
+      return (elem?.value || "").length > 0 ? elem?.value : null;
+    };
+
+    const handleChange = () => {
+      this.amount = getAmount();
+      this.giftName = getGift("giftName");
+      this.giftEmail = getGift("giftEmail");
+    };
     const handleCheckout = (e: Event) => {
       if (this.amount) {
         if (this.amount >= 0.5) {
@@ -115,8 +135,8 @@ export class PageDonate {
           })
           .replace(/\.00/g, "")
       : "";
-    const shareText = "I just donated" + shareAmount + " to Pizza to the Polls to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
-    const shareUrl = "https://polls.pizza/donate"; // add URL tracking parameters here, if desired
+    const shareText = "I just gave" + shareAmount + " worth of Pizza to the Polls as a gift to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
+    const shareUrl = "https://polls.pizza/gift"; // add URL tracking parameters here, if desired
 
     // Native sharing on device via `navigator.share` - supported on mobile, tablets, and some browsers
     const nativeShare = async () => {
@@ -168,7 +188,7 @@ export class PageDonate {
         form.reset();
       }
       // Remove any query parameters
-      this.history?.replace("/donate/", {});
+      this.history?.replace("/gift/", {});
       e.preventDefault();
     };
 
@@ -176,13 +196,13 @@ export class PageDonate {
       <Host>
         <ui-main-content background="red">
           <ui-card>
-            <h1>Donate</h1>
+            <h1>Give Pizza to the Polls 🎁</h1>
 
             {!this.showConfirmation && (
               <div>
                 <div class="donation-intro">
-                  <p>Waiting in line sucks. Waiting in line with pizza sucks a little less.</p>
-                  <p>Keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
+                  <p>Give someone you care about the gift of Pizza to the Polls - and we'll send them an email that you're contributing to the pizza fund in their name.</p>
+                  <p>We use the pizza fund to keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach.</p>
                 </div>
 
                 <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
@@ -192,29 +212,29 @@ export class PageDonate {
                   <ul class="donation-amount-list">
                     <li>
                       <label class="radio" htmlFor="radio-1">
-                        <input type="radio" value="20" id="radio-1" name="amount" />
-                        <span class="label-text">$20 🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-2">
-                        <input type="radio" value="40" id="radio-2" name="amount" />
+                        <input type="radio" value="40" id="radio-1" name="amount" />
                         <span class="label-text">$40 🍕🍕</span>
                         <span class="indicator"></span>
                       </label>
                     </li>
                     <li>
+                      <label class="radio" htmlFor="radio-2">
+                        <input type="radio" value="80" id="radio-2" name="amount" />
+                        <span class="label-text">$80 🍕🍕🍕</span>
+                        <span class="indicator"></span>
+                      </label>
+                    </li>
+                    <li>
                       <label class="radio" htmlFor="radio-3">
-                        <input type="radio" value="60" id="radio-3" name="amount" />
-                        <span class="label-text">$60 🍕🍕🍕</span>
+                        <input type="radio" value="100" id="radio-3" name="amount" />
+                        <span class="label-text">$100 🍕🍕🍕🍕🍕</span>
                         <span class="indicator"></span>
                       </label>
                     </li>
                     <li>
                       <label class="radio" htmlFor="radio-4">
-                        <input type="radio" value="100" id="radio-4" name="amount" />
-                        <span class="label-text">$100 🍕🍕🍕🍕🍕</span>
+                        <input type="radio" value="$120" id="radio-4" name="amount" />
+                        <span class="label-text">$120 🍕🍕🍕🍕🍕</span>
                         <span class="indicator"></span>
                       </label>
                     </li>
@@ -236,19 +256,29 @@ export class PageDonate {
                       </label>
                     </li>
                   </ul>
+                  <p>
+                    <label class="label">
+                      Their Name <span class="required">*</span>
+                    </label>
+                    <input class="input" type="text" name="giftName" id="giftName" onInput={handleChange} autocomplete="off" />
+                  </p>
+                  <p>
+                    <label class="label">
+                      Their Email <span class="required">*</span>
+                    </label>
+                    <input class="input" type="email" name="giftEmail" id="giftEmail" onInput={handleChange} autocomplete="off" />
+                  </p>
+
                   <button
                     onClick={handleCheckout}
                     class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
-                    disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
+                    disabled={!this.amount || isNaN(this.amount) || !this.giftName || !this.giftEmail || (this.error || "").length > 0}
                   >
-                    Donate
+                    Send Gift
                   </button>
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">
                       <p>{this.error}</p>
-                      <a class="button is-blue is-fullwidth-mobile" target="_blank" href={`https://paypal.me/pizzatothepolls/${this.amount || "0.0"}`}>
-                        Donate via PayPal
-                      </a>
                     </div>
                   )}
                   <p>
@@ -276,7 +306,7 @@ export class PageDonate {
                         })
                         .replace(/\.00/g, "")
                     : null}{" "}
-                  to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.
+                  to Pizza to the Polls on behalf of {this.giftName}. You'll receive a receipt in your email&nbsp;soon.
                 </p>
 
                 <p>Help spread the word by sharing your donation!</p>
@@ -320,7 +350,7 @@ export class PageDonate {
                 </div>
                 <p>
                   <a href="#" class="button" onClick={resetDonationForm}>
-                    Make another donation
+                    Give another gift
                   </a>
                 </p>
               </div>

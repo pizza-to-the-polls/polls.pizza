@@ -27,6 +27,9 @@ export namespace Components {
     interface PageDonate {
         "history"?: RouterHistory;
     }
+    interface PageGift {
+        "history"?: RouterHistory;
+    }
     interface PageGuidelines {
     }
     interface PageHome {
@@ -143,6 +146,12 @@ declare global {
     var HTMLPageDonateElement: {
         prototype: HTMLPageDonateElement;
         new (): HTMLPageDonateElement;
+    };
+    interface HTMLPageGiftElement extends Components.PageGift, HTMLStencilElement {
+    }
+    var HTMLPageGiftElement: {
+        prototype: HTMLPageGiftElement;
+        new (): HTMLPageGiftElement;
     };
     interface HTMLPageGuidelinesElement extends Components.PageGuidelines, HTMLStencilElement {
     }
@@ -261,6 +270,7 @@ declare global {
         "page-covid": HTMLPageCovidElement;
         "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
+        "page-gift": HTMLPageGiftElement;
         "page-guidelines": HTMLPageGuidelinesElement;
         "page-home": HTMLPageHomeElement;
         "page-instructions": HTMLPageInstructionsElement;
@@ -299,6 +309,9 @@ declare namespace LocalJSX {
         "match": MatchResults;
     }
     interface PageDonate {
+        "history"?: RouterHistory;
+    }
+    interface PageGift {
         "history"?: RouterHistory;
     }
     interface PageGuidelines {
@@ -382,6 +395,7 @@ declare namespace LocalJSX {
         "page-covid": PageCovid;
         "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
+        "page-gift": PageGift;
         "page-guidelines": PageGuidelines;
         "page-home": PageHome;
         "page-instructions": PageInstructions;
@@ -414,6 +428,7 @@ declare module "@stencil/core" {
             "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
             "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
+            "page-gift": LocalJSX.PageGift & JSXBase.HTMLAttributes<HTMLPageGiftElement>;
             "page-guidelines": LocalJSX.PageGuidelines & JSXBase.HTMLAttributes<HTMLPageGuidelinesElement>;
             "page-home": LocalJSX.PageHome & JSXBase.HTMLAttributes<HTMLPageHomeElement>;
             "page-instructions": LocalJSX.PageInstructions & JSXBase.HTMLAttributes<HTMLPageInstructionsElement>;
