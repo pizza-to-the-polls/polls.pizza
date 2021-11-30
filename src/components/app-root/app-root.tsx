@@ -40,6 +40,7 @@ export class AppRoot {
               <stencil-route url="/contact" component="page-contact" />
               <stencil-route url={["/deliveries/:location", "/deliveries"]} component="page-deliveries" />
               <stencil-route url="/donate" component="page-donate" />
+              <stencil-route url="/gift" component="page-gift" />
               <stencil-route url="/guidelines" component="page-guidelines" />
               <stencil-route url="/instructions" component="page-instructions" />
               <stencil-route url="/on-demand" component="page-on-demand" />
