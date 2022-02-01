@@ -1,6 +1,6 @@
 import { toQueryString } from "../util";
 
-import { ApiError, LocationId, LocationStatus, OrderDetails, OrderId, OrderQueryResults, PizzaTotals, TruckQueryResults } from "./types";
+import { ApiError, ApiSuccess, LocationId, LocationStatus, OrderDetails, OrderId, OrderQueryResults, PizzaTotals, SessionPutResults, TruckQueryResults, UploadPostResults } from "./types";
 
 const BASE_URL = process.env.PIZZA_BASE_DOMAIN;
 
@@ -34,6 +34,10 @@ const reviver: (this: any, key: string, value: any) => any = (key, value) => {
  * NOTE: Keep all public methods sorted alphabetically
  */
 class PizzaApi {
+  public async getHealth() : Promise<void> {
+    await baseFetch("/health")
+  }
+
   public async getLocationStatus(normalizedAddress: string | LocationId, errorHandler?: (error: ApiError) => void): Promise<LocationStatus | null> {
     return this.handleResponse(await baseFetch<LocationStatus>(`/locations/${encodeURIComponent(normalizedAddress)}`), errorHandler);
   }
@@ -75,6 +79,10 @@ class PizzaApi {
     return this.handleResponse(result, errorHandler) || { results: [], count: 0 };
   }
 
+  public async postUpload(fileHash: string, fileName: string, address: string, errorHandler?: (error: ApiError) => void): Promise<UploadPostResults> {
+    const result = await baseFetch<UploadPostResults>("/upload", { method: "POST", body: JSON.stringify({ fileHash, fileName, address }) });
+    return this.handleResponse(result, errorHandler) || { id: '', isDuplicate: true }
+  }
   /**
    *
    * @param result

@@ -2,6 +2,7 @@ import { Build, Component, h, Host, State } from "@stencil/core";
 // @ts-ignore
 import {} from "googlemaps";
 
+import { PizzaApi } from "../../api";
 import { baseFetch } from "../../api/PizzaApi";
 import shaFile from "../../util/shaFile";
 
@@ -249,11 +250,12 @@ export class FormReport {
         id,
         filePath,
         isDuplicate,
-        presigned: { url, fields },
-      } = await baseFetch("/upload", { method: "POST", body: JSON.stringify({ fileHash, fileName: file.name, address }) });
+        presigned,
+      } = await PizzaApi.postUpload(fileHash, file.name, address)
 
-      if (!isDuplicate) {
+      if (!isDuplicate && presigned) {
         const formData = new FormData();
+        const { url, fields } = presigned;
 
         formData.append("ACL", "public-read");
         formData.append("x-amz-acl", "public-read");

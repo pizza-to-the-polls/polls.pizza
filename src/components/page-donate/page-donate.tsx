@@ -1,6 +1,8 @@
 import { Build, Component, h, Host, Prop, State } from "@stencil/core";
 import { RouterHistory } from "@stencil/router";
 
+import { baseFetch } from "../../api/PizzaApi";
+
 @Component({
   tag: "page-donate",
   styleUrl: "page-donate.scss",
@@ -29,11 +31,9 @@ export class PageDonate {
     this.error = null;
     const showError = this.showError;
     try {
-      const resp = await fetch(`${process.env.PIZZA_BASE_DOMAIN}/donations`, {
+      const resp = await baseFetch(`/donations`, {
         body: JSON.stringify({ amountUsd: amount, referrer: this.referral }),
         method: "POST",
-        mode: "cors",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
       });
 
       if (resp.status === 200) {

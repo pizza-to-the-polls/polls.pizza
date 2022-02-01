@@ -2,6 +2,9 @@ export type OrderId = number;
 export type ReportId = number;
 export type LocationId = number;
 
+export type ApiSuccess = {
+  succcess: boolean;
+}
 export type ApiError = {
   isError: true;
   status: number;
@@ -107,3 +110,17 @@ export type TruckQueryResults = {
   results: TruckInfo[];
   count: number;
 };
+
+/**
+ * /uploads
+ */
+export type UploadPostResults = {
+  id: string;
+  filePath?: string;
+  isDuplicate: boolean;
+  presigned?: {
+    url: string;
+    fields: {[id: string]: string};
+  };
+}
+

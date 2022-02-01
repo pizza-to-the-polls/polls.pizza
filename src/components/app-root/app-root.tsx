@@ -1,3 +1,6 @@
+import { Build } from "@stencil/core";
+
+import { PizzaApi } from "../../api";
 import { Component, h, Host } from "@stencil/core";
 
 @Component({
@@ -5,6 +8,12 @@ import { Component, h, Host } from "@stencil/core";
   styleUrl: "app-root.scss",
 })
 export class AppRoot {
+
+  public componentWillLoad() {
+    // Ensure the backend is loaded by hitting a health check
+    if (Build.isBrowser) PizzaApi.getHealth()
+  }
+
   public render() {
     return (
       <Host>
