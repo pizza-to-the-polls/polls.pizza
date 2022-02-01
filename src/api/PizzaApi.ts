@@ -79,10 +79,25 @@ class PizzaApi {
     return this.handleResponse(result, errorHandler) || { results: [], count: 0 };
   }
 
+  public async postSession(email: string, errorHandler?: (error: ApiError) => void) : Promise<void> {
+    const result = await baseFetch<ApiSuccess>(`/session`, {
+      body: JSON.stringify({ email }),
+      method: "POST",
+    });
+    this.handleResponse(result, errorHandler)
+  }
   public async postUpload(fileHash: string, fileName: string, address: string, errorHandler?: (error: ApiError) => void): Promise<UploadPostResults> {
     const result = await baseFetch<UploadPostResults>("/upload", { method: "POST", body: JSON.stringify({ fileHash, fileName, address }) });
     return this.handleResponse(result, errorHandler) || { id: '', isDuplicate: true }
   }
+  public async putSession(token: string, errorHandler?: (error: ApiError) => void) : Promise<SessionPutResults> {
+    const result = await baseFetch<SessionPutResults>(`/session`, {
+      body: JSON.stringify({ token }),
+      method: "PUT",
+    });
+    return this.handleResponse(result, errorHandler) || { redirect: '' }
+  }
+
   /**
    *
    * @param result
