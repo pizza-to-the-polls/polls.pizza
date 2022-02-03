@@ -313,13 +313,13 @@ export class PageDonate {
                         <span>Share on Facebook</span>
                       </a>
                     </li>
+                    <li>
+                      <a href="#" class="button is-fullwidth-mobile" onClick={resetDonationForm}>
+                        Make another donation
+                      </a>
+                    </li>
                   </ul>
                 </div>
-                <p>
-                  <a href="#" class="button" onClick={resetDonationForm}>
-                    Make another donation
-                  </a>
-                </p>
               </div>
             )}
           </ui-card>

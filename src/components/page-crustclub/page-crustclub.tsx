@@ -93,7 +93,9 @@ export class PageCrustclub {
           .replace(/\.00/g, "")
       : "";
     const shareText =
-      "I'm signing up to donate " + shareAmount + " to Pizza to the Polls each month to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
+      "I'm joining the Crust Club and giving" +
+      shareAmount +
+      " to Pizza to the Polls each month to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
     const shareUrl = "https://polls.pizza/crustclub"; // add URL tracking parameters here, if desired
 
     // Native sharing on device via `navigator.share` - supported on mobile, tablets, and some browsers
@@ -138,29 +140,23 @@ export class PageCrustclub {
       return;
     };
 
-    const resetDonationForm = (e: Event) => {
-      this.showConfirmation = false;
-      this.amount = null;
-      const form = document.getElementById("donate-form") as HTMLFormElement;
-      if (form) {
-        form.reset();
-      }
-      // Remove any query parameters
-      this.history?.replace("/crustclub/", {});
-      e.preventDefault();
-    };
-
     return (
       <Host>
         <ui-main-content background="red">
           <ui-card>
-            <h1>Join Crust Club</h1>
+            <img class="logo logo-mobile is-hidden-tablet is-hidden-desktop" alt="Crust Club Logo" src="/images/crustclub.png" />
+            <img class="logo logo-desktop is-hidden-mobile" alt="Crust Club Logo" src="/images/crustclub.png" />
+
+            <h1>{this.showConfirmation ? "Welcome to Crust Club!" : "Join Crust Club"}</h1>
 
             {!this.showConfirmation && (
               <div>
                 <div class="donation-intro">
-                  <p>Waiting in line sucks. Waiting in line with pizza sucks a little less.</p>
-                  <p>Keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
+                  <p>Waiting in line is a bummer. Waiting in line with pizza is a little less of a bummer.</p>
+                  <p>
+                    Keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach by setting up a monthly donation. Become one of our biggest
+                    supporters today by joining Crust Club!
+                  </p>
                 </div>
 
                 <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
@@ -234,9 +230,9 @@ export class PageCrustclub {
             {this.showConfirmation && (
               <div id="donate-confirmation">
                 <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
-                <p>Thanks for signing up to support Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
+                <p>Thanks for joining Crust Club. You'll receive a receipt in your email&nbsp;soon.</p>
 
-                <p>Help spread the word by sharing your donation!</p>
+                <p>Help spread the word by sharing your membership!</p>
 
                 {this.canNativeShare && (
                   <button id="share-donation" onClick={nativeShare} class="button is-blue is-fullwidth-mobile">
@@ -273,13 +269,18 @@ export class PageCrustclub {
                         <span>Share on Facebook</span>
                       </a>
                     </li>
+                    <li>
+                      <stencil-route-link url="/donate" class="button is-fullwidth-mobile is-teal">
+                        Make a one-time donation
+                      </stencil-route-link>
+                    </li>
+                    <li>
+                      <stencil-route-link url="/sign-in" class="button is-blue is-fullwidth-mobile">
+                        Manage your membership
+                      </stencil-route-link>
+                    </li>
                   </ul>
                 </div>
-                <p>
-                  <a href="#" class="button" onClick={resetDonationForm}>
-                    Make another donation
-                  </a>
-                </p>
               </div>
             )}
           </ui-card>
