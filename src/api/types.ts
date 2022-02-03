@@ -11,17 +11,6 @@ export type ApiError = {
   messages: string[];
 };
 
-export type PizzaTotals = {
-  raised: number;
-  donors: number;
-  costs: number;
-  pizzas: number;
-  meals: number;
-  orders: number;
-  locations: number;
-  states: number;
-};
-
 export enum OrderTypes {
   pizzas = "pizzas",
   donuts = "donuts",
@@ -45,41 +34,13 @@ export type OrderInfo = {
 };
 
 /**
- * /orders/{id}
+ * /donations
  */
-export type OrderDetails = OrderInfo & {
-  location: LocationInfo;
-};
 
-export type TruckInfo = {
-  isActive: boolean;
-  createdAt: Date;
-  region: string;
-  location: LocationInfo;
-};
-
-export type TruckDetails = TruckInfo & {
-  reports: ReportInfo[];
-};
-
-export type LocationInfo = {
-  id: LocationId;
-  city: string;
-  state: string;
-  zip: string;
-  address: string;
-  fullAddress: string;
-  lat: string;
-  lng: string;
-  validatedAt: Date;
-  stateName: string;
-};
-
-export type ReportInfo = {
-  id: ReportId;
-  createdAt: Date;
-  reportURL: string;
-  waitTime: string;
+export type DonationPostResults = {
+  success: boolean;
+  checkoutSessionId?: string;
+  message?: string;
 };
 
 /**
@@ -95,12 +56,50 @@ export type LocationStatus =
   // allow us to store the results of a 404
   | { notFound: true };
 
+export type LocationInfo = {
+  id: LocationId;
+  city: string;
+  state: string;
+  zip: string;
+  address: string;
+  fullAddress: string;
+  lat: string;
+  lng: string;
+  validatedAt: Date;
+  stateName: string;
+};
+
 /**
  * /orders
  */
 export type OrderQueryResults = {
   results: OrderDetails[];
   count: number;
+};
+
+/**
+ * /orders/{id}
+ */
+export type OrderDetails = OrderInfo & {
+  location: LocationInfo;
+};
+
+/**
+ * /reports
+ */
+
+export type ReportInfo = {
+  id: ReportId;
+  createdAt: Date;
+  reportURL: string;
+  waitTime: string;
+};
+
+export type ReportPostResults = {
+  address?: LocationInfo;
+  hasTruck: boolean;
+  willReceive: boolean;
+  alreadyOrdered: boolean;
 };
 
 /**
@@ -111,11 +110,37 @@ export type SessionPutResults = {
 };
 
 /**
+ * /totals
+ */
+
+export type PizzaTotals = {
+  raised: number;
+  donors: number;
+  costs: number;
+  pizzas: number;
+  meals: number;
+  orders: number;
+  locations: number;
+  states: number;
+};
+
+/**
  * /trucks
  */
 export type TruckQueryResults = {
   results: TruckInfo[];
   count: number;
+};
+
+export type TruckInfo = {
+  isActive: boolean;
+  createdAt: Date;
+  region: string;
+  location: LocationInfo;
+};
+
+export type TruckDetails = TruckInfo & {
+  reports: ReportInfo[];
 };
 
 /**
@@ -129,14 +154,4 @@ export type UploadPostResults = {
     url: string;
     fields: { [id: string]: string };
   };
-};
-
-/**
- * /donations
- */
-
-export type DonationPostResults = {
-  succcess: boolean;
-  checkoutSessionId?: string;
-  message?: string;
 };

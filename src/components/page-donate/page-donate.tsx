@@ -31,7 +31,7 @@ export class PageDonate {
     this.error = null;
     const showError = this.showError;
     try {
-      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("donation", amount, { referral: this.referral });
+      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("donation", amount, { referrer: this.referral });
 
       if (success) {
         const sessionId = checkoutSessionId;
@@ -46,12 +46,12 @@ export class PageDonate {
             showError(result.error.message);
           });
       } else {
-        console.error(message);
-        this.showError(message);
+        if (message) { console.error(message); }
+        this.showError(message || PizzaApi.genericErrorMessage);
       }
     } catch (e) {
       console.error(e);
-      this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
+      this.showError(PizzaApi.genericErrorMessage);
     }
   }
 

@@ -34,6 +34,7 @@ export class PageGift {
 
   public async donate(amount: number) {
     this.error = null;
+
     const showError = this.showError;
     try {
       const { success, checkoutSessionId, message } = await PizzaApi.postDonation("donation", amount, {
@@ -55,12 +56,12 @@ export class PageGift {
             showError(result.error.message);
           });
       } else {
-        console.error(message);
-        this.showError(message);
+        console.error(`${message}`);
+        this.showError(`${message || PizzaApi.genericErrorMessage}`);
       }
     } catch (e) {
       console.error(e);
-      this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
+      this.showError(PizzaApi.genericErrorMessage);
     }
   }
 

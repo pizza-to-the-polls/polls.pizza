@@ -10,6 +10,7 @@ import {
   OrderId,
   OrderQueryResults,
   PizzaTotals,
+  ReportPostResults,
   SessionPutResults,
   TruckQueryResults,
   UploadPostResults,
@@ -46,6 +47,8 @@ const reviver: (this: any, key: string, value: any) => any = (key, value) => {
  * NOTE: Keep all public methods sorted alphabetically
  */
 class PizzaApi {
+  public readonly genericErrorMessage: string = "Whoops! That didn't work. Our servers might be a little stuffed right now.";
+
   public async getHealth(): Promise<void> {
     await baseFetch("/health");
   }
@@ -94,7 +97,7 @@ class PizzaApi {
   public async postDonation(
     type: string = "donation",
     amountUsd: number,
-    extra: { [id: string]: string | number | boolean },
+    extra: { [id: string]: string | number | boolean | undefined | null },
     errorHandler?: (error: ApiError) => void,
   ): Promise<DonationPostResults> {
     const result = await baseFetch<DonationPostResults>(`/donations`, {
@@ -102,6 +105,26 @@ class PizzaApi {
       method: "POST",
     });
     return this.handleResponse(result, errorHandler) || { success: false, message: "Whoops! That didn't work. Our servers might be a little stuffed right now." };
+  }
+
+  public async postReport(
+    reportData: {
+      address: string;
+      url: string;
+      waitTime: string;
+      canDistribute: boolean;
+      contactRole: string;
+      contactFirstName: string;
+      contactLastName: string;
+      contact: string;
+    },
+    errorHandler?: (error: ApiError) => void,
+  ): Promise<ReportPostResults> {
+    const result = await baseFetch<ReportPostResults>(`/report`, {
+      body: JSON.stringify(reportData),
+      method: "POST",
+    });
+    return this.handleResponse(result, errorHandler) || { hasTruck: false, willReceive: false, alreadyOrdered: false };
   }
 
   public async postSession(email: string, errorHandler?: (error: ApiError) => void): Promise<void> {
