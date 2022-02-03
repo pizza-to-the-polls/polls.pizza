@@ -46,7 +46,9 @@ export class PageDonate {
             showError(result.error.message);
           });
       } else {
-        if (message) { console.error(message); }
+        if (message) {
+          console.error(message);
+        }
         this.showError(message || PizzaApi.genericErrorMessage);
       }
     } catch (e) {
