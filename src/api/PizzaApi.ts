@@ -3,6 +3,7 @@ import { toQueryString } from "../util";
 import {
   ApiError,
   ApiSuccess,
+  DonationPostResults,
   LocationId,
   LocationStatus,
   OrderDetails,
@@ -16,8 +17,7 @@ import {
 
 const BASE_URL = process.env.PIZZA_BASE_DOMAIN;
 
-// TODO: This should not need to be exported, remove once all commands are on `PizzaApi`
-export const baseFetch = async <T = any>(path: string, options: { [key: string]: string } = {}): Promise<(T & { isError: undefined }) | ApiError> => {
+const baseFetch = async <T = any>(path: string, options: { [key: string]: string } = {}): Promise<(T & { isError: undefined }) | ApiError> => {
   const headers = options.headers || {};
   const resp = await fetch(`${BASE_URL}${path}`, {
     mode: "cors",
@@ -91,6 +91,19 @@ class PizzaApi {
     return this.handleResponse(result, errorHandler) || { results: [], count: 0 };
   }
 
+  public async postDonation(
+    type: string = "donation",
+    amountUsd: number,
+    extra: { [id: string]: string | number | boolean },
+    errorHandler?: (error: ApiError) => void,
+  ): Promise<DonationPostResults> {
+    const result = await baseFetch<DonationPostResults>(`/donations`, {
+      body: JSON.stringify({ ...extra, url: `${document.location}`, type, amountUsd }),
+      method: "POST",
+    });
+    return this.handleResponse(result, errorHandler) || { success: false, message: "Whoops! That didn't work. Our servers might be a little stuffed right now." };
+  }
+
   public async postSession(email: string, errorHandler?: (error: ApiError) => void): Promise<void> {
     const result = await baseFetch<ApiSuccess>(`/session`, {
       body: JSON.stringify({ email }),
@@ -98,10 +111,12 @@ class PizzaApi {
     });
     this.handleResponse(result, errorHandler);
   }
+
   public async postUpload(fileHash: string, fileName: string, address: string, errorHandler?: (error: ApiError) => void): Promise<UploadPostResults> {
     const result = await baseFetch<UploadPostResults>("/upload", { method: "POST", body: JSON.stringify({ fileHash, fileName, address }) });
     return this.handleResponse(result, errorHandler) || { id: "", isDuplicate: true };
   }
+
   public async putSession(token: string, errorHandler?: (error: ApiError) => void): Promise<SessionPutResults> {
     const result = await baseFetch<SessionPutResults>(`/session`, {
       body: JSON.stringify({ token }),

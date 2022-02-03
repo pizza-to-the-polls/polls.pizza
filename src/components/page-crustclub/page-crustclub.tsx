@@ -1,7 +1,7 @@
 import { Build, Component, h, Host, Prop, State } from "@stencil/core";
 import { RouterHistory } from "@stencil/router";
 
-import { baseFetch } from "../../api/PizzaApi";
+import { PizzaApi } from "../../api";
 
 @Component({
   tag: "page-crustclub",
@@ -31,10 +31,7 @@ export class PageCrustclub {
     this.error = null;
     const showError = this.showError;
     try {
-      const { success, checkoutSessionId, message } = await baseFetch(`/donations`, {
-        body: JSON.stringify({ type: "subscription", amountUsd: amount, referrer: this.referral }),
-        method: "POST",
-      });
+      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("subscription", amount, { referrer: this.referral });
 
       if (success) {
         const sessionId = checkoutSessionId;

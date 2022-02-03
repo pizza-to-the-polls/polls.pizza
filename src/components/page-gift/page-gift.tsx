@@ -1,7 +1,7 @@
 import { Build, Component, h, Host, Prop, State } from "@stencil/core";
 import { RouterHistory } from "@stencil/router";
 
-import { baseFetch } from "../../api/PizzaApi";
+import { PizzaApi } from "../../api";
 
 @Component({
   tag: "page-gift",
@@ -36,37 +36,27 @@ export class PageGift {
     this.error = null;
     const showError = this.showError;
     try {
-      const resp = await baseFetch(`/donations`, {
-        body: JSON.stringify({
-          amountUsd: amount,
-          referrer: this.referral,
-          giftName: this.giftName,
-          giftEmail: this.giftEmail,
-          url: `${document.location}`,
-        }),
-        method: "POST",
+      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("donation", amount, {
+        referrer: this.referral,
+        giftName: this.giftName,
+        giftEmail: this.giftEmail,
       });
 
-      if (resp.status === 200) {
-        const { success, checkoutSessionId, message } = await resp.json();
-        if (success) {
-          const sessionId = checkoutSessionId;
-          const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
+      if (success) {
+        const sessionId = checkoutSessionId;
+        const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
 
-          stripe
-            .redirectToCheckout({
-              sessionId,
-            })
-            .then(function (result: any) {
-              console.error(result.error.message);
-              showError(result.error.message);
-            });
-        } else {
-          console.error(message);
-          this.showError(message);
-        }
+        stripe
+          .redirectToCheckout({
+            sessionId,
+          })
+          .then(function (result: any) {
+            console.error(result.error.message);
+            showError(result.error.message);
+          });
       } else {
-        this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
+        console.error(message);
+        this.showError(message);
       }
     } catch (e) {
       console.error(e);

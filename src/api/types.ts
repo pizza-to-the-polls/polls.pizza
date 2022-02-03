@@ -130,3 +130,13 @@ export type UploadPostResults = {
     fields: { [id: string]: string };
   };
 };
+
+/**
+ * /donations
+ */
+
+export type DonationPostResults = {
+  succcess: boolean;
+  checkoutSessionId?: string;
+  message?: string;
+};
