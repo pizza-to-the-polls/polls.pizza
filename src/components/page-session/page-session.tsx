@@ -5,6 +5,7 @@ import { PizzaApi } from "../../api";
 
 @Component({
   tag: "page-session",
+  styleUrl: "page-session.scss",
 })
 export class PageSession {
   @State() private token?: string | null;
@@ -71,15 +72,15 @@ export class PageSession {
                 <label class="label">
                   Crust Club Email <span class="required">*</span>
                 </label>
-                <input onChange={handleChange} type="email" id="email" name="email" value="" />
-                <button
-                  onClick={handleSubmit}
-                  class={"button is-red is-fullwidth-mobile " + (!this.email ? "is-disabled" : "")}
-                  disabled={!this.email || (this.email || "").length < 1}
-                >
-                  Sign in
+                <div class="form-item-group">
+                  <div class="form-item">
+                    <input class="is-fullwidth input" onChange={handleChange} type="email" id="email" name="email" value="" />
+                  </div>
+                </div>
+                <button onClick={handleSubmit} class={"button is-red is-fullwidth " + (!this.email ? "is-disabled" : "")} disabled={!this.email || (this.email || "").length < 1}>
+                  Email me a link
                 </button>
-                <p>We'll email you a link to sigin in.</p>
+                <p>Links are valid for 15 minutes.</p>
               </form>
             ) : (
               <h1>Signing you in...</h1>
