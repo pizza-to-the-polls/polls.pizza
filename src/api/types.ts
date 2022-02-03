@@ -4,7 +4,7 @@ export type LocationId = number;
 
 export type ApiSuccess = {
   succcess: boolean;
-};
+}
 export type ApiError = {
   isError: true;
   status: number;
@@ -108,7 +108,7 @@ export type OrderQueryResults = {
  */
 export type SessionPutResults = {
   redirect: string;
-};
+}
 
 /**
  * /trucks
@@ -127,6 +127,7 @@ export type UploadPostResults = {
   isDuplicate: boolean;
   presigned?: {
     url: string;
-    fields: { [id: string]: string };
+    fields: {[id: string]: string};
   };
-};
+}
+

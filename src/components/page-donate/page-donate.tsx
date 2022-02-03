@@ -31,26 +31,31 @@ export class PageDonate {
     this.error = null;
     const showError = this.showError;
     try {
-      const { success, checkoutSessionId, message } = await baseFetch(`/donations`, {
-        body: JSON.stringify({ type: "donation", amountUsd: amount, referrer: this.referral }),
+      const resp = await baseFetch(`/donations`, {
+        body: JSON.stringify({ amountUsd: amount, referrer: this.referral }),
         method: "POST",
       });
 
-      if (success) {
-        const sessionId = checkoutSessionId;
-        const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
+      if (resp.status === 200) {
+        const respJson = await resp.json();
+        if (respJson.success) {
+          const sessionId = respJson.checkoutSessionId;
+          const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
 
-        stripe
-          .redirectToCheckout({
-            sessionId,
-          })
-          .then(function (result: any) {
-            console.error(result.error.message);
-            showError(result.error.message);
-          });
+          stripe
+            .redirectToCheckout({
+              sessionId,
+            })
+            .then(function (result: any) {
+              console.error(result.error.message);
+              showError(result.error.message);
+            });
+        } else {
+          console.error(respJson.message);
+          this.showError(respJson.message);
+        }
       } else {
-        console.error(message);
-        this.showError(message);
+        this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
       }
     } catch (e) {
       console.error(e);
@@ -238,9 +243,6 @@ export class PageDonate {
                   >
                     Donate
                   </button>
-                  <stencil-route-link url="/crustclub" class="button is-blue is-fullwidth-mobile">
-                    Become a Member
-                  </stencil-route-link>
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">
                       <p>{this.error}</p>

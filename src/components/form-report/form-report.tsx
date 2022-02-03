@@ -246,7 +246,12 @@ export class FormReport {
     const uploadPhoto = async (file: File, address: string): Promise<void> => {
       const fileHash = await shaFile(file);
 
-      const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
+      const {
+        id,
+        filePath,
+        isDuplicate,
+        presigned,
+      } = await PizzaApi.postUpload(fileHash, file.name, address)
 
       if (!isDuplicate && presigned) {
         const formData = new FormData();

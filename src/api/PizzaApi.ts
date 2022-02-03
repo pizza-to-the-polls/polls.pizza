@@ -1,18 +1,6 @@
 import { toQueryString } from "../util";
 
-import {
-  ApiError,
-  ApiSuccess,
-  LocationId,
-  LocationStatus,
-  OrderDetails,
-  OrderId,
-  OrderQueryResults,
-  PizzaTotals,
-  SessionPutResults,
-  TruckQueryResults,
-  UploadPostResults,
-} from "./types";
+import { ApiError, ApiSuccess, LocationId, LocationStatus, OrderDetails, OrderId, OrderQueryResults, PizzaTotals, SessionPutResults, TruckQueryResults, UploadPostResults } from "./types";
 
 const BASE_URL = process.env.PIZZA_BASE_DOMAIN;
 
@@ -46,8 +34,8 @@ const reviver: (this: any, key: string, value: any) => any = (key, value) => {
  * NOTE: Keep all public methods sorted alphabetically
  */
 class PizzaApi {
-  public async getHealth(): Promise<void> {
-    await baseFetch("/health");
+  public async getHealth() : Promise<void> {
+    await baseFetch("/health")
   }
 
   public async getLocationStatus(normalizedAddress: string | LocationId, errorHandler?: (error: ApiError) => void): Promise<LocationStatus | null> {
@@ -91,23 +79,23 @@ class PizzaApi {
     return this.handleResponse(result, errorHandler) || { results: [], count: 0 };
   }
 
-  public async postSession(email: string, errorHandler?: (error: ApiError) => void): Promise<void> {
+  public async postSession(email: string, errorHandler?: (error: ApiError) => void) : Promise<void> {
     const result = await baseFetch<ApiSuccess>(`/session`, {
       body: JSON.stringify({ email }),
       method: "POST",
     });
-    this.handleResponse(result, errorHandler);
+    this.handleResponse(result, errorHandler)
   }
   public async postUpload(fileHash: string, fileName: string, address: string, errorHandler?: (error: ApiError) => void): Promise<UploadPostResults> {
     const result = await baseFetch<UploadPostResults>("/upload", { method: "POST", body: JSON.stringify({ fileHash, fileName, address }) });
-    return this.handleResponse(result, errorHandler) || { id: "", isDuplicate: true };
+    return this.handleResponse(result, errorHandler) || { id: '', isDuplicate: true }
   }
-  public async putSession(token: string, errorHandler?: (error: ApiError) => void): Promise<SessionPutResults> {
+  public async putSession(token: string, errorHandler?: (error: ApiError) => void) : Promise<SessionPutResults> {
     const result = await baseFetch<SessionPutResults>(`/session`, {
       body: JSON.stringify({ token }),
       method: "PUT",
     });
-    return this.handleResponse(result, errorHandler) || { redirect: "" };
+    return this.handleResponse(result, errorHandler) || { redirect: '' }
   }
 
   /**
