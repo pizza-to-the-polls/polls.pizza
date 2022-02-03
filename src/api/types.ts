@@ -104,13 +104,6 @@ export type OrderQueryResults = {
 };
 
 /**
- * /sessions
- */
-export type SessionPutResults = {
-  redirect: string;
-}
-
-/**
  * /trucks
  */
 export type TruckQueryResults = {

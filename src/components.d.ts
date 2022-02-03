@@ -44,9 +44,6 @@ export namespace Components {
     }
     interface PagePrivacy {
     }
-    interface PageSession {
-        "match": MatchResults;
-    }
     interface PageTrucks {
     }
     interface PageVaxAndSnacks {
@@ -198,12 +195,6 @@ declare global {
         prototype: HTMLPagePrivacyElement;
         new (): HTMLPagePrivacyElement;
     };
-    interface HTMLPageSessionElement extends Components.PageSession, HTMLStencilElement {
-    }
-    var HTMLPageSessionElement: {
-        prototype: HTMLPageSessionElement;
-        new (): HTMLPageSessionElement;
-    };
     interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
     }
     var HTMLPageTrucksElement: {
@@ -287,7 +278,6 @@ declare global {
         "page-partners": HTMLPagePartnersElement;
         "page-press": HTMLPagePressElement;
         "page-privacy": HTMLPagePrivacyElement;
-        "page-session": HTMLPageSessionElement;
         "page-trucks": HTMLPageTrucksElement;
         "page-vax-and-snacks": HTMLPageVaxAndSnacksElement;
         "ui-address-input": HTMLUiAddressInputElement;
@@ -337,9 +327,6 @@ declare namespace LocalJSX {
     interface PagePress {
     }
     interface PagePrivacy {
-    }
-    interface PageSession {
-        "match": MatchResults;
     }
     interface PageTrucks {
     }
@@ -416,7 +403,6 @@ declare namespace LocalJSX {
         "page-partners": PagePartners;
         "page-press": PagePress;
         "page-privacy": PagePrivacy;
-        "page-session": PageSession;
         "page-trucks": PageTrucks;
         "page-vax-and-snacks": PageVaxAndSnacks;
         "ui-address-input": UiAddressInput;
@@ -450,7 +436,6 @@ declare module "@stencil/core" {
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
-            "page-session": LocalJSX.PageSession & JSXBase.HTMLAttributes<HTMLPageSessionElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
             "page-vax-and-snacks": LocalJSX.PageVaxAndSnacks & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
             "ui-address-input": LocalJSX.UiAddressInput & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;
