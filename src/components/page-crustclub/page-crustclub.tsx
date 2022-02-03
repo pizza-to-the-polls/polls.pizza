@@ -4,10 +4,10 @@ import { RouterHistory } from "@stencil/router";
 import { baseFetch } from "../../api/PizzaApi";
 
 @Component({
-  tag: "page-donate",
-  styleUrl: "page-donate.scss",
+  tag: "page-crustclub",
+  styleUrl: "page-crustclub.scss",
 })
-export class PageDonate {
+export class PageCrustclub {
   @State() private amount?: number | null;
   @State() private showConfirmation: boolean = false;
   @State() private canNativeShare: boolean = false;
@@ -32,7 +32,7 @@ export class PageDonate {
     const showError = this.showError;
     try {
       const { success, checkoutSessionId, message } = await baseFetch(`/donations`, {
-        body: JSON.stringify({ type: "donation", amountUsd: amount, referrer: this.referral }),
+        body: JSON.stringify({ type: "subscription", amountUsd: amount, referrer: this.referral }),
         method: "POST",
       });
 
@@ -68,34 +68,17 @@ export class PageDonate {
       this.canNativeShare = navigator && navigator.share ? true : false;
     }
 
-    const activateCustomAmountRadio = () => {
-      const form = document.getElementById("donate-form") as HTMLFormElement;
-      if (form) {
-        this.amount = null;
-        form.reset();
-      }
-      document.getElementById("custom-amount-radio")?.setAttribute("checked", "true");
-    };
-
     const getAmount = (): number | null => {
-      const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
-      const custom = document.getElementById("custom-amount") as HTMLInputElement;
-      if (checked && checked.value) {
-        custom.value = "";
-      }
-      const amount = custom.value ? custom.value : checked?.value;
-
-      return amount.length > 0 ? Number(amount) : null;
+      const checked = document.querySelector("input[name=level]:checked") as HTMLInputElement;
+      return checked ? Number(checked.value) : null;
     };
 
     const handleChange = () => (this.amount = getAmount());
     const handleCheckout = (e: Event) => {
       if (this.amount) {
-        if (this.amount >= 0.5) {
-          this.donate(this.amount);
-        } else {
-          this.showError("Whoops! Donations must be $0.50 or greater.");
-        }
+        this.donate(this.amount);
+      } else {
+        this.showError("Whoops! You need to select a level to give");
       }
       e.preventDefault();
     };
@@ -110,8 +93,9 @@ export class PageDonate {
           })
           .replace(/\.00/g, "")
       : "";
-    const shareText = "I just donated" + shareAmount + " to Pizza to the Polls to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
-    const shareUrl = "https://polls.pizza/donate"; // add URL tracking parameters here, if desired
+    const shareText =
+      "I'm signing up to donate " + shareAmount + " to Pizza to the Polls each month to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
+    const shareUrl = "https://polls.pizza/crustclub"; // add URL tracking parameters here, if desired
 
     // Native sharing on device via `navigator.share` - supported on mobile, tablets, and some browsers
     const nativeShare = async () => {
@@ -163,7 +147,7 @@ export class PageDonate {
         form.reset();
       }
       // Remove any query parameters
-      this.history?.replace("/donate/", {});
+      this.history?.replace("/crustclub/", {});
       e.preventDefault();
     };
 
@@ -171,7 +155,7 @@ export class PageDonate {
       <Host>
         <ui-main-content background="red">
           <ui-card>
-            <h1>Donate</h1>
+            <h1>Join Crust Club</h1>
 
             {!this.showConfirmation && (
               <div>
@@ -182,51 +166,45 @@ export class PageDonate {
 
                 <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
                   <label class="label">
-                    Choose an amount <span class="required">*</span>
+                    Choose an amount to give each month<span class="required">*</span>
                   </label>
                   <ul class="donation-amount-list">
                     <li>
                       <label class="radio" htmlFor="radio-1">
-                        <input type="radio" value="20" id="radio-1" name="amount" />
-                        <span class="label-text">$20 🍕</span>
+                        <input type="radio" value="5" id="radio-1" name="level" />
+                        <span class="label-text">$5 / month 🍕</span>
+                        <span class="label-deets">
+                          <strong>Perks:</strong> Optional social media shoutout
+                        </span>
+                        <span class="label-deets">
+                          <strong>Impact:</strong> Your donation will feed 25 people in long lines per year
+                        </span>
                         <span class="indicator"></span>
                       </label>
                     </li>
                     <li>
                       <label class="radio" htmlFor="radio-2">
-                        <input type="radio" value="40" id="radio-2" name="amount" />
-                        <span class="label-text">$40 🍕🍕</span>
+                        <input type="radio" value="10" id="radio-2" name="level" />
+                        <span class="label-text">$10 / month 🍕🍕</span>
+                        <span class="label-deets">
+                          <strong>Perks:</strong> Optional social media shoutout
+                        </span>
+                        <span class="label-deets">
+                          <strong>Impact:</strong> Your donation will feed 50 people in long lines per year
+                        </span>
                         <span class="indicator"></span>
                       </label>
                     </li>
                     <li>
                       <label class="radio" htmlFor="radio-3">
-                        <input type="radio" value="60" id="radio-3" name="amount" />
-                        <span class="label-text">$60 🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-4">
-                        <input type="radio" value="100" id="radio-4" name="amount" />
-                        <span class="label-text">$100 🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-5">
-                        <input type="radio" value="200" id="radio-5" name="amount" />
-                        <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
-                        <input type="radio" id="custom-amount-radio" name="amount" value="" />
-                        <span class="label-text" id="custom-amount-text">
-                          Other: $
+                        <input type="radio" value="20" id="radio-3" name="level" />
+                        <span class="label-text">$20 / month 🍕🍕🍕🍕</span>
+                        <span class="label-deets">
+                          <strong>Perks:</strong> Optional social media shoutout, Custom Yeti tumbler (shipped end of 2022)
                         </span>
-                        <input class="input" type="text" name="amount" id="custom-amount" onInput={handleChange} autocomplete="off" />
+                        <span class="label-deets">
+                          <strong>Impact:</strong> Your donation will feed 100 people in long lines per year
+                        </span>
                         <span class="indicator"></span>
                       </label>
                     </li>
@@ -236,17 +214,11 @@ export class PageDonate {
                     class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
                     disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
                   >
-                    Donate
+                    Join
                   </button>
-                  <stencil-route-link url="/crustclub" class="button is-blue is-fullwidth-mobile">
-                    Become a Member
-                  </stencil-route-link>
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">
                       <p>{this.error}</p>
-                      <a class="button is-blue is-fullwidth-mobile" target="_blank" href={`https://paypal.me/pizzatothepolls/${this.amount || "0.0"}`}>
-                        Donate via PayPal
-                      </a>
                     </div>
                   )}
                   <p>
@@ -263,19 +235,7 @@ export class PageDonate {
             {this.showConfirmation && (
               <div id="donate-confirmation">
                 <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
-                <p>
-                  Thanks for donating{" "}
-                  {this.amount
-                    ? " $" +
-                      Number(this.amount)
-                        .toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })
-                        .replace(/\.00/g, "")
-                    : null}{" "}
-                  to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.
-                </p>
+                <p>Thanks for signing up to support Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.</p>
 
                 <p>Help spread the word by sharing your donation!</p>
 

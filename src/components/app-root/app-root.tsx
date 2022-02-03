@@ -1,17 +1,18 @@
 import { Build } from "@stencil/core";
+import { Component, h, Host } from "@stencil/core";
 
 import { PizzaApi } from "../../api";
-import { Component, h, Host } from "@stencil/core";
 
 @Component({
   tag: "app-root",
   styleUrl: "app-root.scss",
 })
 export class AppRoot {
-
   public componentWillLoad() {
     // Ensure the backend is loaded by hitting a health check
-    if (Build.isBrowser) PizzaApi.getHealth()
+    if (Build.isBrowser) {
+      PizzaApi.getHealth();
+    }
   }
 
   public render() {
@@ -51,7 +52,7 @@ export class AppRoot {
               <stencil-route url="/donate" component="page-donate" />
               <stencil-route url="/gift" component="page-gift" />
               <stencil-route url="/crustclub" component="page-crustclub" />
-              <stencil-route url={["/sign-in","/session/:token"]} component="page-session" />
+              <stencil-route url={["/sign-in", "/session/:token"]} component="page-session" />
               <stencil-route url="/guidelines" component="page-guidelines" />
               <stencil-route url="/instructions" component="page-instructions" />
               <stencil-route url="/on-demand" component="page-on-demand" />
