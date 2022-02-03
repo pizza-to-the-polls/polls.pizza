@@ -5,7 +5,6 @@ import { PizzaApi } from "../../api";
 
 @Component({
   tag: "page-session",
-  styleUrl: "page-session.scss",
 })
 export class PageSession {
   @State() private token?: string | null;
