@@ -200,7 +200,7 @@ export class PageCrustclub {
                         <input type="radio" value="20" id="radio-3" name="level" />
                         <span class="label-text">$20 / month 🍕🍕🍕🍕</span>
                         <span class="label-deets">
-                          <strong>Perks:</strong> Optional social media shoutout, Custom Yeti tumbler (shipped end of 2022)
+                          <strong>Perks:</strong> Custom Yeti tumbler (shipped end of 2022), Optional social media shoutout
                         </span>
                         <span class="label-deets">
                           <strong>Impact:</strong> Your donation will feed 100 people in long lines per year
@@ -211,10 +211,10 @@ export class PageCrustclub {
                   </ul>
                   <button
                     onClick={handleCheckout}
-                    class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                    class={"button is-red is-fullwidth " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
                     disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
                   >
-                    Join
+                    Become a Member
                   </button>
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">

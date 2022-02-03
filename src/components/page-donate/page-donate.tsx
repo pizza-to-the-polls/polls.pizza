@@ -233,12 +233,12 @@ export class PageDonate {
                   </ul>
                   <button
                     onClick={handleCheckout}
-                    class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                    class={"button is-red is-fullwidth " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
                     disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
                   >
                     Donate
                   </button>
-                  <stencil-route-link url="/crustclub" class="button is-blue is-fullwidth-mobile">
+                  <stencil-route-link url="/crustclub" class="button is-cyan is-fullwidth">
                     Become a Member
                   </stencil-route-link>
                   {this.error && (
