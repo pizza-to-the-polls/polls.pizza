@@ -3,6 +3,8 @@ import { RouterHistory } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
 
+const AMOUNTS = [20, 40, 80, 100, 120, 200];
+
 @Component({
   tag: "page-gift",
   styleUrl: "page-gift.scss",
@@ -22,13 +24,17 @@ export class PageGift {
     this.referral = this.history?.location.query.referral || "";
 
     const isPostDonate = !!this.history?.location.query.success;
-    const amountDonatedUsd = this.history?.location.query.amount_usd;
     const giftName = this.history?.location.query.gift_name;
+    const amountDonatedUsd = this.history?.location.query.amount_usd ? parseFloat(this.history?.location.query.amount_usd as string) : null;
 
-    if (isPostDonate && amountDonatedUsd) {
-      this.amount = parseFloat(amountDonatedUsd as string);
-      this.giftName = giftName as string;
-      this.showConfirmation = true;
+    if (amountDonatedUsd) {
+      if (isPostDonate) {
+        this.amount = amountDonatedUsd;
+        this.giftName = giftName as string;
+        this.showConfirmation = true;
+      } else {
+        this.amount = AMOUNTS.includes(amountDonatedUsd) ? amountDonatedUsd : null;
+      }
     }
   }
 
@@ -201,41 +207,18 @@ export class PageGift {
                     Choose an amount <span class="required">*</span>
                   </label>
                   <ul class="donation-amount-list">
-                    <li>
-                      <label class="radio" htmlFor="radio-1">
-                        <input type="radio" value="40" id="radio-1" name="amount" />
-                        <span class="label-text">$40 🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-2">
-                        <input type="radio" value="80" id="radio-2" name="amount" />
-                        <span class="label-text">$80 🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-3">
-                        <input type="radio" value="100" id="radio-3" name="amount" />
-                        <span class="label-text">$100 🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-4">
-                        <input type="radio" value="$120" id="radio-4" name="amount" />
-                        <span class="label-text">$120 🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-5">
-                        <input type="radio" value="200" id="radio-5" name="amount" />
-                        <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
+                    {AMOUNTS.map((amount, idx) => (
+                      <li>
+                        <label class="radio" htmlFor={`radio-${idx + 1}`}>
+                          <input type="radio" value={amount} id={`radio-${idx + 1}`} name="amount" checked={this.amount === amount} />
+                          <span class="label-text">
+                            ${amount} {"🍕".repeat(amount / 20)}
+                          </span>
+                          <span class="indicator"></span>
+                        </label>
+                      </li>
+                    ))}
+
                     <li>
                       <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
                         <input type="radio" id="custom-amount-radio" name="amount" value="" />

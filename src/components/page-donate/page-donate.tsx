@@ -3,11 +3,14 @@ import { RouterHistory } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
 
+const AMOUNTS = [5, 10, 20, 50, 100, 200];
+
 @Component({
   tag: "page-donate",
   styleUrl: "page-donate.scss",
 })
 export class PageDonate {
+  @State() private donationType: string = "donation";
   @State() private amount?: number | null;
   @State() private showConfirmation: boolean = false;
   @State() private canNativeShare: boolean = false;
@@ -18,12 +21,17 @@ export class PageDonate {
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
     this.referral = this.history?.location.query.referral || "";
+    this.donationType = this.history?.location.query?.type || this.donationType;
 
     const isPostDonate = !!this.history?.location.query.success;
-    const amountDonatedUsd = this.history?.location.query.amount_usd;
-    if (isPostDonate && amountDonatedUsd) {
-      this.amount = parseFloat(amountDonatedUsd as string);
-      this.showConfirmation = true;
+    const amountDonatedUsd = this.history?.location.query.amount_usd ? parseFloat(this.history?.location.query.amount_usd as string) : null;
+    if (amountDonatedUsd) {
+      if (isPostDonate) {
+        this.amount = amountDonatedUsd;
+        this.showConfirmation = true;
+      } else {
+        this.amount = AMOUNTS.includes(amountDonatedUsd) ? amountDonatedUsd : null;
+      }
     }
   }
 
@@ -31,7 +39,7 @@ export class PageDonate {
     this.error = null;
     const showError = this.showError;
     try {
-      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("donation", amount, { referrer: this.referral });
+      const { success, checkoutSessionId, message } = await PizzaApi.postDonation(this.donationType, amount, { referrer: this.referral });
 
       if (success) {
         const sessionId = checkoutSessionId;
@@ -84,10 +92,18 @@ export class PageDonate {
       }
       const amount = custom.value ? custom.value : checked?.value;
 
-      return amount.length > 0 ? Number(amount) : null;
+      return amount && amount.length > 0 ? Number(amount) : null;
     };
 
-    const handleChange = () => (this.amount = getAmount());
+    const getDonationType = (): string => {
+      const checked = document.querySelector("input[name=donationType]:checked") as HTMLInputElement;
+      return checked?.value || "donation";
+    };
+
+    const handleChange = () => {
+      this.amount = getAmount();
+      this.donationType = getDonationType();
+    };
     const handleCheckout = (e: Event) => {
       if (this.amount) {
         if (this.amount >= 0.5) {
@@ -180,45 +196,40 @@ export class PageDonate {
                 </div>
 
                 <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
+                  <div class="form-item ">
+                    <label class="label">
+                      Choose one time or monthly donation<span class="required">*</span>
+                    </label>
+                    <div class="radio-group social-radio-group">
+                      <label class="radio" htmlFor="donation-type-donation" onClick={handleChange}>
+                        <input type="radio" value="donation" id="donation-type-donation" name="donationType" checked={this.donationType === "donation"} />
+                        <span class="label-text">One time</span>
+                        <span class="indicator"></span>
+                      </label>
+                      <label class="radio" htmlFor="donation-type-subscription" onClick={handleChange}>
+                        <input type="radio" value="subscription" id="donation-type-subscription" name="donationType" checked={this.donationType === "subscription"} />
+                        <span class="label-text">Monthly</span>
+                        <span class="indicator"></span>
+                      </label>
+                    </div>
+                  </div>
+
                   <label class="label">
                     Choose an amount <span class="required">*</span>
                   </label>
                   <ul class="donation-amount-list">
-                    <li>
-                      <label class="radio" htmlFor="radio-1">
-                        <input type="radio" value="20" id="radio-1" name="amount" />
-                        <span class="label-text">$20 🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-2">
-                        <input type="radio" value="40" id="radio-2" name="amount" />
-                        <span class="label-text">$40 🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-3">
-                        <input type="radio" value="60" id="radio-3" name="amount" />
-                        <span class="label-text">$60 🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-4">
-                        <input type="radio" value="100" id="radio-4" name="amount" />
-                        <span class="label-text">$100 🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-5">
-                        <input type="radio" value="200" id="radio-5" name="amount" />
-                        <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
+                    {AMOUNTS.map((amount, idx) => (
+                      <li>
+                        <label class="radio" htmlFor={`radio-${idx + 1}`}>
+                          <input type="radio" value={amount} id={`radio-${idx + 1}`} name="amount" checked={this.amount === amount} />
+                          <span class="label-text">
+                            ${amount} {"🍕".repeat(Math.ceil(amount / 9.9))}
+                          </span>
+                          <span class="indicator"></span>
+                        </label>
+                      </li>
+                    ))}
+
                     <li>
                       <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
                         <input type="radio" id="custom-amount-radio" name="amount" value="" />
@@ -237,9 +248,6 @@ export class PageDonate {
                   >
                     Donate
                   </button>
-                  <stencil-route-link url="/crustclub" class="button is-cyan is-fullwidth">
-                    Become a Member
-                  </stencil-route-link>
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">
                       <p>{this.error}</p>

@@ -3,6 +3,8 @@ import { RouterHistory } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
 
+const AMOUNTS = [5, 10, 20];
+
 @Component({
   tag: "page-crustclub",
   styleUrl: "page-crustclub.scss",
@@ -164,45 +166,20 @@ export class PageCrustclub {
                     Choose an amount to give each month<span class="required">*</span>
                   </label>
                   <ul class="donation-amount-list">
-                    <li>
-                      <label class="radio" htmlFor="radio-1">
-                        <input type="radio" value="5" id="radio-1" name="level" />
-                        <span class="label-text">$5 / month 🍕</span>
-                        <span class="label-deets">
-                          <strong>Perks:</strong> Optional social media shoutout
-                        </span>
-                        <span class="label-deets">
-                          <strong>Impact:</strong> Your donation will feed 25 people in long lines per year
-                        </span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-2">
-                        <input type="radio" value="10" id="radio-2" name="level" />
-                        <span class="label-text">$10 / month 🍕🍕</span>
-                        <span class="label-deets">
-                          <strong>Perks:</strong> Optional social media shoutout
-                        </span>
-                        <span class="label-deets">
-                          <strong>Impact:</strong> Your donation will feed 50 people in long lines per year
-                        </span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-3">
-                        <input type="radio" value="20" id="radio-3" name="level" />
-                        <span class="label-text">$20 / month 🍕🍕🍕🍕</span>
-                        <span class="label-deets">
-                          <strong>Perks:</strong> Custom Yeti tumbler (shipped end of 2022), Optional social media shoutout
-                        </span>
-                        <span class="label-deets">
-                          <strong>Impact:</strong> Your donation will feed 100 people in long lines per year
-                        </span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
+                    {AMOUNTS.map((amount, idx) => (
+                      <li>
+                        <label class="radio" htmlFor={`radio-${idx + 1}`}>
+                          <input type="radio" value="5" id={`radio-${idx + 1}`} name="level" />
+                          <span class="label-text">
+                            ${amount} / month {"🍕".repeat(amount / 5)}
+                          </span>
+                          <span class="label-deets">
+                            <strong>Impact:</strong> Your donation will feed {amount * 5} people in long lines per year
+                          </span>
+                          <span class="indicator"></span>
+                        </label>
+                      </li>
+                    ))}
                   </ul>
                   <button
                     onClick={handleCheckout}
