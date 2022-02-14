@@ -232,7 +232,7 @@ export class PageDonate {
 
                     <li>
                       {this.donationType === "subscription" ? (
-                        <p>Monthly donations will charge credit cards monthly on the anniversary date.</p>
+                        <p>Your first online gift will be charged to your credit card today. All subsequent charges will occur on the same date each month.</p>
                       ) : (
                         <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
                           <input type="radio" id="custom-amount-radio" name="amount" value="" />

@@ -184,6 +184,9 @@ export class PageCrustclub {
                         </label>
                       </li>
                     ))}
+                    <li>
+                      <p>Your first online gift will be charged to your credit card today. All subsequent charges will occur on the same date each month.</p>
+                    </li>
                   </ul>
                   <button
                     onClick={handleCheckout}
