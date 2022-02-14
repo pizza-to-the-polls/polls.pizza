@@ -11,6 +11,7 @@ export class PageSession {
   @State() private token?: string | null;
   @State() private email?: string | null;
   @State() private error?: string | null;
+  @State() private sent: boolean = false;
   @Prop() public match!: MatchResults;
 
   public componentWillLoad() {
@@ -42,6 +43,7 @@ export class PageSession {
     }
     try {
       await PizzaApi.postSession(this.email);
+      this.sent = true;
     } catch (e) {
       this.token = null;
       this.showError(e?.errors?.token || "Whoops! That link doesn't work.");
@@ -66,7 +68,7 @@ export class PageSession {
       <Host>
         <ui-main-content background="red">
           <ui-card>
-            {!this.token ? (
+            {!this.token && !this.sent ? (
               <form id="sign-in-form" onChange={handleChange} onSubmit={handleSubmit}>
                 <h1>Sign in to Crust Club</h1>
                 <label class="label">
@@ -74,7 +76,7 @@ export class PageSession {
                 </label>
                 <div class="form-item-group">
                   <div class="form-item">
-                    <input class="is-fullwidth input" onChange={handleChange} type="email" id="email" name="email" value="" />
+                    <input class="is-fullwidth input" onChange={handleChange} onKeyUp={handleChange} type="email" id="email" name="email" value="" />
                   </div>
                 </div>
                 <button onClick={handleSubmit} class={"button is-red is-fullwidth " + (!this.email ? "is-disabled" : "")} disabled={!this.email || (this.email || "").length < 1}>
@@ -82,8 +84,10 @@ export class PageSession {
                 </button>
                 <p>Links are valid for 15 minutes.</p>
               </form>
-            ) : (
+            ) : this.token ? (
               <h1>Signing you in...</h1>
+            ) : (
+              <h1>Check your email!</h1>
             )}
             <p>{this.error}</p>
           </ui-card>

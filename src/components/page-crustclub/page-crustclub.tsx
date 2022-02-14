@@ -22,10 +22,14 @@ export class PageCrustclub {
     this.referral = this.history?.location.query.referral || "";
 
     const isPostDonate = !!this.history?.location.query.success;
-    const amountDonatedUsd = this.history?.location.query.amount_usd;
-    if (isPostDonate && amountDonatedUsd) {
-      this.amount = parseFloat(amountDonatedUsd as string);
-      this.showConfirmation = true;
+    const amountDonatedUsd = this.history?.location.query.amount_usd ? parseFloat(this.history?.location.query.amount_usd as string) : null;
+    if (amountDonatedUsd) {
+      if (isPostDonate) {
+        this.amount = amountDonatedUsd;
+        this.showConfirmation = true;
+      } else {
+        this.amount = AMOUNTS.includes(amountDonatedUsd) ? amountDonatedUsd : null;
+      }
     }
   }
 
@@ -169,7 +173,7 @@ export class PageCrustclub {
                     {AMOUNTS.map((amount, idx) => (
                       <li>
                         <label class="radio" htmlFor={`radio-${idx + 1}`}>
-                          <input type="radio" value="5" id={`radio-${idx + 1}`} name="level" />
+                          <input type="radio" value="5" id={`radio-${idx + 1}`} name="level" checked={this.amount === amount} />
                           <span class="label-text">
                             ${amount} / month {"🍕".repeat(amount / 5)}
                           </span>

@@ -3,7 +3,7 @@ import { RouterHistory } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
 
-const AMOUNTS = [5, 10, 20, 50, 100, 200];
+const AMOUNTS = [5, 10, 20, 50, 100];
 
 @Component({
   tag: "page-donate",
@@ -87,10 +87,10 @@ export class PageDonate {
     const getAmount = (): number | null => {
       const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
       const custom = document.getElementById("custom-amount") as HTMLInputElement;
-      if (checked && checked.value) {
+      if (checked?.value && custom) {
         custom.value = "";
       }
-      const amount = custom.value ? custom.value : checked?.value;
+      const amount = custom?.value ? custom.value : checked?.value;
 
       return amount && amount.length > 0 ? Number(amount) : null;
     };
@@ -231,14 +231,18 @@ export class PageDonate {
                     ))}
 
                     <li>
-                      <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
-                        <input type="radio" id="custom-amount-radio" name="amount" value="" />
-                        <span class="label-text" id="custom-amount-text">
-                          Other: $
-                        </span>
-                        <input class="input" type="text" name="amount" id="custom-amount" onInput={handleChange} autocomplete="off" />
-                        <span class="indicator"></span>
-                      </label>
+                      {this.donationType === "subscription" ? (
+                        <p>Monthly donations will charge credit cards monthly on the anniversary date.</p>
+                      ) : (
+                        <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
+                          <input type="radio" id="custom-amount-radio" name="amount" value="" />
+                          <span class="label-text" id="custom-amount-text">
+                            Other: $
+                          </span>
+                          <input class="input" type="text" name="amount" id="custom-amount" onInput={handleChange} autocomplete="off" />
+                          <span class="indicator"></span>
+                        </label>
+                      )}
                     </li>
                   </ul>
                   <button
