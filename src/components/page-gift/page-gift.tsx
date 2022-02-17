@@ -101,7 +101,7 @@ export class PageGift {
       const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
       const custom = document.getElementById("custom-amount") as HTMLInputElement;
 
-      if (checked?.value) {
+      if (checked?.value && custom) {
         this.enteredOther = false;
         custom.value = "";
       }
@@ -118,6 +118,7 @@ export class PageGift {
     };
 
     const handleChange = () => {
+      this.error = null;
       this.amount = getAmount();
       this.giftName = getGift("giftName");
       this.giftEmail = getGift("giftEmail");
