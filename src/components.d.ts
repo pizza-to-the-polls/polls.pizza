@@ -20,6 +20,9 @@ export namespace Components {
     }
     interface PageCovid {
     }
+    interface PageCrustclub {
+        "history"?: RouterHistory;
+    }
     interface PageDeliveries {
         "history": RouterHistory;
         "match": MatchResults;
@@ -43,6 +46,9 @@ export namespace Components {
     interface PagePress {
     }
     interface PagePrivacy {
+    }
+    interface PageSession {
+        "match": MatchResults;
     }
     interface PageTrucks {
     }
@@ -135,6 +141,12 @@ declare global {
         prototype: HTMLPageCovidElement;
         new (): HTMLPageCovidElement;
     };
+    interface HTMLPageCrustclubElement extends Components.PageCrustclub, HTMLStencilElement {
+    }
+    var HTMLPageCrustclubElement: {
+        prototype: HTMLPageCrustclubElement;
+        new (): HTMLPageCrustclubElement;
+    };
     interface HTMLPageDeliveriesElement extends Components.PageDeliveries, HTMLStencilElement {
     }
     var HTMLPageDeliveriesElement: {
@@ -194,6 +206,12 @@ declare global {
     var HTMLPagePrivacyElement: {
         prototype: HTMLPagePrivacyElement;
         new (): HTMLPagePrivacyElement;
+    };
+    interface HTMLPageSessionElement extends Components.PageSession, HTMLStencilElement {
+    }
+    var HTMLPageSessionElement: {
+        prototype: HTMLPageSessionElement;
+        new (): HTMLPageSessionElement;
     };
     interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
     }
@@ -268,6 +286,7 @@ declare global {
         "page-activity": HTMLPageActivityElement;
         "page-contact": HTMLPageContactElement;
         "page-covid": HTMLPageCovidElement;
+        "page-crustclub": HTMLPageCrustclubElement;
         "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
         "page-gift": HTMLPageGiftElement;
@@ -278,6 +297,7 @@ declare global {
         "page-partners": HTMLPagePartnersElement;
         "page-press": HTMLPagePressElement;
         "page-privacy": HTMLPagePrivacyElement;
+        "page-session": HTMLPageSessionElement;
         "page-trucks": HTMLPageTrucksElement;
         "page-vax-and-snacks": HTMLPageVaxAndSnacksElement;
         "ui-address-input": HTMLUiAddressInputElement;
@@ -304,6 +324,9 @@ declare namespace LocalJSX {
     }
     interface PageCovid {
     }
+    interface PageCrustclub {
+        "history"?: RouterHistory;
+    }
     interface PageDeliveries {
         "history": RouterHistory;
         "match": MatchResults;
@@ -327,6 +350,9 @@ declare namespace LocalJSX {
     interface PagePress {
     }
     interface PagePrivacy {
+    }
+    interface PageSession {
+        "match": MatchResults;
     }
     interface PageTrucks {
     }
@@ -393,6 +419,7 @@ declare namespace LocalJSX {
         "page-activity": PageActivity;
         "page-contact": PageContact;
         "page-covid": PageCovid;
+        "page-crustclub": PageCrustclub;
         "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
         "page-gift": PageGift;
@@ -403,6 +430,7 @@ declare namespace LocalJSX {
         "page-partners": PagePartners;
         "page-press": PagePress;
         "page-privacy": PagePrivacy;
+        "page-session": PageSession;
         "page-trucks": PageTrucks;
         "page-vax-and-snacks": PageVaxAndSnacks;
         "ui-address-input": UiAddressInput;
@@ -426,6 +454,7 @@ declare module "@stencil/core" {
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
             "page-contact": LocalJSX.PageContact & JSXBase.HTMLAttributes<HTMLPageContactElement>;
             "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
+            "page-crustclub": LocalJSX.PageCrustclub & JSXBase.HTMLAttributes<HTMLPageCrustclubElement>;
             "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
             "page-gift": LocalJSX.PageGift & JSXBase.HTMLAttributes<HTMLPageGiftElement>;
@@ -436,6 +465,7 @@ declare module "@stencil/core" {
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
+            "page-session": LocalJSX.PageSession & JSXBase.HTMLAttributes<HTMLPageSessionElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
             "page-vax-and-snacks": LocalJSX.PageVaxAndSnacks & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
             "ui-address-input": LocalJSX.UiAddressInput & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;

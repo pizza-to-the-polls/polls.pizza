@@ -3,16 +3,14 @@ import { RouterHistory } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
 
-const AMOUNTS = [5, 10, 20, 50, 100];
+const AMOUNTS = [5, 10, 20];
 
 @Component({
-  tag: "page-donate",
-  styleUrl: "page-donate.scss",
+  tag: "page-crustclub",
+  styleUrl: "page-crustclub.scss",
 })
-export class PageDonate {
-  @State() private donationType: string = "donation";
+export class PageCrustclub {
   @State() private amount?: number | null;
-  @State() private enteredOther?: boolean = false;
   @State() private showConfirmation: boolean = false;
   @State() private canNativeShare: boolean = false;
   @State() private referral?: string | null;
@@ -22,7 +20,6 @@ export class PageDonate {
   public componentWillLoad() {
     document.title = `Donate | Pizza to the Polls`;
     this.referral = this.history?.location.query.referral || "";
-    this.donationType = this.history?.location.query?.type || this.donationType;
 
     const isPostDonate = !!this.history?.location.query.success;
     const amountDonatedUsd = this.history?.location.query.amount_usd ? parseFloat(this.history?.location.query.amount_usd as string) : null;
@@ -40,7 +37,7 @@ export class PageDonate {
     this.error = null;
     const showError = this.showError;
     try {
-      const { success, checkoutSessionId, message } = await PizzaApi.postDonation(this.donationType, amount, { referrer: this.referral });
+      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("subscription", amount, { referrer: this.referral });
 
       if (success) {
         const sessionId = checkoutSessionId;
@@ -76,53 +73,17 @@ export class PageDonate {
       this.canNativeShare = navigator && navigator.share ? true : false;
     }
 
-    const activateCustomAmountRadio = () => {
-      this.enteredOther = true;
-
-      const selected = document.getElementById("input[name=amount]:checked") as HTMLInputElement;
-      const custom = document.getElementById("custom-amount-radio") as HTMLInputElement;
-
-      if (selected) {
-        selected.checked = false;
-        this.amount = null;
-      }
-      if (custom) {
-        custom.checked = true;
-      }
-    };
-
     const getAmount = (): number | null => {
-      const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
-      const custom = document.getElementById("custom-amount") as HTMLInputElement;
-
-      if (checked?.value && custom) {
-        this.enteredOther = false;
-        custom.value = "";
-      }
-      const amount = custom?.value ? custom.value : checked?.value;
-
-      return amount && amount.length > 0 ? Number(amount) : null;
+      const checked = document.querySelector("input[name=level]:checked") as HTMLInputElement;
+      return checked ? Number(checked.value) : null;
     };
 
-    const getAmountForCheck = (): number | null | undefined => (this.enteredOther ? 0 : this.amount);
-
-    const getDonationType = (): string => {
-      const checked = document.querySelector("input[name=donationType]:checked") as HTMLInputElement;
-      return checked?.value || "donation";
-    };
-
-    const handleChange = () => {
-      this.error = null;
-      this.amount = getAmount();
-      this.donationType = getDonationType();
-    };
+    const handleChange = () => (this.amount = getAmount());
     const handleCheckout = (e: Event) => {
       if (this.amount) {
-        if (this.amount >= 0.5) {
-          this.donate(this.amount);
-        } else {
-          this.showError("Whoops! Donations must be $0.50 or greater.");
-        }
+        this.donate(this.amount);
+      } else {
+        this.showError("Whoops! You need to select a level to give");
       }
       e.preventDefault();
     };
@@ -137,8 +98,11 @@ export class PageDonate {
           })
           .replace(/\.00/g, "")
       : "";
-    const shareText = "I just donated" + shareAmount + " to Pizza to the Polls to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
-    const shareUrl = "https://polls.pizza/donate"; // add URL tracking parameters here, if desired
+    const shareText =
+      "I'm joining the Crust Club and giving" +
+      shareAmount +
+      " to Pizza to the Polls each month to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
+    const shareUrl = "https://polls.pizza/crustclub"; // add URL tracking parameters here, if desired
 
     // Native sharing on device via `navigator.share` - supported on mobile, tablets, and some browsers
     const nativeShare = async () => {
@@ -182,79 +146,46 @@ export class PageDonate {
       return;
     };
 
-    const resetDonationForm = (e: Event) => {
-      this.showConfirmation = false;
-      this.amount = null;
-      const form = document.getElementById("donate-form") as HTMLFormElement;
-      if (form) {
-        form.reset();
-      }
-      // Remove any query parameters
-      this.history?.replace("/donate/", {});
-      e.preventDefault();
-    };
-
     return (
       <Host>
         <ui-main-content background="red">
           <ui-card>
-            <h1>Donate</h1>
+            <img class="logo logo-mobile is-hidden-tablet is-hidden-desktop" alt="Crust Club Logo" src="/images/crustclub.png" />
+            <img class="logo logo-desktop is-hidden-mobile" alt="Crust Club Logo" src="/images/crustclub.png" />
+
+            <h1>{this.showConfirmation ? "Welcome to Crust Club!" : "Join Crust Club"}</h1>
 
             {!this.showConfirmation && (
               <div>
                 <div class="donation-intro">
                   <p>Waiting in line is a bummer. Waiting in line with pizza is a little less of a bummer.</p>
-                  <p>Keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
+                  <p>
+                    Keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach by setting up a monthly donation. Become one of our biggest
+                    supporters today by joining Crust Club!
+                  </p>
                 </div>
 
                 <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
-                  <div class="form-item ">
-                    <label class="label">
-                      Choose one time or monthly donation<span class="required">*</span>
-                    </label>
-                    <div class="radio-group social-radio-group">
-                      <label class="radio" htmlFor="donation-type-donation" onClick={handleChange}>
-                        <input type="radio" value="donation" id="donation-type-donation" name="donationType" checked={this.donationType === "donation"} />
-                        <span class="label-text">One time</span>
-                        <span class="indicator"></span>
-                      </label>
-                      <label class="radio" htmlFor="donation-type-subscription" onClick={handleChange}>
-                        <input type="radio" value="subscription" id="donation-type-subscription" name="donationType" checked={this.donationType === "subscription"} />
-                        <span class="label-text">Monthly</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </div>
-                  </div>
-
                   <label class="label">
-                    Choose an amount <span class="required">*</span>
+                    Choose an amount to give each month<span class="required">*</span>
                   </label>
                   <ul class="donation-amount-list">
                     {AMOUNTS.map((amount, idx) => (
                       <li>
                         <label class="radio" htmlFor={`radio-${idx + 1}`}>
-                          <input type="radio" value={amount} id={`radio-${idx + 1}`} name="amount" checked={getAmountForCheck() === amount} />
+                          <input type="radio" value="5" id={`radio-${idx + 1}`} name="level" checked={this.amount === amount} />
                           <span class="label-text">
-                            ${amount} {"🍕".repeat(idx + 1)}
+                            ${amount} / month {"🍕".repeat(amount / 5)}
+                          </span>
+                          <span class="label-deets">
+                            <strong>Impact:</strong> Your donation will feed {amount * 5} people in long lines per year
                           </span>
                           <span class="indicator"></span>
                         </label>
                       </li>
                     ))}
-
                     <li>
-                      {this.donationType === "subscription" ? (
-                        <p>Your first online gift will be charged to your credit card today. All subsequent charges will occur on the same date each month.</p>
-                      ) : (
-                        <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
-                          <input type="radio" id="custom-amount-radio" name="amount" value="" />
-                          <span class="label-text" id="custom-amount-text">
-                            Other: $
-                          </span>
-                          <input class="input" type="text" name="amount" id="custom-amount" onInput={handleChange} autocomplete="off" />
-                          <span class="indicator"></span>
-                        </label>
-                      )}
+                      <p>Your first online gift will be charged to your credit card today. All subsequent charges will occur on the same date each month.</p>
                     </li>
                   </ul>
                   <button
@@ -262,14 +193,11 @@ export class PageDonate {
                     class={"button is-red is-fullwidth " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
                     disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
                   >
-                    Donate
+                    Become a Member
                   </button>
                   {this.error && (
                     <div id="donation-error" class="help has-text-red">
                       <p>{this.error}</p>
-                      <a class="button is-blue is-fullwidth-mobile" target="_blank" href={`https://paypal.me/pizzatothepolls/${this.amount || "0.0"}`}>
-                        Donate via PayPal
-                      </a>
                     </div>
                   )}
                   <p>
@@ -286,21 +214,9 @@ export class PageDonate {
             {this.showConfirmation && (
               <div id="donate-confirmation">
                 <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
-                <p>
-                  Thanks for donating{" "}
-                  {this.amount
-                    ? " $" +
-                      Number(this.amount)
-                        .toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })
-                        .replace(/\.00/g, "")
-                    : null}{" "}
-                  to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.
-                </p>
+                <p>Thanks for joining Crust Club. You'll receive a receipt in your email&nbsp;soon.</p>
 
-                <p>Help spread the word by sharing your donation!</p>
+                <p>Help spread the word by sharing your membership!</p>
 
                 {this.canNativeShare && (
                   <button id="share-donation" onClick={nativeShare} class="button is-blue is-fullwidth-mobile">
@@ -338,9 +254,14 @@ export class PageDonate {
                       </a>
                     </li>
                     <li>
-                      <a href="#" class="button is-fullwidth-mobile" onClick={resetDonationForm}>
-                        Make another donation
-                      </a>
+                      <stencil-route-link url="/donate" class="button is-fullwidth-mobile is-teal">
+                        Make a one-time donation
+                      </stencil-route-link>
+                    </li>
+                    <li>
+                      <stencil-route-link url="/sign-in" class="button is-blue is-fullwidth-mobile">
+                        Manage your membership
+                      </stencil-route-link>
                     </li>
                   </ul>
                 </div>

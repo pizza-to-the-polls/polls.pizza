@@ -1,7 +1,9 @@
 import { Build, Component, h, Host, Prop, State } from "@stencil/core";
 import { RouterHistory } from "@stencil/router";
 
-import { baseFetch } from "../../api/PizzaApi";
+import { PizzaApi } from "../../api";
+
+const AMOUNTS = [20, 40, 80, 100, 120, 200];
 
 @Component({
   tag: "page-gift",
@@ -9,6 +11,7 @@ import { baseFetch } from "../../api/PizzaApi";
 })
 export class PageGift {
   @State() private amount?: number | null;
+  @State() private enteredOther?: boolean = false;
   @State() private giftName?: string | null;
   @State() private giftEmail?: string | null;
   @State() private showConfirmation: boolean = false;
@@ -22,55 +25,50 @@ export class PageGift {
     this.referral = this.history?.location.query.referral || "";
 
     const isPostDonate = !!this.history?.location.query.success;
-    const amountDonatedUsd = this.history?.location.query.amount_usd;
     const giftName = this.history?.location.query.gift_name;
+    const amountDonatedUsd = this.history?.location.query.amount_usd ? parseFloat(this.history?.location.query.amount_usd as string) : null;
 
-    if (isPostDonate && amountDonatedUsd) {
-      this.amount = parseFloat(amountDonatedUsd as string);
-      this.giftName = giftName as string;
-      this.showConfirmation = true;
+    if (amountDonatedUsd) {
+      if (isPostDonate) {
+        this.amount = amountDonatedUsd;
+        this.giftName = giftName as string;
+        this.showConfirmation = true;
+      } else {
+        this.amount = AMOUNTS.includes(amountDonatedUsd) ? amountDonatedUsd : null;
+      }
     }
   }
 
   public async donate(amount: number) {
     this.error = null;
+
     const showError = this.showError;
     try {
-      const resp = await baseFetch(`/donations`, {
-        body: JSON.stringify({
-          amountUsd: amount,
-          referrer: this.referral,
-          giftName: this.giftName,
-          giftEmail: this.giftEmail,
-          url: `${document.location}`,
-        }),
-        method: "POST",
+      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("donation", amount, {
+        referrer: this.referral,
+        giftName: this.giftName,
+        giftEmail: this.giftEmail,
       });
 
-      if (resp.status === 200) {
-        const { success, checkoutSessionId, message } = await resp.json();
-        if (success) {
-          const sessionId = checkoutSessionId;
-          const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
+      if (success) {
+        const sessionId = checkoutSessionId;
+        const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
 
-          stripe
-            .redirectToCheckout({
-              sessionId,
-            })
-            .then(function (result: any) {
-              console.error(result.error.message);
-              showError(result.error.message);
-            });
-        } else {
-          console.error(message);
-          this.showError(message);
-        }
+        stripe
+          .redirectToCheckout({
+            sessionId,
+          })
+          .then(function (result: any) {
+            console.error(result.error.message);
+            showError(result.error.message);
+          });
       } else {
-        this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
+        console.error(`${message}`);
+        this.showError(`${message || PizzaApi.genericErrorMessage}`);
       }
     } catch (e) {
       console.error(e);
-      this.showError("Whoops! That didn't work. Our servers might be a little stuffed right now.");
+      this.showError(PizzaApi.genericErrorMessage);
     }
   }
 
@@ -85,24 +83,34 @@ export class PageGift {
     }
 
     const activateCustomAmountRadio = () => {
-      const form = document.getElementById("donate-form") as HTMLFormElement;
-      if (form) {
+      this.enteredOther = true;
+
+      const selected = document.getElementById("input[name=amount]:checked") as HTMLInputElement;
+      const custom = document.getElementById("custom-amount-radio") as HTMLInputElement;
+
+      if (selected) {
+        selected.checked = false;
         this.amount = null;
-        form.reset();
       }
-      document.getElementById("custom-amount-radio")?.setAttribute("checked", "true");
+      if (custom) {
+        custom.checked = true;
+      }
     };
 
     const getAmount = (): number | null => {
       const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
       const custom = document.getElementById("custom-amount") as HTMLInputElement;
-      if (checked && checked.value) {
+
+      if (checked?.value && custom) {
+        this.enteredOther = false;
         custom.value = "";
       }
-      const amount = custom.value ? custom.value : checked?.value;
+      const amount = custom?.value ? custom.value : checked?.value;
 
-      return amount.length > 0 ? Number(amount) : null;
+      return amount && amount.length > 0 ? Number(amount) : null;
     };
+
+    const getAmountForCheck = (): number | null | undefined => (this.enteredOther ? 0 : this.amount);
 
     const getGift = (name: string): string | null => {
       const elem = document.querySelector(`input[name=${name}]`) as HTMLInputElement;
@@ -110,6 +118,7 @@ export class PageGift {
     };
 
     const handleChange = () => {
+      this.error = null;
       this.amount = getAmount();
       this.giftName = getGift("giftName");
       this.giftEmail = getGift("giftEmail");
@@ -210,41 +219,18 @@ export class PageGift {
                     Choose an amount <span class="required">*</span>
                   </label>
                   <ul class="donation-amount-list">
-                    <li>
-                      <label class="radio" htmlFor="radio-1">
-                        <input type="radio" value="40" id="radio-1" name="amount" />
-                        <span class="label-text">$40 🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-2">
-                        <input type="radio" value="80" id="radio-2" name="amount" />
-                        <span class="label-text">$80 🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-3">
-                        <input type="radio" value="100" id="radio-3" name="amount" />
-                        <span class="label-text">$100 🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-4">
-                        <input type="radio" value="$120" id="radio-4" name="amount" />
-                        <span class="label-text">$120 🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="radio" htmlFor="radio-5">
-                        <input type="radio" value="200" id="radio-5" name="amount" />
-                        <span class="label-text">$200 🍕🍕🍕🍕🍕🍕🍕🍕🍕</span>
-                        <span class="indicator"></span>
-                      </label>
-                    </li>
+                    {AMOUNTS.map((amount, idx) => (
+                      <li>
+                        <label class="radio" htmlFor={`radio-${idx + 1}`}>
+                          <input type="radio" value={amount} id={`radio-${idx + 1}`} name="amount" checked={getAmountForCheck() === amount} />
+                          <span class="label-text">
+                            ${amount} {"🍕".repeat(idx + 1)}
+                          </span>
+                          <span class="indicator"></span>
+                        </label>
+                      </li>
+                    ))}
+
                     <li>
                       <label class="radio" htmlFor="custom-amount" onClick={activateCustomAmountRadio}>
                         <input type="radio" id="custom-amount-radio" name="amount" value="" />

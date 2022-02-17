@@ -2,8 +2,7 @@ import { Build, Component, h, Host, State } from "@stencil/core";
 // @ts-ignore
 import {} from "googlemaps";
 
-import { PizzaApi } from "../../api";
-import { baseFetch } from "../../api/PizzaApi";
+import { PizzaApi, ReportPostResults } from "../../api";
 import shaFile from "../../util/shaFile";
 
 // Shared with pizzabase
@@ -52,7 +51,7 @@ export class FormReport {
    * Submit button loading state
    */
   @State() private photoIsProcessing: boolean = false;
-  @State() private submitResponse: { [key: string]: string } = {};
+  @State() private submitResponse: ReportPostResults | { [id: string]: string } = {};
   @State() private submitError: { [key: string]: string } = {};
   @State() private showLocationInput: boolean = true;
   @State() private locationName: string = "";
@@ -246,12 +245,7 @@ export class FormReport {
     const uploadPhoto = async (file: File, address: string): Promise<void> => {
       const fileHash = await shaFile(file);
 
-      const {
-        id,
-        filePath,
-        isDuplicate,
-        presigned,
-      } = await PizzaApi.postUpload(fileHash, file.name, address)
+      const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
 
       if (!isDuplicate && presigned) {
         const formData = new FormData();
@@ -440,44 +434,38 @@ export class FormReport {
       };
 
       try {
-        const response = await baseFetch(`/report`, {
-          body: JSON.stringify(requestData),
-          method: "POST",
-        });
+        this.submitResponse = await PizzaApi.postReport(requestData);
 
-        if (response) {
-          this.submitResponse = response;
-          this.submitError = {};
-          this.showServerError = false;
+        this.submitError = {};
+        this.showServerError = false;
 
-          // If truck is scheduled/on-site
-          if (this.submitResponse.hasTruck) {
-            this.showFoodTruckOnSiteConfirmation = true;
-          } else {
-            // If Reporter CAN distribute
-            if (this.canDistribute === "true") {
-              if (this.submitResponse.willReceive && !this.submitResponse.alreadyOrdered) {
-                // If Distributor, and they WILL receive order, and we haven't already ordered
-                this.showDistributorConfirmation = true;
-              } else {
-                // If Distributor, and they will NOT receive order
-                this.showDuplicateReportConfirmation = true;
-              }
+        // If truck is scheduled/on-site
+        if (this.submitResponse.hasTruck) {
+          this.showFoodTruckOnSiteConfirmation = true;
+        } else {
+          // If Reporter CAN distribute
+          if (this.canDistribute === "true") {
+            if (this.submitResponse.willReceive && !this.submitResponse.alreadyOrdered) {
+              // If Distributor, and they WILL receive order, and we haven't already ordered
+              this.showDistributorConfirmation = true;
             } else {
-              // Reporter CANNOT distribute
-              if (this.submitResponse.alreadyOrdered) {
-                // We already have a report
-                this.showDuplicateReportConfirmation = true;
-              } else {
-                // New report, we'll look into it
-                this.showSuccessfulReportConfirmation = true;
-              }
+              // If Distributor, and they will NOT receive order
+              this.showDuplicateReportConfirmation = true;
+            }
+          } else {
+            // Reporter CANNOT distribute
+            if (this.submitResponse.alreadyOrdered) {
+              // We already have a report
+              this.showDuplicateReportConfirmation = true;
+            } else {
+              // New report, we'll look into it
+              this.showSuccessfulReportConfirmation = true;
             }
           }
-
-          // Show confirmation: *Always* required to hide form
-          this.showConfirmation = true;
         }
+
+        // Show confirmation: *Always* required to hide form
+        this.showConfirmation = true;
       } catch (errors) {
         this.submitError = errors;
 

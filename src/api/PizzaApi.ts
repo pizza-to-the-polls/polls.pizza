@@ -1,11 +1,24 @@
 import { toQueryString } from "../util";
 
-import { ApiError, ApiSuccess, LocationId, LocationStatus, OrderDetails, OrderId, OrderQueryResults, PizzaTotals, SessionPutResults, TruckQueryResults, UploadPostResults } from "./types";
+import {
+  ApiError,
+  ApiSuccess,
+  DonationPostResults,
+  LocationId,
+  LocationStatus,
+  OrderDetails,
+  OrderId,
+  OrderQueryResults,
+  PizzaTotals,
+  ReportPostResults,
+  SessionPutResults,
+  TruckQueryResults,
+  UploadPostResults,
+} from "./types";
 
 const BASE_URL = process.env.PIZZA_BASE_DOMAIN;
 
-// TODO: This should not need to be exported, remove once all commands are on `PizzaApi`
-export const baseFetch = async <T = any>(path: string, options: { [key: string]: string } = {}): Promise<(T & { isError: undefined }) | ApiError> => {
+const baseFetch = async <T = any>(path: string, options: { [key: string]: string } = {}): Promise<(T & { isError: undefined }) | ApiError> => {
   const headers = options.headers || {};
   const resp = await fetch(`${BASE_URL}${path}`, {
     mode: "cors",
@@ -34,8 +47,10 @@ const reviver: (this: any, key: string, value: any) => any = (key, value) => {
  * NOTE: Keep all public methods sorted alphabetically
  */
 class PizzaApi {
-  public async getHealth() : Promise<void> {
-    await baseFetch("/health")
+  public readonly genericErrorMessage: string = "Whoops! That didn't work. Our servers might be a little stuffed right now.";
+
+  public async getHealth(): Promise<void> {
+    await baseFetch("/health");
   }
 
   public async getLocationStatus(normalizedAddress: string | LocationId, errorHandler?: (error: ApiError) => void): Promise<LocationStatus | null> {
@@ -79,10 +94,60 @@ class PizzaApi {
     return this.handleResponse(result, errorHandler) || { results: [], count: 0 };
   }
 
+  public async postDonation(
+    type: string = "donation",
+    amountUsd: number,
+    extra: { [id: string]: string | number | boolean | undefined | null },
+    errorHandler?: (error: ApiError) => void,
+  ): Promise<DonationPostResults> {
+    const result = await baseFetch<DonationPostResults>(`/donations`, {
+      body: JSON.stringify({ ...extra, url: `${document.location}`, type, amountUsd }),
+      method: "POST",
+    });
+    return this.handleResponse(result, errorHandler) || { success: false, message: "Whoops! That didn't work. Our servers might be a little stuffed right now." };
+  }
+
+  public async postReport(
+    reportData: {
+      address: string;
+      url: string;
+      waitTime: string;
+      canDistribute: boolean;
+      contactRole: string;
+      contactFirstName: string;
+      contactLastName: string;
+      contact: string;
+    },
+    errorHandler?: (error: ApiError) => void,
+  ): Promise<ReportPostResults> {
+    const result = await baseFetch<ReportPostResults>(`/report`, {
+      body: JSON.stringify(reportData),
+      method: "POST",
+    });
+    return this.handleResponse(result, errorHandler) || { hasTruck: false, willReceive: false, alreadyOrdered: false };
+  }
+
+  public async postSession(email: string, errorHandler?: (error: ApiError) => void): Promise<void> {
+    const result = await baseFetch<ApiSuccess>(`/session`, {
+      body: JSON.stringify({ email }),
+      method: "POST",
+    });
+    this.handleResponse(result, errorHandler);
+  }
+
   public async postUpload(fileHash: string, fileName: string, address: string, errorHandler?: (error: ApiError) => void): Promise<UploadPostResults> {
     const result = await baseFetch<UploadPostResults>("/upload", { method: "POST", body: JSON.stringify({ fileHash, fileName, address }) });
-    return this.handleResponse(result, errorHandler) || { id: '', isDuplicate: true }
+    return this.handleResponse(result, errorHandler) || { id: "", isDuplicate: true };
   }
+
+  public async putSession(token: string, errorHandler?: (error: ApiError) => void): Promise<SessionPutResults> {
+    const result = await baseFetch<SessionPutResults>(`/session`, {
+      body: JSON.stringify({ token }),
+      method: "PUT",
+    });
+    return this.handleResponse(result, errorHandler) || { redirect: "" };
+  }
+
   /**
    *
    * @param result
