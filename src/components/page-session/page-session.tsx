@@ -76,7 +76,7 @@ export class PageSession {
                 </label>
                 <div class="form-item-group">
                   <div class="form-item">
-                    <input class="is-fullwidth input" onChange={handleChange} onKeyUp={handleChange} type="email" id="email" name="email" value="" />
+                    <input class="is-fullwidth input" onChange={handleChange} onInput={handleChange} type="email" id="email" name="email" value="" />
                   </div>
                 </div>
                 <button onClick={handleSubmit} class={"button is-red is-fullwidth " + (!this.email ? "is-disabled" : "")} disabled={!this.email || (this.email || "").length < 1}>

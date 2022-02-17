@@ -12,6 +12,7 @@ const AMOUNTS = [5, 10, 20, 50, 100];
 export class PageDonate {
   @State() private donationType: string = "donation";
   @State() private amount?: number | null;
+  @State() private enteredOther?: boolean = false;
   @State() private showConfirmation: boolean = false;
   @State() private canNativeShare: boolean = false;
   @State() private referral?: string | null;
@@ -76,24 +77,34 @@ export class PageDonate {
     }
 
     const activateCustomAmountRadio = () => {
-      const form = document.getElementById("donate-form") as HTMLFormElement;
-      if (form) {
+      this.enteredOther = true;
+
+      const selected = document.getElementById("input[name=amount]:checked") as HTMLInputElement;
+      const custom = document.getElementById("custom-amount-radio") as HTMLInputElement;
+
+      if (selected) {
+        selected.checked = false;
         this.amount = null;
-        form.reset();
       }
-      document.getElementById("custom-amount-radio")?.setAttribute("checked", "true");
+      if (custom) {
+        custom.checked = true;
+      }
     };
 
     const getAmount = (): number | null => {
       const checked = document.querySelector("input[name=amount]:checked") as HTMLInputElement;
       const custom = document.getElementById("custom-amount") as HTMLInputElement;
-      if (checked?.value && custom) {
+
+      if (checked?.value) {
+        this.enteredOther = false;
         custom.value = "";
       }
       const amount = custom?.value ? custom.value : checked?.value;
 
       return amount && amount.length > 0 ? Number(amount) : null;
     };
+
+    const getAmountForCheck = (): number | null | undefined => (this.enteredOther ? 0 : this.amount);
 
     const getDonationType = (): string => {
       const checked = document.querySelector("input[name=donationType]:checked") as HTMLInputElement;
@@ -221,9 +232,9 @@ export class PageDonate {
                     {AMOUNTS.map((amount, idx) => (
                       <li>
                         <label class="radio" htmlFor={`radio-${idx + 1}`}>
-                          <input type="radio" value={amount} id={`radio-${idx + 1}`} name="amount" checked={this.amount === amount} />
+                          <input type="radio" value={amount} id={`radio-${idx + 1}`} name="amount" checked={getAmountForCheck() === amount} />
                           <span class="label-text">
-                            ${amount} {"🍕".repeat(Math.ceil(amount / 9.9))}
+                            ${amount} {"🍕".repeat(idx + 1)}
                           </span>
                           <span class="indicator"></span>
                         </label>
