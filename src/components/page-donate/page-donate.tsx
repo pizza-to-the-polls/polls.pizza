@@ -285,20 +285,7 @@ export class PageDonate {
 
             {this.showConfirmation && (
               <div id="donate-confirmation">
-                <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
-                <p>
-                  Thanks for donating{" "}
-                  {this.amount
-                    ? " $" +
-                      Number(this.amount)
-                        .toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })
-                        .replace(/\.00/g, "")
-                    : null}{" "}
-                  to Pizza to the Polls. You'll receive a receipt in your email&nbsp;soon.
-                </p>
+                <h3>Thanks for helping to make the pizza magic happen!</h3>
 
                 <p>Help spread the word by sharing your donation!</p>
 

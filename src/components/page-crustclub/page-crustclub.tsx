@@ -213,7 +213,7 @@ export class PageCrustclub {
 
             {this.showConfirmation && (
               <div id="donate-confirmation">
-                <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
+                <h3>Thanks for helping to make the pizza magic happen!</h3>
                 <p>Thanks for joining Crust Club. You'll receive a receipt in your email&nbsp;soon.</p>
 
                 <p>Help spread the word by sharing your membership!</p>

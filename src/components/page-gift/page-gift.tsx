@@ -280,7 +280,7 @@ export class PageGift {
 
             {this.showConfirmation && (
               <div id="donate-confirmation">
-                <h3>Thanks for helping make the pizza magic&nbsp;happen!</h3>
+                <h3>Thanks for helping to make the pizza magic happen!</h3>
                 <p>
                   Thanks for donating{" "}
                   {this.amount
