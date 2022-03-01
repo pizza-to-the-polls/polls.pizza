@@ -2,7 +2,7 @@ import { Build, Component, h, Host, State } from "@stencil/core";
 // @ts-ignore
 import {} from "googlemaps";
 
-import { PizzaApi, ReportPostResults } from "../../api";
+import { ApiError, PizzaApi, ReportPostResults } from "../../api";
 import shaFile from "../../util/shaFile";
 
 // Shared with pizzabase
@@ -268,7 +268,8 @@ export class FormReport {
           body: formData,
         });
         if (awsReq.status > 299) {
-          throw { isError: true, messages: { fileName: "Whoops! That did not work - try again!" } };
+          const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
+          throw awsError;
         }
       }
 

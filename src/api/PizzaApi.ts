@@ -30,7 +30,7 @@ const baseFetch = async <T = any>(path: string, options: { [key: string]: string
   const data = JSON.parse(text, reviver);
 
   if (resp.status > 299) {
-    return { isError: true, status: resp.status, errors: data.errors as string[] };
+    return { isError: true, status: resp.status, errors: data.errors };
   }
 
   return data as T & { isError: undefined };
