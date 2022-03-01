@@ -225,9 +225,9 @@ export class FormReport {
       if (addressInput.value && file) {
         try {
           await uploadPhoto(file, addressInput.value);
-        } catch (error) {
+        } catch ({ errors }) {
           removePhoto();
-          this.submitError.photo = error?.fileName || "Whoops! We could not upload that photo";
+          this.submitError.photo = errors?.fileName || "Whoops! We could not upload that photo";
         } finally {
           // Always reset
           this.photoIsProcessing = false;
@@ -268,7 +268,7 @@ export class FormReport {
           body: formData,
         });
         if (awsReq.status > 299) {
-          throw { fileName: "Whoops! That did not work - try again!" };
+          throw { isError: true, messages: { fileName: "Whoops! That did not work - try again!" } };
         }
       }
 
@@ -466,7 +466,7 @@ export class FormReport {
 
         // Show confirmation: *Always* required to hide form
         this.showConfirmation = true;
-      } catch (errors) {
+      } catch ({ errors }) {
         this.submitError = errors;
 
         // If invalid address, take user back to location input
