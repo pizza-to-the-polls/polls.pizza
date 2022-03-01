@@ -2,7 +2,7 @@ import { Build, Component, h, Host, State } from "@stencil/core";
 // @ts-ignore
 import {} from "googlemaps";
 
-import { PizzaApi, ReportPostResults } from "../../api";
+import { ApiError, PizzaApi, ReportPostResults } from "../../api";
 import shaFile from "../../util/shaFile";
 
 // Shared with pizzabase
@@ -225,9 +225,9 @@ export class FormReport {
       if (addressInput.value && file) {
         try {
           await uploadPhoto(file, addressInput.value);
-        } catch (error) {
+        } catch ({ errors }) {
           removePhoto();
-          this.submitError.photo = error?.fileName || "Whoops! We could not upload that photo";
+          this.submitError.photo = errors?.fileName || "Whoops! We could not upload that photo";
         } finally {
           // Always reset
           this.photoIsProcessing = false;
@@ -268,7 +268,8 @@ export class FormReport {
           body: formData,
         });
         if (awsReq.status > 299) {
-          throw { fileName: "Whoops! That did not work - try again!" };
+          const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
+          throw awsError;
         }
       }
 
@@ -466,7 +467,7 @@ export class FormReport {
 
         // Show confirmation: *Always* required to hide form
         this.showConfirmation = true;
-      } catch (errors) {
+      } catch ({ errors }) {
         this.submitError = errors;
 
         // If invalid address, take user back to location input

@@ -31,8 +31,8 @@ export class PageSession {
     try {
       const { redirect } = await PizzaApi.putSession(this.token);
       window.location.href = redirect;
-    } catch (e) {
-      this.showError(e?.errors?.token || "Whoops! That didn't work. Our servers might be a little stuffed right now.");
+    } catch ({ errors }) {
+      this.showError(errors?.token || "Whoops! That didn't work. Our servers might be a little stuffed right now.");
     }
   }
 
@@ -44,9 +44,9 @@ export class PageSession {
     try {
       await PizzaApi.postSession(this.email);
       this.sent = true;
-    } catch (e) {
+    } catch ({ errors }) {
       this.token = null;
-      this.showError(e?.errors?.token || "Whoops! That link doesn't work.");
+      this.showError(errors?.token || "Whoops! That link doesn't work.");
     }
   }
 

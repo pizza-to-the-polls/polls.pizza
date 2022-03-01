@@ -8,7 +8,7 @@ export type ApiSuccess = {
 export type ApiError = {
   isError: true;
   status: number;
-  messages: string[];
+  errors: { [key: string]: string };
 };
 
 export enum OrderTypes {
