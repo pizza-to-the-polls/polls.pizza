@@ -14,7 +14,7 @@ export class PageOnDemand {
       <ui-main-content background="teal" class="page">
         <ui-card>
           <h1>On Demand</h1>
-          <img src="/images/pics/photo_5.jpg" alt="Pizzas at a polling place" class="image" />
+          <img src="/images/pics/photo_5.jpg" alt="Person taking a slice of pizza" class="image" />
           <h2>How to help</h2>
           <h3>1. Report a crowd</h3>
           <p>
