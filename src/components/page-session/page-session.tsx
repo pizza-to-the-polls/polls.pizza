@@ -16,8 +16,9 @@ export class PageSession {
 
   public componentWillLoad() {
     document.title = `Sign In | Pizza to the Polls`;
-    console.log(this.match.params);
-    this.token = this.match.params.token;
+
+    this.token = this.match.params?.token ? decodeURI(this.match.params.token) : null;
+
     if (this.token) {
       this.signIn();
     }
@@ -58,7 +59,6 @@ export class PageSession {
     const handleChange = () => {
       const emailInput = document.querySelector("input[name=email]") as HTMLInputElement;
       this.email = emailInput.value;
-      console.log(this.email);
     };
     const handleSubmit = (e: Event) => {
       this.sendEmail();
