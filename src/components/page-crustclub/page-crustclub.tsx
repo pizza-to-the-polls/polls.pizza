@@ -18,7 +18,7 @@ export class PageCrustclub {
   @Prop() public history?: RouterHistory;
 
   public componentWillLoad() {
-    document.title = `Donate | Pizza to the Polls`;
+    document.title = `Crust Club | Pizza to the Polls`;
     this.referral = this.history?.location.query.referral || "";
 
     const isPostDonate = !!this.history?.location.query.success;
@@ -173,7 +173,7 @@ export class PageCrustclub {
                     {AMOUNTS.map((amount, idx) => (
                       <li>
                         <label class="radio" htmlFor={`radio-${idx + 1}`}>
-                          <input type="radio" value="5" id={`radio-${idx + 1}`} name="level" checked={this.amount === amount} />
+                          <input type="radio" value={amount} id={`radio-${idx + 1}`} name="level" checked={this.amount === amount} />
                           <span class="label-text">
                             ${amount} / month {"🍕".repeat(amount / 5)}
                           </span>
