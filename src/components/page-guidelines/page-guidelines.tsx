@@ -16,18 +16,26 @@ export class PageGuidelines {
           <div class="container">
             <h1>On-Demand Delivery Guidelines</h1>
             <p>
-              Below are guidelines for restaurant partners, food delivery people, and volunteers helping hand out food at polling locations to abide by.{" "}
-              <strong>Please review carefully and feel free to call our hotline at (971) 407-1829 if you have questions.</strong>
+              Below are the requirements for restaurant partners, food delivery people, and volunteers helping to hand out food provided by Pizza to the Polls around polling places
+              or at other locations.{" "}
+              <strong>
+                Please review carefully and feel free to call our hotline at{" "}
+                <a href="tel:+1-971-407-1829" target="_blank" rel="noreferrer nofollow" aria-label="Pizza to the Polls hotline phone number">
+                  (971) 407-1829
+                </a>{" "}
+                if you have questions.
+              </strong>
             </p>
             <h2>Give Free Food to ALL - No Strings Attached</h2>
             <ul>
               <li>
-                Food and drink must be offered to anyone and everyone at a given polling location, whether or not they are going to vote, have voted, who they intend to vote for,
-                or their political affiliation. Everyone loves pizza and pizza is for everyone.
+                Food and drink must be offered to anyone and everyone at a given polling location or other location where we are sending items, whether or not they are going to
+                vote, have voted, who they intend to vote for, have or have not engaged in a particular civic activity, or their political affiliation. Everyone loves pizza and
+                pizza is for everyone.
               </li>
               <li>
-                Do not ask for anything in exchange for providing pizza, do not provide pizza as an inducement to vote or vote in a particular way, and do not engage in any
-                behavior that suggests that receiving food or drink is dependent upon voting status.
+                Do not ask for anything in exchange for providing pizza or other items from Pizza to the Polls, do not provide pizza as an inducement to vote, vote in a particular
+                way, or take any particular action, and do not engage in any behavior that suggests that receiving food or drink is dependent upon voting status.
                 <ul>
                   <li>
                     <strong>Do say:</strong> “Would you like some pizza?” and/or “Are you thirsty?”{" "}
@@ -40,43 +48,42 @@ export class PageGuidelines {
               </li>
               <li>
                 Make food and drink available for anyone, but do not provide more than a de minimis value of items to any one person. For example, you might provide one slice of
-                pizza and/or one water battle to a person near your polling place.{" "}
+                pizza and/or one water battle to a person near your polling place but do not give five pizzas to one person.{" "}
               </li>
             </ul>
             <h2>Use Solely Non-Partisan Messaging, No “Electioneering”</h2>
             <ul>
               <li>
-                Remain politically neutral in your verbal communication, behavior, or dress. Do not advocate for or against or discuss any candidates, political parties, or
-                movements at any time while distributing pizza to people at your polling locations.
+                Remain politically neutral in your verbal communication and behavior. Do not advocate for or against or discuss any candidates, political parties, or movements at
+                any time while distributing items from Pizza to the Polls.
               </li>
             </ul>
             <h2>Stay Safe and COVID-19 Compliant</h2>
             <ul>
-              <li>Wear a mask when providing food and drink, social distance as much as possible, and follow state and local COVID-19 protocols.</li>
-              <li>Distribute food in a way that minimises crowding around the food</li>
+              <li>If you feel unsafe at any point, leave the area.</li>
               <li>
-                Try not to distribute food directly, if distributing food always wear a mask and keep the food covered when not being accessed by the public (e.g. no open pizza
-                boxes being passed around).{" "}
-              </li>
-              <li>
-                Wash or sanitize your hands (with sanitizer containing at least 60% alcohol) prior to handling food at the polling location. If possible, put on gloves after
-                sanitizing and prior to handling food.{" "}
+                If there are protests or unrest at or around a polling place or other location, keep your distance and do not engage while distributing pizza to people in the area.
               </li>
               <li>Be sure to dispose of food waste in trash cans, and encourage people consuming food to do the same.</li>
-              <li>If you feel unsafe at any point, leave the area.</li>
-              <li>If there are protests or unrest at or around a polling place, keep your distance and do not engage while distributing pizza to people in the area. </li>
+              <li>
+                Follow{" "}
+                <a href="https://www.cdc.gov/coronavirus/2019-nCoV/index.html" target="_blank" rel="noreferrer nofollow">
+                  CDC Guidelines
+                </a>{" "}
+                state and local COVID-19 protocols.
+              </li>
             </ul>
             <h2>Follow Polling Place Rules and Instructions</h2>
             <ul>
               <li>
-                Stay outside of the polling place restricted zone. This area is typically marked with a sign. If you have questions about the restricted zone around your local
+                Stay outside of polling place restricted zones. These areas are typically marked with a sign. If you have questions about the restricted zone around your local
                 polling place, you can ask a poll worker for more information.{" "}
               </li>
               <li>
                 If you are asked to leave the area or given other instructions by a poll worker, police officer, or other official, please promptly comply with their request
                 without protest.
               </li>
-              <li>Follow any state-specific guidance you have received.</li>
+              <li>Follow any other rules and policies in place at your location.</li>
             </ul>
           </div>
         </section>

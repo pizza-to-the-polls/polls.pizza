@@ -1,6 +1,29 @@
 import { Component, h } from "@stencil/core";
 
-const top = [
+const partners2022 = [
+  {
+    img: "black-girls-vote.png",
+    name: "Black Girls Vote",
+    url: "https://blackgirlsvote.com/",
+  },
+  {
+    img: "every-vote-counts.jpeg",
+    name: "Every Vote Counts",
+    url: "https://www.evcnational.org/",
+  },
+  {
+    img: "slice.png",
+    name: "Slice",
+    url: "https://slicelife.com/",
+  },
+  {
+    img: "students-learn-students-vote.png",
+    name: "Students Learn Students Vote",
+    url: "https://slsvcoalition.org/",
+  },
+];
+
+const topPartners2020 = [
   {
     img: "ubereats.png",
     name: "Uber Eats",
@@ -13,7 +36,7 @@ const top = [
   },
 ];
 
-const rest = [
+const partners2020 = [
   {
     img: "&pizza.png",
     name: "&Pizza",
@@ -154,10 +177,22 @@ export class PagePartners {
     return (
       <ui-main-content id="partners" class="page" background="cyan">
         <ui-card>
-          <h1>2020 Partners</h1>
-          <p>Pizza to the Polls is grateful for the support of its partners:</p>
+          <h2>2022 Partners</h2>
           <ul class="partners">
-            {top.map(l => {
+            {partners2022.map(l => {
+              return (
+                <li>
+                  <a href={l.url} target="blank">
+                    <img src={`/images/logos/${l.img}`} alt={l.name} />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+
+          <h2>2020 Partners</h2>
+          <ul class="partners">
+            {topPartners2020.map(l => {
               return (
                 <li>
                   <a href={l.url} target="blank">
@@ -168,7 +203,7 @@ export class PagePartners {
             })}
           </ul>
           <ul class="partners">
-            {rest.map(l => {
+            {partners2020.map(l => {
               return (
                 <li>
                   <a href={l.url} target="blank">
@@ -184,18 +219,21 @@ export class PagePartners {
           <p>We’re looking for partners who can:</p>
           <ui-pizza-list>
             <li>
-              <strong>Promote @PizzatothePolls:</strong> Help spread the word by creating or sharing content across all channels of communication so people know they can report a
-              line or donate food.
+              <strong>Promote @PizzatothePolls:</strong> Help spread the word by creating or sharing content across social media so people know they can report a line or promote a
+              partnered event
             </li>
             <li>
-              <strong>Feed Hungry Folks:</strong> Donate snacks, food, or beverages to be delivered to polling locations.
+              <strong>Feed Hungry Folks:</strong> Donate snacks or beverages to be delivered to polling locations
             </li>
             <li>
-              <strong>Engage Employees & Audience Members:</strong> Make sure people know that spotting lines is a great way to make a difference!
+              <strong>Raise Dough:</strong> Share our fundraising link with your supporters
+            </li>
+            <li>
+              <strong>Join our pizza pre-order program:</strong> Submit a request for your upcoming event
             </li>
           </ui-pizza-list>
           <p>
-            If you’re interested in becoming a partner to help ease the pain of crowded polling places, get in touch today:{" "}
+            If you’re interested in becoming a partner,email{" "}
             <a href="mailto:partners@polls.pizza" class="has-text-teal" target="_blank">
               partners@polls.pizza
             </a>

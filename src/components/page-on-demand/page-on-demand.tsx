@@ -23,8 +23,8 @@ export class PageOnDemand {
           </p>
           <h3>2. Stick around</h3>
           <p>
-            Deliveries work best when there’s someone there to receive the order, so let us know on the reporting form if you’re able to stick around (in your mask, of course!).
-            We’ll text you as soon as the order is placed.
+            Most deliveries take up to 90 minutes to arrive once the line is reported, so please keep this in mind before making the report. We’ll text you as soon as the order is
+            placed.
           </p>
           <p>Most deliveries take at least 90 minutes to arrive once the line is reported, so please keep this in mind before opting to receive the delivery.</p>
           <h3>3. Help out</h3>
@@ -36,11 +36,6 @@ export class PageOnDemand {
           <p>
             We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate. Please review our full{" "}
             <a href="/guidelines">election law compliance policies here.</a>
-          </p>
-          <h3>See a line, but can’t stick around? That’s ok!</h3>
-          <p>
-            If you’re not actually at the crowded polling place, you can still report the line. Just note that we’re prioritizing deliveries to places where someone can help make
-            sure the food gets received and handed out safely.
           </p>
           <a class="button is-teal" href="/#report">
             Report a line
