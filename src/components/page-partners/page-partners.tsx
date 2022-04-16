@@ -177,8 +177,6 @@ export class PagePartners {
     return (
       <ui-main-content id="partners" class="page" background="cyan">
         <ui-card>
-          <h1>Pizza to the Polls is grateful for the support of its partners:</h1>
-
           <h2>2022 Partners</h2>
           <ul class="partners">
             {partners2022.map(l => {
