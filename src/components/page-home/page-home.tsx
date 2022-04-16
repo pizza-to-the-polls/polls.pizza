@@ -42,6 +42,7 @@ export class PageHome {
               <a class="button is-red" href="/donate">
                 Donate to feed democracy
               </a>
+              <p class="donate-button-subtext"><sup>*</sup> All contributions are tax deductible</p>
             </div>
           </div>
         </div>

@@ -44,6 +44,11 @@ page-home {
         display: inline-block;
         margin-top: 30px;
       }
+
+      .donate-button-subtext {
+        font-weight: 500;
+        font-size: 13px;
+      }
     }
 
     @media ($tablet) {
