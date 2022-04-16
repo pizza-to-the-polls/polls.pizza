@@ -1,4 +1,9 @@
 page-partners {
+  h2 {
+    font-family: $header-font;
+    font-size: 36px;
+  }
+
   .partners {
     background: $white;
     display: flex;
