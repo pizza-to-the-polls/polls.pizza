@@ -111,7 +111,8 @@ export class PageAbout {
             </h2>
             <ui-card is-collapsible={true} header-text="Is this a charity?" is-active={true}>
               <p>
-                Pizza to the Polls is a 501(c)(3) nonpartisan, nonprofit public charity. Contributions are tax deductible. If you’d like to learn more about how you can contribute or work with us,{" "}
+                Pizza to the Polls is a 501(c)(3) nonpartisan, nonprofit public charity. Contributions are tax deductible. If you’d like to learn more about how you can contribute
+                or work with us,{" "}
                 <stencil-route-link url="/partners" anchorClass="has-text-teal">
                   learn more here
                 </stencil-route-link>

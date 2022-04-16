@@ -23,7 +23,8 @@ export class PageOnDemand {
           </p>
           <h3>2. Stick around</h3>
           <p>
-            Most deliveries take up to 90 minutes to arrive once the line is reported, so please keep this in mind before making the report. We’ll text you as soon as the order is placed.
+            Most deliveries take up to 90 minutes to arrive once the line is reported, so please keep this in mind before making the report. We’ll text you as soon as the order is
+            placed.
           </p>
           <p>Most deliveries take at least 90 minutes to arrive once the line is reported, so please keep this in mind before opting to receive the delivery.</p>
           <h3>3. Help out</h3>

@@ -221,7 +221,8 @@ export class PagePartners {
           <p>We’re looking for partners who can:</p>
           <ui-pizza-list>
             <li>
-              <strong>Promote @PizzatothePolls:</strong> Help spread the word by creating or sharing content across social media so people know they can report a line or promote a partnered event
+              <strong>Promote @PizzatothePolls:</strong> Help spread the word by creating or sharing content across social media so people know they can report a line or promote a
+              partnered event
             </li>
             <li>
               <strong>Feed Hungry Folks:</strong> Donate snacks or beverages to be delivered to polling locations
@@ -234,7 +235,11 @@ export class PagePartners {
             </li>
           </ui-pizza-list>
           <p>
-            If you’re interested in becoming a partner,email <a href="mailto:partners@polls.pizza" class="has-text-teal" target="_blank">partners@polls.pizza</a>.
+            If you’re interested in becoming a partner,email{" "}
+            <a href="mailto:partners@polls.pizza" class="has-text-teal" target="_blank">
+              partners@polls.pizza
+            </a>
+            .
           </p>
         </ui-card>
       </ui-main-content>
