@@ -143,6 +143,10 @@ export class FormReport {
         clearReportVerification();
       }
       this.reportType = reportType?.value;
+      // Scroll to top of form container
+      document.getElementById("form-report-component")?.scrollIntoView({
+        behavior: "smooth",
+      });
     };
 
     const resetForm = () => {
