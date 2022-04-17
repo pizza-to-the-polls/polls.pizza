@@ -164,8 +164,9 @@ export class FormReport {
       const form = document.getElementById("form-report") as HTMLFormElement;
       if (form) {
         form.reset();
-        // Reset select element (some browsers need this extra step)
+        // Reset select elements (some browsers need this extra step)
         (document.getElementById("waitTime") as HTMLFormElement).value = "";
+        (document.getElementById("contactRole") as HTMLFormElement).value = "";
       }
       // Reset report type
       const reportType = document.getElementById("report-type-social") as HTMLInputElement;
