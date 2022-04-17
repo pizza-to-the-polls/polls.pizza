@@ -137,7 +137,7 @@ export class FormReport {
     const handleReportTypeChange = () => {
       const reportType = document.querySelector("input[name=reportType]:checked") as HTMLInputElement;
       // Clear errors
-      delete this.submitError.reportType;
+      clearFormError("reportType");
       // Clear if changing report type
       if (this.reportType !== reportType?.value) {
         clearReportVerification();
@@ -272,7 +272,7 @@ export class FormReport {
       }
       this.hasPhoto = false;
       this.photoUrl = "";
-      delete this.submitError.photo;
+      clearFormError("photo");
       if (imagePreview) {
         imagePreview.style.backgroundImage = "";
       }
@@ -303,12 +303,18 @@ export class FormReport {
       const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
       // If checkbox is already checked, remove other error message
       if (distributorDisclaimerAgree) {
-        delete this.submitError.distributorDisclaimer;
+        clearFormError("distributorDisclaimer");
       }
-      delete this.submitError.viewGuidelines;
+      clearFormError("viewGuidelines");
       // Toggle boolean to allow user to submit form
       this.userClickedGuidelinesLink = true;
       this.isDisabled = false;
+    };
+
+    const clearFormError = (field: string): void => {
+      // Remove field from existing errors
+      const { [field]: remove, ...rest } = this.submitError;
+      this.submitError = rest;
     };
 
     const handleSubmit = async (event: Event) => {
@@ -491,7 +497,7 @@ export class FormReport {
     return (
       <Host>
         <div id="form-report-component">
-          <form id="form-report" onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
+          <form id="form-report" onSubmit={handleSubmit} onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
             <div id="form-step-1" hidden={!this.showLocationInput}>
               {/* Intro content */}
               <slot></slot>
@@ -601,6 +607,7 @@ export class FormReport {
                     name="url"
                     placeholder="ex. Link to Twitter, IG, etc."
                     autocomplete="off"
+                    onInput={() => clearFormError("url")}
                   />
                   <span class="help is-hidden-mobile">We'll make sure there's really a line.</span>
                   <p class="help has-text-red" hidden={!("url" in this.submitError)}>
@@ -643,7 +650,7 @@ export class FormReport {
                   How long is the wait in line? <span class="required">*</span>
                 </label>
                 <div class={"select is-fullwidth " + ("waitTime" in this.submitError ? "has-error " : "")}>
-                  <select id="waitTime" name="waitTime">
+                  <select id="waitTime" name="waitTime" onInput={() => clearFormError("waitTime")}>
                     <option value="" disabled selected>
                       Select your best guess
                     </option>
@@ -665,7 +672,7 @@ export class FormReport {
                   What is your role at the polling location? <span class="required">*</span>
                 </label>
                 <div class={"select is-fullwidth " + ("contactRole" in this.submitError ? "has-error " : "")}>
-                  <select id="contactRole" name="contactRole">
+                  <select id="contactRole" name="contactRole" onInput={() => clearFormError("contactRole")}>
                     <option value="" disabled selected>
                       Select your role
                     </option>
@@ -686,7 +693,13 @@ export class FormReport {
                   <label class="label" htmlFor="contactFirstName">
                     Your first name <span class="required">*</span>
                   </label>
-                  <input class={"input " + ("contactFirstName" in this.submitError ? "has-error" : "")} type="text" name="contactFirstName" autoComplete="given-name" />
+                  <input
+                    class={"input " + ("contactFirstName" in this.submitError ? "has-error" : "")}
+                    type="text"
+                    name="contactFirstName"
+                    autoComplete="given-name"
+                    onInput={() => clearFormError("contactFirstName")}
+                  />
                   <p class="help">To give to the delivery driver.</p>
                   <p class="help has-text-red" hidden={!("contactFirstName" in this.submitError)}>
                     {this.submitError.contactFirstName}
@@ -696,7 +709,13 @@ export class FormReport {
                   <label class="label" htmlFor="contactLastName">
                     Your last name <span class="required">*</span>
                   </label>
-                  <input class={"input " + ("contactLastName" in this.submitError ? "has-error" : "")} type="text" name="contactLastName" autoComplete="family-name" />
+                  <input
+                    class={"input " + ("contactLastName" in this.submitError ? "has-error" : "")}
+                    type="text"
+                    name="contactLastName"
+                    autoComplete="family-name"
+                    onInput={() => clearFormError("contactLastName")}
+                  />
                   <p class="help">To give to the delivery driver.</p>
                   <p class="help has-text-red" hidden={!("contactLastName" in this.submitError)}>
                     {this.submitError.contactLastName}
@@ -709,7 +728,13 @@ export class FormReport {
                 <label class="label" htmlFor="contactPhone">
                   Your phone number <span class="required">*</span>
                 </label>
-                <input class={"input " + ("contactPhone" in this.submitError ? "has-error" : "")} type="tel" name="contactPhone" autoComplete="tel-national" />
+                <input
+                  class={"input " + ("contactPhone" in this.submitError ? "has-error" : "")}
+                  type="tel"
+                  name="contactPhone"
+                  autoComplete="tel-national"
+                  onInput={() => clearFormError("contactPhone")}
+                />
                 <span class="help">So we can let you know when your order's sent!</span>
                 <p class="help has-text-red" hidden={!("contactPhone" in this.submitError)}>
                   {this.submitError.contactPhone}
@@ -722,7 +747,7 @@ export class FormReport {
                   class={"checkbox is-small is-marginless " + ("viewGuidelines" in this.submitError || "distributorDisclaimer" in this.submitError ? "has-error" : "")}
                   htmlFor="accept-distributor-disclaimer"
                 >
-                  <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
+                  <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" onChange={() => clearFormError("distributorDisclaimer")} />
                   <span class="label-text">
                     I have read and understood the{" "}
                     <a href="/guidelines" target="_blank" onClick={handleGuidelinesClick}>
