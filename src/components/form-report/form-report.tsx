@@ -718,14 +718,17 @@ export class FormReport {
 
               {/* Delivery legal disclaimer */}
               <div class="form-item">
-                <label class={"checkbox is-small is-marginless " + (("viewGuidelines" in this.submitError || "distributorDisclaimer" in this.submitError) ? "has-error" : "")} htmlFor="accept-distributor-disclaimer">
+                <label
+                  class={"checkbox is-small is-marginless " + ("viewGuidelines" in this.submitError || "distributorDisclaimer" in this.submitError ? "has-error" : "")}
+                  htmlFor="accept-distributor-disclaimer"
+                >
                   <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
                   <span class="label-text">
                     I have read and understood the{" "}
                     <a href="/guidelines" target="_blank" onClick={handleGuidelinesClick}>
                       On-Demand Delivery Guidelines
-                    </a>,{" "}
-                    and I agree that I will comply with these rules as a necessary condition of requesting and receiving items from Pizza to the Polls.
+                    </a>
+                    , and I agree that I will comply with these rules as a necessary condition of requesting and receiving items from Pizza to the Polls.
                   </span>
                   <span class="indicator"></span>
                 </label>
@@ -812,9 +815,13 @@ export class FormReport {
                 <b>Thank you for your submission! Our team will review your report shortly.</b>
               </p>
               <ui-pizza-list>
-                <li>One of our volunteers will send a text to verify the order has been placed. Keep in mind that pizzas can take up to 90 minutes to arrive once the line is reported.</li>
                 <li>
-                  Please be at the location to coordinate pickup with the delivery driver. When the food arrives, let people around the site know it's free for all: poll workers, voters, children, journalists, poll watchers, and anyone else who's out and about.
+                  One of our volunteers will send a text to verify the order has been placed. Keep in mind that pizzas can take up to 90 minutes to arrive once the line is
+                  reported.
+                </li>
+                <li>
+                  Please be at the location to coordinate pickup with the delivery driver. When the food arrives, let people around the site know it's free for all: poll workers,
+                  voters, children, journalists, poll watchers, and anyone else who's out and about.
                 </li>
               </ui-pizza-list>
               <p>
