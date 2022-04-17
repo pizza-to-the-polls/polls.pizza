@@ -300,7 +300,7 @@ export class FormReport {
 
     // Has user clicked the "On-Demand Guidelines" link?
     const handleGuidelinesClick = () => {
-      const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked
+      const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
       // If checkbox is already checked, remove other error message
       if (distributorDisclaimerAgree) {
         delete this.submitError.distributorDisclaimer;
@@ -309,7 +309,7 @@ export class FormReport {
       // Toggle boolean to allow user to submit form
       this.userClickedGuidelinesLink = true;
       this.isDisabled = false;
-    }
+    };
 
     const handleSubmit = async (event: Event) => {
       event.preventDefault();
@@ -396,7 +396,7 @@ export class FormReport {
 
       // Has user clicked to view the On-Demand Guidelines?
       if (!this.userClickedGuidelinesLink) {
-        this.submitError.viewGuidelines = "Whoops! You must click the link to read the On-Demand Delivery Guidelines."
+        this.submitError.viewGuidelines = "Whoops! You must click the link to read the On-Demand Delivery Guidelines.";
       }
 
       // Is the agree checkbox checked?
