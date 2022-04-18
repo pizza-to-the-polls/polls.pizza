@@ -40,7 +40,7 @@ export class PageHome {
             <div class="container">
               <p>Our mission is to deliver free food to people who are waiting in long lines while participating in civic life.</p>
               <a class="button is-red" href="/donate">
-                Donate to feed democracy
+                Donate now to feed democracy
               </a>
               <p class="donate-button-subtext">
                 <sup>*</sup> All contributions are tax deductible
