@@ -58,7 +58,7 @@ export class FormReport {
   @State() private reportType: string = ""; // "social" | "photo"
   @State() private hasPhoto: boolean = false;
   @State() private photoUrl: string = "";
-  @State() private canDistribute: string = ""; // watchdog or distributor
+  @State() private userClickedGuidelinesLink: boolean = false;
 
   public componentDidRender() {
     if (Build.isBrowser && google && document.getElementById("autocomplete-input")) {
@@ -137,24 +137,16 @@ export class FormReport {
     const handleReportTypeChange = () => {
       const reportType = document.querySelector("input[name=reportType]:checked") as HTMLInputElement;
       // Clear errors
-      delete this.submitError.reportType;
+      clearFormError("reportType");
       // Clear if changing report type
       if (this.reportType !== reportType?.value) {
         clearReportVerification();
       }
       this.reportType = reportType?.value;
-    };
-
-    const handleCanDistributeChange = () => {
-      const canDistribute = document.querySelector("input[name=canDistribute]:checked") as HTMLInputElement;
-      // Clear errors
-      delete this.submitError.canDistribute;
-      delete this.submitError.distributorDisclaimer;
-      delete this.submitError.contactRole;
-      delete this.submitError.contactFirstName;
-      delete this.submitError.contactLastName;
-      // Set new value
-      this.canDistribute = canDistribute?.value;
+      // Scroll to top of form container
+      document.getElementById("form-report-component")?.scrollIntoView({
+        behavior: "smooth",
+      });
     };
 
     const resetForm = () => {
@@ -168,16 +160,17 @@ export class FormReport {
       this.submitError = {};
       this.locationName = "";
       this.reportType = "";
-      this.canDistribute = "";
       this.photoIsProcessing = false;
+      this.userClickedGuidelinesLink = false;
       this.isLoading = false;
       this.isDisabled = false;
       removePhoto();
       const form = document.getElementById("form-report") as HTMLFormElement;
       if (form) {
         form.reset();
-        // Reset select element (some browsers need this extra step)
+        // Reset select elements (some browsers need this extra step)
         (document.getElementById("waitTime") as HTMLFormElement).value = "";
+        (document.getElementById("contactRole") as HTMLFormElement).value = "";
       }
       // Reset report type
       const reportType = document.getElementById("report-type-social") as HTMLInputElement;
@@ -284,7 +277,7 @@ export class FormReport {
       }
       this.hasPhoto = false;
       this.photoUrl = "";
-      delete this.submitError.photo;
+      clearFormError("photo");
       if (imagePreview) {
         imagePreview.style.backgroundImage = "";
       }
@@ -308,6 +301,25 @@ export class FormReport {
       }
       window.open(targetURL, "popup", "width=600,height=600");
       return;
+    };
+
+    // Has user clicked the "On-Demand Guidelines" link?
+    const handleGuidelinesClick = () => {
+      const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
+      // If checkbox is already checked, remove other error message
+      if (distributorDisclaimerAgree) {
+        clearFormError("distributorDisclaimer");
+      }
+      clearFormError("viewGuidelines");
+      // Toggle boolean to allow user to submit form
+      this.userClickedGuidelinesLink = true;
+      this.isDisabled = false;
+    };
+
+    const clearFormError = (field: string): void => {
+      // Remove field from existing errors
+      const { [field]: remove, ...rest } = this.submitError;
+      this.submitError = rest;
     };
 
     const handleSubmit = async (event: Event) => {
@@ -336,7 +348,6 @@ export class FormReport {
 
       // Reset checkboxes and radios in data (values will be set below if present)
       data[`reportType`] = ``;
-      data[`canDistribute`] = ``;
       data[`distributorDisclaimer`] = ``;
 
       if (!this.reportType || this.reportType.length < 1) {
@@ -373,40 +384,38 @@ export class FormReport {
         this.submitError.waitTime = "Whoops! Can you estimate the wait time?";
       }
 
-      if (!this.canDistribute || this.canDistribute.length < 1) {
-        this.submitError.canDistribute = "Whoops! Will you be on location to help distribute the order?";
-      } else {
-        // Inject correct value into data
-        data[`canDistribute`] = this.canDistribute;
+      // Contact Role
+      if (!data.contactRole) {
+        this.submitError.contactRole = "Whoops! Can you specify your role at the polling location?";
       }
 
-      if (this.canDistribute === "true") {
-        // Disclaimer
-        const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
-        if (!distributorDisclaimerAgree) {
-          this.submitError.distributorDisclaimer = "Whoops! You must read and agree to the guidelines.";
-        } else {
-          data[`distributorDisclaimer`] = `agree`;
-        }
+      // Contact First Name
+      if (!(data.contactFirstName || "")) {
+        this.submitError.contactFirstName = "Whoops! Can you please add your first name?";
+      }
 
-        // Contact Role
-        if (!data.contactRole) {
-          this.submitError.contactRole = "Whoops! Can you specify your role at the polling location?";
-        }
-
-        // Contact First Name
-        if (!(data.contactFirstName || "")) {
-          this.submitError.contactFirstName = "Whoops! Can you please add your first name?";
-        }
-
-        // Contact Last Name
-        if (!(data.contactLastName || "")) {
-          this.submitError.contactLastName = "Whoops! Can you please add your last name?";
-        }
+      // Contact Last Name
+      if (!(data.contactLastName || "")) {
+        this.submitError.contactLastName = "Whoops! Can you please add your last name?";
       }
 
       if (!(data.contactPhone || "").match(PHONE_REGEX)) {
         this.submitError.contactPhone = "Whoops! Can you add your phone number?";
+      }
+
+      // Disclaimer
+
+      // Has user clicked to view the On-Demand Guidelines?
+      if (!this.userClickedGuidelinesLink) {
+        this.submitError.viewGuidelines = "Whoops! You must click the link to read the On-Demand Delivery Guidelines.";
+      }
+
+      // Is the agree checkbox checked?
+      const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
+      if (!distributorDisclaimerAgree) {
+        this.submitError.distributorDisclaimer = "Whoops! You must agree to the guidelines.";
+      } else {
+        data[`distributorDisclaimer`] = `agree`;
       }
 
       // Check for any errors
@@ -427,7 +436,7 @@ export class FormReport {
         address: data.address,
         url: data.url,
         waitTime: data.waitTime,
-        canDistribute: this.canDistribute === "true",
+        canDistribute: true, // required, so default
         contactRole: data.contactRole,
         contactFirstName: data.contactFirstName,
         contactLastName: data.contactLastName,
@@ -444,24 +453,12 @@ export class FormReport {
         if (this.submitResponse.hasTruck) {
           this.showFoodTruckOnSiteConfirmation = true;
         } else {
-          // If Reporter CAN distribute
-          if (this.canDistribute === "true") {
-            if (this.submitResponse.willReceive && !this.submitResponse.alreadyOrdered) {
-              // If Distributor, and they WILL receive order, and we haven't already ordered
-              this.showDistributorConfirmation = true;
-            } else {
-              // If Distributor, and they will NOT receive order
-              this.showDuplicateReportConfirmation = true;
-            }
+          if (this.submitResponse.willReceive && !this.submitResponse.alreadyOrdered) {
+            // If Distributor, and they WILL receive order, and we haven't already ordered
+            this.showDistributorConfirmation = true;
           } else {
-            // Reporter CANNOT distribute
-            if (this.submitResponse.alreadyOrdered) {
-              // We already have a report
-              this.showDuplicateReportConfirmation = true;
-            } else {
-              // New report, we'll look into it
-              this.showSuccessfulReportConfirmation = true;
-            }
+            // If Distributor, and they will NOT receive order
+            this.showDuplicateReportConfirmation = true;
           }
         }
 
@@ -505,7 +502,7 @@ export class FormReport {
     return (
       <Host>
         <div id="form-report-component">
-          <form id="form-report" onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
+          <form id="form-report" onSubmit={handleSubmit} onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
             <div id="form-step-1" hidden={!this.showLocationInput}>
               {/* Intro content */}
               <slot></slot>
@@ -615,6 +612,7 @@ export class FormReport {
                     name="url"
                     placeholder="ex. Link to Twitter, IG, etc."
                     autocomplete="off"
+                    onInput={() => clearFormError("url")}
                   />
                   <span class="help is-hidden-mobile">We'll make sure there's really a line.</span>
                   <p class="help has-text-red" hidden={!("url" in this.submitError)}>
@@ -657,7 +655,7 @@ export class FormReport {
                   How long is the wait in line? <span class="required">*</span>
                 </label>
                 <div class={"select is-fullwidth " + ("waitTime" in this.submitError ? "has-error " : "")}>
-                  <select id="waitTime" name="waitTime">
+                  <select id="waitTime" name="waitTime" onInput={() => clearFormError("waitTime")}>
                     <option value="" disabled selected>
                       Select your best guess
                     </option>
@@ -665,109 +663,113 @@ export class FormReport {
                     <option value="1-2 hours">1-2 hours&nbsp;&nbsp;🍕🍕</option>
                     <option value="2-3 hours">2-3 hours&nbsp;&nbsp;🍕🍕🍕</option>
                     <option value="3-4 hours">3-4 hours&nbsp;&nbsp;🍕🍕🍕🍕</option>
-                    <option value="4+ hours">4+ hours&nbsp;&nbsp;🍕🍕🍕🍕🍕</option>
+                    <option value="4+ hours">4+ hours&nbsp;&nbsp;&nbsp;&nbsp;🍕🍕🍕🍕🍕</option>
                   </select>
                 </div>
                 <p class="help has-text-red" hidden={!("waitTime" in this.submitError)}>
                   {this.submitError.waitTime}
                 </p>
               </div>
-              {/* Watchdog or Distributor */}
+
+              {/* Contact Role */}
               <div class="form-item">
-                <label class="label">
-                  Will you receive the order? <span class="required">*</span>
+                <label class="label" htmlFor="contactRole">
+                  What is your role at the polling location? <span class="required">*</span>
                 </label>
-                <div class="radio-group report-watchdog-distributor-radio-group">
-                  <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-distributor" onClick={handleCanDistributeChange}>
-                    <input type="radio" value="true" id="report-distributor" name="canDistribute" />
-                    <span class="label-text">Yes 🍕</span>
-                    <span class="indicator"></span>
-                  </label>
-                  <label class={"radio " + ("canDistribute" in this.submitError ? "has-error" : "")} htmlFor="report-watchdog" onClick={handleCanDistributeChange}>
-                    <input type="radio" value="false" id="report-watchdog" name="canDistribute" />
-                    <span class="label-text">No</span>
-                    <span class="indicator"></span>
-                  </label>
+                <div class={"select is-fullwidth " + ("contactRole" in this.submitError ? "has-error " : "")}>
+                  <select id="contactRole" name="contactRole" onInput={() => clearFormError("contactRole")}>
+                    <option value="" disabled selected>
+                      Select your role
+                    </option>
+                    <option value="Voter">Voter</option>
+                    <option value="Poll worker">Poll worker</option>
+                    <option value="Poll watcher">Poll watcher</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
-                <span class="help">Note that we're prioritizing deliveries to places where someone can help make sure the food gets received and handed out safely.</span>
-                <p class="help has-text-red" hidden={!("canDistribute" in this.submitError)}>
-                  {this.submitError.canDistribute}
+                <p class="help has-text-red" hidden={!("contactRole" in this.submitError)}>
+                  {this.submitError.contactRole}
                 </p>
               </div>
-              {/* Delivery legal disclaimer */}
-              {this.canDistribute && this.canDistribute === "true" && (
-                <div>
-                  <div class="form-item">
-                    <label class={"checkbox is-small is-marginless " + ("distributorDisclaimer" in this.submitError ? "has-error" : "")} htmlFor="accept-distributor-disclaimer">
-                      <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" />
-                      <span class="label-text">
-                        I have read and agreed to follow the{" "}
-                        <a href="/guidelines" target="_blank">
-                          on-demand delivery guidelines
-                        </a>
-                      </span>
-                      <span class="indicator"></span>
-                    </label>
-                    <p class="help has-text-red" hidden={!("distributorDisclaimer" in this.submitError)}>
-                      {this.submitError.distributorDisclaimer}
-                    </p>
-                  </div>
-                  {/* Contact Role */}
-                  <div class="form-item">
-                    <label class="label" htmlFor="contactRole">
-                      What is your role at the polling location? <span class="required">*</span>
-                    </label>
-                    <div class={"select is-fullwidth " + ("contactRole" in this.submitError ? "has-error " : "")}>
-                      <select id="contactRole" name="contactRole">
-                        <option value="" disabled selected>
-                          Select your role
-                        </option>
-                        <option value="Voter">Voter</option>
-                        <option value="Poll worker">Poll worker</option>
-                        <option value="Poll watcher">Poll watcher</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                    <p class="help has-text-red" hidden={!("contactRole" in this.submitError)}>
-                      {this.submitError.contactRole}
-                    </p>
-                  </div>
-                  {/* Contact Name */}
-                  <div class="form-item-group">
-                    <div class="form-item">
-                      <label class="label" htmlFor="contactFirstName">
-                        Your first name <span class="required">*</span>
-                      </label>
-                      <input class={"input " + ("contactFirstName" in this.submitError ? "has-error" : "")} type="text" name="contactFirstName" />
-                      <p class="help">To give to the delivery driver.</p>
-                      <p class="help has-text-red" hidden={!("contactFirstName" in this.submitError)}>
-                        {this.submitError.contactFirstName}
-                      </p>
-                    </div>
-                    <div class="form-item">
-                      <label class="label" htmlFor="contactLastName">
-                        Your last name <span class="required">*</span>
-                      </label>
-                      <input class={"input " + ("contactLastName" in this.submitError ? "has-error" : "")} type="text" name="contactLastName" />
-                      <p class="help">To give to the delivery driver.</p>
-                      <p class="help has-text-red" hidden={!("contactLastName" in this.submitError)}>
-                        {this.submitError.contactLastName}
-                      </p>
-                    </div>
-                  </div>
+
+              {/* Contact Name */}
+              <div class="form-item-group">
+                <div class="form-item">
+                  <label class="label" htmlFor="contactFirstName">
+                    Your first name <span class="required">*</span>
+                  </label>
+                  <input
+                    class={"input " + ("contactFirstName" in this.submitError ? "has-error" : "")}
+                    type="text"
+                    name="contactFirstName"
+                    autoComplete="given-name"
+                    onInput={() => clearFormError("contactFirstName")}
+                  />
+                  <p class="help">To give to the delivery driver.</p>
+                  <p class="help has-text-red" hidden={!("contactFirstName" in this.submitError)}>
+                    {this.submitError.contactFirstName}
+                  </p>
                 </div>
-              )}
+                <div class="form-item">
+                  <label class="label" htmlFor="contactLastName">
+                    Your last name <span class="required">*</span>
+                  </label>
+                  <input
+                    class={"input " + ("contactLastName" in this.submitError ? "has-error" : "")}
+                    type="text"
+                    name="contactLastName"
+                    autoComplete="family-name"
+                    onInput={() => clearFormError("contactLastName")}
+                  />
+                  <p class="help">To give to the delivery driver.</p>
+                  <p class="help has-text-red" hidden={!("contactLastName" in this.submitError)}>
+                    {this.submitError.contactLastName}
+                  </p>
+                </div>
+              </div>
+
               {/* Phone Number */}
               <div class="form-item">
                 <label class="label" htmlFor="contactPhone">
                   Your phone number <span class="required">*</span>
                 </label>
-                <input class={"input " + ("contactPhone" in this.submitError ? "has-error" : "")} type="tel" name="contactPhone" />
+                <input
+                  class={"input " + ("contactPhone" in this.submitError ? "has-error" : "")}
+                  type="tel"
+                  name="contactPhone"
+                  autoComplete="tel-national"
+                  onInput={() => clearFormError("contactPhone")}
+                />
                 <span class="help">So we can let you know when your order's sent!</span>
                 <p class="help has-text-red" hidden={!("contactPhone" in this.submitError)}>
                   {this.submitError.contactPhone}
                 </p>
               </div>
+
+              {/* Delivery legal disclaimer */}
+              <div class="form-item">
+                <label
+                  class={"checkbox is-small is-marginless " + ("viewGuidelines" in this.submitError || "distributorDisclaimer" in this.submitError ? "has-error" : "")}
+                  htmlFor="accept-distributor-disclaimer"
+                >
+                  <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" onChange={() => clearFormError("distributorDisclaimer")} />
+                  <span class="label-text">
+                    I have read and understood the{" "}
+                    <a href="/guidelines" target="_blank" onClick={handleGuidelinesClick}>
+                      On-Demand Delivery Guidelines
+                    </a>
+                    , and I agree that I will comply with these rules as a necessary condition of requesting and receiving items from Pizza to the Polls.
+                  </span>
+                  <span class="indicator"></span>
+                </label>
+                <p class="help has-text-red" hidden={!("viewGuidelines" in this.submitError)}>
+                  {this.submitError.viewGuidelines}
+                </p>
+                <p class="help has-text-red" hidden={!(!("viewGuidelines" in this.submitError) && "distributorDisclaimer" in this.submitError)}>
+                  {this.submitError.distributorDisclaimer}
+                </p>
+              </div>
+
               {/* Submit */}
               <button
                 onClick={handleSubmit}
@@ -840,19 +842,18 @@ export class FormReport {
             <div id="distributor-confirmation">
               <h2 class="is-display">We're on it!</h2>
               <p>
-                <b>Thank you for your submission! Our team will review your report shortly. We'll reach out to you to verify delivery and pickup.</b>
+                <b>Thank you for your submission! Our team will review your report shortly.</b>
               </p>
-              <ul class="pizza-list">
-                <li>One of our volunteers will reach out to you to verify timing for delivery. Pizzas usually take around 90 minutes to be delivered after an order is placed.</li>
+              <ui-pizza-list>
                 <li>
-                  Be sure to be at the location once confirmed to coordinate pickup. Keep an eye out for a delivery driver. When the food arrives, let people around the polling
-                  site know it's free for all: poll workers, voters, children, journalists, poll watchers, and anyone else who's out and about. Be sure to practice social
-                  distancing and stay at least 6 feet apart from others.
+                  One of our volunteers will send a text to verify the order has been placed. Keep in mind that pizzas can take up to 90 minutes to arrive once the line is
+                  reported.
                 </li>
-              </ul>
-              <a href="/guidelines" class="button is-blue">
-                Learn more about best practices
-              </a>
+                <li>
+                  Please be at the location to coordinate pickup with the delivery driver. When the food arrives, let people around the site know it's free for all: poll workers,
+                  voters, children, journalists, poll watchers, and anyone else who's out and about.
+                </li>
+              </ui-pizza-list>
               <p>
                 Want to help more?{" "}
                 <a href="/donate" class="has-text-teal">

@@ -47,10 +47,10 @@
   &[disabled],
   fieldset[disabled] & {
     color: $white;
-    background-color: $teal;
+    background-color: rgba($teal, 50%);
     border-color: transparent;
     box-shadow: none;
-    opacity: 0.5;
+    opacity: 1; // Safari chokes on setting disabled opacity, so leave set to 1
   }
 
   &.is-fullwidth {
@@ -110,10 +110,10 @@
         &[disabled],
         fieldset[disabled] & {
           color: $color;
-          background-color: $background;
+          background-color: rgba($background, 50%); // instead of opacity
           border-color: transparent;
           box-shadow: none;
-          opacity: 0.5;
+          opacity: 1; // Safari chokes on setting disabled opacity, so leave set to 1
         }
 
         &.is-loading {

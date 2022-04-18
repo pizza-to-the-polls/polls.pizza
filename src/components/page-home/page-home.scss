@@ -43,11 +43,19 @@ page-home {
       .button {
         display: inline-block;
         margin-top: 30px;
+
+        @media ($desktop) {
+          font-size: 24px;
+        }
       }
 
       .donate-button-subtext {
         font-weight: 500;
         font-size: 13px;
+
+        @media ($desktop) {
+          font-size: 12.8px;
+        }
       }
     }
 
