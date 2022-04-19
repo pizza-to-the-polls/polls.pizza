@@ -43,9 +43,6 @@ export class PageInstructions {
                 .
               </li>
             </ol>
-            <p>
-              If you have any questions, you can call our hotline at: <a href="tel:+1-971-407-1829">971-407-1829</a>
-            </p>
           </div>
         </section>
       </Host>

@@ -17,14 +17,7 @@ export class PageGuidelines {
             <h1>On-Demand Delivery Guidelines</h1>
             <p>
               Below are the requirements for restaurant partners, food delivery people, and volunteers helping to hand out food provided by Pizza to the Polls around polling places
-              or at other locations.{" "}
-              <strong>
-                Please review carefully and feel free to call our hotline at{" "}
-                <a href="tel:+1-971-407-1829" target="_blank" rel="noreferrer nofollow" aria-label="Pizza to the Polls hotline phone number">
-                  (971) 407-1829
-                </a>{" "}
-                if you have questions.
-              </strong>
+              or at other locations.
             </p>
             <h2>Give Free Food to ALL - No Strings Attached</h2>
             <ul>
