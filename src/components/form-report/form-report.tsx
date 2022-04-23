@@ -87,7 +87,7 @@ export class FormReport {
           }
         });
 
-        place.address_components!.forEach((address_component: { [key: string]: any }) => {
+        place.address_components?.forEach((address_component: { [key: string]: any }) => {
           const addressType: string = address_component.types[0];
           const mapping = componentForm[addressType];
           const elem = document.getElementById(addressType) as HTMLInputElement;
@@ -405,18 +405,25 @@ export class FormReport {
 
       // Disclaimer
 
-      // Has user clicked to view the On-Demand Guidelines?
-      if (!this.userClickedGuidelinesLink) {
-        this.submitError.viewGuidelines = "Whoops! You must click the link to read the On-Demand Delivery Guidelines.";
-      }
-
       // Is the agree checkbox checked?
       const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
+
+      // User did not click the link or the checkbox
+      if (!this.userClickedGuidelinesLink && !distributorDisclaimerAgree) {
+        this.submitError.viewGuidelines = "Whoops! You must click the link to read the On-Demand Delivery Guidelines, then accept the conditions before hitting submit.";
+      } else if (!this.userClickedGuidelinesLink) {
+        // User has not clicked to view the On-Demand Guidelines
+        this.submitError.viewGuidelines = "Whoops! You must click the link to read the On-Demand Delivery Guidelines before hitting submit.";
+      }
+
       if (!distributorDisclaimerAgree) {
-        this.submitError.distributorDisclaimer = "Whoops! You must agree to the guidelines.";
+        this.submitError.distributorDisclaimer = "Whoops! You must accept the conditions before hitting submit.";
       } else {
         data[`distributorDisclaimer`] = `agree`;
       }
+
+      // Check if the only errors are related to the checkbox. If yes, prevent scrolling to the top
+      const shouldPreventScroll = Object.keys(this.submitError).every(error => ["viewGuidelines", "distributorDisclaimer"].includes(error));
 
       // Check for any errors
       if (Object.keys(this.submitError).length > 0) {
@@ -424,10 +431,12 @@ export class FormReport {
         this.isLoading = false;
         // Disable submit
         this.isDisabled = true;
-        // Scroll to top
-        document.getElementById("form-report-component")?.scrollIntoView({
-          behavior: "smooth",
-        });
+        if (!shouldPreventScroll) {
+          // Scroll to top
+          document.getElementById("form-report-component")?.scrollIntoView({
+            behavior: "smooth",
+          });
+        }
         return false;
       }
 
