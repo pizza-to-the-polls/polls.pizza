@@ -423,7 +423,7 @@ export class FormReport {
       }
 
       // Check if the only errors are related to the checkbox. If yes, prevent scrolling to the top
-      const shouldPreventScroll = Object.keys(this.submitError).every((error) => ["viewGuidelines", "distributorDisclaimer"].includes(error));
+      const shouldPreventScroll = Object.keys(this.submitError).every(error => ["viewGuidelines", "distributorDisclaimer"].includes(error));
 
       // Check for any errors
       if (Object.keys(this.submitError).length > 0) {
