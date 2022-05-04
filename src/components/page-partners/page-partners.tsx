@@ -2,6 +2,11 @@ import { Component, h } from "@stencil/core";
 
 const partners2022 = [
   {
+    img: "andrew-goodman-foundation.png",
+    name: "The Andrew Goodman Foundation",
+    url: "https://andrewgoodman.org/",
+  },
+  {
     img: "black-girls-vote.png",
     name: "Black Girls Vote",
     url: "https://blackgirlsvote.com/",
