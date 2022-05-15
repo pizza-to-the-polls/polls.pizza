@@ -12,9 +12,19 @@ const partners2022 = [
     url: "https://blackgirlsvote.com/",
   },
   {
+    img: "civic-season.png",
+    name: "Civic Season",
+    url: "https://www.thecivicseason.com/",
+  },
+  {
     img: "every-vote-counts.jpeg",
     name: "Every Vote Counts",
     url: "https://www.evcnational.org/",
+  },
+  {
+    img: "ragtag.png",
+    name: "Ragtag",
+    url: "https://ragtag.org/",
   },
   {
     img: "slice.png",
