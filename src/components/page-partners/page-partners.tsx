@@ -12,6 +12,16 @@ const partners2022 = [
     url: "https://blackgirlsvote.com/",
   },
   {
+    img: "campus-vote-project.png",
+    name: "Campus Vote Project",
+    url: "https://www.campusvoteproject.org/",
+  },
+  {
+    img: "civic-alliance.png",
+    name: "Civic Alliance",
+    url: "https://www.civicalliance.com/",
+  },
+  {
     img: "civic-season.png",
     name: "Civic Season",
     url: "https://www.thecivicseason.com/",
@@ -20,6 +30,16 @@ const partners2022 = [
     img: "every-vote-counts.jpeg",
     name: "Every Vote Counts",
     url: "https://www.evcnational.org/",
+  },
+  {
+    img: "headcount.png",
+    name: "Headcount",
+    url: "https://www.headcount.org/",
+  },
+  {
+    img: "new-georgia-project.jpg",
+    name: "New Georgia Project",
+    url: "https://www.newgeorgiaproject.org/",
   },
   {
     img: "ragtag.png",
@@ -35,6 +55,11 @@ const partners2022 = [
     img: "students-learn-students-vote.png",
     name: "Students Learn Students Vote",
     url: "https://slsvcoalition.org/",
+  },
+  {
+    img: "vote-early-day-2022.png",
+    name: "Vote Early Day 2022",
+    url: "http://www.voteearlyday.org/",
   },
 ];
 
