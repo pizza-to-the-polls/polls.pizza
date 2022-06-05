@@ -37,6 +37,11 @@ const partners2022 = [
     url: "https://www.headcount.org/",
   },
   {
+    img: "national-voter-registration-day.png",
+    name: "National Voter Registration Day",
+    url: "http://nationalvoterregistrationday.org/",
+  },
+  {
     img: "new-georgia-project.jpg",
     name: "New Georgia Project",
     url: "https://www.newgeorgiaproject.org/",
