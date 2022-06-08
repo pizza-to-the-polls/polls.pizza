@@ -14,9 +14,20 @@ page-partners {
     padding: 0;
 
     li {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin: 40px 20px;
-      width: calc(30% - 40px);
       text-align: center;
+      width: calc(50% - 40px);
+
+      @media ($tablet) {
+        width: calc(30% - 40px);
+      }
+
+      > a {
+        display: inline-block;
+      }
 
       img {
         max-height: 120px;
