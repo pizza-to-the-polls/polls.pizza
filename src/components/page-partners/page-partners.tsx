@@ -66,6 +66,11 @@ const partners2022 = [
     name: "Vote Early Day 2022",
     url: "http://www.voteearlyday.org/",
   },
+  {
+    img: "voters-not-politicians.png",
+    name: "Voters Not Politicians",
+    url: "https://votersnotpoliticians.com/",
+  },
 ];
 
 const topPartners2020 = [
