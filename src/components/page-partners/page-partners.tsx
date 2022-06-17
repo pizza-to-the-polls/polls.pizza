@@ -17,6 +17,11 @@ const partners2022 = [
     url: "https://www.campusvoteproject.org/",
   },
   {
+    img: "chicago-votes.jpg",
+    name: "Chicago Votes",
+    url: "https://chicagovotes.com/",
+  },
+  {
     img: "civic-alliance.png",
     name: "Civic Alliance",
     url: "https://www.civicalliance.com/",
@@ -32,6 +37,11 @@ const partners2022 = [
     url: "https://www.evcnational.org/",
   },
   {
+    img: "harness.png",
+    name: "Harness",
+    url: "https://iwillharness.com/",
+  },
+  {
     img: "headcount.png",
     name: "Headcount",
     url: "https://www.headcount.org/",
@@ -42,9 +52,19 @@ const partners2022 = [
     url: "http://nationalvoterregistrationday.org/",
   },
   {
+    img: "new-era-colorado.png",
+    name: "New Era Colorado",
+    url: "https://neweracolorado.org/",
+  },
+  {
     img: "new-georgia-project.jpg",
     name: "New Georgia Project",
     url: "https://www.newgeorgiaproject.org/",
+  },
+  {
+    img: "protect-the-sacred-harness.png",
+    name: "Protect the Sacred powered by Harness",
+    url: "https://iwillharness.com/program/protect-the-sacred/",
   },
   {
     img: "ragtag.png",
