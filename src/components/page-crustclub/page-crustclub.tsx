@@ -200,9 +200,7 @@ export class PageCrustclub {
                       <p>{this.error}</p>
                     </div>
                   )}
-                  <p>
-                    Pizza to the Polls is a 501(c)(3) nonpartisan, nonprofit public charity. All contributions are tax deductible.
-                  </p>
+                  <p>Pizza to the Polls is a 501(c)(3) nonpartisan, nonprofit public charity. All contributions are tax deductible.</p>
                   <p>
                     Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
                   </p>
