@@ -201,8 +201,7 @@ export class PageCrustclub {
                     </div>
                   )}
                   <p>
-                    We are currently incorporated as a 501(c)(4) nonprofit social welfare organization, however all of our activities are 501(c)(3) compliant. Contributions or
-                    gifts to Pizza to the Polls are not tax deductible.
+                    Pizza to the Polls is a 501(c)(3) nonpartisan, nonprofit public charity. All contributions are tax deductible.
                   </p>
                   <p>
                     Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
