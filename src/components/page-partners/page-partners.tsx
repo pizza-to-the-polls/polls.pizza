@@ -37,6 +37,11 @@ const partners2022 = [
     url: "https://www.evcnational.org/",
   },
   {
+    img: "forward-montana-foundation.png",
+    name: "Forward Montana Foundation",
+    url: "https://forwardmontana.org/",
+  },
+  {
     img: "harness.png",
     name: "Harness",
     url: "https://iwillharness.com/",
