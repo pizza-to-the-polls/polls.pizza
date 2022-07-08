@@ -37,6 +37,11 @@ const partners2022 = [
     url: "https://www.thecivicseason.com/",
   },
   {
+    img: "dominos.png",
+    name: "Dominos",
+    url: "https://www.dominos.com",
+  },
+  {
     img: "every-vote-counts.jpeg",
     name: "Every Vote Counts",
     url: "https://www.evcnational.org/",
