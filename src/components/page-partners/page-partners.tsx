@@ -7,6 +7,11 @@ const partners2022 = [
     url: "https://andrewgoodman.org/",
   },
   {
+    img: "asian-pacific-islander-american-vote-michigan.jpg",
+    name: "AAPI MI",
+    url: "https://www.apiavotemi.org/",
+  },
+  {
     img: "black-girls-vote.png",
     name: "Black Girls Vote",
     url: "https://blackgirlsvote.com/",
