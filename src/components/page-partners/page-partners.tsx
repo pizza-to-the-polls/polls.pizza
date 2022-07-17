@@ -77,9 +77,19 @@ const partners2022 = [
     url: "https://www.newgeorgiaproject.org/",
   },
   {
+    img: "proactive-grand-rapids.jpg",
+    name: "Proactive Grand Rapids",
+    url: "https://proactivegr.us",
+  },
+  {
     img: "protect-the-sacred-harness.png",
     name: "Protect the Sacred powered by Harness",
     url: "https://iwillharness.com/program/protect-the-sacred/",
+  },
+  {
+    img: "radical-registrars.png",
+    name: "Radical Registrars",
+    url: "https://radicalregistrars.org/vote/",
   },
   {
     img: "ragtag.png",
