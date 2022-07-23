@@ -62,6 +62,11 @@ const partners2022 = [
     url: "https://www.headcount.org/",
   },
   {
+    img: "naacp-philadelphia.webp",
+    name: "NAACP Philadelphia",
+    url: "https://naacpphillybranch.org/",
+  },
+  {
     img: "national-voter-registration-day.png",
     name: "National Voter Registration Day",
     url: "http://nationalvoterregistrationday.org/",
@@ -105,6 +110,11 @@ const partners2022 = [
     img: "students-learn-students-vote.png",
     name: "Students Learn Students Vote",
     url: "https://slsvcoalition.org/",
+  },
+  {
+    img: "trek-the-vote.jpg",
+    name: "Trek the Vote",
+    url: "http://www.trekthe.vote/",
   },
   {
     img: "vote-early-day-2022.png",
