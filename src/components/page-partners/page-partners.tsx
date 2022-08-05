@@ -22,6 +22,11 @@ const partners2022 = [
     url: "https://www.campusvoteproject.org/",
   },
   {
+    img: "center-for-new-data.png",
+    name: "Center for New Data",
+    url: "https://www.newdata.org/",
+  },
+  {
     img: "chicago-votes.jpg",
     name: "Chicago Votes",
     url: "https://chicagovotes.com/",
@@ -80,6 +85,11 @@ const partners2022 = [
     img: "new-georgia-project.jpg",
     name: "New Georgia Project",
     url: "https://www.newgeorgiaproject.org/",
+  },
+  {
+    img: "new-voters.png",
+    name: "New Voters",
+    url: "https://www.new-voters.org/",
   },
   {
     img: "proactive-grand-rapids.jpg",
