@@ -47,6 +47,11 @@ const partners2022 = [
     url: "https://www.dominos.com",
   },
   {
+    img: "engage-miami.png",
+    name: "Engage Miami",
+    url: "https://engage.miami/",
+  },
+  {
     img: "every-vote-counts.jpeg",
     name: "Every Vote Counts",
     url: "https://www.evcnational.org/",
@@ -67,6 +72,11 @@ const partners2022 = [
     url: "https://www.headcount.org/",
   },
   {
+    img: "lwvwi.png",
+    name: "League of Women Voters of Wisconsin",
+    url: "https://my.lwv.org/wisconsin",
+  },
+  {
     img: "naacp-philadelphia.webp",
     name: "NAACP Philadelphia",
     url: "https://naacpphillybranch.org/",
@@ -75,6 +85,11 @@ const partners2022 = [
     img: "national-voter-registration-day.png",
     name: "National Voter Registration Day",
     url: "http://nationalvoterregistrationday.org/",
+  },
+  {
+    img: "ncaat.png",
+    name: "North Carolina Asian Americans Together",
+    url: "http://www.ncaatinaction.org/",
   },
   {
     img: "new-era-colorado.png",
@@ -125,6 +140,11 @@ const partners2022 = [
     img: "trek-the-vote.jpg",
     name: "Trek the Vote",
     url: "http://www.trekthe.vote/",
+  },
+  {
+    img: "unidos-us.jpg",
+    name: "UnidosUS",
+    url: "https://www.unidosus.org/",
   },
   {
     img: "vote-early-day-2022.png",
