@@ -70,7 +70,7 @@ class PizzaApi {
       costs: 0,
       donors: 0,
       locations: 0,
-      meals: 0,
+      snacks: 0,
       orders: 0,
       pizzas: 0,
       raised: 0,

@@ -118,7 +118,7 @@ export type PizzaTotals = {
   donors: number;
   costs: number;
   pizzas: number;
-  meals: number;
+  snacks: number;
   orders: number;
   locations: number;
   states: number;

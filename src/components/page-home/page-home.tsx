@@ -2,6 +2,8 @@ import { Build, Component, h, State } from "@stencil/core";
 
 import { PizzaApi, PizzaTotals } from "../../api";
 
+import Stats from "./Stats";
+
 @Component({
   tag: "page-home",
   styleUrl: "page-home.scss",
@@ -14,20 +16,7 @@ export class PageHome {
     document.title = `Home | Pizza to the Polls`;
 
     if (Build.isBrowser) {
-      PizzaApi.getTotals().then(totals => {
-        this.totals = totals;
-        const { raised, costs } = totals;
-
-        // Calculate available before transforming values
-        this.available =
-          raised && costs
-            ? "$" +
-              (raised - costs).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })
-            : "";
-      });
+      PizzaApi.getTotals().then(totals => (this.totals = totals));
     }
   }
 
@@ -49,29 +38,7 @@ export class PageHome {
           </div>
         </div>
         <section class="totals">
-          <div class="container">
-            <h2 class="is-display has-text-centered">All-Time Totals</h2>
-            <div class="stats-row">
-              <div class="stat">
-                <span class="stat-number">
-                  <ui-dynamic-text value={this.totals?.pizzas} format={x => x.toLocaleString()} />
-                </span>
-                <span class="stat-label">Pizzas sent</span>
-              </div>
-              <div class="stat">
-                <span class="stat-number">
-                  <ui-dynamic-text value={this.totals?.states} format={x => x.toLocaleString()} />
-                </span>
-                <span class="stat-label">States</span>
-              </div>
-              <div class="stat">
-                <span class="stat-number">
-                  <ui-dynamic-text value={this.totals?.locations} format={x => x.toLocaleString()} />
-                </span>
-                <span class="stat-label">Polling places</span>
-              </div>
-            </div>
-          </div>
+          {this.totals && <Stats totals={this.totals} />}
           <div class="report">
             <div class="container">
               <ui-card class="report-content">
