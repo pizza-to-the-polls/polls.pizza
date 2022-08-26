@@ -166,9 +166,7 @@ export class PageCrustclub {
                 </div>
 
                 <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
-                  <label class="label">
-                    Choose an amount to give each month<span class="required">*</span>
-                  </label>
+                  <label class="label">Choose an amount to give each month</label>
                   <ul class="donation-amount-list">
                     {AMOUNTS.map((amount, idx) => (
                       <li>
@@ -190,7 +188,7 @@ export class PageCrustclub {
                   </ul>
                   <button
                     onClick={handleCheckout}
-                    class={"button is-red is-fullwidth " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                    class={"button is-teal is-fullwidth " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
                     disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
                   >
                     Become a Member
