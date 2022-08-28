@@ -2,6 +2,11 @@ import { Component, h } from "@stencil/core";
 
 const partners2022 = [
   {
+    img: "all-vote-no-play.png",
+    name: "All Vote No Play",
+    url: "https://www.allvotenoplay.org/",
+  },
+  {
     img: "andrew-goodman-foundation.png",
     name: "The Andrew Goodman Foundation",
     url: "https://andrewgoodman.org/",
@@ -72,9 +77,19 @@ const partners2022 = [
     url: "https://www.headcount.org/",
   },
   {
+    img: "levis.png",
+    name: "Levi's",
+    url: "https://www.levi.com/US/en_US/",
+  },
+  {
     img: "lwvwi.png",
     name: "League of Women Voters of Wisconsin",
     url: "https://my.lwv.org/wisconsin",
+  },
+  {
+    img: "move-texas.png",
+    name: "Move Texas",
+    url: "https://movetexas.org/",
   },
   {
     img: "naacp-philadelphia.webp",
