@@ -40,7 +40,9 @@ export class PageHome {
               <h1>Help feed democracy</h1>
               <p>Our mission is to deliver free food to people who are waiting in long lines while participating in civic life.</p>
               <div class="button-group">
-                <a class="button button-large is-cyan" href="/donate">Donate now</a>
+                <a class="button button-large is-cyan" href="/donate">
+                  Donate now
+                </a>
                 <span class="donate-button-subtext">* All contributions are tax deductible</span>
               </div>
             </div>
