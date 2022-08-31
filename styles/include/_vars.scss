@@ -46,6 +46,10 @@ $button-colors: (
     $white,
     $red,
   ),
+  "tan": (
+    $red,
+    $tan,
+  ),
   "yellow": (
     $blue,
     $yellow,
@@ -67,7 +71,7 @@ $button-colors: (
 // Media queries
 // min-width
 $max-width: 769px;
-$tablet: "min-width: 769px";
+$tablet: "min-width: 820px";
 $desktop: "min-width: 1024px";
 $widescreen: "min-width: 1216px";
 // max-width

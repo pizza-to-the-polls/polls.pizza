@@ -19,25 +19,38 @@ export class AppRoot {
     return (
       <Host>
         <header class="header">
-          <stencil-route-link url="/" exact={true}>
+          <stencil-route-link url="/" class="brand" exact={true}>
             <img src="/images/lockup.png" alt="Pizza to the Polls" />
           </stencil-route-link>
           <ul class="menu" id="menu">
             <li>
               <stencil-route-link url="/" exact={true}>
-                Report
+                <span>🏠</span> Home
               </stencil-route-link>
             </li>
             <li>
-              <stencil-route-link url="/donate">Donate</stencil-route-link>
+              <stencil-route-link url="/">
+                <span>🍕</span> Send pizza
+              </stencil-route-link>
             </li>
             <li>
-              <stencil-route-link url="/deliveries">Deliveries</stencil-route-link>
+              <stencil-route-link url="/donate">
+                <span>💵</span> Donate
+              </stencil-route-link>
             </li>
             <li>
-              <stencil-route-link url="/about">About</stencil-route-link>
+              <stencil-route-link url="/about">
+                <span>📢</span> About
+              </stencil-route-link>
+            </li>
+            <li>
+              <stencil-route-link url="/">
+                <span>💬</span>FAQ
+              </stencil-route-link>
             </li>
           </ul>
+
+          <a href="/" class="button is-tan menu-btn">Menu</a>
         </header>
 
         <main>
