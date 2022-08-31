@@ -1,14 +1,15 @@
 // Brand colors
-$red: #db2b39;
-$yellow: #f3a712;
-$blue: #29335c;
-$cyan: #00c1cc;
+$red: #fa442d;
+$yellow: #fec62d;
+$blue: #044257;
+$cyan: #8acbd0;
 $teal: #00828d;
 $gray1: #e8e9ee;
 $gray2: #c0c3d1;
 $gray3: #9b9fb1;
 $white: #ffffff;
-$black: #000000;
+$black: #1e1e1e;
+$tan: #fff6e4;
 
 // External brand colors
 $twitter: #1da1f2;
@@ -24,6 +25,7 @@ $text-colors: (
   "gray": $gray3,
   "white": $white,
   "black": $black,
+  "tan": $tan,
 );
 
 // class name (is-teal), text color, background color
@@ -74,11 +76,11 @@ $under-desktop: "max-width: 1023px";
 $under-widescreen: "max-width: 1407px";
 
 // Fonts
-$header-font: "Fredoka One", cursive;
-$body-font: "Work Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+$header-font: "Chivo", -apple-system, BlinkMacSystemFont, sans-serif;
+$body-font: "Work Sans", -apple-system, BlinkMacSystemFont, sans-serif;	$body-font: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 
 // Element properties
-$radius: 8px; // Default border-radius
+$radius: 16px; // Default border-radius
 $radius-rounded: 290486px; // Rounded border-radius
 $border-color: $gray2;
 $box-shadow: 0 0.5em 1em -0.125em rgba($black, 0.1), 0 0px 0 1px rgba($black, 0.02);
