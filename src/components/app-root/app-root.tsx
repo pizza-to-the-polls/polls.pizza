@@ -50,7 +50,7 @@ export class AppRoot {
             </li>
           </ul>
 
-          <a href="/" class="button is-tan menu-btn">Menu</a>
+          <a href="/" class="button is-white menu-btn">Menu</a>
         </header>
 
         <main>
