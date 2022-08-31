@@ -7,11 +7,7 @@
   color: $white;
   cursor: pointer;
   justify-content: center;
-  margin: 0 auto 1rem;
-  padding-bottom: calc(0.5em - 1px);
-  padding-left: 1em;
-  padding-right: 1em;
-  padding-top: calc(0.5em - 1px);
+  padding: calc(0.5em - 1px) 1em;
   text-align: center;
   text-decoration: none;
   font-family: $body-font;
@@ -141,5 +137,15 @@
   > img {
     height: 1.5em;
     width: 1.5em;
+  }
+}
+
+.button-large {
+  padding: calc(0.5em - 1px) 1em;
+  font-size: 1rem;
+
+  @media ($tablet) {
+    padding: calc(0.5em - 1px) 1em;
+    font-size: 1.5rem;
   }
 }
