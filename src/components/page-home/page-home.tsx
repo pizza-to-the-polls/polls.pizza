@@ -37,8 +37,8 @@ export class PageHome {
             </div>
           </div>
         </div>
-        <section class="totals">
-          {this.totals && <Stats totals={this.totals} />}
+        <section class="totals">{this.totals && <Stats totals={this.totals} />}</section>
+        <section class="report">
           <div class="report">
             <div class="container">
               <ui-card class="report-content">
