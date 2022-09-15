@@ -251,7 +251,7 @@ export class PageCrustclub {
                       </a>
                     </li>
                     <li>
-                      <stencil-route-link url="/donate" class="button is-fullwidth-mobile is-teal">
+                      <stencil-route-link url="/donate" class="button is-fullwidth-mobile is-cyan">
                         Make a one-time donation
                       </stencil-route-link>
                     </li>

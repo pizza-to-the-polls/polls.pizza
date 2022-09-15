@@ -198,20 +198,11 @@ export class PageDonate {
       <Host>
         <ui-main-content background="red">
           <ui-card>
-            <h1>Donate</h1>
-
             {!this.showConfirmation && (
               <div>
-                <div class="donation-intro">
-                  <p>Waiting in line is a bummer. Waiting in line with pizza is a little less of a bummer.</p>
-                  <p>Keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
-                </div>
-
                 <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
                   <div class="form-item ">
-                    <label class="label">
-                      Choose one time or monthly donation<span class="required">*</span>
-                    </label>
+                    <label class="label">One time or monthly</label>
                     <div class="radio-group social-radio-group">
                       <label class="radio" htmlFor="donation-type-donation" onClick={handleChange}>
                         <input type="radio" value="donation" id="donation-type-donation" name="donationType" checked={this.donationType === "donation"} />
@@ -226,9 +217,7 @@ export class PageDonate {
                     </div>
                   </div>
 
-                  <label class="label">
-                    Choose an amount <span class="required">*</span>
-                  </label>
+                  <label class="label">Choose an amount</label>
                   <ul class="donation-amount-list">
                     {AMOUNTS.map((amount, idx) => (
                       <li>
@@ -259,7 +248,7 @@ export class PageDonate {
                   </ul>
                   <button
                     onClick={handleCheckout}
-                    class={"button is-red is-fullwidth " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                    class={"button is-cyan is-fullwidth " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
                     disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
                   >
                     Donate
@@ -273,9 +262,6 @@ export class PageDonate {
                     </div>
                   )}
                   <p>Pizza to the Polls is a 501(c)(3) nonpartisan, nonprofit public charity. Contributions are tax deductible.</p>
-                  <p>
-                    Need help? <stencil-route-link url="/contact">Contact us</stencil-route-link>.
-                  </p>
                 </form>
               </div>
             )}

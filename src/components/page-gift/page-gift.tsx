@@ -257,7 +257,7 @@ export class PageGift {
 
                   <button
                     onClick={handleCheckout}
-                    class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                    class={"button is-cyan is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
                     disabled={!this.amount || isNaN(this.amount) || !this.giftName || !this.giftEmail || (this.error || "").length > 0}
                   >
                     Send Gift
