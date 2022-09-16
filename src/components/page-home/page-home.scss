@@ -175,6 +175,34 @@ page-home {
       }
     }
   }
+  .deliveries {
+    width: 30%;
+    background-color: $tan;
+    border-radius: $radius;
+    margin: 10px 0 0 10px;
+    padding: 0 10px;
+
+    .delivery {
+      border-bottom: 1px solid $gray2;
+      margin: 10px 0;
+      padding: 4px 0;
+
+      h5 {
+        margin: 0;
+        line-height: 0.5rem;
+        font-size: 0.85rem;
+      }
+      .time {
+        font-size: 0.6rem;
+        color: $gray4;
+      }
+      p {
+        color: $gray4;
+        font-size: 0.75rem;
+      }
+    }
+  }
+
   .donate {
     color: $blue;
     background: $cyan;

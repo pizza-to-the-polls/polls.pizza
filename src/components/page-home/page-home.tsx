@@ -2,6 +2,7 @@ import { Build, Component, h, State } from "@stencil/core";
 
 import { OrderDetails, PizzaApi, PizzaTotals } from "../../api";
 
+import Deliveries from "./Deliveries";
 import Stats from "./Stats";
 import Tweets from "./Tweets";
 
@@ -11,6 +12,7 @@ import Tweets from "./Tweets";
 })
 export class PageHome {
   @State() private totals?: PizzaTotals;
+  @State() private orders?: OrderDetails[];
   @State() public available: string = "";
 
   public async componentWillLoad() {
@@ -18,6 +20,7 @@ export class PageHome {
 
     if (Build.isBrowser) {
       PizzaApi.getTotals().then(totals => (this.totals = totals));
+      PizzaApi.getOrders(0, 5).then(({ results }) => (this.orders = results));
     }
   }
 
@@ -42,6 +45,7 @@ export class PageHome {
         <section class="tweets-deliveries">
           <div class="container">
             <Tweets />
+            <Deliveries orders={this.orders} />
           </div>
         </section>
         <section class="how-we-do-it">
