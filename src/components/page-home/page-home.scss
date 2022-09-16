@@ -153,10 +153,19 @@ page-home {
 
   .tweets-deliveries .container {
     display: flex;
+
+    @media ($under-tablet) {
+      flex-wrap: wrap;
+    }
   }
+
   .tweets {
     width: 70%;
     margin: 10px 10px 0 0;
+
+    @media ($under-tablet) {
+      width: 100%;
+    }
 
     .tweets-wrapper {
       display: flex;
@@ -172,6 +181,10 @@ page-home {
         margin: 4px;
         text-align: center;
         padding: 0.75rem 0;
+
+        @media ($under-tablet) {
+          width: 90%;
+        }
       }
     }
   }
@@ -181,6 +194,10 @@ page-home {
     border-radius: $radius;
     margin: 10px 0 0 10px;
     padding: 0 10px;
+
+    @media ($under-tablet) {
+      width: 100%;
+    }
 
     .delivery {
       border-bottom: 1px solid $gray2;
