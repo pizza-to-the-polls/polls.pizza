@@ -151,6 +151,30 @@ page-home {
     }
   }
 
+  .tweets-deliveries .container {
+    display: flex;
+  }
+  .tweets {
+    width: 70%;
+    margin: 10px 10px 0 0;
+
+    .tweets-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      @media ($under-tablet) {
+        flex-wrap: wrap;
+      }
+
+      .tweet-wrapper {
+        width: 48%;
+        margin: 4px;
+        text-align: center;
+        padding: 0.75rem 0;
+      }
+    }
+  }
   .donate {
     color: $blue;
     background: $cyan;
