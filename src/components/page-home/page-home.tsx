@@ -1,8 +1,10 @@
 import { Build, Component, h, State } from "@stencil/core";
 
-import { PizzaApi, PizzaTotals } from "../../api";
+import { OrderDetails, PizzaApi, PizzaTotals } from "../../api";
 
+import Deliveries from "./Deliveries";
 import Stats from "./Stats";
+import Tweets from "./Tweets";
 
 @Component({
   tag: "page-home",
@@ -10,6 +12,7 @@ import Stats from "./Stats";
 })
 export class PageHome {
   @State() private totals?: PizzaTotals;
+  @State() private orders?: OrderDetails[];
   @State() public available: string = "";
 
   public async componentWillLoad() {
@@ -17,6 +20,7 @@ export class PageHome {
 
     if (Build.isBrowser) {
       PizzaApi.getTotals().then(totals => (this.totals = totals));
+      PizzaApi.getOrders(0, 5).then(({ results }) => (this.orders = results));
     }
   }
 
@@ -38,24 +42,10 @@ export class PageHome {
           </div>
         </div>
         <section class="totals">{this.totals && <Stats totals={this.totals} />}</section>
-        <section class="report">
-          <div class="report">
-            <div class="container">
-              <ui-card class="report-content">
-                <form-report>
-                  <h2 id="report" class="is-display is-scroll-to no-pointer-events">
-                    Report a line
-                  </h2>
-                  <p>
-                    <strong>
-                      Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines. We're also sending 'za and tasty snacks to
-                      people who are waiting in long lines while participating in other forms of civic life. Send us reports of long lines wherever people are doing their civic
-                      duty and we'll send in the delicious reinforcements.
-                    </strong>
-                  </p>
-                </form-report>
-              </ui-card>
-            </div>
+        <section class="tweets-deliveries">
+          <div class="container">
+            <Tweets />
+            <Deliveries orders={this.orders} />
           </div>
         </section>
         <section class="how-we-do-it">
