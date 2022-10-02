@@ -77,6 +77,11 @@ const partners2022 = [
     url: "https://www.headcount.org/",
   },
   {
+    img: "lead-mn.jpg",
+    name: "Lead MN",
+    url: "https://www.leadmn.org/",
+  },
+  {
     img: "levis.png",
     name: "Levi's",
     url: "https://www.levi.com/US/en_US/",
