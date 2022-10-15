@@ -77,6 +77,16 @@ const partners2022 = [
     url: "https://www.headcount.org/",
   },
   {
+    img: "jolt-initiative.png",
+    name: "Jolt Initiative",
+    url: "http://jolttx.org/",
+  },
+  {
+    img: "joy-to-the-polls.png",
+    name: "Joy to the Polls",
+    url: "https://linktr.ee/joytothepolls",
+  },
+  {
     img: "lead-mn.jpg",
     name: "Lead MN",
     url: "https://www.leadmn.org/",
@@ -152,6 +162,11 @@ const partners2022 = [
     url: "https://slicelife.com/",
   },
   {
+    img: "souls-to-the-polls.png",
+    name: "Souls to the Polls",
+    url: "https://www.soulstothepollswi.org/",
+  },
+  {
     img: "students-learn-students-vote.png",
     name: "Students Learn Students Vote",
     url: "https://slsvcoalition.org/",
@@ -165,6 +180,11 @@ const partners2022 = [
     img: "unidos-us.jpg",
     name: "UnidosUS",
     url: "https://www.unidosus.org/",
+  },
+  {
+    img: "voces.jpg",
+    name: "Voces",
+    url: "https://www.vocesbc.org/",
   },
   {
     img: "vote-early-day-2022.png",
