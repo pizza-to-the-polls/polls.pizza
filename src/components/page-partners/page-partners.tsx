@@ -228,6 +228,11 @@ const partners2020 = [
     url: "https://www.daybreaker.com/",
   },
   {
+    img: "detroit-votes-2022.png",
+    name: "Detroit Votes 2022",
+    url: "https://detroitvotes.org/",
+  },
+  {
     img: "ezcater.png",
     name: "EZCater",
     url: "https://www.ezcater.com/",
@@ -246,6 +251,11 @@ const partners2020 = [
     img: "kind.png",
     name: "KIND Snacks",
     url: "https://www.kindsnacks.com/",
+  },
+  {
+    img: "lacolombe.jpg",
+    name: "La Colombe Coffee",
+    url: "https://www.lacolombe.com/",
   },
   {
     img: "lemonade.png",
@@ -311,6 +321,11 @@ const partners2020 = [
     img: "thesalty.png",
     name: "The Salty",
     url: "https://www.saltydonut.com/",
+  },
+  {
+    img: "tonys-chocolonely.png",
+    name: "Tony's Chocolonely",
+    url: "https://tonyschocolonely.com/",
   },
   {
     img: "usa.png",
