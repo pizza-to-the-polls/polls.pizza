@@ -28,9 +28,9 @@ export class AppRoot {
   }
 
   @Watch("location") public onRouteChange(newRoute: { pathname: string }) {
-    // when the app initializes, newRoute has a blank pathname and it would run, so this conditional stops that.
-
+    // this conditional is here because the build's prerender phase fails without it.
     if (typeof window !== "undefined" && typeof window.ga !== "undefined") {
+      // when the app initializes, newRoute has a blank pathname and it would run, so this conditional stops that.
       if (newRoute.pathname) {
         window.ga("send", "pageview", newRoute.pathname);
       }
