@@ -1,5 +1,6 @@
 import { Build } from "@stencil/core";
-import { Component, h, Host } from "@stencil/core";
+import { Component, h, Host, Prop, Watch } from "@stencil/core";
+import { LocationSegments, injectHistory } from '@stencil/router';
 
 import { PizzaApi } from "../../api";
 
@@ -7,12 +8,20 @@ import { PizzaApi } from "../../api";
   tag: "app-root",
   styleUrl: "app-root.scss",
 })
+
 export class AppRoot {
   public componentWillLoad() {
     // Ensure the backend is loaded by hitting a health check
     if (Build.isBrowser) {
       PizzaApi.getHealth();
     }
+  }
+
+  @Prop() location: LocationSegments | undefined;
+
+  // it says ga is not found, but the variable is available when the app is comiled
+  @Watch("location") onRouteChange(newRoute, oldRoute) {
+    ga("send", "pageview", newRoute.pathname);
   }
 
   public render() {
@@ -43,26 +52,86 @@ export class AppRoot {
         <main>
           <stencil-router>
             <stencil-route-switch scrollTopOffset={1}>
-              <stencil-route url="/" component="page-home" exact={true} />
-              <stencil-route url="/about" component="page-about" />
-              <stencil-route url="/activity" component="page-activity" />
-              <stencil-route url="/covid" component="page-covid" />
-              <stencil-route url="/contact" component="page-contact" />
-              <stencil-route url={["/deliveries/:location", "/deliveries"]} component="page-deliveries" />
-              <stencil-route url="/donate" component="page-donate" />
-              <stencil-route url="/gift" component="page-gift" />
-              <stencil-route url="/crustclub" component="page-crustclub" />
-              <stencil-route url={["/sign-in", "/session/:token"]} component="page-session" />
-              <stencil-route url="/guidelines" component="page-guidelines" />
-              <stencil-route url="/instructions" component="page-instructions" />
-              <stencil-route url="/on-demand" component="page-on-demand" />
-              <stencil-route url="/partners" component="page-partners" />
-              <stencil-route url="/press" component="page-press" />
-              <stencil-route url="/privacy" component="page-privacy" />
-              <stencil-route url="/report" routeRender={() => <stencil-router-redirect url="/" />} />
-              <stencil-route url="/trucks" component="page-trucks" />
-              <stencil-route url="/vax-and-snacks" component="page-vax-and-snacks" />
-              <stencil-route component="page-home" />
+              <stencil-route 
+                url="/"
+                component="page-home"
+                exact={true} 
+              />
+              <stencil-route 
+                url="/about"
+                component="page-about"
+              />
+              <stencil-route
+                url="/activity"
+                component="page-activity"
+              />
+              <stencil-route
+                url="/covid"
+                component="page-covid"
+              />
+              <stencil-route 
+                url="/contact"
+                component="page-contact"
+              />
+              <stencil-route 
+                url={["/deliveries/:location", "/deliveries"]}
+                component="page-deliveries"
+              />
+              <stencil-route 
+                url="/donate"
+                component="page-donate" 
+              />
+              <stencil-route
+                url="/gift"
+                component="page-gift"
+              />
+              <stencil-route
+                url="/crustclub"
+                component="page-crustclub"
+              />
+              <stencil-route
+                url={["/sign-in", "/session/:token"]}
+                component="page-session"
+              />
+              <stencil-route
+                url="/guidelines"
+                component="page-guidelines"
+              />
+              <stencil-route
+                url="/instructions"
+                component="page-instructions"
+              />
+              <stencil-route
+                url="/on-demand"
+                component="page-on-demand"
+              />
+              <stencil-route
+                url="/partners"
+                component="page-partners"
+              />
+              <stencil-route
+                url="/press"
+                component="page-press"
+              />
+              <stencil-route
+                url="/privacy"
+                component="page-privacy"
+              />
+              <stencil-route
+                url="/report"
+                routeRender={() => <stencil-router-redirect url="/" />}
+              />
+              <stencil-route
+                url="/trucks"
+                component="page-trucks"
+              />
+              <stencil-route
+                url="/vax-and-snacks"
+                component="page-vax-and-snacks"
+              />
+              <stencil-route
+                component="page-home"
+              />
             </stencil-route-switch>
           </stencil-router>
         </main>
@@ -153,3 +222,5 @@ export class AppRoot {
     );
   }
 }
+
+injectHistory(AppRoot);

@@ -5,10 +5,11 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { MatchResults, RouterHistory } from "@stencil/router";
+import { LocationSegments, MatchResults, RouterHistory } from "@stencil/router";
 import { LocationId } from "./api";
 export namespace Components {
     interface AppRoot {
+        "location": LocationSegments | undefined;
     }
     interface FormReport {
     }
@@ -313,6 +314,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface AppRoot {
+        "location"?: LocationSegments | undefined;
     }
     interface FormReport {
     }

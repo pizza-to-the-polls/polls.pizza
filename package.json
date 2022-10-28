@@ -27,7 +27,8 @@
     "util:perform-updates": "npm-check-updates -u"
   },
   "dependencies": {
-    "@bugsnag/js": "^7.5.1"
+    "@bugsnag/js": "^7.5.1",
+    "ip-stencil-route-listener": "^2.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^2.3.3",
