@@ -1,6 +1,6 @@
 import { Build } from "@stencil/core";
 import { Component, h, Host, Prop, Watch } from "@stencil/core";
-import { LocationSegments, injectHistory } from "@stencil/router";
+import { injectHistory, LocationSegments } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
 
@@ -9,6 +9,8 @@ import { PizzaApi } from "../../api";
   styleUrl: "app-root.scss",
 })
 export class AppRoot {
+  @Prop() public location: LocationSegments | undefined;
+
   public componentWillLoad() {
     // Ensure the backend is loaded by hitting a health check
     if (Build.isBrowser) {
@@ -16,10 +18,8 @@ export class AppRoot {
     }
   }
 
-  @Prop() location: LocationSegments | undefined;
-
   // it says ga is not found, but the variable is available when the app is comiled
-  @Watch("location") onRouteChange(newRoute) {
+  @Watch("location") public onRouteChange(newRoute) {
     ga("send", "pageview", newRoute.pathname);
   }
 
