@@ -5,7 +5,13 @@ import { injectHistory, LocationSegments } from "@stencil/router";
 import { PizzaApi } from "../../api";
 
 // this fixes a build error where the ga var was not found, because it is declared in index.html
-declare var ga: any;
+// declare var ga: any;
+
+declare global {
+  interface Window {
+    ga: any;
+  }
+}
 
 @Component({
   tag: "app-root",
@@ -22,7 +28,10 @@ export class AppRoot {
   }
 
   @Watch("location") public onRouteChange(newRoute: { pathname: string }) {
-    ga("send", "pageview", newRoute.pathname);
+    // when the app initializes, newRoute has a blank pathname and it would run, so this conditional stops that.
+    if (newRoute.pathname) {
+      window.ga("send", "pageview", newRoute.pathname);
+    }
   }
 
   public render() {
