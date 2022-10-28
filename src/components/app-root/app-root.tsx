@@ -4,6 +4,9 @@ import { injectHistory, LocationSegments } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
 
+// this fixes a build error where the ga var was not found, because it is declared in index.html
+declare var ga: any;
+
 @Component({
   tag: "app-root",
   styleUrl: "app-root.scss",
@@ -18,8 +21,7 @@ export class AppRoot {
     }
   }
 
-  // it says ga is not found, but the variable is available when the app is comiled
-  @Watch("location") public onRouteChange(newRoute) {
+  @Watch("location") public onRouteChange(newRoute: { pathname: string }) {
     ga("send", "pageview", newRoute.pathname);
   }
 
