@@ -47,6 +47,11 @@ const partners2022 = [
     url: "https://www.thecivicseason.com/",
   },
   {
+    img: "committee-of-70.jpg",
+    name: "Committee of 70",
+    url: "https://seventy.org/",
+  },
+  {
     img: "dominos.png",
     name: "Dominos",
     url: "https://www.dominos.com",
