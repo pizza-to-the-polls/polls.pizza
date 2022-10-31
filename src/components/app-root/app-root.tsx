@@ -1,17 +1,39 @@
 import { Build } from "@stencil/core";
-import { Component, h, Host } from "@stencil/core";
+import { Component, h, Host, Prop, Watch } from "@stencil/core";
+import { injectHistory, LocationSegments } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
+
+// this fixes a build error where the ga var was not found, because it is declared in index.html
+// declare var ga: any;
+
+declare global {
+  interface Window {
+    ga: any;
+  }
+}
 
 @Component({
   tag: "app-root",
   styleUrl: "app-root.scss",
 })
 export class AppRoot {
+  @Prop() public location: LocationSegments | undefined;
+
   public componentWillLoad() {
     // Ensure the backend is loaded by hitting a health check
     if (Build.isBrowser) {
       PizzaApi.getHealth();
+    }
+  }
+
+  @Watch("location") public onRouteChange(newRoute: { pathname: string }) {
+    // this conditional is here because the build's prerender phase fails without it.
+    if (typeof window !== "undefined" && typeof window.ga !== "undefined") {
+      // when the app initializes, newRoute has a blank pathname and it would run, so this conditional stops that.
+      if (newRoute.pathname) {
+        window.ga("send", "pageview", newRoute.pathname);
+      }
     }
   }
 
@@ -153,3 +175,5 @@ export class AppRoot {
     );
   }
 }
+
+injectHistory(AppRoot);
