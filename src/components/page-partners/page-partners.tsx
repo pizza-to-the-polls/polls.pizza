@@ -201,6 +201,11 @@ const partners2022 = [
     name: "Voters Not Politicians",
     url: "https://votersnotpoliticians.com/",
   },
+  {
+    img: "when-we-all-vote.png",
+    name: "When We All Vote",
+    url: "https://whenweallvote.org/",
+  },
 ];
 
 const topPartners2020 = [
