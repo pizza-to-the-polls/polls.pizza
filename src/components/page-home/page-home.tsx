@@ -38,7 +38,10 @@ export class PageHome {
           <div class="hero-image-container"></div>
           <div class="tagline">
             <div class="container">
-              <p>Our mission is to deliver free food to people who are waiting in long lines while participating in civic life.</p>
+              <p>
+                Our mission is to deliver free food to people who are participating in civic life, from long lines at polling places to nonpartisan events focused on voter
+                education, registration, and turnout.
+              </p>
               <a class="button is-red" href="/donate">
                 Donate now to feed democracy
               </a>
