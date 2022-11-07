@@ -58,7 +58,7 @@ export class FormReport {
   @State() private reportType: string = ""; // "social" | "photo"
   @State() private hasPhoto: boolean = false;
   @State() private photoUrl: string = "";
-  @State() private userClickedGuidelinesLink: boolean = false;
+  @State() private userClickedGuidelinesLink: boolean = true;
 
   public componentDidRender() {
     if (Build.isBrowser && google && document.getElementById("autocomplete-input")) {
