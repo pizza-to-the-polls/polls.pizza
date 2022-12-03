@@ -2,6 +2,11 @@ import { Component, h } from "@stencil/core";
 
 const partners2022 = [
   {
+    img: "aclu-georgia.png",
+    name: "ACLU Georgia",
+    url: "https://acluga.org/",
+  },
+  {
     img: "all-vote-no-play.png",
     name: "All Vote No Play",
     url: "https://www.allvotenoplay.org/",
@@ -72,6 +77,11 @@ const partners2022 = [
     url: "https://forwardmontana.org/",
   },
   {
+    img: "georgia-muslim-voter-project.png",
+    name: "Georgia Muslim Voter Project",
+    url: "https://www.gamvp.org/",
+  },
+  {
     img: "harness.png",
     name: "Harness",
     url: "https://iwillharness.com/",
@@ -110,6 +120,11 @@ const partners2022 = [
     img: "move-texas.png",
     name: "Move Texas",
     url: "https://movetexas.org/",
+  },
+  {
+    img: "naacp-bulloch-county.png",
+    name: "NAACP Bulloch County",
+    url: "https://www.facebook.com/groups/378097455598086/",
   },
   {
     img: "naacp-philadelphia.webp",
