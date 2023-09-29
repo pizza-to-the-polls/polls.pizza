@@ -1,6 +1,10 @@
 import { Build, Component, h, State } from "@stencil/core";
 
-import { PizzaApi, PizzaTotals } from "../../api";
+import { OrderDetails, PizzaApi, PizzaTotals } from "../../api";
+
+import Deliveries from "./Deliveries";
+import Stats from "./Stats";
+import Tweets from "./Tweets";
 
 @Component({
   tag: "page-home",
@@ -8,26 +12,15 @@ import { PizzaApi, PizzaTotals } from "../../api";
 })
 export class PageHome {
   @State() private totals?: PizzaTotals;
+  @State() private orders?: OrderDetails[];
   @State() public available: string = "";
 
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
     if (Build.isBrowser) {
-      PizzaApi.getTotals().then(totals => {
-        this.totals = totals;
-        const { raised, costs } = totals;
-
-        // Calculate available before transforming values
-        this.available =
-          raised && costs
-            ? "$" +
-              (raised - costs).toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })
-            : "";
-      });
+      PizzaApi.getTotals().then(totals => (this.totals = totals));
+      PizzaApi.getOrders(0, 5).then(({ results }) => (this.orders = results));
     }
   }
 
@@ -52,47 +45,11 @@ export class PageHome {
             </div>
           </div>
         </div>
-        <section class="totals">
+        <section class="totals">{this.totals && <Stats totals={this.totals} />}</section>
+        <section class="tweets-deliveries">
           <div class="container">
-            <h2 class="is-display has-text-centered">All-Time Totals</h2>
-            <div class="stats-row">
-              <div class="stat">
-                <span class="stat-number">
-                  <ui-dynamic-text value={this.totals?.pizzas} format={x => x.toLocaleString()} />
-                </span>
-                <span class="stat-label">Pizzas sent</span>
-              </div>
-              <div class="stat">
-                <span class="stat-number">
-                  <ui-dynamic-text value={this.totals?.states} format={x => x.toLocaleString()} />
-                </span>
-                <span class="stat-label">States</span>
-              </div>
-              <div class="stat">
-                <span class="stat-number">
-                  <ui-dynamic-text value={this.totals?.locations} format={x => x.toLocaleString()} />
-                </span>
-                <span class="stat-label">Polling places</span>
-              </div>
-            </div>
-          </div>
-          <div class="report">
-            <div class="container">
-              <ui-card class="report-content">
-                <form-report>
-                  <h2 id="report" class="is-display is-scroll-to no-pointer-events">
-                    Report a line
-                  </h2>
-                  <p>
-                    <strong>
-                      Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines. We're also sending 'za and tasty snacks to
-                      people who are waiting in long lines while participating in other forms of civic life. Send us reports of long lines wherever people are doing their civic
-                      duty and we'll send in the delicious reinforcements.
-                    </strong>
-                  </p>
-                </form-report>
-              </ui-card>
-            </div>
+            <Tweets />
+            <Deliveries orders={this.orders} />
           </div>
         </section>
         <section class="how-we-do-it">
