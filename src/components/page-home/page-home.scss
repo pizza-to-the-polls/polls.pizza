@@ -268,13 +268,14 @@ page-home {
 }
 
 .press {
-  background-color: $gray2;
-  background-image: url("/images/bg2.png");
-  background-attachment: fixed;
-  background-size: 400px;
+  background-color: $tan;
 
-  h2 {
-    text-align: center;
+  h3 {
+    text-align: left;
+  }
+
+  .story {
+    width: 50%;
   }
 
   .container {

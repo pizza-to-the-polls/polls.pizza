@@ -78,11 +78,14 @@ export class PageHome {
           </div>
         </section>
         <section class="press">
-          <h2>Learn more about our work</h2>
           <div class="container">
-            <a href="https://www.nytimes.com/2020/11/03/opinion/volunteers-election-2020.html" target="_blank">
+            <div class="story">
               <img src="/images/press/nyt.png" alt="New York Times" />
-            </a>
+              <h2>Feel Inspired, America</h2>
+              <p>In 2016 Scott Duncombe, a software developer in Portland, Ore., saw on the news that Cleveland residents had to wait hours in long lines to vote. His heart went out to them. In Oregon, there are never any lines because everybody votes by mail. So he called up a pizza place in Cleveland and ordered a bunch of food to raise their spirits.</p>
+              <a href="https://www.nytimes.com/2020/11/03/opinion/volunteers-election-2020.html" target="_blank">Read the article</a>
+            </div>
+
             <a href="https://www.cnn.com/2020/09/21/politics/pizza-polling-early-voting-election/index.html" target="_blank">
               <img src="/images/press/cnn.png" alt="CNN" />
             </a>

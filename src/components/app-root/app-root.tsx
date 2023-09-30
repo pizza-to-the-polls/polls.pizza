@@ -41,23 +41,24 @@ export class AppRoot {
     return (
       <Host>
         <header class="header">
-          <stencil-route-link url="/" exact={true}>
-            <img src="/images/lockup.png" alt="Pizza to the Polls" />
-          </stencil-route-link>
+          <div class="logo">
+            <stencil-route-link url="/" exact={true}>
+              <img src="/images/logo.png" alt="Pizza to the Polls" />
+              Pizza to the Polls
+            </stencil-route-link>
+          </div>
           <ul class="menu" id="menu">
             <li>
-              <stencil-route-link url="/" exact={true}>
-                Report
-              </stencil-route-link>
+              <stencil-route-link url="/home">🍕 Send pizza</stencil-route-link>
             </li>
             <li>
-              <stencil-route-link url="/donate">Donate</stencil-route-link>
+              <stencil-route-link url="/donate">💵 Donate</stencil-route-link>
             </li>
             <li>
-              <stencil-route-link url="/deliveries">Deliveries</stencil-route-link>
+              <stencil-route-link url="/about">📢 About</stencil-route-link>
             </li>
             <li>
-              <stencil-route-link url="/about">About</stencil-route-link>
+              <stencil-route-link url="/faq">💬 FAQ</stencil-route-link>
             </li>
           </ul>
         </header>
