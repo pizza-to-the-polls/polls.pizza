@@ -82,7 +82,7 @@ export class UiSingleInput {
           autocomplete="on"
           required
         />
-        <input type="submit" onClick={handleSubmit} value={this.buttonLabel} class="button submit-button" />
+        <input type="submit" onClick={handleSubmit} value={this.buttonLabel} class="button is-cyan submit-button" />
         <slot />
       </div>
     );

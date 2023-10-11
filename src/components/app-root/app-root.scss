@@ -190,20 +190,6 @@ footer {
     padding-bottom: 50px;
   }
 
-  .email-signup-input {
-    border: 0;
-    width: calc(100% - 100px);
-    float: left;
-    border-radius: $radius 0 0 $radius;
-  }
-
-  .email-signup-button {
-    float: left;
-    width: 100px;
-    margin: 0;
-    border-radius: 0 $radius $radius 0;
-  }
-
   .footer-nav {
     padding: 20px 0 40px 0;
     display: flex;

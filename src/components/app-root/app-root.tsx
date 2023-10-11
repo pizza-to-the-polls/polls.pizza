@@ -96,29 +96,6 @@ export class AppRoot {
               Pizza to the Polls is a nonpartisan, nonprofit organization whose purposes are (i) to educate individuals about America's institutions, citizens' civic duties and
               opportunities, and (ii) to increase turnout and ensure all people are well-informed about their civic obligations.
             </p>
-            <div
-              class="clearfix"
-              style={{
-                clear: "left",
-                width: "100%",
-                maxWidth: "500px",
-                margin: "0 auto 40px auto",
-              }}
-            >
-              <form
-                action="https://pizza.us14.list-manage.com/subscribe/post?u=ff4b828d01c30e7ef1de2e24b&amp;id=a2d940b77b"
-                method="post"
-                name="mc-embedded-subscribe-form"
-                target="_blank"
-                noValidate
-              >
-                <ui-single-input label="Sign up for updates" buttonLabel="Sign up" type="email" name="EMAIL" placeholder="Your email address">
-                  <div style={{ position: "absolute", left: "-5000px" }} aria-hidden="true">
-                    <input type="text" name="b_ff4b828d01c30e7ef1de2e24b_a2d940b77b" tabindex="-1" value="" readOnly />
-                  </div>
-                </ui-single-input>
-              </form>
-            </div>
             <div class="footer-nav">
               <ul>
                 <li>

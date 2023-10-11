@@ -274,4 +274,38 @@ page-home {
       }
     }
   }
+  .newsletter {
+    .container {
+      background-color: $red;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 30px;
+    }
+    h1 {
+      text-transform: uppercase;
+      margin: -4px 0 0 0;
+      font-size: 42px;
+    }
+    .newsletter-text {
+      width: 50%;
+    }
+    form {
+      width: 50%;
+    }
+
+    .email-signup-input {
+      border: 0;
+      width: calc(100% - 100px);
+      float: left;
+      border-radius: $radius 0 0 $radius;
+    }
+
+    .email-signup-button {
+      float: left;
+      width: 100px;
+      margin: 0;
+      border-radius: 0 $radius $radius 0;
+    }
+  }
 }

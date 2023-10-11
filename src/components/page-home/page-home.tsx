@@ -118,6 +118,27 @@ export class PageHome {
             ))}
           </div>
         </section>
+        <section class="newsletter is-round">
+          <div class="container">
+            <div class="has-text-white newsletter-text">
+              <h1>Newsletter Sign-Up</h1>
+              <p>Keep up to date with what we've got cooking.</p>
+            </div>
+            <form
+              action="https://pizza.us14.list-manage.com/subscribe/post?u=ff4b828d01c30e7ef1de2e24b&amp;id=a2d940b77b"
+              method="post"
+              name="mc-embedded-subscribe-form"
+              target="_blank"
+              noValidate
+            >
+              <ui-single-input buttonLabel="Sign up" type="email" name="EMAIL">
+                <div style={{ position: "absolute", left: "-5000px" }} aria-hidden="true">
+                  <input type="text" name="b_ff4b828d01c30e7ef1de2e24b_a2d940b77b" tabindex="-1" value="" readOnly />
+                </div>
+              </ui-single-input>
+            </form>
+          </div>
+        </section>
       </div>
     );
   }
