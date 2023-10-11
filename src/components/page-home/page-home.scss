@@ -275,7 +275,19 @@ page-home {
   }
 
   .story {
-    width: 50%;
+    @media ($tablet) {
+      width: 46%;
+      margin: 20px 2%;
+    }
+    margin: 20px;
+    display: table;
+    vertical-align: top;
+    img {
+      max-height: 32px;
+    }
+    a {
+      font-size: 0.75rem;
+    }
   }
 
   .container {

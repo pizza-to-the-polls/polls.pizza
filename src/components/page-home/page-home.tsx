@@ -31,8 +31,10 @@ export class PageHome {
           <div class="container">
             <div>
               <h1>Help feed democracy</h1>
-              <p>Our mission is to deliver free food to people who are participating in civic life, from long lines at polling places to nonpartisan events focused on voter
-                education, registration, and turnout.</p>
+              <p>
+                Our mission is to deliver free food to people who are participating in civic life, from long lines at polling places to nonpartisan events focused on voter
+                education, registration, and turnout.
+              </p>
               <div class="button-group">
                 <a class="button button-large is-cyan" href="/donate">
                   Donate now
@@ -79,22 +81,52 @@ export class PageHome {
         </section>
         <section class="press">
           <div class="container">
-            <div class="story">
-              <img src="/images/press/nyt.png" alt="New York Times" />
-              <h2>Feel Inspired, America</h2>
-              <p>In 2016 Scott Duncombe, a software developer in Portland, Ore., saw on the news that Cleveland residents had to wait hours in long lines to vote. His heart went out to them. In Oregon, there are never any lines because everybody votes by mail. So he called up a pizza place in Cleveland and ordered a bunch of food to raise their spirits.</p>
-              <a href="https://www.nytimes.com/2020/11/03/opinion/volunteers-election-2020.html" target="_blank">Read the article</a>
-            </div>
-
-            <a href="https://www.cnn.com/2020/09/21/politics/pizza-polling-early-voting-election/index.html" target="_blank">
-              <img src="/images/press/cnn.png" alt="CNN" />
-            </a>
-            <a href="https://www.buzzfeednews.com/article/skbaer/long-lines-election-day-2020" target="_blank">
-              <img src="/images/press/buzzfeed.png" alt="Buzzfeed" />
-            </a>
-            <a href="https://www.oprahdaily.com/life/a34483172/pizza-to-the-polls-long-lines/" target="_blank">
-              <img src="/images/press/oprah.png" alt="Oprah Daily" />
-            </a>
+            {[
+              {
+                img: "/images/press/nyt.png",
+                alt: "The New York Times",
+                headline: "Feel Inspired, America",
+                body:
+                  "In 2016 Scott Duncombe, a software developer in Portland, Ore., saw on the news that Cleveland residents " +
+                  "had to wait hours in long lines to vote. His heart went out to them. In Oregon, there are never any lines " +
+                  "because everybody votes by mail. So he called up a pizza place in Cleveland and ordered a bunch of food " +
+                  "to raise their spirits.",
+                link: "https://www.nytimes.com/2020/11/03/opinion/volunteers-election-2020.html",
+              },
+              {
+                link: "https://www.cnn.com/2020/09/21/politics/pizza-polling-early-voting-election/index.html",
+                img: "/images/press/cnn.png",
+                alt: "CNN",
+                headline: "Pizza to the Polls aims to feed hungry 2020 voters stuck in long lines",
+                body:
+                  "A staple at birthday parties, bar crawls and bowling, few foods bring Americans together like pizza. And this election season, a new group aims to bring America’s favorite pie to those stuck waiting in long lines.",
+              },
+              {
+                link: "https://www.buzzfeednews.com/article/skbaer/long-lines-election-day-2020",
+                img: "/images/press/buzzfeed.png",
+                alt: "Buzzfeed News",
+                headline: "What To Do If You’re Stuck In A Line At Your Polling Place On Election Day",
+                body:
+                  "The big neon sign is: If you are in line when polls close, you must be allowed to vote, so don’t get out of line no matter what anybody around you tells you.",
+              },
+              {
+                link: "https://www.oprahdaily.com/life/a34483172/pizza-to-the-polls-long-lines/",
+                img: "/images/press/oprah.png",
+                alt: "Opra",
+                headline: "Pizza to the Polls is fueling democracy—one slice at a time.",
+                body:
+                  "Picture it: You slip away from your office—or work-from-home setup—at lunchtime during early voting or on Election Day to cast your ballot, but the line at your polling site is out the door and down the block.",
+              },
+            ].map(({ img, alt, link, body, headline }) => (
+              <div class="story">
+                <img src={img} alt={alt} />
+                <h3>{headline}</h3>
+                <p>{body}</p>
+                <a href={link} class="has-text-blue" target="_blank">
+                  Read the article
+                </a>
+              </div>
+            ))}
           </div>
         </section>
       </div>
