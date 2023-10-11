@@ -36,9 +36,9 @@ export class PageHome {
                 education, registration, and turnout.
               </p>
               <div class="button-group">
-                <a class="button button-large is-cyan" href="/donate">
+                <stencil-route-link class="button button-large is-cyan" url="/donate">
                   Donate now
-                </a>
+                </stencil-route-link>
                 <span class="donate-button-subtext">* All contributions are tax deductible</span>
               </div>
             </div>
@@ -54,32 +54,21 @@ export class PageHome {
             <Deliveries orders={this.orders} />
           </div>
         </section>
-        <section class="how-we-do-it">
+        <section class="donate is-round">
           <div class="container">
-            <h2 class="has-text-white">How we do it</h2>
-            <div class="cards">
-              <div class="card">
-                <h3>Food Trucks</h3>
-                <img src="/images/truck.jpg" alt="Food truck" />
-                <p>For the 2020 election season, we launched a food truck program in 29 cities around the country for early voting and election day. </p>
-                <a href="/trucks">Learn more</a>
-              </div>
-              <div class="card">
-                <h3>On Demand</h3>
-                <img src="/images/on-demand.jpg" alt="Pizza at a polling location" />
-                <p>Our signature program is back and we need you to help by reporting crowded polling places and then sticking around to make sure food gets delivered safely.</p>
-                <a href="/on-demand">Learn more</a>
-              </div>
-              <div class="card">
-                <h3>Vax and Snacks</h3>
-                <img src="/images/vax.jpg" alt="People holding slices of pizza" />
-                <p>Pizza to the Polls switched gears in 2021 to fulfill another need: sending pizzas and other snacks to COVID-19 vaccination sites with long lines!</p>
-                <a href="/vax-and-snacks">Learn more</a>
-              </div>
+            <img src="/images/give-icon.png" />
+            <div class="donate-text">
+              <h1 class="has-text-red">Help us send pizza to hungry folks in long lines.</h1>
+              <p>Can you help out with a little dough?</p>
+            </div>
+            <div class="donate-button">
+              <stencil-route-link url="/donate" class="button button-large is-red">
+                Donate
+              </stencil-route-link>
             </div>
           </div>
         </section>
-        <section class="press">
+        <section class="press is-round">
           <div class="container">
             {[
               {

@@ -202,110 +202,76 @@ page-home {
     }
   }
 
-  .donate {
-    color: $blue;
-    background: $cyan;
-    background-image: url("/images/bg2.png");
-    background-attachment: fixed;
-    background-size: 400px;
-    padding-bottom: 40px;
-
-    .stats-row {
-      margin-bottom: 0.5rem;
-      justify-content: left;
-
-      .stat {
-        text-align: left;
-
-        @media ($under-tablet) {
-          width: 50%;
-        }
-      }
+  .is-round {
+    margin: 0 16px;
+    .container {
+      border-radius: 16px;
     }
   }
 
-  .hero-section,
-  .report,
   .donate {
-    color: $blue;
-    position: relative;
+    .container {
+      background: $light-red;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    img {
+      height: 120px;
+      margin: 16px;
+    }
+    h1 {
+      letter-spacing: -1.5px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .donate-button {
+      margin-right: 30px;
+    }
   }
 
-  .report-content,
-  .donate-content {
-    position: relative;
-    margin-top: 1rem;
-    z-index: 100;
-  }
+  .press {
+    .container {
+      background-color: $tan;
+    }
 
-  .report-bg {
-    background-color: $cyan;
-    background-image: url("/images/bg2.png");
-    background-attachment: fixed;
-    background-size: 400px;
-    width: 100%;
-    height: 14%;
-    position: absolute;
-    bottom: 0;
-    z-index: 0;
-  }
+    h3 {
+      text-align: left;
+    }
 
-  .how-we-do-it {
-    color: $blue;
-    background: $teal;
-    background-image: url("/images/bg2.png");
-    background-attachment: fixed;
-    background-size: 400px;
-
-    h2 {
-      text-align: center;
+    .story {
+      @media ($tablet) {
+        width: 46%;
+        margin: 20px 2%;
+      }
+      margin: 20px;
+      display: table;
+      vertical-align: top;
+      img {
+        max-height: 32px;
+      }
+      a {
+        font-size: 0.75rem;
+      }
     }
 
     .container {
-      max-width: 1200px;
+      padding: 20px;
+      display: flex;
+      flex-flow: wrap;
+      justify-content: space-between;
+      align-items: center;
     }
-  }
-}
 
-.press {
-  background-color: $tan;
+    a {
+      width: 40%;
+      display: inline-block;
+    }
 
-  h3 {
-    text-align: left;
-  }
-
-  .story {
     @media ($tablet) {
-      width: 46%;
-      margin: 20px 2%;
-    }
-    margin: 20px;
-    display: table;
-    vertical-align: top;
-    img {
-      max-height: 32px;
-    }
-    a {
-      font-size: 0.75rem;
-    }
-  }
-
-  .container {
-    padding: 20px;
-    display: flex;
-    flex-flow: wrap;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  a {
-    width: 40%;
-    display: inline-block;
-  }
-
-  @media ($tablet) {
-    a {
-      width: 20%;
+      a {
+        width: 20%;
+      }
     }
   }
 }
