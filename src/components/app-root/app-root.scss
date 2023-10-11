@@ -166,48 +166,65 @@
 }
 
 footer {
-  background: $blue;
-  border-top: 5px solid $red;
-  color: $white;
-  padding: 20px 0;
+  background: $light-red;
+  color: $red;
 
+  ui-main-content .container {
+    padding-top: 0;
+  }
   a:not(.button) {
-    color: $white;
+    color: $red;
     border-color: transparent;
 
     &:hover,
     &:active,
     &:focus {
-      color: darken($white, 10%);
+      color: darken($red, 10%);
       border-color: transparent;
     }
   }
 
   .disclaimer {
-    font-size: 14px;
-    font-style: italic;
-    border-bottom: 3px solid #fff;
-    padding-bottom: 50px;
+    font-size: 12px;
+    color: $gray4;
   }
 
   .footer-nav {
-    padding: 20px 0 40px 0;
-    display: flex;
-    flex-direction: column;
-    border-top: 3px solid $white;
-
     @media ($tablet) {
-      flex-direction: row;
+      display: flex;
+      .right {
+        width: 30%;
+      }
+      .left {
+        width: 70%;
+      }
     }
 
+    padding: 20px 16px;
+
     ul {
+      width: 100%;
+      display: flex;
       list-style-type: none;
-      padding: 0 40px 0 0;
       flex-grow: 1;
+      flex-direction: row;
+      justify-content: left;
+      padding: 0;
+      margin: 0;
 
       li {
-        font-size: 18px;
-
+        &:before {
+          content: "|";
+          padding-right: 6px;
+          font-weight: lighter;
+          opacity: 0.25;
+        }
+        &:first-child:before {
+          content: "";
+          display: none;
+        }
+        padding-right: 6px;
+        font-size: 12px;
         a:not(.button) {
           text-decoration: none;
           border-color: transparent;
@@ -217,11 +234,23 @@ footer {
           }
         }
       }
+      &.major {
+        margin-bottom: 30px;
+        li {
+          font-size: 16px;
+        }
+      }
     }
 
     .social {
+      margin: 30px 0;
       padding: 0;
-      text-align: left;
+      text-align: right;
+
+      @media ($tablet) {
+        margin: 0;
+        justify-content: right;
+      }
 
       @media ($tablet) {
         text-align: right;
@@ -229,11 +258,13 @@ footer {
 
       li {
         display: inline-block;
-        margin: 0 10px;
-
+        margin: 0 4px;
+        &:before {
+          content: "";
+        }
         .icon {
-          height: 40px;
-          width: 40px;
+          height: 32px;
+          width: 32px;
         }
       }
     }

@@ -210,6 +210,11 @@ page-home {
   }
 
   .donate {
+    display: none;
+    @media ($tablet) {
+      display: block;
+    }
+
     .container {
       background: $light-red;
       display: flex;
@@ -260,7 +265,7 @@ page-home {
       display: flex;
       flex-flow: wrap;
       justify-content: space-between;
-      align-items: center;
+      align-items: start;
     }
 
     a {
@@ -278,6 +283,11 @@ page-home {
     .container {
       background-color: $red;
       display: flex;
+      @media ($tablet) {
+        text-align: left;
+      }
+      flex-wrap: wrap;
+      text-align: center;
       align-items: center;
       justify-content: space-around;
       padding: 30px;
@@ -285,13 +295,21 @@ page-home {
     h1 {
       text-transform: uppercase;
       margin: -4px 0 0 0;
-      font-size: 42px;
+      @media ($tablet) {
+        font-size: 42px;
+      }
     }
-    .newsletter-text {
-      width: 50%;
-    }
+
     form {
-      width: 50%;
+      width: 84%;
+    }
+    .newsletter-text,
+    form {
+      margin: 4px 0;
+      @media ($tablet) {
+        width: 50%;
+        margin: 0;
+      }
     }
 
     .email-signup-input {

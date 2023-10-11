@@ -92,59 +92,63 @@ export class AppRoot {
 
         <footer>
           <ui-main-content background="none">
-            <p class="disclaimer">
-              Pizza to the Polls is a nonpartisan, nonprofit organization whose purposes are (i) to educate individuals about America's institutions, citizens' civic duties and
-              opportunities, and (ii) to increase turnout and ensure all people are well-informed about their civic obligations.
-            </p>
             <div class="footer-nav">
-              <ul>
-                <li>
-                  <stencil-route-link url="/about">About</stencil-route-link>
-                </li>
-                <li>
-                  <stencil-route-link url="/partners">Partners</stencil-route-link>
-                </li>
-                <li>
-                  <stencil-route-link url="/press">Press</stencil-route-link>
-                </li>
-                <li>
-                  <stencil-route-link url="/contact">Contact Us</stencil-route-link>
-                </li>
-              </ul>
-              <ul>
-                <li>
-                  <stencil-route-link url="/trucks">Food Trucks</stencil-route-link>
-                </li>
-                <li>
-                  <stencil-route-link url="/on-demand">On Demand</stencil-route-link>
-                </li>
-                <li>
-                  <stencil-route-link url="/vax-and-snacks">Vax and Snacks</stencil-route-link>
-                </li>
-                <li>
-                  <stencil-route-link url="/covid">COVID safety</stencil-route-link>
-                </li>
-                <li>
-                  <stencil-route-link url="/privacy">Privacy Policy</stencil-route-link>
-                </li>
-              </ul>
-              <ul class="social">
-                <li>
-                  <a class="twitter" href="https://twitter.com/pizzatothepolls" target="blank">
-                    <img class="icon" alt="Twitter" src="/images/icons/twitter.svg" />
-                  </a>
-                </li>
-                <li>
-                  <a class="facebook" href="https://facebook.com/pizzatothepolls" target="blank">
-                    <img class="icon" alt="Facebook" src="/images/icons/facebook.svg" />
-                  </a>
-                </li>
-                <li>
-                  <a class="instagram" href="https://www.instagram.com/pizzatothepolls/" target="blank">
-                    <img class="icon" alt="Instagram" src="/images/icons/instagram.svg" />
-                  </a>
-                </li>
-              </ul>
+              <div class="left">
+                <ul>
+                  <li>
+                    <stencil-route-link url="/about">About</stencil-route-link>
+                  </li>
+                  <li>
+                    <stencil-route-link url="/partners">Partners</stencil-route-link>
+                  </li>
+                  <li>
+                    <stencil-route-link url="/press">Press</stencil-route-link>
+                  </li>
+                  <li>
+                    <stencil-route-link url="/contact">Contact Us</stencil-route-link>
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                    <stencil-route-link url="/trucks">Food Trucks</stencil-route-link>
+                  </li>
+                  <li>
+                    <stencil-route-link url="/on-demand">On Demand</stencil-route-link>
+                  </li>
+                  <li>
+                    <stencil-route-link url="/vax-and-snacks">Vax and Snacks</stencil-route-link>
+                  </li>
+                  <li>
+                    <stencil-route-link url="/covid">COVID safety</stencil-route-link>
+                  </li>
+                  <li>
+                    <stencil-route-link url="/privacy">Privacy Policy</stencil-route-link>
+                  </li>
+                </ul>
+                <p class="disclaimer">
+                  Pizza to the Polls is a nonpartisan, nonprofit organization whose purposes are (i) to educate individuals about America's institutions, citizens' civic duties and
+                  opportunities, and (ii) to increase turnout and ensure all people are well-informed about their civic obligations.
+                </p>
+              </div>
+              <div class="right">
+                <ul class="social">
+                  <li>
+                    <a class="twitter" href="https://twitter.com/pizzatothepolls" target="blank">
+                      <img class="icon" alt="Twitter" src="/images/icons/twitter.svg" />
+                    </a>
+                  </li>
+                  <li>
+                    <a class="facebook" href="https://facebook.com/pizzatothepolls" target="blank">
+                      <img class="icon" alt="Facebook" src="/images/icons/facebook.svg" />
+                    </a>
+                  </li>
+                  <li>
+                    <a class="instagram" href="https://www.instagram.com/pizzatothepolls/" target="blank">
+                      <img class="icon" alt="Instagram" src="/images/icons/instagram.svg" />
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </ui-main-content>
         </footer>
