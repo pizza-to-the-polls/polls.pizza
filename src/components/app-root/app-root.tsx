@@ -49,7 +49,7 @@ export class AppRoot {
           </div>
           <ul class="menu" id="menu">
             <li>
-              <stencil-route-link url="/home">🍕 Send pizza</stencil-route-link>
+              <stencil-route-link url="/report">🍕 Send pizza</stencil-route-link>
             </li>
             <li>
               <stencil-route-link url="/donate">💵 Donate</stencil-route-link>
@@ -82,7 +82,7 @@ export class AppRoot {
               <stencil-route url="/partners" component="page-partners" />
               <stencil-route url="/press" component="page-press" />
               <stencil-route url="/privacy" component="page-privacy" />
-              <stencil-route url="/report" routeRender={() => <stencil-router-redirect url="/" />} />
+              <stencil-route url="/report" component="page-report" />
               <stencil-route url="/trucks" component="page-trucks" />
               <stencil-route url="/vax-and-snacks" component="page-vax-and-snacks" />
               <stencil-route component="page-home" />

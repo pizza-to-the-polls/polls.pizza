@@ -31,7 +31,6 @@ const Delivery = ({ order }: { order: OrderDetails }) => (
 const Deliveries = ({ orders }: { orders?: OrderDetails[] }) => (
   <div class="deliveries">
     <h3 class="has-text-red">🚐 Deliveries</h3>
-    {console.log(orders)}
     {orders?.map(order => (
       <Delivery order={order} />
     ))}

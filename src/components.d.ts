@@ -12,6 +12,7 @@ export namespace Components {
         "location": LocationSegments | undefined;
     }
     interface FormReport {
+        "formattedAddress"?: string;
     }
     interface PageAbout {
     }
@@ -37,6 +38,7 @@ export namespace Components {
     interface PageGuidelines {
     }
     interface PageHome {
+        "history": RouterHistory;
     }
     interface PageInstructions {
     }
@@ -47,6 +49,9 @@ export namespace Components {
     interface PagePress {
     }
     interface PagePrivacy {
+    }
+    interface PageReport {
+        "history"?: RouterHistory;
     }
     interface PageSession {
         "match": MatchResults;
@@ -80,6 +85,11 @@ export namespace Components {
         "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "zoom"?: number;
+    }
+    interface UiLocationSearch {
+        "error": string | null;
+        "placeholder": string;
+        "readOnly": boolean;
     }
     interface UiMainContent {
         "background": "yellow" | "cyan" | "teal" | "red" | "none";
@@ -208,6 +218,12 @@ declare global {
         prototype: HTMLPagePrivacyElement;
         new (): HTMLPagePrivacyElement;
     };
+    interface HTMLPageReportElement extends Components.PageReport, HTMLStencilElement {
+    }
+    var HTMLPageReportElement: {
+        prototype: HTMLPageReportElement;
+        new (): HTMLPageReportElement;
+    };
     interface HTMLPageSessionElement extends Components.PageSession, HTMLStencilElement {
     }
     var HTMLPageSessionElement: {
@@ -249,6 +265,12 @@ declare global {
     var HTMLUiGeoMapElement: {
         prototype: HTMLUiGeoMapElement;
         new (): HTMLUiGeoMapElement;
+    };
+    interface HTMLUiLocationSearchElement extends Components.UiLocationSearch, HTMLStencilElement {
+    }
+    var HTMLUiLocationSearchElement: {
+        prototype: HTMLUiLocationSearchElement;
+        new (): HTMLUiLocationSearchElement;
     };
     interface HTMLUiMainContentElement extends Components.UiMainContent, HTMLStencilElement {
     }
@@ -298,6 +320,7 @@ declare global {
         "page-partners": HTMLPagePartnersElement;
         "page-press": HTMLPagePressElement;
         "page-privacy": HTMLPagePrivacyElement;
+        "page-report": HTMLPageReportElement;
         "page-session": HTMLPageSessionElement;
         "page-trucks": HTMLPageTrucksElement;
         "page-vax-and-snacks": HTMLPageVaxAndSnacksElement;
@@ -305,6 +328,7 @@ declare global {
         "ui-card": HTMLUiCardElement;
         "ui-dynamic-text": HTMLUiDynamicTextElement;
         "ui-geo-map": HTMLUiGeoMapElement;
+        "ui-location-search": HTMLUiLocationSearchElement;
         "ui-main-content": HTMLUiMainContentElement;
         "ui-modal": HTMLUiModalElement;
         "ui-pizza-list": HTMLUiPizzaListElement;
@@ -317,6 +341,7 @@ declare namespace LocalJSX {
         "location"?: LocationSegments | undefined;
     }
     interface FormReport {
+        "formattedAddress"?: string;
     }
     interface PageAbout {
     }
@@ -342,6 +367,7 @@ declare namespace LocalJSX {
     interface PageGuidelines {
     }
     interface PageHome {
+        "history": RouterHistory;
     }
     interface PageInstructions {
     }
@@ -352,6 +378,9 @@ declare namespace LocalJSX {
     interface PagePress {
     }
     interface PagePrivacy {
+    }
+    interface PageReport {
+        "history"?: RouterHistory;
     }
     interface PageSession {
         "match": MatchResults;
@@ -391,6 +420,12 @@ declare namespace LocalJSX {
   }>) => void;
         "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "zoom"?: number;
+    }
+    interface UiLocationSearch {
+        "error"?: string | null;
+        "onLocationSelected"?: (event: CustomEvent<{ formattedAddress: string; locationName: string }>) => void;
+        "placeholder"?: string;
+        "readOnly"?: boolean;
     }
     interface UiMainContent {
         "background"?: "yellow" | "cyan" | "teal" | "red" | "none";
@@ -432,6 +467,7 @@ declare namespace LocalJSX {
         "page-partners": PagePartners;
         "page-press": PagePress;
         "page-privacy": PagePrivacy;
+        "page-report": PageReport;
         "page-session": PageSession;
         "page-trucks": PageTrucks;
         "page-vax-and-snacks": PageVaxAndSnacks;
@@ -439,6 +475,7 @@ declare namespace LocalJSX {
         "ui-card": UiCard;
         "ui-dynamic-text": UiDynamicText;
         "ui-geo-map": UiGeoMap;
+        "ui-location-search": UiLocationSearch;
         "ui-main-content": UiMainContent;
         "ui-modal": UiModal;
         "ui-pizza-list": UiPizzaList;
@@ -467,6 +504,7 @@ declare module "@stencil/core" {
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
+            "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-session": LocalJSX.PageSession & JSXBase.HTMLAttributes<HTMLPageSessionElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
             "page-vax-and-snacks": LocalJSX.PageVaxAndSnacks & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
@@ -474,6 +512,7 @@ declare module "@stencil/core" {
             "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
             "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
             "ui-geo-map": LocalJSX.UiGeoMap & JSXBase.HTMLAttributes<HTMLUiGeoMapElement>;
+            "ui-location-search": LocalJSX.UiLocationSearch & JSXBase.HTMLAttributes<HTMLUiLocationSearchElement>;
             "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
             "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
             "ui-pizza-list": LocalJSX.UiPizzaList & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;

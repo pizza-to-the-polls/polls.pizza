@@ -1,4 +1,5 @@
-import { Build, Component, h, State } from "@stencil/core";
+import { Build, Component, h, Prop, State } from "@stencil/core";
+import { RouterHistory } from "@stencil/router";
 
 import { OrderDetails, PizzaApi, PizzaTotals } from "../../api";
 
@@ -14,6 +15,7 @@ export class PageHome {
   @State() private totals?: PizzaTotals;
   @State() private orders?: OrderDetails[];
   @State() public available: string = "";
+  @Prop() public history!: RouterHistory;
 
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
@@ -25,6 +27,10 @@ export class PageHome {
   }
 
   public render() {
+    const handleLocationSelected = (e: CustomEvent) => {
+      this.history?.push(`/report?q=${e.detail.formattedAddress.replace(/\s/g, "+", {})}`);
+    };
+
     return (
       <div>
         <div class="hero">
@@ -47,6 +53,11 @@ export class PageHome {
             </div>
           </div>
         </div>
+        <section class="order-pizzas">
+          <div class="container">
+            <ui-location-search placeholder="Search for a location to send pizza" onLocationSelected={handleLocationSelected} />
+          </div>
+        </section>
         <section class="totals">{this.totals && <Stats totals={this.totals} />}</section>
         <section class="tweets-deliveries">
           <div class="container">
