@@ -1,9 +1,11 @@
 ui-card {
   background-color: $tan;
   border-radius: $radius;
-  color: $blue;
+  color: $black;
   display: block;
   padding: 1.5rem;
+  max-width: 54rem;
+  margin: 0 auto;
 
   ui-card + & {
     margin-top: 1.5rem;

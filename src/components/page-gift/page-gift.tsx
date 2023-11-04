@@ -41,34 +41,15 @@ export class PageGift {
 
   public async donate(amount: number) {
     this.error = null;
-
-    const showError = this.showError;
     try {
-      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("donation", amount, {
+      await PizzaApi.postDonation("donation", amount, {
         referrer: this.referral,
         giftName: this.giftName,
         giftEmail: this.giftEmail,
       });
-
-      if (success) {
-        const sessionId = checkoutSessionId;
-        const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
-
-        stripe
-          .redirectToCheckout({
-            sessionId,
-          })
-          .then(function (result: any) {
-            console.error(result.error.message);
-            showError(result.error.message);
-          });
-      } else {
-        console.error(`${message}`);
-        this.showError(`${message || PizzaApi.genericErrorMessage}`);
-      }
     } catch (e) {
       console.error(e);
-      this.showError(PizzaApi.genericErrorMessage);
+      this.showError(e.message || PizzaApi.genericErrorMessage);
     }
   }
 

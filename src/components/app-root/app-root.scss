@@ -70,6 +70,7 @@
   box-shadow: $box-shadow;
 
   height: 120px;
+  min-width: 350px;
 
   @media ($tablet) {
     border-bottom: none;
@@ -92,8 +93,7 @@
       font-weight: 500;
       font-size: 32px;
     }
-
-    @media ($tablet) {
+    @media (min-width: 900px) {
       float: left;
       margin: 14px 0 0 48px;
     }
@@ -113,14 +113,13 @@
     z-index: 1000;
     text-align: center;
 
-    @media ($tablet) {
+    @media (min-width: 900px) {
       position: relative;
       top: 0;
       text-align: center;
       padding: 20px 0 0 0;
       float: right;
     }
-
     li {
       display: inline-block;
       font-size: 14px;
@@ -137,8 +136,7 @@
         font-size: 16px;
       }
 
-      @media ($tablet) {
-        display: inline-block;
+      @media (min-width: 900px) {
         width: auto;
         padding: 0 0.75rem 0 0.5rem;
         font-size: 20px;
@@ -159,7 +157,7 @@
       &:hover,
       &:active,
       &.link-active {
-        color: $blue !important;
+        color: $white !important;
       }
     }
   }

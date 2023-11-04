@@ -13,12 +13,11 @@ export class PageReport {
   }
 
   public render() {
-    console.log(this.history?.location.query.q);
     return (
       <Host>
         <ui-main-content>
           <ui-card>
-            <form-report formattedAddress={this.history?.location.query.q} />
+            <form-report formattedAddress={this.history?.location?.query?.q} />
           </ui-card>
         </ui-main-content>
       </Host>

@@ -11,6 +11,13 @@ export namespace Components {
     interface AppRoot {
         "location": LocationSegments | undefined;
     }
+    interface FormDonate {
+        "initialAmount"?: number | null;
+        "initialDonationType": string;
+        "redirectURL"?: string | null;
+        "referral"?: string;
+        "showConfirmation": boolean;
+    }
     interface FormReport {
         "formattedAddress"?: string;
     }
@@ -86,6 +93,8 @@ export namespace Components {
         "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "zoom"?: number;
     }
+    interface UiGuidelines {
+    }
     interface UiLocationSearch {
         "error": string | null;
         "placeholder": string;
@@ -121,6 +130,12 @@ declare global {
     var HTMLAppRootElement: {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
+    };
+    interface HTMLFormDonateElement extends Components.FormDonate, HTMLStencilElement {
+    }
+    var HTMLFormDonateElement: {
+        prototype: HTMLFormDonateElement;
+        new (): HTMLFormDonateElement;
     };
     interface HTMLFormReportElement extends Components.FormReport, HTMLStencilElement {
     }
@@ -266,6 +281,12 @@ declare global {
         prototype: HTMLUiGeoMapElement;
         new (): HTMLUiGeoMapElement;
     };
+    interface HTMLUiGuidelinesElement extends Components.UiGuidelines, HTMLStencilElement {
+    }
+    var HTMLUiGuidelinesElement: {
+        prototype: HTMLUiGuidelinesElement;
+        new (): HTMLUiGuidelinesElement;
+    };
     interface HTMLUiLocationSearchElement extends Components.UiLocationSearch, HTMLStencilElement {
     }
     var HTMLUiLocationSearchElement: {
@@ -304,6 +325,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
+        "form-donate": HTMLFormDonateElement;
         "form-report": HTMLFormReportElement;
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
@@ -328,6 +350,7 @@ declare global {
         "ui-card": HTMLUiCardElement;
         "ui-dynamic-text": HTMLUiDynamicTextElement;
         "ui-geo-map": HTMLUiGeoMapElement;
+        "ui-guidelines": HTMLUiGuidelinesElement;
         "ui-location-search": HTMLUiLocationSearchElement;
         "ui-main-content": HTMLUiMainContentElement;
         "ui-modal": HTMLUiModalElement;
@@ -339,6 +362,13 @@ declare global {
 declare namespace LocalJSX {
     interface AppRoot {
         "location"?: LocationSegments | undefined;
+    }
+    interface FormDonate {
+        "initialAmount"?: number | null;
+        "initialDonationType"?: string;
+        "redirectURL"?: string | null;
+        "referral"?: string;
+        "showConfirmation"?: boolean;
     }
     interface FormReport {
         "formattedAddress"?: string;
@@ -421,6 +451,8 @@ declare namespace LocalJSX {
         "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "zoom"?: number;
     }
+    interface UiGuidelines {
+    }
     interface UiLocationSearch {
         "error"?: string | null;
         "onLocationSelected"?: (event: CustomEvent<{ formattedAddress: string; locationName: string }>) => void;
@@ -451,6 +483,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "app-root": AppRoot;
+        "form-donate": FormDonate;
         "form-report": FormReport;
         "page-about": PageAbout;
         "page-activity": PageActivity;
@@ -475,6 +508,7 @@ declare namespace LocalJSX {
         "ui-card": UiCard;
         "ui-dynamic-text": UiDynamicText;
         "ui-geo-map": UiGeoMap;
+        "ui-guidelines": UiGuidelines;
         "ui-location-search": UiLocationSearch;
         "ui-main-content": UiMainContent;
         "ui-modal": UiModal;
@@ -488,6 +522,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "form-donate": LocalJSX.FormDonate & JSXBase.HTMLAttributes<HTMLFormDonateElement>;
             "form-report": LocalJSX.FormReport & JSXBase.HTMLAttributes<HTMLFormReportElement>;
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
@@ -512,6 +547,7 @@ declare module "@stencil/core" {
             "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
             "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
             "ui-geo-map": LocalJSX.UiGeoMap & JSXBase.HTMLAttributes<HTMLUiGeoMapElement>;
+            "ui-guidelines": LocalJSX.UiGuidelines & JSXBase.HTMLAttributes<HTMLUiGuidelinesElement>;
             "ui-location-search": LocalJSX.UiLocationSearch & JSXBase.HTMLAttributes<HTMLUiLocationSearchElement>;
             "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
             "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;

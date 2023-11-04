@@ -49,6 +49,10 @@ $button-colors: (
     $white,
     $red,
   ),
+  "red-inverted": (
+    $red,
+    rgba($red, 0.1),
+  ),
   "light-red": (
     $red,
     $light-red,

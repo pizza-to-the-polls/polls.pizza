@@ -35,31 +35,11 @@ export class PageCrustclub {
 
   public async donate(amount: number) {
     this.error = null;
-    const showError = this.showError;
     try {
-      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("subscription", amount, { referrer: this.referral });
-
-      if (success) {
-        const sessionId = checkoutSessionId;
-        const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
-
-        stripe
-          .redirectToCheckout({
-            sessionId,
-          })
-          .then(function (result: any) {
-            console.error(result.error.message);
-            showError(result.error.message);
-          });
-      } else {
-        if (message) {
-          console.error(message);
-        }
-        this.showError(message || PizzaApi.genericErrorMessage);
-      }
+      await PizzaApi.postDonation("subcription", amount, { referrer: this.referral });
     } catch (e) {
       console.error(e);
-      this.showError(PizzaApi.genericErrorMessage);
+      this.showError(e.message || PizzaApi.genericErrorMessage);
     }
   }
 
