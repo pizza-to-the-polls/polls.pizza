@@ -293,8 +293,8 @@ export class PageDeliveries {
 
     return (
       <Host>
-        <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
-          <div>
+        <ui-main-content class={{ "selected-location": selectedAddress != null }}>
+          <ui-card>
             {selectedAddress != null ? (
               <div style={{ padding: "1em 0 0 0" }}>
                 <a onClick={() => (this.selectedAddress = undefined)}>Back to all deliveries</a>
@@ -318,56 +318,51 @@ export class PageDeliveries {
                 />
               </Fragment>
             )}
-          </div>
-          <FoodChoices selected={selectedFood} onSelected={x => (this.selectedFood = x)} />
-        </ui-main-content>
-
-        <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
-          <hr class="heavy" />
-          <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
-          <div id="deliveries-map-container" class={{ "is-single-location": selectedAddress != null }}>
-            <ui-geo-map
-              center={mapCenterPoint}
-              zoom={mapZoom}
-              deliveries={
-                selectedFood === FoodChoice.all || selectedFood === FoodChoice.pizza
-                  ? this.recentOrders?.slice(0, 30).map(x => ({
-                      coords: {
-                        lat: parseFloat(x.location.lat),
-                        lng: parseFloat(x.location.lng),
-                      },
-                      id: x.location.id,
-                    }))
-                  : undefined
-              }
-              trucks={
-                selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks
-                  ? this.recentTrucks?.slice(0, 20).map(x => ({
-                      coords: {
-                        lat: parseFloat(x.location.lat),
-                        lng: parseFloat(x.location.lng),
-                      },
-                      id: x.location.id,
-                    }))
-                  : undefined
-              }
-              onMarkerSelected={({ detail: { type, location } }) => {
-                let locationInfo: LocationInfo | undefined;
-                switch (type) {
-                  case "pizza":
-                    locationInfo = this.recentOrders?.find(x => x.location.id === location)?.location;
-                    break;
-                  case "truck":
-                    locationInfo = this.recentTrucks?.find(x => x.location.id === location)?.location;
-                    break;
+            <FoodChoices selected={selectedFood} onSelected={x => (this.selectedFood = x)} />
+            <hr class="heavy" />
+            <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
+            <div id="deliveries-map-container" class={{ "is-single-location": selectedAddress != null }}>
+              <ui-geo-map
+                center={mapCenterPoint}
+                zoom={mapZoom}
+                deliveries={
+                  selectedFood === FoodChoice.all || selectedFood === FoodChoice.pizza
+                    ? this.recentOrders?.slice(0, 30).map(x => ({
+                        coords: {
+                          lat: parseFloat(x.location.lat),
+                          lng: parseFloat(x.location.lng),
+                        },
+                        id: x.location.id,
+                      }))
+                    : undefined
                 }
-                this.selectLocation(locationInfo);
-              }}
-            />
-          </div>
-        </ui-main-content>
+                trucks={
+                  selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks
+                    ? this.recentTrucks?.slice(0, 20).map(x => ({
+                        coords: {
+                          lat: parseFloat(x.location.lat),
+                          lng: parseFloat(x.location.lng),
+                        },
+                        id: x.location.id,
+                      }))
+                    : undefined
+                }
+                onMarkerSelected={({ detail: { type, location } }) => {
+                  let locationInfo: LocationInfo | undefined;
+                  switch (type) {
+                    case "pizza":
+                      locationInfo = this.recentOrders?.find(x => x.location.id === location)?.location;
+                      break;
+                    case "truck":
+                      locationInfo = this.recentTrucks?.find(x => x.location.id === location)?.location;
+                      break;
+                  }
+                  this.selectLocation(locationInfo);
+                }}
+              />
+            </div>
+          </ui-card>
 
-        <ui-main-content background="yellow">
           <ui-card>
             <div>
               <h3>Current Deliveries</h3>

@@ -128,7 +128,7 @@ export class PageCrustclub {
 
     return (
       <Host>
-        <ui-main-content background="red">
+        <ui-main-content>
           <ui-card>
             <img class="logo logo-mobile is-hidden-tablet is-hidden-desktop" alt="Crust Club Logo" src="/images/crustclub.png" />
             <img class="logo logo-desktop is-hidden-mobile" alt="Crust Club Logo" src="/images/crustclub.png" />

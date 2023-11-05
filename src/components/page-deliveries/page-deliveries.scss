@@ -1,8 +1,5 @@
 page-deliveries {
   ui-main-content {
-    &:first-child .container {
-      padding-top: 0.1em;
-    }
     &:last-child .container {
       padding-bottom: 20px;
     }
@@ -32,12 +29,11 @@ page-deliveries {
       padding-bottom: 10px;
     }
     &.selected-location {
-      a,
       h1,
       h2,
       h3,
       h4 {
-        color: $white;
+        color: $teal;
       }
     }
   }

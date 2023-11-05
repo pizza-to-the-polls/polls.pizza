@@ -11,7 +11,7 @@ export class PageOnDemand {
 
   public render() {
     return (
-      <ui-main-content background="teal" class="page">
+      <ui-main-content class="page">
         <ui-card>
           <h1>On Demand</h1>
           <img src="/images/pics/photo_5.jpg" alt="Person taking a slice of pizza" class="image" />
@@ -26,7 +26,6 @@ export class PageOnDemand {
             Most deliveries take up to 90 minutes to arrive once the line is reported, so please keep this in mind before making the report. We’ll text you as soon as the order is
             placed.
           </p>
-          <p>Most deliveries take at least 90 minutes to arrive once the line is reported, so please keep this in mind before opting to receive the delivery.</p>
           <h3>3. Help out</h3>
           <p>
             Keep an eye out for a delivery driver. When the food arrives, let people around the polling site know it’s free for all: poll workers, voters, children, journalists,

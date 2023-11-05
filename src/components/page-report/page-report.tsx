@@ -15,11 +15,13 @@ export class PageReport {
   public render() {
     return (
       <Host>
-        <ui-main-content>
-          <ui-card>
-            <form-report formattedAddress={this.history?.location?.query?.q} />
-          </ui-card>
-        </ui-main-content>
+        <section id="report" class="page report">
+          <ui-main-content pageType="no-bg">
+            <ui-card>
+              <form-report formattedAddress={this.history?.location?.query?.q} />
+            </ui-card>
+          </ui-main-content>
+        </section>
       </Host>
     );
   }

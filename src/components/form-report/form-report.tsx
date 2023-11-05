@@ -154,25 +154,6 @@ export class FormReport {
       this.photoUrl = `https://polls.pizza/${filePath}`;
     };
 
-    // Sharing
-    const shareUrl = "https://polls.pizza/";
-    const shareText = "Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines";
-    const shareTwitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}&via=PizzaToThePolls`;
-    const shareFacebookLink = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&title=${encodeURIComponent(shareText)}&description=${encodeURIComponent(
-      shareText,
-    )}&quote=${encodeURIComponent(shareText)}`;
-
-    const openSharePopup = (e: Event) => {
-      e.preventDefault();
-      const linkTarget = e.target as HTMLLinkElement;
-      const targetURL = linkTarget.getAttribute("href");
-      if (!targetURL) {
-        return;
-      }
-      window.open(targetURL, "popup", "width=600,height=600");
-      return;
-    };
-
     // Has user clicked the "On-Demand Guidelines" link?
     const handleGuidelinesClick = () => {
       const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
@@ -457,7 +438,7 @@ export class FormReport {
                 <div class="clearfix">
                   <div
                     id="file-input-button"
-                    class={"file button-large " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + ("photo" in this.submitError ? "is-red" : "is-red-inverted")}
+                    class={"file button-large " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + ("photo" in this.submitError ? "is-teal" : "is-teal")}
                   >
                     <label class="file-label">
                       <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} disabled={this.photoIsProcessing} />
@@ -583,8 +564,8 @@ export class FormReport {
               {/* Legal */}
               <p class="agreement">
                 <em>
-                  By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and give Pizza to the Polls permission to use and
-                  distribute your photo as we see fit - see our{" "}
+                  By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and permission to use and distribute your photo as we see
+                  fit - see our{" "}
                   <a href="/privacy" class="has-text-blue" target="_blank">
                     Privacy Policy
                   </a>

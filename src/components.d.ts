@@ -39,6 +39,8 @@ export namespace Components {
     interface PageDonate {
         "history"?: RouterHistory;
     }
+    interface PageFaq {
+    }
     interface PageGift {
         "history"?: RouterHistory;
     }
@@ -101,8 +103,7 @@ export namespace Components {
         "readOnly": boolean;
     }
     interface UiMainContent {
-        "background": "yellow" | "cyan" | "teal" | "red" | "none";
-        "fullBleed": boolean;
+        "pageType": "full-bleed" | "center-card" | "no-bg";
     }
     interface UiModal {
         "isActive": boolean;
@@ -184,6 +185,12 @@ declare global {
     var HTMLPageDonateElement: {
         prototype: HTMLPageDonateElement;
         new (): HTMLPageDonateElement;
+    };
+    interface HTMLPageFaqElement extends Components.PageFaq, HTMLStencilElement {
+    }
+    var HTMLPageFaqElement: {
+        prototype: HTMLPageFaqElement;
+        new (): HTMLPageFaqElement;
     };
     interface HTMLPageGiftElement extends Components.PageGift, HTMLStencilElement {
     }
@@ -334,6 +341,7 @@ declare global {
         "page-crustclub": HTMLPageCrustclubElement;
         "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
+        "page-faq": HTMLPageFaqElement;
         "page-gift": HTMLPageGiftElement;
         "page-guidelines": HTMLPageGuidelinesElement;
         "page-home": HTMLPageHomeElement;
@@ -390,6 +398,8 @@ declare namespace LocalJSX {
     }
     interface PageDonate {
         "history"?: RouterHistory;
+    }
+    interface PageFaq {
     }
     interface PageGift {
         "history"?: RouterHistory;
@@ -460,8 +470,7 @@ declare namespace LocalJSX {
         "readOnly"?: boolean;
     }
     interface UiMainContent {
-        "background"?: "yellow" | "cyan" | "teal" | "red" | "none";
-        "fullBleed"?: boolean;
+        "pageType"?: "full-bleed" | "center-card" | "no-bg";
     }
     interface UiModal {
         "isActive"?: boolean;
@@ -492,6 +501,7 @@ declare namespace LocalJSX {
         "page-crustclub": PageCrustclub;
         "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
+        "page-faq": PageFaq;
         "page-gift": PageGift;
         "page-guidelines": PageGuidelines;
         "page-home": PageHome;
@@ -531,6 +541,7 @@ declare module "@stencil/core" {
             "page-crustclub": LocalJSX.PageCrustclub & JSXBase.HTMLAttributes<HTMLPageCrustclubElement>;
             "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
+            "page-faq": LocalJSX.PageFaq & JSXBase.HTMLAttributes<HTMLPageFaqElement>;
             "page-gift": LocalJSX.PageGift & JSXBase.HTMLAttributes<HTMLPageGiftElement>;
             "page-guidelines": LocalJSX.PageGuidelines & JSXBase.HTMLAttributes<HTMLPageGuidelinesElement>;
             "page-home": LocalJSX.PageHome & JSXBase.HTMLAttributes<HTMLPageHomeElement>;

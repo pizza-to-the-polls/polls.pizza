@@ -9,26 +9,12 @@ import { Component, h, Prop } from "@stencil/core";
   shadow: false,
 })
 export class UiMainContent {
-  @Prop() public background: "yellow" | "cyan" | "teal" | "red" | "none";
-  @Prop() public fullBleed: boolean;
-
-  constructor() {
-    this.background = "none";
-    this.fullBleed = false;
-  }
+  @Prop() public pageType: "full-bleed" | "center-card" | "no-bg" = "center-card";
 
   public render() {
     return (
-      <div
-        class={{
-          "background": this.background !== "none",
-          "bg-cyan": this.background === "cyan",
-          "bg-red": this.background === "red",
-          "bg-teal": this.background === "teal",
-          "bg-yellow": this.background === "yellow",
-        }}
-      >
-        <div class={`container${this.fullBleed === true ? " full-bleed" : ""}`}>
+      <div class={this.pageType === "center-card" ? "background" : ""}>
+        <div class={`container ${this.pageType}`.trim()}>
           <slot />
         </div>
       </div>

@@ -1,8 +1,12 @@
 ui-main-content {
   .background {
-    background-attachment: fixed;
-    background-size: 400px;
-    padding-bottom: 40px;
+    background-image: url("images/redpepper.png"), url("images/pizza-star.svg"), url("images/basil.png"), url("images/pizza-yellow.svg");
+    background-repeat: no-repeat;
+    background-position: 2% 27.4rem, -3% 38rem, 98% 15rem, 102% 25rem;
+    background-size: 3rem, 8rem, 4rem, 10rem;
+    @media ($under-desktop) {
+      background: none;
+    }
   }
 
   .container {
@@ -11,5 +15,29 @@ ui-main-content {
       padding: 0;
     }
     margin: 0 auto;
+
+    &.center-card {
+      & > ui-card:first-child {
+        margin-top: 2rem;
+        min-height: 500px;
+        z-index: 10;
+        &:before {
+          position: absolute;
+          content: "";
+          background-image: url(images/pizza-pink.svg);
+          width: 10rem;
+          height: 10rem;
+          background-size: contain;
+          z-index: -1;
+          margin: -130px 0 0 -130px;
+        }
+        @media ($under-desktop) {
+          margin-top: 1rem;
+          &:before {
+            background-image: none;
+          }
+        }
+      }
+    }
   }
 }

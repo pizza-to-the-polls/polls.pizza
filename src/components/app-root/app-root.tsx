@@ -68,6 +68,7 @@ export class AppRoot {
             <stencil-route-switch scrollTopOffset={1}>
               <stencil-route url="/" component="page-home" exact={true} />
               <stencil-route url="/about" component="page-about" />
+              <stencil-route url="/faq" component="page-faq" />
               <stencil-route url="/activity" component="page-activity" />
               <stencil-route url="/covid" component="page-covid" />
               <stencil-route url="/contact" component="page-contact" />
@@ -91,7 +92,7 @@ export class AppRoot {
         </main>
 
         <footer>
-          <ui-main-content background="none">
+          <ui-main-content pageType="full-bleed">
             <div class="footer-nav">
               <div class="left">
                 <ul>

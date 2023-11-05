@@ -22,7 +22,7 @@ export class PageActivity {
     const ordersByDay = this.ordersByDay();
     return (
       <Host>
-        <ui-main-content background="teal">
+        <ui-main-content>
           <ui-card>
             <a class={"refresh-button button is-teal is-hidden-mobile " + (this.isRefreshing ? "is-loading is-disabled " : "")} onClick={(_e: Event) => this.refreshRecent()}>
               Refresh

@@ -233,7 +233,10 @@ section {
 // Color helpers
 @each $name, $color in $text-colors {
   .has-text-#{$name} {
-    color: $color !important;
+    &,
+    a {
+      color: $color !important;
+    }
   }
   .has-background-#{$name} {
     background-color: $color !important;

@@ -20,7 +20,7 @@ form-report {
         max-width: 80%;
         min-width: 300px;
         label {
-          border: 1px solid $red;
+          border: 1px solid $teal;
           width: 6rem;
           height: 6rem;
           justify-content: center;
@@ -40,9 +40,8 @@ form-report {
         input[type="radio"] {
           display: none;
           &:checked + label {
-            background-color: rgba($red, 0.1);
             color: white;
-            background-color: $red;
+            background-color: $teal;
           }
         }
       }
@@ -91,6 +90,7 @@ form-report {
       border: 1px solid $gray2;
       background-color: white;
       padding: 4px;
+      border-radius: $radius;
       h1,
       h2,
       h3 {
@@ -115,6 +115,7 @@ form-report {
 
   .agreement {
     font-size: 13px;
+    margin-top: 2rem;
 
     stencil-route-link a {
       color: $blue;

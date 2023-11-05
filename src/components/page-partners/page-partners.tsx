@@ -1,6 +1,6 @@
 import { Component, h } from "@stencil/core";
 
-const partners2022 = [
+const partners = [
   {
     img: "aclu-georgia.png",
     name: "ACLU Georgia",
@@ -221,22 +221,11 @@ const partners2022 = [
     name: "When We All Vote",
     url: "https://whenweallvote.org/",
   },
-];
-
-const topPartners2020 = [
   {
     img: "ubereats.png",
     name: "Uber Eats",
     url: "https://www.ubereats.com/",
   },
-  {
-    img: "slice.png",
-    name: "Slice",
-    url: "https://slicelife.com/",
-  },
-];
-
-const partners2020 = [
   {
     img: "&pizza.png",
     name: "&Pizza",
@@ -286,11 +275,6 @@ const partners2020 = [
     img: "lemonade.png",
     name: "Lemonade",
     url: "https://www.lemonade.com/",
-  },
-  {
-    img: "levis.png",
-    name: "Levi Strauss & Co.",
-    url: "https://levi.com",
   },
   {
     img: "nuchas.jpg",
@@ -390,11 +374,11 @@ export class PagePartners {
 
   public render() {
     return (
-      <ui-main-content id="partners" class="page" background="cyan">
+      <ui-main-content id="partners" class="page">
         <ui-card>
-          <h2>2022 Partners</h2>
+          <h2>Past and Present Partners</h2>
           <ul class="partners">
-            {partners2022.map(l => {
+            {partners.map(l => {
               return (
                 <li>
                   <a href={l.url} target="blank">
@@ -404,32 +388,6 @@ export class PagePartners {
               );
             })}
           </ul>
-
-          <h2>2020 Partners</h2>
-          <ul class="partners">
-            {topPartners2020.map(l => {
-              return (
-                <li>
-                  <a href={l.url} target="blank">
-                    <img src={`/images/logos/${l.img}`} alt={l.name} />
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <ul class="partners">
-            {partners2020.map(l => {
-              return (
-                <li>
-                  <a href={l.url} target="blank">
-                    <img src={`/images/logos/${l.img}`} alt={l.name} />
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </ui-card>
-        <ui-card>
           <h2>Become a partner</h2>
           <p>We’re looking for partners who can:</p>
           <ui-pizza-list>

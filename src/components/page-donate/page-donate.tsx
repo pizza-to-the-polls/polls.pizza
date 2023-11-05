@@ -17,24 +17,25 @@ export class PageDonate {
 
     return (
       <Host>
-        <ui-main-content background="red" fullBleed={true}>
-          <div class="donation-intro">
-            <p>Waiting in line is a bummer. Waiting in line with pizza is a little less of a bummer.</p>
-            <p>
-              Keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach by setting up a monthly donation. Become one of our biggest
-              supporters today by joining Crust Club!
-            </p>
-          </div>
+        <section id="donate" class="page donate">
+          <ui-main-content pageType="full-bleed">
+            <div class="donation-intro">
+              <h1 class="has-text-red is-upcase">Donate</h1>
+              <p>Waiting in line is a bummer. Waiting in line with pizza is a little less of a bummer.</p>
+              <p>Keep our locations of civic engagement joyful and welcoming places where no one has an empty stomach by chipping into the pizza fund today.</p>
+              <img class="hero" src="images/donate-hero.png" />
+            </div>
 
-          <ui-card>
-            <form-donate
-              referral={this.history?.location?.query?.referral}
-              showConfirmation={!!(amountDonatedUsd && !!this.history?.location?.query?.success)}
-              initialDonationType={this.history?.location?.query?.type}
-              initialAmount={amountDonatedUsd}
-            />
-          </ui-card>
-        </ui-main-content>
+            <ui-card>
+              <form-donate
+                referral={this.history?.location?.query?.referral}
+                showConfirmation={!!(amountDonatedUsd && !!this.history?.location?.query?.success)}
+                initialDonationType={this.history?.location?.query?.type}
+                initialAmount={amountDonatedUsd}
+              />
+            </ui-card>
+          </ui-main-content>
+        </section>
       </Host>
     );
   }

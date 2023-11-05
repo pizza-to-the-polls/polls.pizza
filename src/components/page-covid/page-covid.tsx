@@ -13,7 +13,7 @@ export class PageCovid {
     return (
       <Host>
         <section id="covid" class="page covid">
-          <ui-main-content background="teal">
+          <ui-main-content>
             <ui-card>
               <h2 id="covid-safety" class="is-display is-scroll-to">
                 COVID Safety

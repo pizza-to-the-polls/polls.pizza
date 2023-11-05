@@ -184,7 +184,7 @@ export class PageGift {
 
     return (
       <Host>
-        <ui-main-content background="red">
+        <ui-main-content>
           <ui-card>
             <h1>Give Pizza to the Polls 🎁</h1>
 
