@@ -1,6 +1,6 @@
 import { Component, h } from "@stencil/core";
 
-const partners = [
+const partners: { img: string; name: string; url: string }[] = [
   {
     img: "aclu-georgia.png",
     name: "ACLU Georgia",
@@ -10,6 +10,11 @@ const partners = [
     img: "all-vote-no-play.png",
     name: "All Vote No Play",
     url: "https://www.allvotenoplay.org/",
+  },
+  {
+    img: "alliance-for-youth-organizing.png",
+    name: "Alliance for Youth Organizing",
+    url: "https://allianceforyouthorganizing.org",
   },
   {
     img: "andrew-goodman-foundation.png",
@@ -107,6 +112,11 @@ const partners = [
     url: "https://www.leadmn.org/",
   },
   {
+    img: "leaders-igniting-transformation.png",
+    name: "Leaders Igniting Transformation",
+    url: "https://www.litwi.org",
+  },
+  {
     img: "levis.png",
     name: "Levi's",
     url: "https://www.levi.com/US/en_US/",
@@ -120,6 +130,11 @@ const partners = [
     img: "move-texas.png",
     name: "Move Texas",
     url: "https://movetexas.org/",
+  },
+  {
+    img: "ms-votes.png",
+    name: "Mississippi Votes",
+    url: "https://www.msvotes.org",
   },
   {
     img: "naacp-bulloch-county.png",
@@ -155,6 +170,11 @@ const partners = [
     img: "new-voters.png",
     name: "New Voters",
     url: "https://www.new-voters.org/",
+  },
+  {
+    img: "power-the-polls.png",
+    name: "Power the Polls",
+    url: "https://powerthepolls.org",
   },
   {
     img: "proactive-grand-rapids.jpg",
@@ -245,6 +265,11 @@ const partners = [
     img: "detroit-votes-2022.png",
     name: "Detroit Votes 2022",
     url: "https://detroitvotes.org/",
+  },
+  {
+    img: "detroit-action.jpg",
+    name: "Detroit Action",
+    url: "https://detroitaction.org",
   },
   {
     img: "ezcater.png",
