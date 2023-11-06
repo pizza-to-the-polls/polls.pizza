@@ -22,7 +22,7 @@ export class PageHome {
 
     if (Build.isBrowser) {
       PizzaApi.getTotals().then(totals => (this.totals = totals));
-      PizzaApi.getOrders(0, 5).then(({ results }) => (this.orders = results));
+      PizzaApi.getOrders(0, 20).then(({ results }) => (this.orders = results));
     }
   }
 

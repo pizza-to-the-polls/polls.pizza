@@ -31,9 +31,11 @@ const Delivery = ({ order }: { order: OrderDetails }) => (
 const Deliveries = ({ orders }: { orders?: OrderDetails[] }) => (
   <div class="deliveries">
     <h3 class="has-text-red">🚐 Deliveries</h3>
-    {orders?.map(order => (
-      <Delivery order={order} />
-    ))}
+    <div class="deliveries-wrapper">
+      {orders?.map(order => (
+        <Delivery order={order} />
+      ))}
+    </div>
   </div>
 );
 

@@ -179,10 +179,13 @@ page-home {
     }
   }
 
+  $under-tweet: "max-width: 980px";
+
   .tweets-deliveries .container {
     display: flex;
+    position: relative;
 
-    @media ($under-tablet) {
+    @media ($under-tweet) {
       flex-wrap: wrap;
     }
   }
@@ -191,7 +194,7 @@ page-home {
     width: 70%;
     margin: 10px 10px 0 0;
 
-    @media ($under-tablet) {
+    @media (max-width: 980px) {
       width: 100%;
     }
 
@@ -200,18 +203,18 @@ page-home {
       flex-wrap: wrap;
       justify-content: center;
 
-      @media ($under-tablet) {
+      @media ($under-tweet) {
         flex-wrap: wrap;
       }
 
       .tweet-wrapper {
         width: 48%;
         margin: 4px;
-        text-align: center;
+        text-align: left;
         padding: 0.75rem 0;
 
-        @media ($under-tablet) {
-          width: 90%;
+        @media ($under-tweet) {
+          width: 80%;
         }
       }
     }
@@ -220,11 +223,27 @@ page-home {
     width: 30%;
     background-color: $tan;
     border-radius: $radius;
-    margin: 10px 0 0 10px;
     padding: 0 10px;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    bottom: 10px;
 
-    @media ($under-tablet) {
+    .deliveries-wrapper {
+      overflow-y: scroll;
+      height: 100%;
+    }
+
+    @media ($under-tweet) {
       width: 100%;
+      position: relative;
+      right: unset;
+      top: unset;
+      bottom: unset;
+      .deliveries-wrapper {
+        max-height: 400px;
+      }
     }
 
     .delivery {
