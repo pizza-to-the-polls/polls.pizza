@@ -1,6 +1,6 @@
 ui-main-content {
   .background {
-    background-image: url("images/redpepper.png"), url("images/pizza-star.svg"), url("images/basil.png"), url("images/pizza-yellow.svg");
+    background-image: url("/images/redpepper.png"), url("/images/pizza-star.svg"), url("/images/basil.png"), url("/images/pizza-yellow.svg");
     background-repeat: no-repeat;
     background-position: 2% 27.4rem, -3% 38rem, 98% 15rem, 102% 25rem;
     background-size: 3rem, 8rem, 4rem, 10rem;
@@ -24,7 +24,7 @@ ui-main-content {
         &:before {
           position: absolute;
           content: "";
-          background-image: url(images/pizza-pink.svg);
+          background-image: url("/images/pizza-pink.svg");
           width: 10rem;
           height: 10rem;
           background-size: contain;

@@ -58,7 +58,7 @@ class PizzaApi {
   }
 
   public async getOrder(id: OrderId, errorHandler?: (error: ApiError) => void): Promise<OrderDetails | null> {
-    return this.handleResponse(await baseFetch<OrderDetails>(`/order/${id}`), errorHandler);
+    return this.handleResponse(await baseFetch<OrderDetails>(`/orders/${id}`), errorHandler);
   }
 
   public async getOrders(page: number = 0, limit: number = 100, errorHandler?: (error: ApiError) => void): Promise<OrderQueryResults> {

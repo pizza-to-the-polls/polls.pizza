@@ -72,7 +72,7 @@ export class AppRoot {
               <stencil-route url="/activity" component="page-activity" />
               <stencil-route url="/covid" component="page-covid" />
               <stencil-route url="/contact" component="page-contact" />
-              <stencil-route url={["/deliveries/:location", "/deliveries"]} component="page-deliveries" />
+              <stencil-route url={["/deliveries/:location/:order", "/deliveries/:location", "/deliveries"]} component="page-deliveries" />
               <stencil-route url="/donate" component="page-donate" />
               <stencil-route url="/gift" component="page-gift" />
               <stencil-route url="/crustclub" component="page-crustclub" />

@@ -1,4 +1,4 @@
-import { Build, Component, h, Prop, State } from "@stencil/core";
+import { Component, h, Prop, State } from "@stencil/core";
 import { RouterHistory } from "@stencil/router";
 
 import { OrderDetails, PizzaApi, PizzaTotals } from "../../api";
@@ -20,10 +20,8 @@ export class PageHome {
   public async componentWillLoad() {
     document.title = `Home | Pizza to the Polls`;
 
-    if (Build.isBrowser) {
-      PizzaApi.getTotals().then(totals => (this.totals = totals));
-      PizzaApi.getOrders(0, 20).then(({ results }) => (this.orders = results));
-    }
+    PizzaApi.getTotals().then(totals => (this.totals = totals));
+    PizzaApi.getOrders(0, 20).then(({ results }) => (this.orders = results));
   }
 
   public render() {

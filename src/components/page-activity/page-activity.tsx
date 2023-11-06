@@ -1,7 +1,7 @@
 import { Component, h, Host, State } from "@stencil/core";
 
 import { OrderDetails, PizzaApi } from "../../api";
-import { scrollPageToTop } from "../../util";
+import { locationURL, scrollPageToTop } from "../../util";
 
 @Component({
   tag: "page-activity",
@@ -41,11 +41,11 @@ export class PageActivity {
               <div class="order-day">
                 <h3 class="date-header">{date}</h3>
                 <ui-pizza-list class="order-list">
-                  {orders.map(({ id, createdAt, orderType, pizzas, location: { fullAddress }, reports }: OrderDetails) => (
+                  {orders.map(({ id, createdAt, orderType, pizzas, location, reports }: OrderDetails) => (
                     <li id={"order-id-" + id} key={id}>
                       <b>
                         {pizzas} {orderType} ordered at {new Date(createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })} for{" "}
-                        <stencil-route-link url={`/deliveries/${encodeURI(fullAddress)}`}>{fullAddress}</stencil-route-link>
+                        <stencil-route-link url={locationURL(location)}>{location.fullAddress}</stencil-route-link>
                       </b>
                       <ul>
                         {reports.map(({ reportURL, createdAt: reportCreatedAt, waitTime }) => (

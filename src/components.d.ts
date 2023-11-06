@@ -91,6 +91,7 @@ export namespace Components {
     }
     interface UiGeoMap {
         "center"?: google.maps.LatLngLiteral;
+        "currentAddress"?: string;
         "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "zoom"?: number;
@@ -452,6 +453,7 @@ declare namespace LocalJSX {
     }
     interface UiGeoMap {
         "center"?: google.maps.LatLngLiteral;
+        "currentAddress"?: string;
         "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "onMarkerSelected"?: (event: CustomEvent<{
     type: "pizza" | "truck";

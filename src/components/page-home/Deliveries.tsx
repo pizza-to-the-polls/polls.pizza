@@ -1,29 +1,23 @@
 import { h } from "@stencil/core";
 
 import { OrderDetails } from "../../api";
+import { locationURL } from "../../util";
+import { formatDateTime } from "../../util";
 
 const capitalize = (word: string): String => `${word.slice(0, 1).toUpperCase()}${word.slice(1, word.length)}`;
 
-const formatDate = (date: Date): String => {
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
-  const minutes = date.getMinutes();
-  const meridian = date.getHours() > 12 ? "pm" : "am";
-
-  return `${day}/${month} ${hours}:${minutes} ${meridian}`;
-};
-
 const Delivery = ({ order }: { order: OrderDetails }) => (
   <div class="delivery">
-    <h5>
+    <h5 class="has-text-black">
       {order.quantity} {capitalize(order.orderType)}
     </h5>
-    <span class="time">{formatDate(order.createdAt)}</span>
+    <span class="time">{formatDateTime(order.createdAt)}</span>
     <p>
-      {order.location.address} in
-      <br />
-      {order.location.city}, {order.location.state}
+      <stencil-route-link url={locationURL(order.location)}>
+        {order.location.address} in
+        <br />
+        {order.location.city}, {order.location.state}
+      </stencil-route-link>
     </p>
   </div>
 );
@@ -36,6 +30,10 @@ const Deliveries = ({ orders }: { orders?: OrderDetails[] }) => (
         <Delivery order={order} />
       ))}
     </div>
+    <hr />
+    <stencil-route-link url="/activity" class="has-text-blue">
+      See more deliveries
+    </stencil-route-link>
   </div>
 );
 
