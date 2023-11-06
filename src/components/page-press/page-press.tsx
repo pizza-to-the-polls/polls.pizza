@@ -10,7 +10,7 @@ export class PagePress {
   }
 
   public render() {
-    const press = [
+    const press: { url: string; title: string; img: string }[] = [
       {
         url: "https://www.washingtonpost.com/politics/2020/11/03/trump-was-almost-guaranteed-victory-mississippi-voters-flooded-polls-anyway/",
         title: "Washington Post",
@@ -98,6 +98,12 @@ export class PagePress {
           <div class="container">
             <ui-card>
               <h1>Press</h1>
+              <div class="video">
+                <video controls>
+                  <source src="videos/cnn-clip.webm" type="video/webm" />
+                  <source src="videos/cnn-clip.mp4" type="video/mp4" />
+                </video>
+              </div>
               <ul class="press-logos">
                 {press.map(p => (
                   <li>
