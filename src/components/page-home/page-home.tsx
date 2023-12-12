@@ -43,6 +43,10 @@ export class PageHome {
                 <stencil-route-link class="button button-large is-cyan" url="/donate">
                   Donate now
                 </stencil-route-link>
+                &nbsp;
+                <stencil-route-link class="button button-large is-teal" url="/crustclub">
+                  Join the Crust Club
+                </stencil-route-link>
                 <span class="donate-button-subtext">* All contributions are tax deductible</span>
               </div>
             </div>
@@ -53,7 +57,7 @@ export class PageHome {
         </div>
         <section class="order-pizzas">
           <div class="container">
-            <ui-location-search placeholder="Search for a location to send pizza" onLocationSelected={handleLocationSelected} />
+            <ui-location-search placeholder="Stuck in a long line? Search your location here" onLocationSelected={handleLocationSelected} />
           </div>
         </section>
         <section class="totals">{this.totals && <Stats totals={this.totals} />}</section>
@@ -68,7 +72,6 @@ export class PageHome {
             <img src="/images/give-icon.png" />
             <div class="donate-text">
               <h1 class="has-text-red">Help us send pizza to hungry folks in long lines.</h1>
-              <p>Can you help out with a little dough?</p>
             </div>
             <div class="donate-button">
               <stencil-route-link url="/donate" class="button button-large is-red">

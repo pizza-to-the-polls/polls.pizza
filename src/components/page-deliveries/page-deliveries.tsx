@@ -262,8 +262,6 @@ export class PageDeliveries {
       );
     const combinedItems = [...currentItems.slice(3, 1000), ...pastItems];
 
-    const currentAddress = selectedAddress != null ? foundLocation?.fullAddress || selectedAddress : currentItems?.find(_ => true)?.data?.location.fullAddress;
-
     return (
       <Host>
         <ui-main-content class={{ "selected-location": selectedAddress != null }}>

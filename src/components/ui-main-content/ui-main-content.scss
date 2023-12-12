@@ -1,9 +1,9 @@
 ui-main-content {
   .background {
-    background-image: url("/images/redpepper.png"), url("/images/pizza-star.svg"), url("/images/basil.png"), url("/images/pizza-yellow.svg");
+    background-image: url("/images/pizza-star.svg"), url("/images/pizza-yellow.svg");
     background-repeat: no-repeat;
-    background-position: 2% 27.4rem, -3% 38rem, 98% 15rem, 102% 25rem;
-    background-size: 3rem, 8rem, 4rem, 10rem;
+    background-position: -3% 38rem, 102% 25rem;
+    background-size: 8rem, 10rem;
     @media ($under-desktop) {
       background: none;
     }

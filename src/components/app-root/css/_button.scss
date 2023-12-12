@@ -122,6 +122,9 @@
           fill: $color;
         }
       }
+      & a {
+        background-color: transparent !important;
+      }
     }
   }
 

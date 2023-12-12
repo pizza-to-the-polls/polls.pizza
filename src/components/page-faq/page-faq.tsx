@@ -44,46 +44,6 @@ export class PageFAQ {
               <ui-card is-collapsible={true} header-text="Where will you deliver pizzas?">
                 <p>Any polling place in the US, as long as we can find a delivery place that services that location.</p>
               </ui-card>
-              <ui-card is-collapsible={true} header-text="What precautions is Pizza to the Polls taking as a result of COVID&#8209;19?">
-                <p>Pizza to the Polls values the health and safety of our communities, and will be working to mitigate risk of disease transmission:</p>
-                <ui-pizza-list>
-                  <li>
-                    Our{" "}
-                    <stencil-route-link url="/trucks" anchorClass="has-text-teal">
-                      food truck program
-                    </stencil-route-link>{" "}
-                    will be staffed by professionals who’ve been trained in food safety and policies to help reduce the spread of COVID-19, but please keep in mind that it isn’t
-                    possible to eliminate the risk of exposure.
-                  </li>
-                  <li>
-                    For{" "}
-                    <stencil-route-link url="/on-demand" anchorClass="has-text-teal">
-                      on-demand
-                    </stencil-route-link>{" "}
-                    pizza deliveries, we will be supporting local pizzerias with our pizza delivery partners at{" "}
-                    <a href="https://slicelife.com/" target="_blank">
-                      Slice
-                    </a>
-                    . We plan to share{" "}
-                    <a
-                      href="https://www.cdc.gov/coronavirus/2019-ncov/community/organizations/business-employers/bars-restaurants.html"
-                      class="has-text-teal"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      safety recommendations
-                    </a>{" "}
-                    with delivery drivers and restaurants, but it’s up to each person to consider their own personal risks.
-                  </li>
-                </ui-pizza-list>
-                <p>
-                  You can learn more about safety precautions you can take to stay safe at the polls{" "}
-                  <stencil-route-link url="/covid" anchorClass="has-text-teal">
-                    here
-                  </stencil-route-link>
-                  .
-                </p>
-              </ui-card>
               <ui-card is-collapsible={true} header-text="Can I help distribute pizzas?">
                 <p>
                   Yes! When you report a line, let us know that you can receive an order on behalf of Pizza to the Polls. We’ll send you a text once an order has been placed!

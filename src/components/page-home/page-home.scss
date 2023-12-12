@@ -79,7 +79,7 @@ page-home {
         background-color: $light-red;
         box-shadow: none;
         height: 2.2rem;
-        font-size: 2.2rem;
+        font-size: 1.9rem;
 
         @media ($under-tablet) {
           height: 1rem;
@@ -91,7 +91,7 @@ page-home {
         & {
           color: $blue;
         }
-        margin-left: 10px;
+        margin-left: 14px;
       }
       &:before {
         height: 2.8rem;
@@ -162,9 +162,10 @@ page-home {
       .stat-number {
         font-size: 28px;
         font-weight: 600;
+        color: $blue;
 
         @media ($tablet) {
-          font-size: 32px;
+          font-size: 2.8rem;
         }
       }
 

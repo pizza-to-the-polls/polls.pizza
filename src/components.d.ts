@@ -27,8 +27,6 @@ export namespace Components {
     }
     interface PageContact {
     }
-    interface PageCovid {
-    }
     interface PageCrustclub {
         "history"?: RouterHistory;
     }
@@ -162,12 +160,6 @@ declare global {
     var HTMLPageContactElement: {
         prototype: HTMLPageContactElement;
         new (): HTMLPageContactElement;
-    };
-    interface HTMLPageCovidElement extends Components.PageCovid, HTMLStencilElement {
-    }
-    var HTMLPageCovidElement: {
-        prototype: HTMLPageCovidElement;
-        new (): HTMLPageCovidElement;
     };
     interface HTMLPageCrustclubElement extends Components.PageCrustclub, HTMLStencilElement {
     }
@@ -338,7 +330,6 @@ declare global {
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
         "page-contact": HTMLPageContactElement;
-        "page-covid": HTMLPageCovidElement;
         "page-crustclub": HTMLPageCrustclubElement;
         "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
@@ -387,8 +378,6 @@ declare namespace LocalJSX {
     interface PageActivity {
     }
     interface PageContact {
-    }
-    interface PageCovid {
     }
     interface PageCrustclub {
         "history"?: RouterHistory;
@@ -499,7 +488,6 @@ declare namespace LocalJSX {
         "page-about": PageAbout;
         "page-activity": PageActivity;
         "page-contact": PageContact;
-        "page-covid": PageCovid;
         "page-crustclub": PageCrustclub;
         "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
@@ -539,7 +527,6 @@ declare module "@stencil/core" {
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
             "page-contact": LocalJSX.PageContact & JSXBase.HTMLAttributes<HTMLPageContactElement>;
-            "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
             "page-crustclub": LocalJSX.PageCrustclub & JSXBase.HTMLAttributes<HTMLPageCrustclubElement>;
             "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;

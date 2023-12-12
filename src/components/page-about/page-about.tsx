@@ -108,11 +108,6 @@ export class PageAbout {
                     Frequently Asked Questions
                   </stencil-route-link>
                 </li>
-                <li>
-                  <stencil-route-link url="/covid" class="has-text-teal">
-                    COVID Safety
-                  </stencil-route-link>
-                </li>
               </ul>
             </ui-card>
           </ui-main-content>

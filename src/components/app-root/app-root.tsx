@@ -70,7 +70,6 @@ export class AppRoot {
               <stencil-route url="/about" component="page-about" />
               <stencil-route url="/faq" component="page-faq" />
               <stencil-route url="/activity" component="page-activity" />
-              <stencil-route url="/covid" component="page-covid" />
               <stencil-route url="/contact" component="page-contact" />
               <stencil-route url={["/deliveries/:location/:order", "/deliveries/:location", "/deliveries"]} component="page-deliveries" />
               <stencil-route url="/donate" component="page-donate" />
@@ -118,9 +117,6 @@ export class AppRoot {
                   </li>
                   <li>
                     <stencil-route-link url="/vax-and-snacks">Vax and Snacks</stencil-route-link>
-                  </li>
-                  <li>
-                    <stencil-route-link url="/covid">COVID safety</stencil-route-link>
                   </li>
                   <li>
                     <stencil-route-link url="/privacy">Privacy Policy</stencil-route-link>

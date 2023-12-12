@@ -14,7 +14,7 @@ export class PageOnDemand {
       <ui-main-content class="page">
         <ui-card>
           <h1>On Demand</h1>
-          <img src="/images/pics/photo_5.jpg" alt="Person taking a slice of pizza" class="image" />
+          <img style={{ margin: "0 auto", display: "block" }} src="/images/pics/photo_6.jpeg" alt="Mother and daughter enjoying pizza in front of American flag" class="image" />
           <h2>How to help</h2>
           <h3>1. Report a crowd</h3>
           <p>
@@ -39,6 +39,13 @@ export class PageOnDemand {
           <a class="button is-teal" href="/#report">
             Report a line
           </a>
+          <img style={{ margin: "30px auto 0", display: "block" }} src="/images/pics/photo_7.jpg" alt="Students handing out pizzas to classmates" class="image" />
+          <h1>Pre-Order</h1>
+          <p>
+            Are you a non profit working on voter registration, turnout and education events? Email
+            <a href="mailto:partners@polls.pizza">partners@polls.pizza</a>
+            for more information!
+          </p>
         </ui-card>
       </ui-main-content>
     );
