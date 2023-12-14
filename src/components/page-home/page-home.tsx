@@ -43,7 +43,6 @@ export class PageHome {
                 <stencil-route-link class="button button-large is-cyan" url="/donate">
                   Donate now
                 </stencil-route-link>
-                &nbsp;
                 <stencil-route-link class="button button-large is-teal" url="/crustclub">
                   Join the Crust Club
                 </stencil-route-link>
@@ -51,7 +50,7 @@ export class PageHome {
               </div>
             </div>
             <div>
-              <img src="/images/hero.png" alt="collage of pepperoni pizza, pizza ingredients and a pizza to the polls volunteer" />
+              <img class="inset" src="/images/pics/photo_9.jpg" alt="" />
             </div>
           </div>
         </div>

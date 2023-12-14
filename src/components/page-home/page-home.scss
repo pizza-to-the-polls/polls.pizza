@@ -13,8 +13,8 @@ page-home {
     color: $white;
     padding: 40px 0;
 
-    @media ($tablet) {
-      padding: 80px 0;
+    .button + .button {
+      margin-left: 1rem;
     }
 
     .container {
@@ -34,10 +34,14 @@ page-home {
         text-transform: uppercase;
         margin: 0 0 1rem 0;
 
-        @media ($tablet) {
+        @media ($widescreen) {
           font-size: 6rem;
           line-height: 5.5rem;
-          margin: 0 0 2rem 0;
+        }
+        @media ($desktop) {
+          font-size: 4.8rem;
+          line-height: 4rem;
+          margin: 0 0 1rem 0;
         }
       }
 
@@ -46,11 +50,13 @@ page-home {
         line-height: 1.5rem;
         font-weight: 600;
         margin-bottom: 1.5rem;
-
         @media ($tablet) {
           font-size: 1.5rem;
           line-height: 2rem;
           margin-bottom: 2rem;
+        }
+        @media ($desktop) {
+          margin-bottom: 1rem;
         }
       }
 
@@ -64,8 +70,11 @@ page-home {
     }
 
     img {
+      border-radius: $radius;
+      max-height: 400px;
       @media ($desktop) {
         max-width: 90%;
+        max-height: unset;
         float: right;
       }
     }
@@ -83,7 +92,7 @@ page-home {
 
         @media ($under-tablet) {
           height: 1rem;
-          font-size: 1rem;
+          font-size: 0.9rem;
         }
 
         font-weight: 700;
