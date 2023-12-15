@@ -35,31 +35,11 @@ export class PageCrustclub {
 
   public async donate(amount: number) {
     this.error = null;
-    const showError = this.showError;
     try {
-      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("subscription", amount, { referrer: this.referral });
-
-      if (success) {
-        const sessionId = checkoutSessionId;
-        const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
-
-        stripe
-          .redirectToCheckout({
-            sessionId,
-          })
-          .then(function (result: any) {
-            console.error(result.error.message);
-            showError(result.error.message);
-          });
-      } else {
-        if (message) {
-          console.error(message);
-        }
-        this.showError(message || PizzaApi.genericErrorMessage);
-      }
+      await PizzaApi.postDonation("subcription", amount, { referrer: this.referral });
     } catch (e) {
       console.error(e);
-      this.showError(PizzaApi.genericErrorMessage);
+      this.showError(e.message || PizzaApi.genericErrorMessage);
     }
   }
 
@@ -148,7 +128,7 @@ export class PageCrustclub {
 
     return (
       <Host>
-        <ui-main-content background="red">
+        <ui-main-content>
           <ui-card>
             <img class="logo logo-mobile is-hidden-tablet is-hidden-desktop" alt="Crust Club Logo" src="/images/crustclub.png" />
             <img class="logo logo-desktop is-hidden-mobile" alt="Crust Club Logo" src="/images/crustclub.png" />
@@ -166,9 +146,7 @@ export class PageCrustclub {
                 </div>
 
                 <form id="donate-form" onChange={handleChange} onSubmit={handleCheckout}>
-                  <label class="label">
-                    Choose an amount to give each month<span class="required">*</span>
-                  </label>
+                  <label class="label">Choose an amount to give each month</label>
                   <ul class="donation-amount-list">
                     {AMOUNTS.map((amount, idx) => (
                       <li>
@@ -190,7 +168,7 @@ export class PageCrustclub {
                   </ul>
                   <button
                     onClick={handleCheckout}
-                    class={"button is-red is-fullwidth " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                    class={"button is-teal is-fullwidth " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
                     disabled={!this.amount || isNaN(this.amount) || (this.error || "").length > 0}
                   >
                     Become a Member
@@ -251,7 +229,7 @@ export class PageCrustclub {
                       </a>
                     </li>
                     <li>
-                      <stencil-route-link url="/donate" class="button is-fullwidth-mobile is-teal">
+                      <stencil-route-link url="/donate" class="button is-fullwidth-mobile is-cyan">
                         Make a one-time donation
                       </stencil-route-link>
                     </li>

@@ -18,7 +18,6 @@
 
 .page {
   color: $blue;
-  background: $gray1;
   padding: 40px 0;
 
   h1 {
@@ -59,22 +58,25 @@
 
 .header {
   color: $white;
-  border-top: 10px solid $red;
   position: sticky;
   width: 100%;
-  background-color: $white;
+  background-color: $red;
   background-size: 200px;
   top: 0;
   z-index: 1000;
-  padding: 10px 5px;
+  padding: 4px 0;
   text-align: center;
   box-shadow: $box-shadow;
+
+  height: 80px;
+  @media (min-width: 300px) {
+    height: 120px;
+    padding: 10px 0;
+  }
 
   @media ($tablet) {
     border-bottom: none;
     position: relative;
-    padding-left: 0;
-    padding-right: 0;
     box-shadow: none;
   }
 
@@ -82,139 +84,146 @@
   stencil-route-link > a {
     display: inline-block;
   }
+  .logo {
+    stencil-route-link,
+    stencil-route-link > a {
+      font-family: $logo-font;
+      color: $white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 24px;
+      @media (min-width: 300px) {
+        font-size: 32px;
+      }
+    }
+    @media (min-width: 900px) {
+      float: left;
+      margin: 14px 0 0 48px;
+    }
+  }
 
   img {
-    width: 300px;
-    vertical-align: middle;
-
-    @media ($tablet) {
-      width: 400px;
+    width: 30px;
+    margin-right: 8px;
+    @media (min-width: 300px) {
+      width: 48px;
+      margin-right: 16px;
     }
+    vertical-align: middle;
   }
 
   .menu {
     list-style-type: none;
     margin: 0;
-    padding: 10px 0 10px 0;
-    width: 100%;
+    padding: 10px 0;
     font-weight: 600;
     z-index: 1000;
     text-align: center;
 
-    @media ($tablet) {
+    @media (min-width: 900px) {
       position: relative;
       top: 0;
       text-align: center;
       padding: 20px 0 0 0;
+      float: right;
     }
-
     li {
       display: inline-block;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 600;
-      margin: 0 0.5rem 0 0.45rem;
+      margin: 0 0.3rem;
       position: relative;
-      color: $blue;
+      color: $white;
+      height: 1rem;
 
-      @media (min-width: 360px) {
-        font-size: 15px;
+      @media (min-width: 300px) {
+        font-size: 1rem;
+        margin: 0 0.4rem;
       }
-
-      @media (min-width: 400px) {
-        font-size: 16px;
-      }
-
-      @media ($tablet) {
-        display: inline-block;
+      @media (min-width: 900px) {
         width: auto;
-        padding: 0 0.75rem 0 0.5rem;
-        font-size: 24px;
-      }
-
-      &:after {
-        content: "|";
-        position: absolute;
-        top: 0;
-        right: -0.75rem;
-      }
-
-      &:last-child:after {
-        content: "";
+        padding: 0 0.75rem;
+        font-size: 1.5rem;
       }
     }
 
     a,
     stencil-route-link a {
       text-decoration: none;
-      color: $blue;
+      color: $white;
       display: block;
-      transition: color 0.2s ease-in-out;
+      transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
 
+      &:hover,
       &:active,
       &.link-active {
-        color: $red !important;
+        color: $teal !important;
       }
     }
   }
 }
 
 footer {
-  background: $blue;
-  border-top: 5px solid $red;
-  color: $white;
-  padding: 20px 0;
+  margin-top: 16px;
+  background: $light-red;
+  color: $red;
 
+  ui-main-content .container {
+    padding-top: 0;
+  }
   a:not(.button) {
-    color: $white;
+    color: $red;
     border-color: transparent;
 
     &:hover,
     &:active,
     &:focus {
-      color: darken($white, 10%);
+      color: darken($red, 10%);
       border-color: transparent;
     }
   }
 
   .disclaimer {
-    font-size: 14px;
-    font-style: italic;
-    border-bottom: 3px solid #fff;
-    padding-bottom: 50px;
-  }
-
-  .email-signup-input {
-    border: 0;
-    width: calc(100% - 100px);
-    float: left;
-    border-radius: $radius 0 0 $radius;
-  }
-
-  .email-signup-button {
-    float: left;
-    width: 100px;
-    margin: 0;
-    border-radius: 0 $radius $radius 0;
+    font-size: 12px;
+    color: $gray4;
   }
 
   .footer-nav {
-    padding: 20px 0 40px 0;
-    display: flex;
-    flex-direction: column;
-    border-top: 3px solid $white;
-
     @media ($tablet) {
-      flex-direction: row;
+      display: flex;
+      .right {
+        width: 30%;
+      }
+      .left {
+        width: 70%;
+      }
     }
 
+    padding: 20px 16px;
+
     ul {
+      width: 100%;
+      display: flex;
       list-style-type: none;
-      padding: 0 40px 0 0;
       flex-grow: 1;
+      flex-direction: row;
+      justify-content: left;
+      padding: 0;
+      margin: 0;
 
       li {
-        font-size: 18px;
-
+        &:before {
+          content: "|";
+          padding-right: 6px;
+          font-weight: lighter;
+          opacity: 0.25;
+        }
+        &:first-child:before {
+          content: "";
+          display: none;
+        }
+        padding-right: 6px;
+        font-size: 12px;
         a:not(.button) {
           text-decoration: none;
           border-color: transparent;
@@ -224,11 +233,23 @@ footer {
           }
         }
       }
+      &.major {
+        margin-bottom: 30px;
+        li {
+          font-size: 16px;
+        }
+      }
     }
 
     .social {
+      margin: 30px 0;
       padding: 0;
-      text-align: left;
+      text-align: right;
+
+      @media ($tablet) {
+        margin: 0;
+        justify-content: right;
+      }
 
       @media ($tablet) {
         text-align: right;
@@ -236,11 +257,13 @@ footer {
 
       li {
         display: inline-block;
-        margin: 0 10px;
-
+        margin: 0 4px;
+        &:before {
+          content: "";
+        }
         .icon {
-          height: 40px;
-          width: 40px;
+          height: 32px;
+          width: 32px;
         }
       }
     }

@@ -11,15 +11,21 @@ export namespace Components {
     interface AppRoot {
         "location": LocationSegments | undefined;
     }
+    interface FormDonate {
+        "initialAmount"?: number | null;
+        "initialDonationType": string;
+        "redirectURL"?: string | null;
+        "referral"?: string;
+        "showConfirmation": boolean;
+    }
     interface FormReport {
+        "formattedAddress"?: string;
     }
     interface PageAbout {
     }
     interface PageActivity {
     }
     interface PageContact {
-    }
-    interface PageCovid {
     }
     interface PageCrustclub {
         "history"?: RouterHistory;
@@ -31,12 +37,15 @@ export namespace Components {
     interface PageDonate {
         "history"?: RouterHistory;
     }
+    interface PageFaq {
+    }
     interface PageGift {
         "history"?: RouterHistory;
     }
     interface PageGuidelines {
     }
     interface PageHome {
+        "history": RouterHistory;
     }
     interface PageInstructions {
     }
@@ -47,6 +56,9 @@ export namespace Components {
     interface PagePress {
     }
     interface PagePrivacy {
+    }
+    interface PageReport {
+        "history"?: RouterHistory;
     }
     interface PageSession {
         "match": MatchResults;
@@ -77,13 +89,20 @@ export namespace Components {
     }
     interface UiGeoMap {
         "center"?: google.maps.LatLngLiteral;
+        "currentAddress"?: string;
         "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "zoom"?: number;
     }
+    interface UiGuidelines {
+    }
+    interface UiLocationSearch {
+        "error": string | null;
+        "placeholder": string;
+        "readOnly": boolean;
+    }
     interface UiMainContent {
-        "background": "yellow" | "cyan" | "teal" | "red" | "none";
-        "fullBleed": boolean;
+        "pageType": "full-bleed" | "center-card" | "no-bg";
     }
     interface UiModal {
         "isActive": boolean;
@@ -112,6 +131,12 @@ declare global {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
     };
+    interface HTMLFormDonateElement extends Components.FormDonate, HTMLStencilElement {
+    }
+    var HTMLFormDonateElement: {
+        prototype: HTMLFormDonateElement;
+        new (): HTMLFormDonateElement;
+    };
     interface HTMLFormReportElement extends Components.FormReport, HTMLStencilElement {
     }
     var HTMLFormReportElement: {
@@ -136,12 +161,6 @@ declare global {
         prototype: HTMLPageContactElement;
         new (): HTMLPageContactElement;
     };
-    interface HTMLPageCovidElement extends Components.PageCovid, HTMLStencilElement {
-    }
-    var HTMLPageCovidElement: {
-        prototype: HTMLPageCovidElement;
-        new (): HTMLPageCovidElement;
-    };
     interface HTMLPageCrustclubElement extends Components.PageCrustclub, HTMLStencilElement {
     }
     var HTMLPageCrustclubElement: {
@@ -159,6 +178,12 @@ declare global {
     var HTMLPageDonateElement: {
         prototype: HTMLPageDonateElement;
         new (): HTMLPageDonateElement;
+    };
+    interface HTMLPageFaqElement extends Components.PageFaq, HTMLStencilElement {
+    }
+    var HTMLPageFaqElement: {
+        prototype: HTMLPageFaqElement;
+        new (): HTMLPageFaqElement;
     };
     interface HTMLPageGiftElement extends Components.PageGift, HTMLStencilElement {
     }
@@ -208,6 +233,12 @@ declare global {
         prototype: HTMLPagePrivacyElement;
         new (): HTMLPagePrivacyElement;
     };
+    interface HTMLPageReportElement extends Components.PageReport, HTMLStencilElement {
+    }
+    var HTMLPageReportElement: {
+        prototype: HTMLPageReportElement;
+        new (): HTMLPageReportElement;
+    };
     interface HTMLPageSessionElement extends Components.PageSession, HTMLStencilElement {
     }
     var HTMLPageSessionElement: {
@@ -250,6 +281,18 @@ declare global {
         prototype: HTMLUiGeoMapElement;
         new (): HTMLUiGeoMapElement;
     };
+    interface HTMLUiGuidelinesElement extends Components.UiGuidelines, HTMLStencilElement {
+    }
+    var HTMLUiGuidelinesElement: {
+        prototype: HTMLUiGuidelinesElement;
+        new (): HTMLUiGuidelinesElement;
+    };
+    interface HTMLUiLocationSearchElement extends Components.UiLocationSearch, HTMLStencilElement {
+    }
+    var HTMLUiLocationSearchElement: {
+        prototype: HTMLUiLocationSearchElement;
+        new (): HTMLUiLocationSearchElement;
+    };
     interface HTMLUiMainContentElement extends Components.UiMainContent, HTMLStencilElement {
     }
     var HTMLUiMainContentElement: {
@@ -282,14 +325,15 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
+        "form-donate": HTMLFormDonateElement;
         "form-report": HTMLFormReportElement;
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
         "page-contact": HTMLPageContactElement;
-        "page-covid": HTMLPageCovidElement;
         "page-crustclub": HTMLPageCrustclubElement;
         "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
+        "page-faq": HTMLPageFaqElement;
         "page-gift": HTMLPageGiftElement;
         "page-guidelines": HTMLPageGuidelinesElement;
         "page-home": HTMLPageHomeElement;
@@ -298,6 +342,7 @@ declare global {
         "page-partners": HTMLPagePartnersElement;
         "page-press": HTMLPagePressElement;
         "page-privacy": HTMLPagePrivacyElement;
+        "page-report": HTMLPageReportElement;
         "page-session": HTMLPageSessionElement;
         "page-trucks": HTMLPageTrucksElement;
         "page-vax-and-snacks": HTMLPageVaxAndSnacksElement;
@@ -305,6 +350,8 @@ declare global {
         "ui-card": HTMLUiCardElement;
         "ui-dynamic-text": HTMLUiDynamicTextElement;
         "ui-geo-map": HTMLUiGeoMapElement;
+        "ui-guidelines": HTMLUiGuidelinesElement;
+        "ui-location-search": HTMLUiLocationSearchElement;
         "ui-main-content": HTMLUiMainContentElement;
         "ui-modal": HTMLUiModalElement;
         "ui-pizza-list": HTMLUiPizzaListElement;
@@ -316,15 +363,21 @@ declare namespace LocalJSX {
     interface AppRoot {
         "location"?: LocationSegments | undefined;
     }
+    interface FormDonate {
+        "initialAmount"?: number | null;
+        "initialDonationType"?: string;
+        "redirectURL"?: string | null;
+        "referral"?: string;
+        "showConfirmation"?: boolean;
+    }
     interface FormReport {
+        "formattedAddress"?: string;
     }
     interface PageAbout {
     }
     interface PageActivity {
     }
     interface PageContact {
-    }
-    interface PageCovid {
     }
     interface PageCrustclub {
         "history"?: RouterHistory;
@@ -336,12 +389,15 @@ declare namespace LocalJSX {
     interface PageDonate {
         "history"?: RouterHistory;
     }
+    interface PageFaq {
+    }
     interface PageGift {
         "history"?: RouterHistory;
     }
     interface PageGuidelines {
     }
     interface PageHome {
+        "history": RouterHistory;
     }
     interface PageInstructions {
     }
@@ -352,6 +408,9 @@ declare namespace LocalJSX {
     interface PagePress {
     }
     interface PagePrivacy {
+    }
+    interface PageReport {
+        "history"?: RouterHistory;
     }
     interface PageSession {
         "match": MatchResults;
@@ -383,6 +442,7 @@ declare namespace LocalJSX {
     }
     interface UiGeoMap {
         "center"?: google.maps.LatLngLiteral;
+        "currentAddress"?: string;
         "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "onMarkerSelected"?: (event: CustomEvent<{
     type: "pizza" | "truck";
@@ -392,9 +452,16 @@ declare namespace LocalJSX {
         "trucks"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
         "zoom"?: number;
     }
+    interface UiGuidelines {
+    }
+    interface UiLocationSearch {
+        "error"?: string | null;
+        "onLocationSelected"?: (event: CustomEvent<{ formattedAddress: string; locationName: string }>) => void;
+        "placeholder"?: string;
+        "readOnly"?: boolean;
+    }
     interface UiMainContent {
-        "background"?: "yellow" | "cyan" | "teal" | "red" | "none";
-        "fullBleed"?: boolean;
+        "pageType"?: "full-bleed" | "center-card" | "no-bg";
     }
     interface UiModal {
         "isActive"?: boolean;
@@ -416,14 +483,15 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "app-root": AppRoot;
+        "form-donate": FormDonate;
         "form-report": FormReport;
         "page-about": PageAbout;
         "page-activity": PageActivity;
         "page-contact": PageContact;
-        "page-covid": PageCovid;
         "page-crustclub": PageCrustclub;
         "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
+        "page-faq": PageFaq;
         "page-gift": PageGift;
         "page-guidelines": PageGuidelines;
         "page-home": PageHome;
@@ -432,6 +500,7 @@ declare namespace LocalJSX {
         "page-partners": PagePartners;
         "page-press": PagePress;
         "page-privacy": PagePrivacy;
+        "page-report": PageReport;
         "page-session": PageSession;
         "page-trucks": PageTrucks;
         "page-vax-and-snacks": PageVaxAndSnacks;
@@ -439,6 +508,8 @@ declare namespace LocalJSX {
         "ui-card": UiCard;
         "ui-dynamic-text": UiDynamicText;
         "ui-geo-map": UiGeoMap;
+        "ui-guidelines": UiGuidelines;
+        "ui-location-search": UiLocationSearch;
         "ui-main-content": UiMainContent;
         "ui-modal": UiModal;
         "ui-pizza-list": UiPizzaList;
@@ -451,14 +522,15 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "form-donate": LocalJSX.FormDonate & JSXBase.HTMLAttributes<HTMLFormDonateElement>;
             "form-report": LocalJSX.FormReport & JSXBase.HTMLAttributes<HTMLFormReportElement>;
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
             "page-contact": LocalJSX.PageContact & JSXBase.HTMLAttributes<HTMLPageContactElement>;
-            "page-covid": LocalJSX.PageCovid & JSXBase.HTMLAttributes<HTMLPageCovidElement>;
             "page-crustclub": LocalJSX.PageCrustclub & JSXBase.HTMLAttributes<HTMLPageCrustclubElement>;
             "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
+            "page-faq": LocalJSX.PageFaq & JSXBase.HTMLAttributes<HTMLPageFaqElement>;
             "page-gift": LocalJSX.PageGift & JSXBase.HTMLAttributes<HTMLPageGiftElement>;
             "page-guidelines": LocalJSX.PageGuidelines & JSXBase.HTMLAttributes<HTMLPageGuidelinesElement>;
             "page-home": LocalJSX.PageHome & JSXBase.HTMLAttributes<HTMLPageHomeElement>;
@@ -467,6 +539,7 @@ declare module "@stencil/core" {
             "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
+            "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-session": LocalJSX.PageSession & JSXBase.HTMLAttributes<HTMLPageSessionElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
             "page-vax-and-snacks": LocalJSX.PageVaxAndSnacks & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
@@ -474,6 +547,8 @@ declare module "@stencil/core" {
             "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
             "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
             "ui-geo-map": LocalJSX.UiGeoMap & JSXBase.HTMLAttributes<HTMLUiGeoMapElement>;
+            "ui-guidelines": LocalJSX.UiGuidelines & JSXBase.HTMLAttributes<HTMLUiGuidelinesElement>;
+            "ui-location-search": LocalJSX.UiLocationSearch & JSXBase.HTMLAttributes<HTMLUiLocationSearchElement>;
             "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
             "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
             "ui-pizza-list": LocalJSX.UiPizzaList & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;

@@ -10,7 +10,7 @@ export class PagePress {
   }
 
   public render() {
-    const press = [
+    const press: { url: string; title: string; img: string }[] = [
       {
         url: "https://www.washingtonpost.com/politics/2020/11/03/trump-was-almost-guaranteed-victory-mississippi-voters-flooded-polls-anyway/",
         title: "Washington Post",
@@ -94,51 +94,51 @@ export class PagePress {
     ];
     return (
       <Host>
-        <section id="trucks" class="page">
+        <section id="press" class="page">
           <div class="container">
-            <h1>Press</h1>
-            <div class="video">
-              <iframe
-                src="https://www.youtube.com/embed/s5GzA03edtg"
-                title="YouTube video player"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              ></iframe>
-            </div>
-            <ul class="press-logos">
-              {press.map(p => (
-                <li>
-                  <a href={p.url} target="_blank">
-                    <img src={`/images/press/${p.img}`} alt="{p.title}" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <hr />
-            <p>
-              If you’d like to get in touch with us for a story send an email to <a href="mailto:press@polls.pizza">press@polls.pizza</a>.
-            </p>
-            <p>
-              <a href="/press-release.pdf">Oct. 5, 2020 Press Release</a>
-            </p>
-            <p>
-              <a href="/downloads/press-release-2.pdf">Oct. 21, 2020 Press Release</a>
-            </p>
-            <p>
-              <a href="/downloads/press-release-3.pdf">Dec. 17, 2020 Press Release (Georgia Runoff)</a>
-            </p>
-            <p>
-              <a href="https://www.businesswire.com/news/home/20210318005632/en/Pizza-to-the-Polls-Slice-Slice-Out-Hunger-and-CORE-Team-Up-to-Bring-Pizza-to-Vaccination-Lines">
-                Mar. 18, 2021 Press Release (Vax and Snacks)
-              </a>
-            </p>
-            <p>
-              Learn more about our story{" "}
-              <a href="/about" class="has-text-teal">
-                here
-              </a>
-              .
-            </p>
+            <ui-card>
+              <h1>Press</h1>
+              <div class="video">
+                <video controls>
+                  <source src="videos/cnn-clip.webm" type="video/webm" />
+                  <source src="videos/cnn-clip.mp4" type="video/mp4" />
+                </video>
+              </div>
+              <ul class="press-logos">
+                {press.map(p => (
+                  <li>
+                    <a href={p.url} target="_blank">
+                      <img src={`/images/press/${p.img}`} alt="{p.title}" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <hr />
+              <p>
+                If you’d like to get in touch with us for a story send an email to <a href="mailto:press@polls.pizza">press@polls.pizza</a>.
+              </p>
+              <p>
+                <a href="/press-release.pdf">Oct. 5, 2020 Press Release</a>
+              </p>
+              <p>
+                <a href="/downloads/press-release-2.pdf">Oct. 21, 2020 Press Release</a>
+              </p>
+              <p>
+                <a href="/downloads/press-release-3.pdf">Dec. 17, 2020 Press Release (Georgia Runoff)</a>
+              </p>
+              <p>
+                <a href="https://www.businesswire.com/news/home/20210318005632/en/Pizza-to-the-Polls-Slice-Slice-Out-Hunger-and-CORE-Team-Up-to-Bring-Pizza-to-Vaccination-Lines">
+                  Mar. 18, 2021 Press Release (Vax and Snacks)
+                </a>
+              </p>
+              <p>
+                Learn more about our story{" "}
+                <a href="/about" class="has-text-teal">
+                  here
+                </a>
+                .
+              </p>
+            </ui-card>
           </div>
         </section>
       </Host>

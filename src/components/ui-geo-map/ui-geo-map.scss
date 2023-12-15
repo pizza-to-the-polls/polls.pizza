@@ -5,4 +5,33 @@
     width: 100%;
     height: 100%;
   }
+
+  hr.heavy {
+    width: 100%;
+    background-color: $red;
+    height: 8px;
+    margin: 0;
+    border: none;
+  }
+
+  #deliveries-map-container {
+    background-color: $gray1;
+    width: 100%;
+    height: 300px;
+
+    @media ($tablet) {
+      height: 420px;
+    }
+
+    &.is-single-location {
+      height: 200px;
+    }
+  }
+
+  .now-feeding {
+    padding: 0.5em 0 0.5em 1.5em;
+    font-size: 0.8em;
+    font-weight: 600;
+    background-color: $white;
+  }
 }

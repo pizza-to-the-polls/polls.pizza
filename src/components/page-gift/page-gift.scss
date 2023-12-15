@@ -1,4 +1,8 @@
 page-gift {
+  ui-card {
+    background: $yellow;
+  }
+
   ul {
     margin-bottom: 24px;
     padding: 0;
@@ -19,6 +23,10 @@ page-gift {
 
     p {
       font-size: 14px;
+    }
+
+    label.radio {
+      border-color: $gray2;
     }
 
     .donation-amount-list {

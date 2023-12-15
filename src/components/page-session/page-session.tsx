@@ -66,7 +66,7 @@ export class PageSession {
     };
     return (
       <Host>
-        <ui-main-content background="red">
+        <ui-main-content>
           <ui-card>
             {!this.token && !this.sent ? (
               <form id="sign-in-form" onChange={handleChange} onSubmit={handleSubmit}>

@@ -1,12 +1,14 @@
 page-about {
   .about {
-    background-color: $gray1;
     padding-bottom: 0;
     ui-main-content:first-child {
       .container {
         padding-top: 0;
         padding-bottom: 1.5rem;
       }
+    }
+    .toc-list .button {
+      width: 320px;
     }
   }
 }

@@ -11,6 +11,7 @@ export const config: Config = {
   globalStyle: "styles/main.scss",
   globalScript: "src/app.ts",
   taskQueue: "async",
+
   plugins: [
     sourcemaps(),
     replace({
@@ -21,6 +22,7 @@ export const config: Config = {
         "process.env.BUGSNAG_KEY": process.env.BUGSNAG_KEY ? `"${process.env.BUGSNAG_KEY}"` : `null`,
         "process.env.NODE_ENV": process.env.NODE_ENV ? `"${process.env.NODE_ENV}"` : `"dev"`,
       },
+      preventAssignment: false,
     }),
     sass({
       injectGlobalPaths: ["styles/include/vars.scss", "styles/include/mixins.scss"],

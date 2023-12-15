@@ -23,7 +23,7 @@ export enum OrderTypeMealCounts {
 
 export type OrderInfo = {
   id: OrderId;
-  meals: number;
+  snacks: number;
   quantity: number;
   orderType: OrderTypes;
   pizzas: number;
@@ -118,7 +118,7 @@ export type PizzaTotals = {
   donors: number;
   costs: number;
   pizzas: number;
-  meals: number;
+  snacks: number;
   orders: number;
   locations: number;
   states: number;

@@ -19,7 +19,7 @@
     &:after {
       @include arrow;
       top: 1.3333rem;
-      right: 0.75rem;
+      right: 0.8rem;
       border-color: $teal;
       transition: border-color 0.2s ease-in-out;
       transform: rotate(135deg);

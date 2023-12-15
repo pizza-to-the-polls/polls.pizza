@@ -41,34 +41,15 @@ export class PageGift {
 
   public async donate(amount: number) {
     this.error = null;
-
-    const showError = this.showError;
     try {
-      const { success, checkoutSessionId, message } = await PizzaApi.postDonation("donation", amount, {
+      await PizzaApi.postDonation("donation", amount, {
         referrer: this.referral,
         giftName: this.giftName,
         giftEmail: this.giftEmail,
       });
-
-      if (success) {
-        const sessionId = checkoutSessionId;
-        const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
-
-        stripe
-          .redirectToCheckout({
-            sessionId,
-          })
-          .then(function (result: any) {
-            console.error(result.error.message);
-            showError(result.error.message);
-          });
-      } else {
-        console.error(`${message}`);
-        this.showError(`${message || PizzaApi.genericErrorMessage}`);
-      }
     } catch (e) {
       console.error(e);
-      this.showError(PizzaApi.genericErrorMessage);
+      this.showError(e.message || PizzaApi.genericErrorMessage);
     }
   }
 
@@ -203,7 +184,7 @@ export class PageGift {
 
     return (
       <Host>
-        <ui-main-content background="red">
+        <ui-main-content>
           <ui-card>
             <h1>Give Pizza to the Polls 🎁</h1>
 
@@ -257,7 +238,7 @@ export class PageGift {
 
                   <button
                     onClick={handleCheckout}
-                    class={"button is-red is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
+                    class={"button is-cyan is-fullwidth-mobile " + (!this.amount || isNaN(this.amount) ? "is-disabled" : "")}
                     disabled={!this.amount || isNaN(this.amount) || !this.giftName || !this.giftEmail || (this.error || "").length > 0}
                   >
                     Send Gift

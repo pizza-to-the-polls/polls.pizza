@@ -1,10 +1,8 @@
 import { Build, Component, Fragment, FunctionalComponent, h, Host, Listen, Prop, State, Watch } from "@stencil/core";
 import { MatchResults, RouterHistory } from "@stencil/router";
-// @ts-ignore
-import {} from "googlemaps";
 
 import { LocationInfo, LocationStatus, OrderDetails, OrderInfo, OrderTypes, PizzaApi, TruckDetails, TruckInfo } from "../../api";
-import { scrollPageToTop } from "../../util";
+import { formatDateTime, formatTime, scrollPageToTop } from "../../util";
 import { UiGeoMap } from "../ui-geo-map/ui-geo-map";
 
 enum FoodChoice {
@@ -14,10 +12,6 @@ enum FoodChoice {
 }
 
 type OrderOrTruckItem = { type: "pizza"; data: OrderDetails | null } | { type: "truck"; data: TruckDetails | null };
-
-const formatTime = (date: Date) => date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
-
-const formatDate = (date: Date) => date.toLocaleDateString([], { day: "2-digit", month: "2-digit" });
 
 const ReportLink = () => <stencil-route-link url="/report">Make a report</stencil-route-link>;
 
@@ -46,7 +40,7 @@ const OrderDetailDisplay: FunctionalComponent<{
       <ui-dynamic-text value={order} format={x => x.location.fullAddress} />
     </span>
     <div>
-      <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} at ${formatDate(x.createdAt)} ${formatTime(x.createdAt)}`} />
+      <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} at ${formatDateTime(x.createdAt)}`} />
     </div>
   </li>
 );
@@ -62,10 +56,7 @@ const OrderInfoDisplay: FunctionalComponent<{
       <ui-dynamic-text value={order} format={x => `${x.quantity} ${x.orderType} en route`} />
     </span>
     <div>
-      <ui-dynamic-text
-        value={order}
-        format={x => `${formatDate(x.createdAt)} ${formatTime(x.createdAt)}${reportCount > 0 ? ` • ${reportCount} report${reportCount === 1 ? "" : "s"}` : ""}`}
-      />
+      <ui-dynamic-text value={order} format={x => `${formatDateTime(x.createdAt)}${reportCount > 0 ? ` • ${reportCount} report${reportCount === 1 ? "" : "s"}` : ""}`} />
     </div>
   </li>
 );
@@ -80,7 +71,7 @@ const TruckInfoDisplay: FunctionalComponent<{
       <ui-dynamic-text value={truck} format={x => x.location.fullAddress} />
     </span>
     <div>
-      <ui-dynamic-text value={truck} format={x => `Food truck on location since ${formatDate(x.createdAt)} ${formatTime(x.createdAt)}`} />
+      <ui-dynamic-text value={truck} format={x => `Food truck on location since ${formatDateTime(x.createdAt)}`} />
     </div>
   </li>
 );
@@ -104,9 +95,6 @@ const OrderAndTruckInfoList: FunctionalComponent<{
     ),
   );
 
-const DEFAULT_ZOOM = 4;
-const SELECTED_LOCATION_ZOOM = 15;
-
 @Component({
   tag: "page-deliveries",
   styleUrl: "page-deliveries.scss",
@@ -117,21 +105,20 @@ export class PageDeliveries {
   @Prop() public match!: MatchResults;
 
   @State() private selectedAddress?: string;
+  @State() private selectedLocation?: LocationStatus;
+  @State() private selectedOrder?: OrderInfo;
   /**
    * Watched and used to re-center the map
    */
-  // @ts-ignore
   @State() private mapCenterPoint: { lat: number; lng: number };
   @State() private selectedFood: FoodChoice;
-  @State() private selectedLocation?: LocationStatus;
-  @State() private selectedOrder?: OrderInfo;
   @State() private recentOrders?: OrderDetails[];
   @State() private recentTrucks?: TruckInfo[];
   @State() private mapZoom: number;
 
   constructor() {
     this.selectedFood = FoodChoice.all;
-    this.mapZoom = DEFAULT_ZOOM;
+    this.mapZoom = UiGeoMap.DEFAULT_ZOOM;
     this.mapCenterPoint = UiGeoMap.US_CENTER;
   }
 
@@ -161,32 +148,19 @@ export class PageDeliveries {
     }
   }
 
-  /*
-  @Watch( "selectedFood" )
-  public selectedFoodChanged( filter: FoodChoice ) {
-    const val = filter === FoodChoice.all
-      ? ""
-      : Object.keys( FoodChoice ).find( k => ( FoodChoice as any )[k] === filter ) + "";
-    if( window.location.hash !== val ) {
-      window.location.hash = val;
-    }
-  }
-  */
-
   /**
    * Lookup location info when the selected address value changes
    */
   @Watch("selectedAddress")
   public selectedAddressChanged(newAddress?: string, oldAddress?: string) {
-    const ownPathFragment = this.history.location.pathname.split("/").filter(x => x !== "")[0];
-    if (newAddress == null && oldAddress != null) {
-      const path = `/${ownPathFragment}`;
+    if (newAddress === undefined && oldAddress != null) {
+      const path = `/deliveries`;
       this.selectedLocation = undefined;
       if (this.history.location.pathname !== path) {
         this.history.push(path, {});
       }
     } else if (newAddress != null && newAddress !== oldAddress) {
-      const path = `/${ownPathFragment}/${newAddress}`;
+      const path = `/deliveries/${newAddress.replace(/\s/g, "+")}`;
       if (this.history.location.pathname !== path) {
         this.history.push(path, {});
       }
@@ -213,9 +187,9 @@ export class PageDeliveries {
   @Watch("mapCenterPoint")
   public mapCenterPointChanged(coords?: { lat: number; lng: number }) {
     if (coords?.lat === UiGeoMap.US_CENTER.lat) {
-      this.mapZoom = DEFAULT_ZOOM;
+      this.mapZoom = UiGeoMap.DEFAULT_ZOOM;
     } else {
-      this.mapZoom = SELECTED_LOCATION_ZOOM;
+      this.mapZoom = UiGeoMap.SELECTED_LOCATION_ZOOM;
     }
     scrollPageToTop();
   }
@@ -288,13 +262,10 @@ export class PageDeliveries {
       );
     const combinedItems = [...currentItems.slice(3, 1000), ...pastItems];
 
-    const currentAddress = selectedAddress != null ? foundLocation?.fullAddress || selectedAddress : currentItems?.find(_ => true)?.data?.location.fullAddress;
-    const nowFeeding = currentAddress != null ? ": " + currentAddress : null;
-
     return (
       <Host>
-        <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
-          <div>
+        <ui-main-content class={{ "selected-location": selectedAddress != null }}>
+          <ui-card>
             {selectedAddress != null ? (
               <div style={{ padding: "1em 0 0 0" }}>
                 <a onClick={() => (this.selectedAddress = undefined)}>Back to all deliveries</a>
@@ -318,66 +289,60 @@ export class PageDeliveries {
                 />
               </Fragment>
             )}
-          </div>
-          <FoodChoices selected={selectedFood} onSelected={x => (this.selectedFood = x)} />
-        </ui-main-content>
-
-        <ui-main-content background={selectedAddress != null ? "teal" : "yellow"} class={{ "selected-location": selectedAddress != null }}>
-          <hr class="heavy" />
-          <div class="now-feeding">Now feeding{nowFeeding || " American voters"}</div>
-          <div id="deliveries-map-container" class={{ "is-single-location": selectedAddress != null }}>
-            <ui-geo-map
-              center={mapCenterPoint}
-              zoom={mapZoom}
-              deliveries={
-                selectedFood === FoodChoice.all || selectedFood === FoodChoice.pizza
-                  ? this.recentOrders?.slice(0, 30).map(x => ({
-                      coords: {
-                        lat: parseFloat(x.location.lat),
-                        lng: parseFloat(x.location.lng),
-                      },
-                      id: x.location.id,
-                    }))
-                  : undefined
-              }
-              trucks={
-                selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks
-                  ? this.recentTrucks?.slice(0, 20).map(x => ({
-                      coords: {
-                        lat: parseFloat(x.location.lat),
-                        lng: parseFloat(x.location.lng),
-                      },
-                      id: x.location.id,
-                    }))
-                  : undefined
-              }
-              onMarkerSelected={({ detail: { type, location } }) => {
-                let locationInfo: LocationInfo | undefined;
-                switch (type) {
-                  case "pizza":
-                    locationInfo = this.recentOrders?.find(x => x.location.id === location)?.location;
-                    break;
-                  case "truck":
-                    locationInfo = this.recentTrucks?.find(x => x.location.id === location)?.location;
-                    break;
+            <FoodChoices selected={selectedFood} onSelected={x => (this.selectedFood = x)} />
+            <div id="deliveries-map-container" class={{ "is-single-location": selectedAddress != null }}>
+              <ui-geo-map
+                center={mapCenterPoint}
+                zoom={mapZoom}
+                currentAddress={selectedAddress}
+                deliveries={
+                  selectedFood === FoodChoice.all || selectedFood === FoodChoice.pizza
+                    ? this.recentOrders?.slice(0, 100).map(x => ({
+                        coords: {
+                          lat: parseFloat(x.location.lat),
+                          lng: parseFloat(x.location.lng),
+                        },
+                        id: x.location.id,
+                      }))
+                    : undefined
                 }
-                this.selectLocation(locationInfo);
-              }}
-            />
-          </div>
-        </ui-main-content>
+                trucks={
+                  selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks
+                    ? this.recentTrucks?.slice(0, 50).map(x => ({
+                        coords: {
+                          lat: parseFloat(x.location.lat),
+                          lng: parseFloat(x.location.lng),
+                        },
+                        id: x.location.id,
+                      }))
+                    : undefined
+                }
+                onMarkerSelected={({ detail: { type, location } }) => {
+                  let locationInfo: LocationInfo | undefined;
+                  switch (type) {
+                    case "pizza":
+                      locationInfo = this.recentOrders?.find(x => x.location.id === location)?.location;
+                      break;
+                    case "truck":
+                      locationInfo = this.recentTrucks?.find(x => x.location.id === location)?.location;
+                      break;
+                  }
+                  this.selectLocation(locationInfo);
+                }}
+              />
+            </div>
+          </ui-card>
 
-        <ui-main-content background="yellow">
           <ui-card>
             <div>
-              <h3>Current Deliveries</h3>
+              <h3>Recent Deliveries</h3>
               {selectedLocation != null && selectedFood === FoodChoice.trucks && locationItems.length < 1 ? (
                 <p>
                   There are no food trucks currently at this location.
                   <br />
                   <ReportLink />
                 </p>
-              ) : selectedLocation != null && ((selectedFood === FoodChoice.pizza && locationItems.length < 1) || selectedLocation.notFound === true) ? (
+              ) : selectedLocation != null && (locationItems.length < 1 || selectedLocation.notFound === true) ? (
                 <p>
                   There are no reports of lines at this location.
                   <br />
@@ -438,9 +403,7 @@ export class PageDeliveries {
             <div>
               <h3>{selectedOrder!.pizzas} Pizzas</h3>
               <p>
-                <strong>
-                  {formatDate(selectedOrder!.createdAt)}, {formatTime(selectedOrder!.createdAt)}
-                </strong>
+                <strong>{formatDateTime(selectedOrder!.createdAt)}</strong>
               </p>
               <p>From {selectedOrder!.restaurant}</p>
               <ul>
@@ -475,8 +438,9 @@ export class PageDeliveries {
     };
   }
 
-  private setAddressFromUrl(match: MatchResults) {
-    const location = match.params.location;
+  private async setAddressFromUrl(match: MatchResults) {
+    const location = match.params?.location?.replace(/\+/g, " ");
+
     if (location !== this.selectedAddress) {
       this.selectedAddress = location;
       // TODO: Lookup address lat/lng from selectedAddress

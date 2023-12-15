@@ -1,6 +1,6 @@
 import { Component, h } from "@stencil/core";
 
-const partners2022 = [
+const partners: { img: string; name: string; url: string }[] = [
   {
     img: "aclu-georgia.png",
     name: "ACLU Georgia",
@@ -10,6 +10,11 @@ const partners2022 = [
     img: "all-vote-no-play.png",
     name: "All Vote No Play",
     url: "https://www.allvotenoplay.org/",
+  },
+  {
+    img: "alliance-for-youth-organizing.png",
+    name: "Alliance for Youth Organizing",
+    url: "https://allianceforyouthorganizing.org",
   },
   {
     img: "andrew-goodman-foundation.png",
@@ -107,6 +112,11 @@ const partners2022 = [
     url: "https://www.leadmn.org/",
   },
   {
+    img: "leaders-igniting-transformation.png",
+    name: "Leaders Igniting Transformation",
+    url: "https://www.litwi.org",
+  },
+  {
     img: "levis.png",
     name: "Levi's",
     url: "https://www.levi.com/US/en_US/",
@@ -120,6 +130,11 @@ const partners2022 = [
     img: "move-texas.png",
     name: "Move Texas",
     url: "https://movetexas.org/",
+  },
+  {
+    img: "ms-votes.png",
+    name: "Mississippi Votes",
+    url: "https://www.msvotes.org",
   },
   {
     img: "naacp-bulloch-county.png",
@@ -155,6 +170,11 @@ const partners2022 = [
     img: "new-voters.png",
     name: "New Voters",
     url: "https://www.new-voters.org/",
+  },
+  {
+    img: "power-the-polls.png",
+    name: "Power the Polls",
+    url: "https://powerthepolls.org",
   },
   {
     img: "proactive-grand-rapids.jpg",
@@ -221,22 +241,11 @@ const partners2022 = [
     name: "When We All Vote",
     url: "https://whenweallvote.org/",
   },
-];
-
-const topPartners2020 = [
   {
     img: "ubereats.png",
     name: "Uber Eats",
     url: "https://www.ubereats.com/",
   },
-  {
-    img: "slice.png",
-    name: "Slice",
-    url: "https://slicelife.com/",
-  },
-];
-
-const partners2020 = [
   {
     img: "&pizza.png",
     name: "&Pizza",
@@ -256,6 +265,11 @@ const partners2020 = [
     img: "detroit-votes-2022.png",
     name: "Detroit Votes 2022",
     url: "https://detroitvotes.org/",
+  },
+  {
+    img: "detroit-action.jpg",
+    name: "Detroit Action",
+    url: "https://detroitaction.org",
   },
   {
     img: "ezcater.png",
@@ -286,11 +300,6 @@ const partners2020 = [
     img: "lemonade.png",
     name: "Lemonade",
     url: "https://www.lemonade.com/",
-  },
-  {
-    img: "levis.png",
-    name: "Levi Strauss & Co.",
-    url: "https://levi.com",
   },
   {
     img: "nuchas.jpg",
@@ -390,11 +399,11 @@ export class PagePartners {
 
   public render() {
     return (
-      <ui-main-content id="partners" class="page" background="cyan">
+      <ui-main-content id="partners" class="page">
         <ui-card>
-          <h2>2022 Partners</h2>
+          <h2>Past and Present Partners</h2>
           <ul class="partners">
-            {partners2022.map(l => {
+            {partners.map(l => {
               return (
                 <li>
                   <a href={l.url} target="blank">
@@ -404,32 +413,6 @@ export class PagePartners {
               );
             })}
           </ul>
-
-          <h2>2020 Partners</h2>
-          <ul class="partners">
-            {topPartners2020.map(l => {
-              return (
-                <li>
-                  <a href={l.url} target="blank">
-                    <img src={`/images/logos/${l.img}`} alt={l.name} />
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <ul class="partners">
-            {partners2020.map(l => {
-              return (
-                <li>
-                  <a href={l.url} target="blank">
-                    <img src={`/images/logos/${l.img}`} alt={l.name} />
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </ui-card>
-        <ui-card>
           <h2>Become a partner</h2>
           <p>We’re looking for partners who can:</p>
           <ui-pizza-list>

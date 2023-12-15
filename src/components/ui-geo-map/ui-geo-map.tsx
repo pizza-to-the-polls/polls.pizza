@@ -13,12 +13,14 @@ export class UiGeoMap {
   public static readonly US_CAPITOL: google.maps.LatLngLiteral = { lat: 38.8899, lng: -77.0091 };
   public static readonly US_CENTER: google.maps.LatLngLiteral = { lat: 39.8283, lng: -98.5795 };
   public static readonly DEFAULT_CENTER: google.maps.LatLngLiteral = UiGeoMap.US_CENTER;
-  public static readonly DEFAULT_ZOOM = 16;
+  public static readonly DEFAULT_ZOOM = 4;
+  public static readonly SELECTED_LOCATION_ZOOM = 15;
 
   @Prop() public center?: google.maps.LatLngLiteral;
   @Prop() public zoom?: number;
   @Prop() public deliveries?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
   @Prop() public trucks?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
+  @Prop() public currentAddress?: string;
 
   @Event({ cancelable: false }) public markerSelected!: EventEmitter<{
     type: "pizza" | "truck";
@@ -75,7 +77,15 @@ export class UiGeoMap {
   }
 
   public render() {
-    return <div id="map" ref={x => (this.mapElement = x)}></div>;
+    return (
+      <div>
+        <hr class="heavy" />
+        <div class="now-feeding">Now feeding {this.currentAddress || "American voters"}</div>
+        <div id="deliveries-map-container" class={this.currentAddress ? "is-single-location" : ""}>
+          <div id="map" ref={x => (this.mapElement = x)}></div>
+        </div>
+      </div>
+    );
   }
 
   private modifyMarkers(type: "pizza" | "truck", existingMarkers: google.maps.Marker[], newMarkers: { coords: google.maps.LatLngLiteral; id: LocationId }[]) {

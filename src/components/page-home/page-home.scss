@@ -9,105 +9,165 @@ page-home {
   }
 
   .hero {
+    background-color: $red;
     color: $white;
-    position: relative;
-
-    .hero-image-container {
-      display: block;
-      background: url("images/hero.jpg");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: 50% 25%;
-      min-height: 300px;
-      width: 100%;
+    padding: 20px 0;
+    @media (min-width: 400px) {
+      padding: 40px 0;
     }
 
-    .tagline {
-      font-weight: bold;
-      background-color: $blue;
-      text-align: center;
-      width: 100%;
-      color: $white;
-      left: 0;
-      bottom: 0;
-      padding: 20px;
-      border-top: 10px solid $cyan;
-      margin: 0 auto;
-      font-size: 18px;
+    .button + .button {
+      margin-left: 1rem;
+      @media (max-width: 300px) {
+        margin: 1rem 0 0;
+      }
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+
+      @media ($desktop) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      h1 {
+        color: $tan;
+        text-transform: uppercase;
+        margin: 0 0 1rem 0;
+
+        font-size: 2rem;
+        line-height: 2rem;
+
+        @media (min-width: 400px) {
+          font-size: 3rem;
+          line-height: 3rem;
+        }
+        @media ($widescreen) {
+          font-size: 6rem;
+          line-height: 5.5rem;
+        }
+        @media ($desktop) {
+          font-size: 4.8rem;
+          line-height: 4rem;
+          margin: 0 0 1rem 0;
+        }
+      }
 
       p {
-        max-width: 600px;
-        margin: 0 auto;
-      }
+        font-size: 1rem;
+        line-height: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
 
-      .button {
-        display: inline-block;
-        margin-top: 30px;
+        @media (min-width: 400px) {
+          font-size: 1.25rem;
+          line-height: 1.5rem;
+        }
 
+        @media ($tablet) {
+          font-size: 1.5rem;
+          line-height: 2rem;
+          margin-bottom: 2rem;
+        }
         @media ($desktop) {
-          font-size: 24px;
+          margin-bottom: 1rem;
         }
       }
 
-      .donate-button-subtext {
-        font-weight: 500;
-        font-size: 13px;
-
-        @media ($desktop) {
-          font-size: 12.8px;
+      .button-group {
+        span {
+          display: block;
+          margin: 16px 0 32px 0;
+          font-weight: 600;
         }
       }
     }
 
-    @media ($tablet) {
-      .hero-image-container {
-        min-height: 500px;
-        overflow: hidden;
-      }
-
-      .tagline {
-        p {
-          font-size: 24px;
-        }
+    img {
+      border-radius: $radius;
+      max-height: 400px;
+      @media ($desktop) {
+        max-width: 90%;
+        max-height: unset;
+        float: right;
       }
     }
+  }
 
-    @media ($desktop) {
-      .hero-image-container {
-        height: 60vh;
-        max-height: 900px;
+  .order-pizzas {
+    background-color: $light-red;
+    ui-location-search div {
+      position: relative;
+      input {
+        border: none;
+        background-color: $light-red;
+        box-shadow: none;
+        height: 2.2rem;
+        font-size: 1.9rem;
+
+        @media ($under-tablet) {
+          height: 1rem;
+          font-size: 0.9rem;
+        }
+        @media (max-width: 400px) {
+          font-size: 0.8rem;
+        }
+
+        font-weight: 700;
+        &::placeholder,
+        & {
+          color: $blue;
+        }
+        margin-left: 14px;
       }
+      &:before {
+        height: 2.8rem;
+        font-size: 2.8rem;
+        @media ($under-tablet) {
+          height: 1.3rem;
+          font-size: 1.3rem;
+        }
 
-      .tagline {
-        width: 800px;
+        font-weight: 700;
+        color: $blue;
+        content: "\26B2";
+        width: 1px;
+        -webkit-transform: rotate(-45deg);
+        -moz-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+        display: block;
         position: absolute;
-        bottom: 50px;
-        left: 50%;
-        margin-left: -400px;
-        border: 10px solid $cyan;
+        z-index: 1;
+        margin-top: -2px;
       }
     }
   }
 
   .totals {
-    background-image: url("/images/bg1.png");
-    background-size: 400px;
-    background-color: $yellow;
     background-attachment: fixed;
-    color: $blue;
-    padding: 10px 0 60px 0;
+    background: linear-gradient(180deg, rgba(138, 203, 208, 0) 0%, rgba(138, 203, 208, 0.1) 100%);
   }
-
   .stats-row {
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
-    border-top: 4px solid $blue;
+
+    @media ($under-tablet) {
+      flex-wrap: wrap;
+    }
 
     .stat {
       width: 33%;
       text-align: center;
       padding: 0.75rem 0;
+
+      @media ($under-tablet) {
+        flex-basis: 50%;
+      }
 
       @media ($tablet) {
         display: table-cell;
@@ -125,12 +185,17 @@ page-home {
         border-bottom: none;
       }
 
+      .stat-emoji {
+        font-size: 40px;
+        display: block;
+      }
       .stat-number {
-        font-size: 24px;
-        font-family: $header-font;
+        font-size: 28px;
+        font-weight: 600;
+        color: $blue;
 
         @media ($tablet) {
-          font-size: 32px;
+          font-size: 2.8rem;
         }
       }
 
@@ -145,97 +210,231 @@ page-home {
     }
   }
 
-  .donate {
-    color: $blue;
-    background: $cyan;
-    background-image: url("/images/bg2.png");
-    background-attachment: fixed;
-    background-size: 400px;
-    padding-bottom: 40px;
+  $under-tweet: "max-width: 980px";
 
-    .stats-row {
-      margin-bottom: 0.5rem;
-      justify-content: left;
+  .tweets-deliveries .container {
+    display: flex;
+    position: relative;
 
-      .stat {
+    @media ($under-tweet) {
+      flex-wrap: wrap;
+    }
+  }
+
+  .tweets {
+    width: 70%;
+    margin: 10px 10px 0 0;
+
+    @media (max-width: 980px) {
+      width: 100%;
+    }
+
+    .tweets-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      @media ($under-tweet) {
+        flex-wrap: wrap;
+      }
+
+      .tweet-wrapper {
+        width: 48%;
+        margin: 4px;
         text-align: left;
+        padding: 0.75rem 0;
 
-        @media ($under-tablet) {
-          width: 50%;
+        @media ($under-tweet) {
+          width: 80%;
+        }
+        @media (max-width: 400px) {
+          width: 100%;
+        }
+      }
+    }
+  }
+  .deliveries {
+    width: 30%;
+    background-color: $tan;
+    border-radius: $radius;
+    padding: 0 10px;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    bottom: 10px;
+
+    .deliveries-wrapper {
+      overflow-y: scroll;
+      height: 93%;
+    }
+
+    @media ($under-tweet) {
+      width: 100%;
+      position: relative;
+      right: unset;
+      top: unset;
+      bottom: unset;
+      .deliveries-wrapper {
+        max-height: 400px;
+      }
+    }
+
+    .delivery {
+      border-bottom: 1px solid $gray2;
+      margin: 10px 0;
+      padding: 4px 0;
+      h5 {
+        margin: 0;
+        line-height: 0.5rem;
+        font-size: 0.85rem;
+      }
+      .time {
+        font-size: 0.6rem;
+        color: $gray4;
+      }
+      p {
+        color: $gray4;
+        font-size: 0.75rem;
+        font-weight: normal;
+        a {
+          color: $gray4;
         }
       }
     }
   }
 
-  .hero-section,
-  .report,
-  .donate {
-    color: $blue;
-    position: relative;
-  }
-
-  .report-content,
-  .donate-content {
-    position: relative;
-    margin-top: 1rem;
-    z-index: 100;
-  }
-
-  .report-bg {
-    background-color: $cyan;
-    background-image: url("/images/bg2.png");
-    background-attachment: fixed;
-    background-size: 400px;
-    width: 100%;
-    height: 14%;
-    position: absolute;
-    bottom: 0;
-    z-index: 0;
-  }
-
-  .how-we-do-it {
-    color: $blue;
-    background: $teal;
-    background-image: url("/images/bg2.png");
-    background-attachment: fixed;
-    background-size: 400px;
-
-    h2 {
-      text-align: center;
+  .is-round {
+    margin: 0 16px;
+    @media (max-width: 400px) {
+      margin: 0 8px;
     }
 
     .container {
-      max-width: 1200px;
+      border-radius: 16px;
     }
   }
-}
 
-.press {
-  background-color: $gray2;
-  background-image: url("/images/bg2.png");
-  background-attachment: fixed;
-  background-size: 400px;
+  .donate {
+    display: none;
+    @media ($tablet) {
+      display: block;
+    }
 
-  h2 {
-    text-align: center;
+    .container {
+      background: $light-red;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    img {
+      height: 120px;
+      margin: 16px;
+      border-radius: 120px;
+    }
+    h1 {
+      letter-spacing: -1.5px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .donate-button {
+      margin-right: 30px;
+    }
   }
 
-  .container {
-    padding: 20px;
-    display: flex;
-    flex-flow: wrap;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .press {
+    .container {
+      background-color: $tan;
+    }
 
-  a {
-    width: 40%;
-    display: inline-block;
-  }
+    h3 {
+      text-align: left;
+    }
 
-  @media ($tablet) {
+    .story {
+      @media ($tablet) {
+        width: 46%;
+        margin: 20px 2%;
+      }
+      margin: 20px;
+      @media (max-width: 400px) {
+        margin: 20px 0;
+      }
+
+      display: table;
+      vertical-align: top;
+      img {
+        max-height: 32px;
+      }
+      a {
+        font-size: 0.75rem;
+      }
+    }
+
+    .container {
+      padding: 20px;
+      display: flex;
+      flex-flow: wrap;
+      justify-content: space-between;
+      align-items: start;
+    }
+
     a {
-      width: 20%;
+      width: 40%;
+      display: inline-block;
+    }
+
+    @media ($tablet) {
+      a {
+        width: 20%;
+      }
+    }
+  }
+  .newsletter {
+    .container {
+      background-color: $red;
+      display: flex;
+      @media ($tablet) {
+        text-align: left;
+      }
+      flex-wrap: wrap;
+      text-align: center;
+      align-items: center;
+      justify-content: space-around;
+      padding: 30px;
+    }
+    h1 {
+      text-transform: uppercase;
+      margin: -4px 0 0 0;
+      @media ($tablet) {
+        font-size: 42px;
+      }
+    }
+
+    form {
+      width: 84%;
+    }
+    .newsletter-text,
+    form {
+      margin: 4px 0;
+      @media ($tablet) {
+        width: 50%;
+        margin: 0;
+      }
+    }
+
+    .email-signup-input {
+      border: 0;
+      width: calc(100% - 100px);
+      float: left;
+      border-radius: $radius 0 0 $radius;
+    }
+
+    .email-signup-button {
+      float: left;
+      width: 100px;
+      margin: 0;
+      border-radius: 0 $radius $radius 0;
     }
   }
 }

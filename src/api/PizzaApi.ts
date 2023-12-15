@@ -58,7 +58,7 @@ class PizzaApi {
   }
 
   public async getOrder(id: OrderId, errorHandler?: (error: ApiError) => void): Promise<OrderDetails | null> {
-    return this.handleResponse(await baseFetch<OrderDetails>(`/order/${id}`), errorHandler);
+    return this.handleResponse(await baseFetch<OrderDetails>(`/orders/${id}`), errorHandler);
   }
 
   public async getOrders(page: number = 0, limit: number = 100, errorHandler?: (error: ApiError) => void): Promise<OrderQueryResults> {
@@ -70,7 +70,7 @@ class PizzaApi {
       costs: 0,
       donors: 0,
       locations: 0,
-      meals: 0,
+      snacks: 0,
       orders: 0,
       pizzas: 0,
       raised: 0,
@@ -99,12 +99,35 @@ class PizzaApi {
     amountUsd: number,
     extra: { [id: string]: string | number | boolean | undefined | null },
     errorHandler?: (error: ApiError) => void,
-  ): Promise<DonationPostResults> {
-    const result = await baseFetch<DonationPostResults>(`/donations`, {
-      body: JSON.stringify({ ...extra, url: `${document.location}`, type, amountUsd }),
+  ): Promise<void> {
+    const resp = await baseFetch<DonationPostResults>(`/donations`, {
+      body: JSON.stringify({ url: `${document.location}`, ...extra, type, amountUsd }),
       method: "POST",
     });
-    return this.handleResponse(result, errorHandler) || { success: false, message: "Whoops! That didn't work. Our servers might be a little stuffed right now." };
+
+    const { success, checkoutSessionId, message } = this.handleResponse(resp, errorHandler) || {
+      success: false,
+      message: "Whoops! That didn't work. Our servers might be a little stuffed right now.",
+    };
+
+    if (success) {
+      const sessionId = checkoutSessionId;
+      const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
+
+      stripe
+        .redirectToCheckout({
+          sessionId,
+        })
+        .then(function (result: any) {
+          console.error(result.error.message);
+          throw new Error(result.error.message);
+        });
+    } else {
+      if (message) {
+        console.error(message);
+      }
+      throw message || this.genericErrorMessage;
+    }
   }
 
   public async postReport(

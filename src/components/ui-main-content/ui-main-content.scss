@@ -1,33 +1,48 @@
 ui-main-content {
   .background {
-    background-attachment: fixed;
-    background-size: 400px;
-    padding-bottom: 40px;
-    &.bg-yellow {
-      background-color: $yellow;
-      background-image: url("/images/bg1.png");
-    }
-    &.bg-cyan {
-      background-color: $cyan;
-      background-image: url("/images/bg2.png");
-    }
-    &.bg-teal {
-      background-color: $teal;
-      background-image: url("/images/bg2.png");
-    }
-    &.bg-red {
-      background-color: $red;
-      color: $white;
-      background-image: url("/images/bg2.png");
+    background-image: url("/images/pizza-star.svg"), url("/images/pizza-yellow.svg");
+    background-repeat: no-repeat;
+    background-position: -3% 38rem, 102% 25rem;
+    background-size: 8rem, 10rem;
+    @media ($under-desktop) {
+      background: none;
     }
   }
 
   .container {
-    max-width: 800px;
-    padding: 30px 20px 0 20px;
+    padding: 30px 20px 0;
+    @media (max-width: 400px) {
+      padding: 30px 8px;
+      width: calc(100vw - 16px);
+    }
+
     &.full-bleed {
       padding: 0;
     }
     margin: 0 auto;
+
+    &.center-card {
+      & > ui-card:first-child {
+        margin-top: 2rem;
+        min-height: 500px;
+        z-index: 10;
+        &:before {
+          position: absolute;
+          content: "";
+          background-image: url("/images/pizza-pink.svg");
+          width: 10rem;
+          height: 10rem;
+          background-size: contain;
+          z-index: -1;
+          margin: -130px 0 0 -130px;
+        }
+        @media ($under-desktop) {
+          margin-top: 1rem;
+          &:before {
+            background-image: none;
+          }
+        }
+      }
+    }
   }
 }

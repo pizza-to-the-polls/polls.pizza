@@ -1,13 +1,9 @@
-import { Build, Component, h, Host, State } from "@stencil/core";
-// @ts-ignore
-import {} from "googlemaps";
+import { Component, h, Host, Prop, State } from "@stencil/core";
 
 import { ApiError, PizzaApi, ReportPostResults } from "../../api";
 import shaFile from "../../util/shaFile";
 
 // Shared with pizzabase
-const URL_REGEX = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
-const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
 
 @Component({
@@ -15,6 +11,8 @@ const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s
   styleUrl: "form-report.scss",
 })
 export class FormReport {
+  @Prop() public formattedAddress?: string;
+
   /**
    * *Always* required to hide form, regardless of other show booleans
    */
@@ -55,137 +53,24 @@ export class FormReport {
   @State() private submitError: { [key: string]: string } = {};
   @State() private showLocationInput: boolean = true;
   @State() private locationName: string = "";
-  @State() private reportType: string = ""; // "social" | "photo"
+  @State() private reportType: string = "photo"; // "social" | "photo"
   @State() private hasPhoto: boolean = false;
   @State() private photoUrl: string = "";
   @State() private userClickedGuidelinesLink: boolean = true;
 
-  public componentDidRender() {
-    if (Build.isBrowser && google && document.getElementById("autocomplete-input")) {
-      const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete-input") as HTMLInputElement, {
-        types: ["geocode", "establishment"],
-        componentRestrictions: { country: "us" },
+  public componentWillLoad() {
+    if (this.formattedAddress) {
+      this.handleLocationSelected({
+        formattedAddress: this.formattedAddress,
+        locationName: this.formattedAddress.replace(/, USA/gi, ""),
       });
-
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-
-        const componentForm: { [key: string]: string } = {
-          street_number: "short_name",
-          route: "long_name",
-          locality: "long_name",
-          administrative_area_level_1: "short_name",
-          postal_code: "short_name",
-          premise: "name",
-          address: "formatted_address",
-        };
-
-        Object.keys(componentForm).forEach(component => {
-          const elem = document.getElementById(component) as HTMLInputElement;
-          if (elem) {
-            elem.value = "";
-          }
-        });
-
-        place.address_components?.forEach((address_component: { [key: string]: any }) => {
-          const addressType: string = address_component.types[0];
-          const mapping = componentForm[addressType];
-          const elem = document.getElementById(addressType) as HTMLInputElement;
-          if (mapping && elem) {
-            elem.value = address_component[mapping];
-          }
-        });
-
-        const premise = document.getElementById("premise") as HTMLInputElement;
-        if (premise) {
-          premise.value = place.name;
-        }
-        const formatted_address = document.getElementById("formatted_address") as HTMLInputElement;
-
-        if (formatted_address) {
-          formatted_address.value = place.formatted_address || "";
-        }
-
-        // Get readable address (either name or the address; remove USA)
-        this.locationName = place.formatted_address ? place.formatted_address.replace(/, USA/gi, "") : place.name ? place.name : "the location";
-      });
+      this.handleLoadStepTwo();
     }
   }
 
   public render() {
-    const handleAddressChange = () => {
-      const address = document.getElementById("autocomplete-input") as HTMLInputElement;
-      if (address && !address.value) {
-        this.locationName = "";
-      }
-    };
-
-    const handleLoadStepTwo = (e: Event) => {
-      e.preventDefault();
-      handleReportTypeChange();
-      this.showLocationInput = false;
-    };
-
-    const clearReportVerification = () => {
-      const socialLink = document.getElementById("social-link") as HTMLInputElement;
-      if (socialLink) {
-        socialLink.value = "";
-      }
-      removePhoto();
-    };
-
-    const handleReportTypeChange = () => {
-      const reportType = document.querySelector("input[name=reportType]:checked") as HTMLInputElement;
-      // Clear errors
-      clearFormError("reportType");
-      // Clear if changing report type
-      if (this.reportType !== reportType?.value) {
-        clearReportVerification();
-      }
-      this.reportType = reportType?.value;
-      // Scroll to top of form container
-      document.getElementById("form-report-component")?.scrollIntoView({
-        behavior: "smooth",
-      });
-    };
-
-    const resetForm = () => {
-      this.showConfirmation = false;
-      this.showServerError = false;
-      this.showFoodTruckOnSiteConfirmation = false;
-      this.showDistributorConfirmation = false;
-      this.showSuccessfulReportConfirmation = false;
-      this.showDuplicateReportConfirmation = false;
-      this.submitResponse = {};
-      this.submitError = {};
-      this.locationName = "";
-      this.reportType = "";
-      this.photoIsProcessing = false;
-      this.userClickedGuidelinesLink = false;
-      this.isLoading = false;
-      this.isDisabled = false;
-      removePhoto();
-      const form = document.getElementById("form-report") as HTMLFormElement;
-      if (form) {
-        form.reset();
-        // Reset select elements (some browsers need this extra step)
-        (document.getElementById("waitTime") as HTMLFormElement).value = "";
-        (document.getElementById("contactRole") as HTMLFormElement).value = "";
-      }
-      // Reset report type
-      const reportType = document.getElementById("report-type-social") as HTMLInputElement;
-      if (reportType) {
-        reportType.checked = true;
-      }
-      // Scroll to top
-      document.getElementById("form-report-component")?.scrollIntoView({
-        behavior: "smooth",
-      });
-      this.showLocationInput = true;
-    };
-
     const handleNewLocation = (e: Event) => {
-      resetForm();
+      this.resetForm();
       e.preventDefault();
     };
 
@@ -200,7 +85,7 @@ export class FormReport {
 
       // If no files
       if (!file) {
-        removePhoto();
+        this.removePhoto();
         // Reset
         this.photoIsProcessing = false;
         this.isDisabled = false;
@@ -219,7 +104,7 @@ export class FormReport {
         try {
           await uploadPhoto(file, addressInput.value);
         } catch ({ errors }) {
-          removePhoto();
+          this.removePhoto();
           this.submitError.photo = errors?.fileName || "Whoops! We could not upload that photo";
         } finally {
           // Always reset
@@ -228,7 +113,7 @@ export class FormReport {
         }
       } else {
         this.submitError.photo = "Whoops! We could not upload that photo. Try adding a link to a social media report instead.";
-        removePhoto();
+        this.removePhoto();
         // Always reset
         this.photoIsProcessing = false;
         this.isDisabled = false;
@@ -269,57 +154,17 @@ export class FormReport {
       this.photoUrl = `https://polls.pizza/${filePath}`;
     };
 
-    const removePhoto = () => {
-      const fileInput = document.getElementById("photo") as HTMLInputElement;
-      const imagePreview = document.getElementById("photo-preview");
-      if (fileInput) {
-        fileInput.value = "";
-      }
-      this.hasPhoto = false;
-      this.photoUrl = "";
-      clearFormError("photo");
-      if (imagePreview) {
-        imagePreview.style.backgroundImage = "";
-      }
-      this.photoIsProcessing = false;
-    };
-
-    // Sharing
-    const shareUrl = "https://polls.pizza/";
-    const shareText = "Pizza to the Polls is making democracy delicious by delivering free food for all to polling places with long lines";
-    const shareTwitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}&via=PizzaToThePolls`;
-    const shareFacebookLink = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&title=${encodeURIComponent(shareText)}&description=${encodeURIComponent(
-      shareText,
-    )}&quote=${encodeURIComponent(shareText)}`;
-
-    const openSharePopup = (e: Event) => {
-      e.preventDefault();
-      const linkTarget = e.target as HTMLLinkElement;
-      const targetURL = linkTarget.getAttribute("href");
-      if (!targetURL) {
-        return;
-      }
-      window.open(targetURL, "popup", "width=600,height=600");
-      return;
-    };
-
     // Has user clicked the "On-Demand Guidelines" link?
     const handleGuidelinesClick = () => {
       const distributorDisclaimerAgree = (document.querySelector("input[name=distributorDisclaimer]") as HTMLInputElement)?.checked;
       // If checkbox is already checked, remove other error message
       if (distributorDisclaimerAgree) {
-        clearFormError("distributorDisclaimer");
+        this.clearFormError("distributorDisclaimer");
       }
-      clearFormError("viewGuidelines");
+      this.clearFormError("viewGuidelines");
       // Toggle boolean to allow user to submit form
       this.userClickedGuidelinesLink = true;
       this.isDisabled = false;
-    };
-
-    const clearFormError = (field: string): void => {
-      // Remove field from existing errors
-      const { [field]: remove, ...rest } = this.submitError;
-      this.submitError = rest;
     };
 
     const handleSubmit = async (event: Event) => {
@@ -342,37 +187,25 @@ export class FormReport {
 
       Array.prototype.forEach.call(document.querySelectorAll("#form-report input, #form-report select"), (el: HTMLInputElement) => {
         if (el) {
-          data[el.name] = el.value;
+          if (el.type === "radio") {
+            if (el.checked) {
+              data[el.name] = el.value;
+            }
+          } else {
+            data[el.name] = el.value;
+          }
         }
       });
 
       // Reset checkboxes and radios in data (values will be set below if present)
-      data[`reportType`] = ``;
       data[`distributorDisclaimer`] = ``;
 
-      if (!this.reportType || this.reportType.length < 1) {
-        this.submitError.reportType = "Whoops! Pick how you'd like to help us verify the line at this location.";
-      } else {
-        // Inject correct value into data
-        data[`reportType`] = this.reportType;
-      }
+      data.reportType = this.reportType;
 
-      if (this.reportType === "social") {
-        // Set data.url for report (social), and trim leading/trailing white space
-        data.url = (data.url || "").replace(/<[^>]*>/g, "").trim();
-        if (!data.url.includes("http") && !data.url.match(/\s/)) {
-          data.url = `http://${data.url}`;
-        }
-        // Ensure url is valid, and not an email address
-        if (!data.url.match(URL_REGEX) || !!data.url.match(EMAIL_REGEX)) {
-          this.submitError.url = "Whoops! Can you add a link to a report of a long line - with a publicly accessible photo - so we can verify this is on the level?";
-        }
-      } else if (this.reportType === "photo") {
-        if (!this.hasPhoto) {
-          this.submitError.photo = "Whoops! Can you add a photo of the line to your report so we can verify this is on the level?";
-        } else {
-          data.url = this.photoUrl;
-        }
+      if (!this.hasPhoto) {
+        this.submitError.photo = "Whoops! Can you add a photo of the line to your report so we can verify this is on the level?";
+      } else {
+        data.url = this.photoUrl;
       }
 
       if (!data.address) {
@@ -520,188 +353,116 @@ export class FormReport {
                 <label class="label" htmlFor="address">
                   Where should we send pizza? <span class="required">*</span>
                 </label>
-                <input
-                  class={"input " + ("address" in this.submitError ? "has-error" : "")}
-                  type="text"
-                  id="autocomplete-input"
-                  name="full_place"
-                  placeholder="ex. St. John's Library"
-                  onInput={handleAddressChange}
+                <ui-location-search
+                  error={this.submitError.address}
                   readOnly={!this.showLocationInput}
-                  autocomplete="off"
+                  onLocationSelected={({ detail }: CustomEvent) => {
+                    this.handleLocationSelected(detail);
+                  }}
                 />
                 <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
-                <p class="help has-text-red" hidden={!("address" in this.submitError)}>
+                <p class="help has-text-red" hidden={"address" in this.submitError}>
                   {this.submitError.address}
                 </p>
               </div>
-              {/* Hidden address info (needed for submit) */}
-              <div id="address" class="form-item is-hidden" hidden={true}>
-                <table>
-                  <tr>
-                    <td class="label">Place</td>
-                    <td colSpan={4}>
-                      <input class="input" id="premise" disabled={true} readOnly />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="label">Street address</td>
-                    <td class="slimField">
-                      <input name="street_number" class="input" id="street_number" disabled={true} readOnly />
-                    </td>
-                    <td class="wideField" colSpan={2}>
-                      <input name="route" class="input" id="route" disabled={true} readOnly />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="label">City</td>
-                    <td class="wideField" colSpan={3}>
-                      <input name="locality" class="input" id="locality" disabled={true} readOnly />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="label">State</td>
-                    <td class="slimField">
-                      <input name="state" class="input" id="administrative_area_level_1" disabled={true} readOnly />
-                    </td>
-                    <td class="label">Zip code</td>
-                    <td class="wideField">
-                      <input name="zip" class="input" id="postal_code" disabled={true} readOnly />
-                    </td>
-                    <input type="hidden" name="address" id="formatted_address" />
-                  </tr>
-                </table>
-              </div>
-              <button onClick={handleLoadStepTwo} class={"button is-teal is-marginless " + (!this.locationName ? "is-disabled" : "")} disabled={!this.locationName}>
+              <input type="hidden" name="address" id="formatted_address" value={this.formattedAddress} />
+              <button
+                onClick={(e: Event) => {
+                  e.preventDefault();
+                  this.handleLoadStepTwo();
+                }}
+                class={"button is-teal is-marginless " + (!this.locationName ? "is-disabled" : "")}
+                disabled={!this.locationName}
+              >
                 Report line
               </button>
             </div>
             <div id="form-step-2" hidden={this.showLocationInput}>
-              <p class="is-marginless is-unselectable">
-                <a href="#" class="has-text-teal" onClick={handleNewLocation}>
+              <h2 class="is-display has-text-red is-upcase">Send Pizza</h2>
+              <p>
+                <strong>
+                  Tell us a little more about the line at <span class="has-text-red">{this.locationName ? this.locationName : "the location"}</span>.
+                </strong>
+                <br />
+                <a href="#" class="has-text-teal is-unselectable" onClick={handleNewLocation}>
                   Change address
                 </a>
               </p>
-              <h2 class="is-display">
-                Tell us a little more about the line at <span class="is-dotted">{this.locationName ? this.locationName : "the location"}</span>
-              </h2>
-              {/* Social or Photo */}
-              <div class="form-item is-hidden-tablet">
-                <label class="label">
-                  Social media report <span class="is-hidden-tablet">or photo</span> <span class="required">*</span>
-                </label>
-                <div class="radio-group social-radio-group">
-                  <label class={"radio " + ("reportType" in this.submitError ? "has-error" : "")} htmlFor="report-type-social" onClick={handleReportTypeChange}>
-                    <input type="radio" value="social" id="report-type-social" name="reportType" checked />
-                    <span class="label-text">Social link</span>
-                    <span class="indicator"></span>
-                  </label>
-                  <div class="radio-group-spacer is-hidden-mobile"></div>
-                  <label class={"radio is-hidden-tablet " + ("reportType" in this.submitError ? "has-error" : "")} htmlFor="report-type-photo" onClick={handleReportTypeChange}>
-                    <input type="radio" value="photo" id="report-type-photo" name="reportType" />
-                    <span class="label-text">Photo</span>
-                    <span class="indicator"></span>
-                  </label>
-                </div>
-                <span class="help">We'll make sure there's really a line.</span>
-                <p class="help has-text-red" hidden={!("reportType" in this.submitError)}>
-                  {this.submitError.reportType}
-                </p>
-              </div>
-              {/* Social Report */}
-              {this.reportType && this.reportType === "social" && (
-                <div class="form-item">
-                  <label class="label" htmlFor="social-link">
-                    Link to a report on social media <span class="required">*</span>
-                  </label>
-                  <input
-                    class={"input " + ("url" in this.submitError ? "has-error" : "")}
-                    id="social-link"
-                    type="url"
-                    name="url"
-                    placeholder="ex. Link to Twitter, IG, etc."
-                    autocomplete="off"
-                    onInput={() => clearFormError("url")}
-                  />
-                  <span class="help is-hidden-mobile">We'll make sure there's really a line.</span>
-                  <p class="help has-text-red" hidden={!("url" in this.submitError)}>
-                    {this.submitError.url}
-                  </p>
-                </div>
-              )}
-              {/* Photo Report */}
-              {this.reportType && this.reportType === "photo" && (
-                <div class="form-item is-hidden-tablet">
-                  <div class="clearfix">
-                    <div id="file-input-button" class={"file " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + ("photo" in this.submitError ? "is-red" : "is-blue")}>
-                      <label class="file-label">
-                        <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} disabled={this.photoIsProcessing} />
-                        <span class="file-cta">
-                          <span class="file-label">{this.hasPhoto ? "Change photo" : "Upload photo"}</span>
-                        </span>
-                      </label>
-                    </div>
-                    <div class="photo-preview-container" hidden={!this.hasPhoto}>
-                      <div id="photo-preview"></div>
-                      <div class="delete" onClick={removePhoto}></div>
-                    </div>
-                  </div>
-                  <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
-                    {this.submitError.photo}
-                  </p>
-                  <p class="help">
-                    By uploading a photo you grant Pizza to the Polls the right to use and distribute as we see fit - see our{" "}
-                    <a href="/privacy" class="has-text-blue" target="_blank">
-                      Privacy Policy
-                    </a>{" "}
-                    for more details
-                  </p>
-                </div>
-              )}
+
               {/* Wait Time */}
               <div class="form-item">
-                <label class="label" htmlFor="waitTime">
+                <label class="label">
                   How long is the wait in line? <span class="required">*</span>
                 </label>
-                <div class={"select is-fullwidth " + ("waitTime" in this.submitError ? "has-error " : "")}>
-                  <select id="waitTime" name="waitTime" onInput={() => clearFormError("waitTime")}>
-                    <option value="" disabled selected>
-                      Select your best guess
-                    </option>
-                    <option value="Less than one hour">Less than an hour&nbsp;&nbsp;🍕</option>
-                    <option value="1-2 hours">1-2 hours&nbsp;&nbsp;🍕🍕</option>
-                    <option value="2-3 hours">2-3 hours&nbsp;&nbsp;🍕🍕🍕</option>
-                    <option value="3-4 hours">3-4 hours&nbsp;&nbsp;🍕🍕🍕🍕</option>
-                    <option value="4+ hours">4+ hours&nbsp;&nbsp;&nbsp;&nbsp;🍕🍕🍕🍕🍕</option>
-                  </select>
-                </div>
                 <p class="help has-text-red" hidden={!("waitTime" in this.submitError)}>
                   {this.submitError.waitTime}
                 </p>
+                <div class="radio-inputs-wrap">
+                  <div class={"radio-inputs is-fullwidth " + ("waitTime" in this.submitError ? "has-error " : "")}>
+                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-less-than" name="waitTime" value="Less than one hour" />
+                    <label htmlFor="waitTime-less-than">Less than an hour</label>
+                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-one-to-two" name="waitTime" value="1-2 hours" />
+                    <label htmlFor="waitTime-one-to-two">1-2 hours</label>
+                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-two-to-three" name="waitTime" value="2-3 hours" />
+                    <label htmlFor="waitTime-two-to-three">2-3 hours</label>
+                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-three-plus" name="waitTime" value="3+ hours" />
+                    <label htmlFor="waitTime-three-plus">3+ hours</label>
+                  </div>
+                </div>
               </div>
 
               {/* Contact Role */}
               <div class="form-item">
-                <label class="label" htmlFor="contactRole">
+                <label class="label">
                   What is your role at the polling location? <span class="required">*</span>
                 </label>
-                <div class={"select is-fullwidth " + ("contactRole" in this.submitError ? "has-error " : "")}>
-                  <select id="contactRole" name="contactRole" onInput={() => clearFormError("contactRole")}>
-                    <option value="" disabled selected>
-                      Select your role
-                    </option>
-                    <option value="Voter">Voter</option>
-                    <option value="Poll worker">Poll worker</option>
-                    <option value="Poll watcher">Poll watcher</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
                 <p class="help has-text-red" hidden={!("contactRole" in this.submitError)}>
                   {this.submitError.contactRole}
+                </p>
+                <div class="radio-inputs-wrap">
+                  <div class={"radio-inputs is-fullwidth " + ("contactRole" in this.submitError ? "has-error " : "")}>
+                    <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-voter" value="Voter" />
+                    <label htmlFor="contactRole-voter">Voter</label>
+                    <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-poll-worker" value="Poll worker" />
+                    <label htmlFor="contactRole-poll-worker">Poll Worker</label>
+                    <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-poll-watcher" value="Poll watcher" />
+                    <label htmlFor="contactRole-poll-watcher">Poll Watcher</label>
+                    <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-other" value="Other" />
+                    <label htmlFor="contactRole-other">Other</label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Photo Report */}
+              <div class="form-item">
+                <label class="label">
+                  Pizza Proof <span class="required">*</span>
+                </label>
+                <span class="help">Upload photos of this line will help us quickly verify this report before sending pizza.</span>
+                <div class="clearfix">
+                  <div
+                    id="file-input-button"
+                    class={"file button-large " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + ("photo" in this.submitError ? "is-teal" : "is-teal")}
+                  >
+                    <label class="file-label">
+                      <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} disabled={this.photoIsProcessing} />
+                      <span class="file-cta">
+                        <span class="file-label">{this.hasPhoto ? "Change photo" : "Add a photo of the line"}</span>
+                      </span>
+                    </label>
+                  </div>
+                  <div class="photo-preview-container" hidden={!this.hasPhoto}>
+                    <div id="photo-preview"></div>
+                    <div class="delete" onClick={this.removePhoto}></div>
+                  </div>
+                </div>
+                <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
+                  {this.submitError.photo}
                 </p>
               </div>
 
               {/* Contact Name */}
+              <h3>Tell Us About Yourself</h3>
               <div class="form-item-group">
                 <div class="form-item">
                   <label class="label" htmlFor="contactFirstName">
@@ -712,9 +473,9 @@ export class FormReport {
                     type="text"
                     name="contactFirstName"
                     autoComplete="given-name"
-                    onInput={() => clearFormError("contactFirstName")}
+                    onInput={() => this.clearFormError("contactFirstName")}
                   />
-                  <p class="help">To give to the delivery driver.</p>
+                  <p class="help">This is so the delivery driver can find you</p>
                   <p class="help has-text-red" hidden={!("contactFirstName" in this.submitError)}>
                     {this.submitError.contactFirstName}
                   </p>
@@ -728,9 +489,9 @@ export class FormReport {
                     type="text"
                     name="contactLastName"
                     autoComplete="family-name"
-                    onInput={() => clearFormError("contactLastName")}
+                    onInput={() => this.clearFormError("contactLastName")}
                   />
-                  <p class="help">To give to the delivery driver.</p>
+                  <p class="help">&nbsp;</p>
                   <p class="help has-text-red" hidden={!("contactLastName" in this.submitError)}>
                     {this.submitError.contactLastName}
                   </p>
@@ -747,7 +508,7 @@ export class FormReport {
                   type="tel"
                   name="contactPhone"
                   autoComplete="tel-national"
-                  onInput={() => clearFormError("contactPhone")}
+                  onInput={() => this.clearFormError("contactPhone")}
                 />
                 <span class="help">So we can let you know when your order's sent!</span>
                 <p class="help has-text-red" hidden={!("contactPhone" in this.submitError)}>
@@ -757,11 +518,25 @@ export class FormReport {
 
               {/* Delivery legal disclaimer */}
               <div class="form-item">
+                <div class="form-item">
+                  <h3 class="is-marginless">Pizza Promise & Guidelines</h3>
+                  <p class="help">Review the guidelines before submitting your report</p>
+                  <div class="guidelines-container">
+                    <ui-guidelines />
+                  </div>
+                </div>
+
                 <label
                   class={"checkbox is-small is-marginless " + ("viewGuidelines" in this.submitError || "distributorDisclaimer" in this.submitError ? "has-error" : "")}
                   htmlFor="accept-distributor-disclaimer"
                 >
-                  <input type="checkbox" value="agree" id="accept-distributor-disclaimer" name="distributorDisclaimer" onChange={() => clearFormError("distributorDisclaimer")} />
+                  <input
+                    type="checkbox"
+                    value="agree"
+                    id="accept-distributor-disclaimer"
+                    name="distributorDisclaimer"
+                    onChange={() => this.clearFormError("distributorDisclaimer")}
+                  />
                   <span class="label-text">
                     I have read and understood the{" "}
                     <a href="/guidelines" target="_blank" onClick={handleGuidelinesClick}>
@@ -793,7 +568,8 @@ export class FormReport {
               {/* Legal */}
               <p class="agreement">
                 <em>
-                  By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and accept our{" "}
+                  By submitting a report, you agree to receive occasional emails or text messages from Pizza to the Polls and permission to use and distribute your photo as we see
+                  fit - see our{" "}
                   <a href="/privacy" class="has-text-blue" target="_blank">
                     Privacy Policy
                   </a>
@@ -809,41 +585,17 @@ export class FormReport {
               <p>
                 <b>We already have a food truck at this location, but if you'd still like to help out, consider donating to the fund.</b>
               </p>
-              <a href="/donate" class="button is-red">
-                Donate to feed democracy
-              </a>
-              <p>
-                <a href="#" class="has-text-teal" onClick={handleNewLocation}>
-                  Return to Report a line
-                </a>
-              </p>
-              {/* TODO: Insert map and location link here */}
+              <h3>Can you help support our work?</h3>
+              <form-donate redirectURL={`https://${document.location.host}/donate`} />
             </div>
           )}
           {/* Watchdog Confirmation */}
           {this.showConfirmation && !this.showServerError && this.showSuccessfulReportConfirmation && (
             <div id="watchdog-confirmation">
-              <h2 class="is-display">We're on it!</h2>
-              <p>
-                <b>Thank you for your submission! Our team will review your report shortly. In the meantime, please donate to keep the pizza flowing!</b>
-              </p>
-              <a href="/donate" class="button is-red">
-                Donate to feed democracy
-              </a>
-              <hr />
-              <h3>Share us on social media!</h3>
-              <ul class="social-link-list">
-                <li>
-                  <a class="twitter" href={shareTwitterLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup}>
-                    <img class="icon" alt="Twitter" src="/images/icons/twitter-blue.svg" />
-                  </a>
-                </li>
-                <li>
-                  <a class="facebook" href={shareFacebookLink} rel="noopener noreferrer" target="popup" onClick={openSharePopup}>
-                    <img class="icon" alt="Facebook" src="/images/icons/facebook-blue.svg" />
-                  </a>
-                </li>
-              </ul>
+              <h2 class="is-display is-red is-upcase">We're on it!</h2>
+              <h3>Thank you for your submission! Our team will review your report shortly. In the meantime, please donate to keep the pizza flowing!</h3>
+              <h3>Can you help support our work?</h3>
+              <form-donate redirectURL={`https://${document.location.host}/donate`} />
             </div>
           )}
           {/* Distributor Confirmation */}
@@ -862,17 +614,10 @@ export class FormReport {
                   Please be at the location to coordinate pickup with the delivery driver. When the food arrives, let people around the site know it's free for all: poll workers,
                   voters, children, journalists, poll watchers, and anyone else who's out and about.
                 </li>
+                <li>We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate.</li>
               </ui-pizza-list>
-              <p>
-                Want to help more?{" "}
-                <a href="/donate" class="has-text-teal">
-                  Donate to the fund!
-                </a>
-              </p>
-              <hr />
-              <p>
-                <b>We are nonpartisan and we never provide any pizza or anything of value in exchange for voting or voting for a particular candidate.</b>
-              </p>
+              <h3>Can you help support our work?</h3>
+              <form-donate redirectURL={`https://${document.location.host}/donate`} />
             </div>
           )}
           {/* Duplicate Report Confirmation */}
@@ -885,9 +630,7 @@ export class FormReport {
                   consider donating to the fund.
                 </b>
               </p>
-              <a href="/donate" class="button is-red">
-                Donate to feed democracy
-              </a>
+              <form-donate redirectURL={`https://${document.location.host}/donate`} />
               <p>
                 <a href="#" class="has-text-teal" onClick={handleNewLocation}>
                   Return to Report a line
@@ -919,5 +662,65 @@ export class FormReport {
         </div>
       </Host>
     );
+  }
+
+  private handleLocationSelected({ formattedAddress, locationName }: { formattedAddress: string; locationName: string }) {
+    this.locationName = locationName;
+
+    const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
+    if (addressInput) {
+      addressInput.value = formattedAddress;
+    }
+  }
+
+  private handleLoadStepTwo() {
+    this.showLocationInput = false;
+  }
+
+  private clearFormError(field: string): void {
+    // Remove field from existing errors
+    const { [field]: remove, ...rest } = this.submitError;
+    this.submitError = rest;
+  }
+
+  private resetForm() {
+    this.showConfirmation = false;
+    this.showServerError = false;
+    this.showFoodTruckOnSiteConfirmation = false;
+    this.showDistributorConfirmation = false;
+    this.showSuccessfulReportConfirmation = false;
+    this.showDuplicateReportConfirmation = false;
+    this.submitResponse = {};
+    this.submitError = {};
+    this.locationName = "";
+    this.photoIsProcessing = false;
+    this.userClickedGuidelinesLink = false;
+    this.isLoading = false;
+    this.isDisabled = false;
+    this.removePhoto();
+    const form = document.getElementById("form-report") as HTMLFormElement;
+    if (form) {
+      form.reset();
+    }
+    // Scroll to top
+    document.getElementById("form-report-component")?.scrollIntoView({
+      behavior: "smooth",
+    });
+    this.showLocationInput = true;
+  }
+
+  private removePhoto() {
+    const fileInput = document.getElementById("photo") as HTMLInputElement;
+    const imagePreview = document.getElementById("photo-preview");
+    if (fileInput) {
+      fileInput.value = "";
+    }
+    this.hasPhoto = false;
+    this.photoUrl = "";
+    this.clearFormError("photo");
+    if (imagePreview) {
+      imagePreview.style.backgroundImage = "";
+    }
+    this.photoIsProcessing = false;
   }
 }

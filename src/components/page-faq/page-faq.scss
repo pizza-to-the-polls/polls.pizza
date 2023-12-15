@@ -1,0 +1,12 @@
+page-faq {
+  ui-card {
+    ui-card {
+      padding-left: 0;
+      border-bottom: 1.5px solid $red;
+      border-radius: 0;
+      .expand-section-link {
+        color: $black;
+      }
+    }
+  }
+}

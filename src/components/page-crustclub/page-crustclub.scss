@@ -1,4 +1,8 @@
 page-crustclub {
+  ui-card {
+    background: $yellow;
+  }
+
   img.logo {
     width: 30%;
     max-width: 300px;
@@ -37,6 +41,9 @@ page-crustclub {
 
     p {
       font-size: 14px;
+    }
+    label.radio {
+      border-color: $gray2;
     }
 
     .donation-amount-list {
