@@ -11,10 +11,16 @@ page-home {
   .hero {
     background-color: $red;
     color: $white;
-    padding: 40px 0;
+    padding: 20px 0;
+    @media (min-width: 400px) {
+      padding: 40px 0;
+    }
 
     .button + .button {
       margin-left: 1rem;
+      @media (max-width: 300px) {
+        margin: 1rem 0 0;
+      }
     }
 
     .container {
@@ -29,11 +35,16 @@ page-home {
 
       h1 {
         color: $tan;
-        font-size: 3rem;
-        line-height: 3rem;
         text-transform: uppercase;
         margin: 0 0 1rem 0;
 
+        font-size: 2rem;
+        line-height: 2rem;
+
+        @media (min-width: 400px) {
+          font-size: 3rem;
+          line-height: 3rem;
+        }
         @media ($widescreen) {
           font-size: 6rem;
           line-height: 5.5rem;
@@ -46,10 +57,16 @@ page-home {
       }
 
       p {
-        font-size: 1.25rem;
-        line-height: 1.5rem;
+        font-size: 1rem;
+        line-height: 1.25rem;
         font-weight: 600;
         margin-bottom: 1.5rem;
+
+        @media (min-width: 400px) {
+          font-size: 1.25rem;
+          line-height: 1.5rem;
+        }
+
         @media ($tablet) {
           font-size: 1.5rem;
           line-height: 2rem;
@@ -82,7 +99,8 @@ page-home {
 
   .order-pizzas {
     background-color: $light-red;
-    ui-location-search {
+    ui-location-search div {
+      position: relative;
       input {
         border: none;
         background-color: $light-red;
@@ -93,6 +111,9 @@ page-home {
         @media ($under-tablet) {
           height: 1rem;
           font-size: 0.9rem;
+        }
+        @media (max-width: 400px) {
+          font-size: 0.8rem;
         }
 
         font-weight: 700;
@@ -226,6 +247,9 @@ page-home {
         @media ($under-tweet) {
           width: 80%;
         }
+        @media (max-width: 400px) {
+          width: 100%;
+        }
       }
     }
   }
@@ -282,6 +306,10 @@ page-home {
 
   .is-round {
     margin: 0 16px;
+    @media (max-width: 400px) {
+      margin: 0 8px;
+    }
+
     .container {
       border-radius: 16px;
     }
@@ -329,6 +357,10 @@ page-home {
         margin: 20px 2%;
       }
       margin: 20px;
+      @media (max-width: 400px) {
+        margin: 20px 0;
+      }
+
       display: table;
       vertical-align: top;
       img {

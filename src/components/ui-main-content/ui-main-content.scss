@@ -10,7 +10,12 @@ ui-main-content {
   }
 
   .container {
-    padding: 30px 20px 0 20px;
+    padding: 30px 20px 0;
+    @media (max-width: 400px) {
+      padding: 30px 8px;
+      width: calc(100vw - 16px);
+    }
+
     &.full-bleed {
       padding: 0;
     }

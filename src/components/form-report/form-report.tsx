@@ -397,15 +397,17 @@ export class FormReport {
                 <p class="help has-text-red" hidden={!("waitTime" in this.submitError)}>
                   {this.submitError.waitTime}
                 </p>
-                <div class={"radio-inputs is-fullwidth " + ("waitTime" in this.submitError ? "has-error " : "")}>
-                  <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-less-than" name="waitTime" value="Less than one hour" />
-                  <label htmlFor="waitTime-less-than">Less than an hour</label>
-                  <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-one-to-two" name="waitTime" value="1-2 hours" />
-                  <label htmlFor="waitTime-one-to-two">1-2 hours</label>
-                  <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-two-to-three" name="waitTime" value="2-3 hours" />
-                  <label htmlFor="waitTime-two-to-three">2-3 hours</label>
-                  <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-three-plus" name="waitTime" value="3+ hours" />
-                  <label htmlFor="waitTime-three-plus">3+ hours</label>
+                <div class="radio-inputs-wrap">
+                  <div class={"radio-inputs is-fullwidth " + ("waitTime" in this.submitError ? "has-error " : "")}>
+                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-less-than" name="waitTime" value="Less than one hour" />
+                    <label htmlFor="waitTime-less-than">Less than an hour</label>
+                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-one-to-two" name="waitTime" value="1-2 hours" />
+                    <label htmlFor="waitTime-one-to-two">1-2 hours</label>
+                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-two-to-three" name="waitTime" value="2-3 hours" />
+                    <label htmlFor="waitTime-two-to-three">2-3 hours</label>
+                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-three-plus" name="waitTime" value="3+ hours" />
+                    <label htmlFor="waitTime-three-plus">3+ hours</label>
+                  </div>
                 </div>
               </div>
 
@@ -417,15 +419,17 @@ export class FormReport {
                 <p class="help has-text-red" hidden={!("contactRole" in this.submitError)}>
                   {this.submitError.contactRole}
                 </p>
-                <div class={"radio-inputs is-fullwidth " + ("contactRole" in this.submitError ? "has-error " : "")}>
-                  <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-voter" value="Voter" />
-                  <label htmlFor="contactRole-voter">Voter</label>
-                  <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-poll-worker" value="Poll worker" />
-                  <label htmlFor="contactRole-poll-worker">Poll Worker</label>
-                  <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-poll-watcher" value="Poll watcher" />
-                  <label htmlFor="contactRole-poll-watcher">Poll Watcher</label>
-                  <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-other" value="Other" />
-                  <label htmlFor="contactRole-other">Other</label>
+                <div class="radio-inputs-wrap">
+                  <div class={"radio-inputs is-fullwidth " + ("contactRole" in this.submitError ? "has-error " : "")}>
+                    <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-voter" value="Voter" />
+                    <label htmlFor="contactRole-voter">Voter</label>
+                    <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-poll-worker" value="Poll worker" />
+                    <label htmlFor="contactRole-poll-worker">Poll Worker</label>
+                    <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-poll-watcher" value="Poll watcher" />
+                    <label htmlFor="contactRole-poll-watcher">Poll Watcher</label>
+                    <input onChange={() => this.clearFormError("contactRole")} name="contactRole" type="radio" id="contactRole-other" value="Other" />
+                    <label htmlFor="contactRole-other">Other</label>
+                  </div>
                 </div>
               </div>
 

@@ -64,18 +64,19 @@
   background-size: 200px;
   top: 0;
   z-index: 1000;
-  padding: 10px 8px;
+  padding: 4px 0;
   text-align: center;
   box-shadow: $box-shadow;
 
-  height: 120px;
-  min-width: 400px;
+  height: 80px;
+  @media (min-width: 300px) {
+    height: 120px;
+    padding: 10px 0;
+  }
 
   @media ($tablet) {
     border-bottom: none;
     position: relative;
-    padding-left: 0;
-    padding-right: 0;
     box-shadow: none;
   }
 
@@ -90,7 +91,10 @@
       color: $white;
       text-decoration: none;
       font-weight: 500;
-      font-size: 32px;
+      font-size: 24px;
+      @media (min-width: 300px) {
+        font-size: 32px;
+      }
     }
     @media (min-width: 900px) {
       float: left;
@@ -99,15 +103,19 @@
   }
 
   img {
-    width: 48px;
+    width: 30px;
+    margin-right: 8px;
+    @media (min-width: 300px) {
+      width: 48px;
+      margin-right: 16px;
+    }
     vertical-align: middle;
-    margin-right: 16px;
   }
 
   .menu {
     list-style-type: none;
     margin: 0;
-    padding: 10px 0 10px 0;
+    padding: 10px 0;
     font-weight: 600;
     z-index: 1000;
     text-align: center;
@@ -121,28 +129,21 @@
     }
     li {
       display: inline-block;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 600;
-      margin: 0 0.5rem 0 0.45rem;
+      margin: 0 0.3rem;
       position: relative;
       color: $white;
+      height: 1rem;
 
-      @media (min-width: 360px) {
-        font-size: 15px;
+      @media (min-width: 300px) {
+        font-size: 1rem;
+        margin: 0 0.4rem;
       }
-
-      @media (min-width: 400px) {
-        font-size: 16px;
-      }
-
       @media (min-width: 900px) {
         width: auto;
-        padding: 0 0.75rem 0 0.5rem;
-        font-size: 20px;
-      }
-
-      &:last-child:after {
-        content: "";
+        padding: 0 0.75rem;
+        font-size: 1.5rem;
       }
     }
 

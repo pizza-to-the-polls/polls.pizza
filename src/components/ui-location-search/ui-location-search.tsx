@@ -72,51 +72,53 @@ export class UiLocationSearch {
 
     return (
       <Host>
-        <input
-          class={"input " + (!this.error ? "has-error" : "")}
-          type="text"
-          id="autocomplete-input"
-          name="full_place"
-          placeholder={this.placeholder}
-          onInput={handleAddressChange}
-          readOnly={this.readOnly}
-          autocomplete="off"
-        />
-        {/* Hidden address info (needed for submit) */}
-        <div id="address" class="form-item is-hidden" hidden={true}>
-          <table>
-            <tr>
-              <td class="label">Place</td>
-              <td colSpan={4}>
-                <input class="input" id="premise" disabled={true} readOnly />
-              </td>
-            </tr>
-            <tr>
-              <td class="label">Street address</td>
-              <td class="slimField">
-                <input name="street_number" class="input" id="street_number" disabled={true} readOnly />
-              </td>
-              <td class="wideField" colSpan={2}>
-                <input name="route" class="input" id="route" disabled={true} readOnly />
-              </td>
-            </tr>
-            <tr>
-              <td class="label">City</td>
-              <td class="wideField" colSpan={3}>
-                <input name="locality" class="input" id="locality" disabled={true} readOnly />
-              </td>
-            </tr>
-            <tr>
-              <td class="label">State</td>
-              <td class="slimField">
-                <input name="state" class="input" id="administrative_area_level_1" disabled={true} readOnly />
-              </td>
-              <td class="label">Zip code</td>
-              <td class="wideField">
-                <input name="zip" class="input" id="postal_code" disabled={true} readOnly />
-              </td>
-            </tr>
-          </table>
+        <div>
+          <input
+            class={"input " + (!this.error ? "has-error" : "")}
+            type="text"
+            id="autocomplete-input"
+            name="full_place"
+            placeholder={this.placeholder}
+            onInput={handleAddressChange}
+            readOnly={this.readOnly}
+            autocomplete="off"
+          />
+          {/* Hidden address info (needed for submit) */}
+          <div id="address" class="form-item is-hidden" hidden={true}>
+            <table>
+              <tr>
+                <td class="label">Place</td>
+                <td colSpan={4}>
+                  <input class="input" id="premise" disabled={true} readOnly />
+                </td>
+              </tr>
+              <tr>
+                <td class="label">Street address</td>
+                <td class="slimField">
+                  <input name="street_number" class="input" id="street_number" disabled={true} readOnly />
+                </td>
+                <td class="wideField" colSpan={2}>
+                  <input name="route" class="input" id="route" disabled={true} readOnly />
+                </td>
+              </tr>
+              <tr>
+                <td class="label">City</td>
+                <td class="wideField" colSpan={3}>
+                  <input name="locality" class="input" id="locality" disabled={true} readOnly />
+                </td>
+              </tr>
+              <tr>
+                <td class="label">State</td>
+                <td class="slimField">
+                  <input name="state" class="input" id="administrative_area_level_1" disabled={true} readOnly />
+                </td>
+                <td class="label">Zip code</td>
+                <td class="wideField">
+                  <input name="zip" class="input" id="postal_code" disabled={true} readOnly />
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
       </Host>
     );
