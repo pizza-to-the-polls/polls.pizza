@@ -105,7 +105,7 @@
   img {
     width: 30px;
     margin-right: 8px;
-    @media (min-width: 300px) {
+    @media (min-width: 370px) {
       width: 48px;
       margin-right: 16px;
     }
@@ -129,7 +129,7 @@
     }
     li {
       display: inline-block;
-      font-size: 12px;
+      font-size: 0.65rem;
       font-weight: 600;
       margin: 0 0.3rem;
       position: relative;
@@ -137,6 +137,10 @@
       height: 1rem;
 
       @media (min-width: 300px) {
+        font-size: 0.9rem;
+        margin: 0 0.4rem;
+      }
+      @media (min-width: 370px) {
         font-size: 1rem;
         margin: 0 0.4rem;
       }
