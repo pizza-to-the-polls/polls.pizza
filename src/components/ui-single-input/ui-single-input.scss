@@ -24,4 +24,18 @@ ui-single-input {
     margin: 0;
     border-radius: 0 $radius $radius 0;
   }
+
+  @media (max-width: 400px) {
+    .submit-button,
+    .input-value {
+      float: none;
+      display: block;
+      border-radius: $radius;
+      margin: 0 auto;
+    }
+    .input-value {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
 }

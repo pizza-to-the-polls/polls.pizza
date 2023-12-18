@@ -55,9 +55,14 @@ export class PageHome {
           </div>
         </div>
         <section class="order-pizzas">
-          <div class="container">
-            <ui-location-search placeholder="Stuck in a long line? Search your location here" onLocationSelected={handleLocationSelected} />
-          </div>
+          <label htmlFor="autocomplete-input">
+            <div class="container">
+              <ui-location-search
+                placeholder={(window?.document?.body?.clientWidth || 0) < 400 ? "Stuck in line? Search here" : "Stuck in a long line? Search your location here"}
+                onLocationSelected={handleLocationSelected}
+              />
+            </div>
+          </label>
         </section>
         <section class="totals">{this.totals && <Stats totals={this.totals} />}</section>
         <section class="tweets-deliveries">

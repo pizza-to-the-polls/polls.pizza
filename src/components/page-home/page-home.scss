@@ -16,10 +16,15 @@ page-home {
       padding: 40px 0;
     }
 
-    .button + .button {
-      margin-left: 1rem;
-      @media (max-width: 300px) {
-        margin: 1rem 0 0;
+    .button {
+      & + .button {
+        margin-left: 1rem;
+      }
+      @media (max-width: 380px) {
+        & + .button {
+          margin: 1rem 0 0;
+        }
+        display: block;
       }
     }
 
@@ -99,6 +104,12 @@ page-home {
 
   .order-pizzas {
     background-color: $light-red;
+    label {
+      height: 4rem;
+      margin: -20px 0;
+      padding: 20px 0;
+      cursor: text;
+    }
     ui-location-search div {
       position: relative;
       input {
