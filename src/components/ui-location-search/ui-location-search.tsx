@@ -10,13 +10,16 @@ export class UiLocationSearch {
   @Prop() public error: string | null = null;
   @Prop() public readOnly: boolean = false;
   @Prop() public placeholder: string = "ex. St. John's Library";
+  @Prop() public inputId: string = `${Math.round(new Date().getTime() * Math.random() * 9999)}`;
 
   @State() public locationName: string = "";
   @Event() public locationSelected!: EventEmitter<{ formattedAddress: string; locationName: string }>;
 
   public componentDidRender() {
-    if (Build.isBrowser && google && document.getElementById("autocomplete-input")) {
-      const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete-input") as HTMLInputElement, {
+    const autocompleteInput = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
+
+    if (Build.isBrowser && google && autocompleteInput) {
+      const autocomplete = new google.maps.places.Autocomplete(autocompleteInput, {
         types: ["geocode", "establishment"],
         componentRestrictions: { country: "us" },
       });
@@ -34,7 +37,7 @@ export class UiLocationSearch {
         };
 
         Object.keys(componentForm).forEach(component => {
-          const elem = document.getElementById(component) as HTMLInputElement;
+          const elem = document.getElementById(`${component}-${this.inputId}`) as HTMLInputElement;
           if (elem) {
             elem.value = "";
           }
@@ -43,13 +46,13 @@ export class UiLocationSearch {
         place.address_components?.forEach((address_component: { [key: string]: any }) => {
           const addressType: string = address_component.types[0];
           const mapping = componentForm[addressType];
-          const elem = document.getElementById(addressType) as HTMLInputElement;
+          const elem = document.getElementById(`${addressType}-${this.inputId}`) as HTMLInputElement;
           if (mapping && elem) {
             elem.value = address_component[mapping];
           }
         });
 
-        const premise = document.getElementById("premise") as HTMLInputElement;
+        const premise = document.getElementById(`premise-${this.inputId}`) as HTMLInputElement;
         if (premise) {
           premise.value = place.name;
         }
@@ -76,7 +79,7 @@ export class UiLocationSearch {
           <input
             class={"input " + (!this.error ? "has-error" : "")}
             type="text"
-            id="autocomplete-input"
+            id={`autocomplete-input-${this.inputId}`}
             name="full_place"
             placeholder={this.placeholder}
             onInput={handleAddressChange}
@@ -89,32 +92,32 @@ export class UiLocationSearch {
               <tr>
                 <td class="label">Place</td>
                 <td colSpan={4}>
-                  <input class="input" id="premise" disabled={true} readOnly />
+                  <input class="input" id={`premise-${this.inputId}`} disabled={true} readOnly />
                 </td>
               </tr>
               <tr>
                 <td class="label">Street address</td>
                 <td class="slimField">
-                  <input name="street_number" class="input" id="street_number" disabled={true} readOnly />
+                  <input name="street_number" class="input" id={`street_number-${this.inputId}`} disabled={true} readOnly />
                 </td>
                 <td class="wideField" colSpan={2}>
-                  <input name="route" class="input" id="route" disabled={true} readOnly />
+                  <input name="route" class="input" id={`route-${this.inputId}`} disabled={true} readOnly />
                 </td>
               </tr>
               <tr>
                 <td class="label">City</td>
                 <td class="wideField" colSpan={3}>
-                  <input name="locality" class="input" id="locality" disabled={true} readOnly />
+                  <input name="locality" class="input" id={`locality-${this.inputId}`} disabled={true} readOnly />
                 </td>
               </tr>
               <tr>
                 <td class="label">State</td>
                 <td class="slimField">
-                  <input name="state" class="input" id="administrative_area_level_1" disabled={true} readOnly />
+                  <input name="state" class="input" id={`administrative_area_level_1-${this.inputId}`} disabled={true} readOnly />
                 </td>
                 <td class="label">Zip code</td>
                 <td class="wideField">
-                  <input name="zip" class="input" id="postal_code" disabled={true} readOnly />
+                  <input name="zip" class="input" id={`postal_code-${this.inputId}`} disabled={true} readOnly />
                 </td>
               </tr>
             </table>
