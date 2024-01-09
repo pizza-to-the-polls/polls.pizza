@@ -359,6 +359,7 @@ export class FormReport {
                   onLocationSelected={({ detail }: CustomEvent) => {
                     this.handleLocationSelected(detail);
                   }}
+                  inputId="report-form"
                 />
                 <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
                 <p class="help has-text-red" hidden={"address" in this.submitError}>

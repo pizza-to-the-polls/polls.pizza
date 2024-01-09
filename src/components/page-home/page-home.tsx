@@ -60,6 +60,7 @@ export class PageHome {
               <ui-location-search
                 placeholder={(window?.document?.body?.clientWidth || 0) < 400 ? "Stuck in line? Search here" : "Stuck in a long line? Search your location here"}
                 onLocationSelected={handleLocationSelected}
+                inputId="homepage"
               />
             </div>
           </label>

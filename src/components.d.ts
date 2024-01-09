@@ -98,6 +98,7 @@ export namespace Components {
     }
     interface UiLocationSearch {
         "error": string | null;
+        "inputId": string;
         "placeholder": string;
         "readOnly": boolean;
     }
@@ -456,6 +457,7 @@ declare namespace LocalJSX {
     }
     interface UiLocationSearch {
         "error"?: string | null;
+        "inputId"?: string;
         "onLocationSelected"?: (event: CustomEvent<{ formattedAddress: string; locationName: string }>) => void;
         "placeholder"?: string;
         "readOnly"?: boolean;
