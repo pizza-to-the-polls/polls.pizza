@@ -36,7 +36,7 @@ export class PageCrustclub {
   public async donate(amount: number) {
     this.error = null;
     try {
-      await PizzaApi.postDonation("subcription", amount, { referrer: this.referral });
+      await PizzaApi.postDonation("subscription", amount, { referrer: this.referral });
     } catch (e) {
       console.error(e);
       this.showError(e.message || PizzaApi.genericErrorMessage);
