@@ -454,7 +454,7 @@ export class FormReport {
                   </div>
                   <div class="photo-preview-container" hidden={!this.hasPhoto}>
                     <div id="photo-preview"></div>
-                    <div class="delete" onClick={this.removePhoto}></div>
+                    <div class="delete" onClick={() => this.removePhoto()}></div>
                   </div>
                 </div>
                 <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
