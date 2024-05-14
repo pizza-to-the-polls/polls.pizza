@@ -102,6 +102,11 @@ const partners: { img: string; name: string; url: string }[] = [
     url: "https://linktr.ee/joytothepolls",
   },
   {
+    img: "ivoted.png",
+    name: "iVoted",
+    url: "https://ivotedconcerts.org/",
+  },
+  {
     img: "lead-mn.jpg",
     name: "Lead MN",
     url: "https://www.leadmn.org/",
