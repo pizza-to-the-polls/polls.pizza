@@ -7,11 +7,6 @@ const partners: { img: string; name: string; url: string }[] = [
     url: "https://acluga.org/",
   },
   {
-    img: "all-vote-no-play.png",
-    name: "All Vote No Play",
-    url: "https://www.allvotenoplay.org/",
-  },
-  {
     img: "alliance-for-youth-organizing.png",
     name: "Alliance for Youth Organizing",
     url: "https://allianceforyouthorganizing.org",
@@ -222,6 +217,11 @@ const partners: { img: string; name: string; url: string }[] = [
     url: "https://www.unidosus.org/",
   },
   {
+    img: "vet-the-vote.png",
+    name: "Vet the Vote",
+    url: "https://vetthe.vote/",
+  },
+  {
     img: "voces.jpg",
     name: "Voces",
     url: "https://www.vocesbc.org/",
@@ -235,6 +235,11 @@ const partners: { img: string; name: string; url: string }[] = [
     img: "voters-not-politicians.png",
     name: "Voters Not Politicians",
     url: "https://votersnotpoliticians.com/",
+  },
+  {
+    img: "vote-riders.png",
+    name: "Vote Riders",
+    url: "https://www.voteriders.org/",
   },
   {
     img: "when-we-all-vote.png",
@@ -357,6 +362,11 @@ const partners: { img: string; name: string; url: string }[] = [
     url: "https://www.saltydonut.com/",
   },
   {
+    img: "the-team.png",
+    name: "The Team",
+    url: "https://www.theteam.org/",
+  },
+  {
     img: "tonys-chocolonely.png",
     name: "Tony's Chocolonely",
     url: "https://tonyschocolonely.com/",
@@ -388,6 +398,9 @@ const partners: { img: string; name: string; url: string }[] = [
   },
 ];
 
+const nameSort = ({ name: aName }: { name: String }, { name: bName }: { name: String }) =>
+  `${aName}`.toLowerCase().replace("the ", "") > `${bName}`.toLowerCase().replace("the ", "") ? 1 : -1;
+
 @Component({
   tag: "page-partners",
   styleUrl: "page-partners.scss",
@@ -403,7 +416,7 @@ export class PagePartners {
         <ui-card>
           <h2>Past and Present Partners</h2>
           <ul class="partners">
-            {partners.map(l => {
+            {partners.sort(nameSort).map(l => {
               return (
                 <li>
                   <a href={l.url} target="blank">
