@@ -352,6 +352,11 @@ const partners: { img: string; name: string; url: string }[] = [
     url: "https://advancementproject.org/",
   },
   {
+    img: "the-equity-alliance.png",
+    name: "The Equity Alliance",
+    url: "https://theequityalliance.org/",
+  },
+  {
     img: "gato.png",
     name: "The Great American Takeout",
     url: "https://thegreatamericantakeout.com/",
