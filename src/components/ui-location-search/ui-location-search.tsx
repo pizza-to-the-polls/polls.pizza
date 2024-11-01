@@ -16,9 +16,13 @@ export class UiLocationSearch {
   @Event() public locationSelected!: EventEmitter<{ formattedAddress: string; locationName: string }>;
 
   public componentDidRender() {
-    const autocompleteInput = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
+    const initAutoComplete = () => {
+      const autocompleteInput = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
 
-    if (Build.isBrowser && google && autocompleteInput) {
+      if (!window.google || !autocompleteInput) {
+        return setTimeout(initAutoComplete, 10);
+      }
+
       const autocomplete = new google.maps.places.Autocomplete(autocompleteInput, {
         types: ["geocode", "establishment"],
         componentRestrictions: { country: "us" },
@@ -62,6 +66,10 @@ export class UiLocationSearch {
         const formattedAddress = place.formatted_address || "";
         this.locationSelected.emit({ locationName, formattedAddress });
       });
+    };
+
+    if (Build.isBrowser) {
+      initAutoComplete();
     }
   }
 
@@ -92,32 +100,32 @@ export class UiLocationSearch {
               <tr>
                 <td class="label">Place</td>
                 <td colSpan={4}>
-                  <input class="input" id={`premise-${this.inputId}`} disabled={true} readOnly />
+                  <input class="input" autocomplete="off" id={`premise-${this.inputId}`} disabled={true} readOnly />
                 </td>
               </tr>
               <tr>
                 <td class="label">Street address</td>
                 <td class="slimField">
-                  <input name="street_number" class="input" id={`street_number-${this.inputId}`} disabled={true} readOnly />
+                  <input name="street_number" autocomplete="off" class="input" id={`street_number-${this.inputId}`} disabled={true} readOnly />
                 </td>
                 <td class="wideField" colSpan={2}>
-                  <input name="route" class="input" id={`route-${this.inputId}`} disabled={true} readOnly />
+                  <input name="route" autocomplete="off" class="input" id={`route-${this.inputId}`} disabled={true} readOnly />
                 </td>
               </tr>
               <tr>
                 <td class="label">City</td>
                 <td class="wideField" colSpan={3}>
-                  <input name="locality" class="input" id={`locality-${this.inputId}`} disabled={true} readOnly />
+                  <input name="locality" autocomplete="off" class="input" id={`locality-${this.inputId}`} disabled={true} readOnly />
                 </td>
               </tr>
               <tr>
                 <td class="label">State</td>
                 <td class="slimField">
-                  <input name="state" class="input" id={`administrative_area_level_1-${this.inputId}`} disabled={true} readOnly />
+                  <input name="state" autocomplete="off" class="input" id={`administrative_area_level_1-${this.inputId}`} disabled={true} readOnly />
                 </td>
                 <td class="label">Zip code</td>
                 <td class="wideField">
-                  <input name="zip" class="input" id={`postal_code-${this.inputId}`} disabled={true} readOnly />
+                  <input name="zip" autocomplete="off" class="input" id={`postal_code-${this.inputId}`} disabled={true} readOnly />
                 </td>
               </tr>
             </table>
