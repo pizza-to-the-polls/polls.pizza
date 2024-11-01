@@ -350,7 +350,7 @@ export class FormReport {
               <slot></slot>
               {/* Location */}
               <div class="form-item">
-                <label class="label" htmlFor="address">
+                <label class="label" htmlFor="autocomplete-input-report-form">
                   Where should we send pizza? <span class="required">*</span>
                 </label>
                 <ui-location-search
@@ -473,6 +473,7 @@ export class FormReport {
                     class={"input " + ("contactFirstName" in this.submitError ? "has-error" : "")}
                     type="text"
                     name="contactFirstName"
+                    id="contactFirstName"
                     autoComplete="given-name"
                     onInput={() => this.clearFormError("contactFirstName")}
                   />
@@ -489,6 +490,7 @@ export class FormReport {
                     class={"input " + ("contactLastName" in this.submitError ? "has-error" : "")}
                     type="text"
                     name="contactLastName"
+                    id="contactLastName"
                     autoComplete="family-name"
                     onInput={() => this.clearFormError("contactLastName")}
                   />
@@ -508,6 +510,7 @@ export class FormReport {
                   class={"input " + ("contactPhone" in this.submitError ? "has-error" : "")}
                   type="tel"
                   name="contactPhone"
+                  id="contactPhone"
                   autoComplete="tel-national"
                   onInput={() => this.clearFormError("contactPhone")}
                 />
