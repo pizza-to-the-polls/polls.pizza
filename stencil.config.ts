@@ -35,7 +35,6 @@ export const config: Config = {
       dir: "dist/www",
       prerenderConfig: "./prerender.config.ts",
       copy: [{ src: "../public", dest: "." }],
-      sourcemap: true,
     },
   ],
   extras: {
