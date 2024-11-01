@@ -14,8 +14,10 @@ $black: #1e1e1e;
 $tan: #fff6e4;
 
 // External brand colors
-$twitter: #1da1f2;
+$x: #000000;
 $facebook: #4267b2;
+$bluesky: #0886fe;
+$threads: #000000;
 
 // class name (is-teal), text color, background color
 $text-colors: (
@@ -61,13 +63,21 @@ $button-colors: (
     $blue,
     $white,
   ),
-  "twitter": (
+  "x": (
     $white,
-    $twitter,
+    $x,
   ),
   "facebook": (
     $white,
     $facebook,
+  ),
+  "bluesky": (
+    $white,
+    $bluesky,
+  ),
+  "threads": (
+    $white,
+    $threads,
   ),
 );
 

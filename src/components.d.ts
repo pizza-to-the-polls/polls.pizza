@@ -114,6 +114,11 @@ export namespace Components {
     }
     interface UiScrollToTopButton {
     }
+    interface UiShareLinks {
+        "additionalLinks": HTMLLinkElement;
+        "shareText": string;
+        "shareUrl": string;
+    }
     interface UiSingleInput {
         "buttonLabel": string;
         "getCurrentValue": () => Promise<string>;
@@ -318,6 +323,12 @@ declare global {
         prototype: HTMLUiScrollToTopButtonElement;
         new (): HTMLUiScrollToTopButtonElement;
     };
+    interface HTMLUiShareLinksElement extends Components.UiShareLinks, HTMLStencilElement {
+    }
+    var HTMLUiShareLinksElement: {
+        prototype: HTMLUiShareLinksElement;
+        new (): HTMLUiShareLinksElement;
+    };
     interface HTMLUiSingleInputElement extends Components.UiSingleInput, HTMLStencilElement {
     }
     var HTMLUiSingleInputElement: {
@@ -357,6 +368,7 @@ declare global {
         "ui-modal": HTMLUiModalElement;
         "ui-pizza-list": HTMLUiPizzaListElement;
         "ui-scroll-to-top-button": HTMLUiScrollToTopButtonElement;
+        "ui-share-links": HTMLUiShareLinksElement;
         "ui-single-input": HTMLUiSingleInputElement;
     }
 }
@@ -475,6 +487,11 @@ declare namespace LocalJSX {
     }
     interface UiScrollToTopButton {
     }
+    interface UiShareLinks {
+        "additionalLinks"?: HTMLLinkElement;
+        "shareText"?: string;
+        "shareUrl"?: string;
+    }
     interface UiSingleInput {
         "buttonLabel"?: string;
         "label"?: string;
@@ -516,6 +533,7 @@ declare namespace LocalJSX {
         "ui-modal": UiModal;
         "ui-pizza-list": UiPizzaList;
         "ui-scroll-to-top-button": UiScrollToTopButton;
+        "ui-share-links": UiShareLinks;
         "ui-single-input": UiSingleInput;
     }
 }
@@ -555,6 +573,7 @@ declare module "@stencil/core" {
             "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
             "ui-pizza-list": LocalJSX.UiPizzaList & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;
             "ui-scroll-to-top-button": LocalJSX.UiScrollToTopButton & JSXBase.HTMLAttributes<HTMLUiScrollToTopButtonElement>;
+            "ui-share-links": LocalJSX.UiShareLinks & JSXBase.HTMLAttributes<HTMLUiShareLinksElement>;
             "ui-single-input": LocalJSX.UiSingleInput & JSXBase.HTMLAttributes<HTMLUiSingleInputElement>;
         }
     }
