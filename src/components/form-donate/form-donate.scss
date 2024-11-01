@@ -78,42 +78,6 @@ form-donate {
     }
   }
 
-  .share-donation-link-container {
-    &.can-native-share {
-      // Hide on mobile if native sharing is supported
-      display: none;
-      // Show if not on mobile regardless
-      @media ($tablet) {
-        display: block;
-      }
-    }
-  }
-
-  .share-donation-links {
-    padding: 0;
-
-    li {
-      display: block;
-      margin: 0 auto 10px;
-
-      @media ($tablet) {
-        display: inline-block;
-        margin: 0 10px 0 0;
-      }
-
-      .share-donation-link {
-        img,
-        span {
-          pointer-events: none; // important
-        }
-
-        img {
-          margin-right: 8px;
-        }
-      }
-    }
-  }
-
   #donation-error {
     margin-bottom: 1rem;
     h2 {

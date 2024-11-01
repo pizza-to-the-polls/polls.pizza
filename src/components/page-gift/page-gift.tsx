@@ -1,4 +1,4 @@
-import { Build, Component, h, Host, Prop, State } from "@stencil/core";
+import { Component, h, Host, Prop, State } from "@stencil/core";
 import { RouterHistory } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
@@ -15,7 +15,6 @@ export class PageGift {
   @State() private giftName?: string | null;
   @State() private giftEmail?: string | null;
   @State() private showConfirmation: boolean = false;
-  @State() private canNativeShare: boolean = false;
   @State() private referral?: string | null;
   @State() private error?: string | null;
   @Prop() public history?: RouterHistory;
@@ -58,11 +57,6 @@ export class PageGift {
   }
 
   public render() {
-    if (Build.isBrowser) {
-      // Determine if `navigator.share` is supported in browser (native device sharing)
-      this.canNativeShare = navigator && navigator.share ? true : false;
-    }
-
     const activateCustomAmountRadio = () => {
       this.enteredOther = true;
 
@@ -127,48 +121,6 @@ export class PageGift {
       : "";
     const shareText = "I just gave" + shareAmount + " worth of Pizza to the Polls as a gift to help keep Democracy Delicious this year - you should too! #democracyisdelicious";
     const shareUrl = "https://polls.pizza/gift"; // add URL tracking parameters here, if desired
-
-    // Native sharing on device via `navigator.share` - supported on mobile, tablets, and some browsers
-    const nativeShare = async () => {
-      if (!navigator || !navigator.share) {
-        this.canNativeShare = false;
-        return;
-      }
-
-      try {
-        await navigator.share({
-          title: shareText,
-          text: shareText,
-          url: shareUrl,
-        });
-      } catch (error) {
-        console.log("Sharing failed", error);
-      }
-    };
-
-    // Fallback if native sharing is not available
-    let metaDescription = document.querySelector("meta[name='description']");
-    let shareDescription = "";
-    if (metaDescription) {
-      shareDescription = metaDescription.getAttribute("content") || "";
-    }
-
-    const shareTwitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}&via=PizzaToThePolls`;
-
-    const shareFacebookLink = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&title=${encodeURIComponent(shareText)}&description=${encodeURIComponent(
-      shareDescription,
-    )}&quote=${encodeURIComponent(shareText)}`;
-
-    const openSharePopup = (e: Event) => {
-      e.preventDefault();
-      const linkTarget = e.target as HTMLLinkElement;
-      const targetURL = linkTarget.getAttribute("href");
-      if (!targetURL) {
-        return;
-      }
-      window.open(targetURL, "popup", "width=600,height=600");
-      return;
-    };
 
     const resetDonationForm = (e: Event) => {
       this.showConfirmation = false;
@@ -257,7 +209,17 @@ export class PageGift {
             )}
 
             {this.showConfirmation && (
-              <div id="donate-confirmation">
+              <ui-share-links
+                shareText={shareText}
+                shareUrl={shareUrl}
+                additionalLinks={
+                  <li>
+                    <a href="#" class="button" onClick={resetDonationForm}>
+                      Give another gift
+                    </a>
+                  </li>
+                }
+              >
                 <h3>Thanks for helping to make the pizza magic happen!</h3>
                 <p>
                   Thanks for donating{" "}
@@ -274,50 +236,7 @@ export class PageGift {
                 </p>
 
                 <p>Help spread the word by sharing your donation!</p>
-
-                {this.canNativeShare && (
-                  <button id="share-donation" onClick={nativeShare} class="button is-blue is-fullwidth-mobile">
-                    <img class="icon" alt="Share" src="/images/icons/share.svg" />
-                    <span>Share your donation!</span>
-                  </button>
-                )}
-
-                <div class={"share-donation-link-container " + (this.canNativeShare ? "can-native-share" : "")}>
-                  <ul class="share-donation-links">
-                    <li>
-                      <a
-                        class="share-donation-link button is-twitter is-fullwidth-mobile"
-                        href={shareTwitterLink}
-                        rel="noopener noreferrer"
-                        target="popup"
-                        onClick={openSharePopup}
-                        title="Share to Twitter"
-                      >
-                        <img class="icon" alt="Twitter" src="/images/icons/twitter.svg" />
-                        <span>Share on Twitter</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        class="share-donation-link button is-facebook is-fullwidth-mobile"
-                        href={shareFacebookLink}
-                        rel="noopener noreferrer"
-                        target="popup"
-                        onClick={openSharePopup}
-                        title="Share to Facebook"
-                      >
-                        <img class="icon" alt="Facebook" src="/images/icons/facebook.svg" />
-                        <span>Share on Facebook</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <p>
-                  <a href="#" class="button" onClick={resetDonationForm}>
-                    Give another gift
-                  </a>
-                </p>
-              </div>
+              </ui-share-links>
             )}
           </ui-card>
         </ui-main-content>

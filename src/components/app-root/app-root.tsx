@@ -131,8 +131,8 @@ export class AppRoot {
               <div class="right">
                 <ul class="social">
                   <li>
-                    <a class="twitter" href="https://twitter.com/pizzatothepolls" target="blank">
-                      <img class="icon" alt="Twitter" src="/images/icons/twitter.svg" />
+                    <a class="x" href="https://x.com/pizzatothepolls" target="blank">
+                      <img class="icon" alt="X" src="/images/icons/x.svg" />
                     </a>
                   </li>
                   <li>
@@ -143,6 +143,21 @@ export class AppRoot {
                   <li>
                     <a class="instagram" href="https://www.instagram.com/pizzatothepolls/" target="blank">
                       <img class="icon" alt="Instagram" src="/images/icons/instagram.svg" />
+                    </a>
+                  </li>
+                  <li>
+                    <a class="tiktok" href="https://www.tiktok.com/@pizzatothepolls/" target="blank">
+                      <img class="icon" alt="TikTok" src="/images/icons/tiktok.svg" />
+                    </a>
+                  </li>
+                  <li>
+                    <a class="threads" href="https://www.threads.net/@pizzatothepolls/" target="blank">
+                      <img class="icon" alt="Threads" src="/images/icons/threads.svg" />
+                    </a>
+                  </li>
+                  <li>
+                    <a class="bluesky" href="https://bsky.app/profile/polls.pizza" target="blank">
+                      <img class="icon" alt="Bluesky" src="/images/icons/bluesky.svg" />
                     </a>
                   </li>
                 </ul>
