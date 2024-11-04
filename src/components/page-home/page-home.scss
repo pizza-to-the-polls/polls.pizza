@@ -117,11 +117,11 @@ page-home {
         background-color: $light-red;
         box-shadow: none;
         height: 2.2rem;
-        font-size: 1.9rem;
+        font-size: 1.4rem;
 
         @media ($under-tablet) {
           height: 1rem;
-          font-size: 0.9rem;
+          font-size: 1.1rem;
         }
         @media (max-width: 400px) {
           font-size: 0.8rem;

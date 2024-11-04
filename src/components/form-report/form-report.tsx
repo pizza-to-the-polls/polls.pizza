@@ -345,6 +345,9 @@ export class FormReport {
       <Host>
         <div id="form-report-component">
           <form id="form-report" onSubmit={handleSubmit} onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)} hidden={this.showConfirmation}>
+            <h2 class="is-display" hidden={this.showConfirmation}>
+              See a long line near a polling site? Let us know where and we’ll send pizza!
+            </h2>
             <div id="form-step-1" hidden={!this.showLocationInput}>
               {/* Intro content */}
               <slot></slot>
