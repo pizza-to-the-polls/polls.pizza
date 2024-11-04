@@ -58,7 +58,13 @@ export class PageHome {
           <label htmlFor="autocomplete-input">
             <div class="container">
               <ui-location-search
-                placeholder={(window?.document?.body?.clientWidth || 0) < 400 ? "Stuck in line? Search here" : "Stuck in a long line? Search your location here"}
+                placeholder={
+                  (window?.document?.body?.clientWidth || 0) < 400
+                    ? "Long line? We'll send pizza!"
+                    : (window?.document?.body?.clientWidth || 0) < 600
+                    ? "Long line at polling site? We'll send pizza!"
+                    : "Long line at a polling site? Let us know where - we’ll send pizza!"
+                }
                 onLocationSelected={handleLocationSelected}
                 inputId="homepage"
               />
