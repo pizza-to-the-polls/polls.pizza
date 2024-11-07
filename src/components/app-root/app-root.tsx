@@ -10,6 +10,7 @@ import { PizzaApi } from "../../api";
 declare global {
   interface Window {
     ga: any;
+    heic2any: any;
   }
 }
 

@@ -1,6 +1,7 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
 
 import { ApiError, PizzaApi, ReportPostResults } from "../../api";
+import handleHeic from "../../util/handleHeic";
 import shaFile from "../../util/shaFile";
 
 // Shared with pizzabase
@@ -76,7 +77,7 @@ export class FormReport {
 
     const handlePhotoChange = async (e?: Event) => {
       const target = e?.target as HTMLInputElement;
-      const file = (target.files as FileList)[0];
+      const targetFile = (target.files as FileList)[0];
       const imagePreview = document.getElementById("photo-preview");
 
       // Prevent submit before photo finishes processing
@@ -84,13 +85,15 @@ export class FormReport {
       this.isDisabled = true;
 
       // If no files
-      if (!file) {
-        this.removePhoto();
+      if (!targetFile) {
         // Reset
+        this.removePhoto();
         this.photoIsProcessing = false;
         this.isDisabled = false;
         return false;
       }
+      const file = await handleHeic(targetFile);
+
       this.submitError = {};
       this.hasPhoto = true;
       this.photoUrl = window.URL.createObjectURL(file);
@@ -449,7 +452,7 @@ export class FormReport {
                     class={"file button-large " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + ("photo" in this.submitError ? "is-teal" : "is-teal")}
                   >
                     <label class="file-label">
-                      <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} disabled={this.photoIsProcessing} />
+                      <input class="file-input" type="file" name="photo" id="photo" accept="image/*,.heic,.heif" onChange={handlePhotoChange} disabled={this.photoIsProcessing} />
                       <span class="file-cta">
                         <span class="file-label">{this.hasPhoto ? "Change photo" : "Add a photo of the line"}</span>
                       </span>
