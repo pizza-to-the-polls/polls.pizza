@@ -27,6 +27,11 @@ const partners: { img: string; name: string; url: string }[] = [
     url: "https://blackgirlsvote.com/",
   },
   {
+    name: "Ben and Jerry's",
+    url: "https://www.benjerry.com/",
+    img: "ben-and-jerrys.jpg",
+  },
+  {
     img: "campus-vote-project.png",
     name: "Campus Vote Project",
     url: "https://www.campusvoteproject.org/",
@@ -82,6 +87,11 @@ const partners: { img: string; name: string; url: string }[] = [
     url: "https://www.gamvp.org/",
   },
   {
+    name: "Gimme Seaweed",
+    img: "gimme-seaweed.jpg",
+    url: "https://gimmeseaweed.com/",
+  },
+  {
     img: "harness.png",
     name: "Harness",
     url: "https://iwillharness.com/",
@@ -135,6 +145,21 @@ const partners: { img: string; name: string; url: string }[] = [
     img: "ms-votes.png",
     name: "Mississippi Votes",
     url: "https://www.msvotes.org",
+  },
+  {
+    name: "Music Votes",
+    url: "https://music-votes.org/",
+    img: "music-votes.png",
+  },
+  {
+    name: "One MKE",
+    img: "one-mke.jpg",
+    url: "https://www.onemke.org/",
+  },
+  {
+    name: "One Philly Connect",
+    img: "one-philly-connect.png",
+    url: "https://www.onephillyconnect.org/",
   },
   {
     img: "naacp-bulloch-county.png",
@@ -217,12 +242,17 @@ const partners: { img: string; name: string; url: string }[] = [
     url: "http://www.trekthe.vote/",
   },
   {
+    img: "truckster.jpg",
+    name: "Truckster",
+    url: "https://gotruckster.com/",
+  },
+  {
     img: "unidos-us.jpg",
     name: "UnidosUS",
     url: "https://www.unidosus.org/",
   },
   {
-    img: "vet-the-vote.png",
+    img: "vet-vote.png",
     name: "Vet the Vote",
     url: "https://vetthe.vote/",
   },
@@ -335,6 +365,11 @@ const partners: { img: string; name: string; url: string }[] = [
     img: "scf.png",
     name: "Social Change Fund",
     url: "https://www.thesocialchangefund.org/",
+  },
+  {
+    name: "Square Pie Guys",
+    img: "square-pie-guys.png",
+    url: "https://www.squarepieguys.com/",
   },
   {
     img: "stickys.png",
