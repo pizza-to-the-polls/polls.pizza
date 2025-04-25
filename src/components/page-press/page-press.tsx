@@ -14,7 +14,7 @@ export class PagePress {
       {
         url: "https://www.nasdaq.com/events/pizza-polls-slice-rings-closing-bell",
         title: "NASDAQ",
-        img: "nasdaq.png"
+        img: "nasdaq.png",
       },
       {
         url: "https://6abc.com/post/pizza-polls-feeds-philly-election-day/15513789/",
@@ -24,67 +24,67 @@ export class PagePress {
       {
         url: "https://www.cbs58.com/news/voter-engagement-and-pizza-take-center-stage-at-milwaukee-beaches",
         title: "CBS Milwaukee",
-        img: "cbs-milwaukee.png"
+        img: "cbs-milwaukee.png",
       },
       {
         url: "https://www.tmj4.com/news/milwaukee-county/pizza-party-at-bradford-beach-highlights-civic-engagement",
         title: "NBC Milwaukee",
-        img: "nbc-milwaukee.png"
+        img: "nbc-milwaukee.png",
       },
       {
         url: "https://www.cbsnews.com/miami/video/focus-on-national-voter-registration-day/",
         title: "CBS News",
-        img: "cbs-news.png"
+        img: "cbs-news.png",
       },
       {
         url: "https://theatlantavoice.com/georgia-voter-outreach-initiatives/",
         title: "Atlanta Voice",
-        img: "atlanta-voice.png"
+        img: "atlanta-voice.png",
       },
       {
         url: "https://drive.google.com/file/d/1_I_ISJ2nh3ffULjQmYPc4S5bGjs0qcWI/view",
         title: "NBC Atlanta",
-        img: "nbc-atlanta.png"
+        img: "nbc-atlanta.png",
       },
       {
         url: "https://www.google.com/url?q=https://www.goodgoodgood.co/articles/gen-z-politics-pizza-party&sa=D&source=docs&ust=1745617557720083&usg=AOvVaw0UmH7LkMAqw7GpJOcryF1V",
         title: "Good Good Good",
-        img: "goodgoodgood.svg"
+        img: "goodgoodgood.svg",
       },
       {
         url: "https://www.theatlantic.com/ideas/archive/2024/10/citizens-guide-defending-2024-election/680254/",
         title: "The Atlantic",
-        img: "atlantic.png"
+        img: "atlantic.png",
       },
       {
         url: "https://grist.org/looking-forward/5-ways-to-get-out-the-vote-for-climate-in-the-final-days-before-the-u-s-presidential-election/",
         title: "Grist",
-        img: "grist.png"
+        img: "grist.png",
       },
       {
         url: "https://www.bbc.co.uk/bitesize/articles/zqwjfdm",
         title: "BBC",
-        img: "bbc.png"
+        img: "bbc.png",
       },
       {
         url: "https://www.vanityfair.com/news/story/monica-lewinsky-25-ways-for-us-to-calm-the-f-k-down-between-now-and-november-5",
         title: "Vanity Fair",
-        img: "vanity-fair.svg"
+        img: "vanity-fair.svg",
       },
       {
         url: "https://www.aarp.org/politics-society/government-elections/info-2024/election-day-freebies-deals.html",
         title: "AARP",
-        img: "arp.svg" 
+        img: "arp.svg",
       },
       {
         url: "https://secretatlanta.co/pizza-to-the-poles/",
         title: "Secret Atlanta",
-        img: "secret-atlanta.png"
+        img: "secret-atlanta.png",
       },
       {
         url: "https://thephiladelphiacitizen.org/we-voted-philly/",
         title: "The Philadelphia Citizen",
-        img: "philly.webp"
+        img: "philly.webp",
       },
       {
         url: "https://www.washingtonpost.com/politics/2020/11/03/trump-was-almost-guaranteed-victory-mississippi-voters-flooded-polls-anyway/",
