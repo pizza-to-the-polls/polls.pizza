@@ -21,7 +21,7 @@
   padding: 30px 10px;
   margin-bottom: 30px;
 
-  img {
+  img.highlight {
     max-width: 80px;
     margin: 0 10px;
   }
@@ -29,9 +29,9 @@
   @media (min-width: 500px) {
     padding: 30px 80px;
 
-    img {
+    img.highlight {
       max-width: 120px;
-      margin: 0 20px;
+      margin: 0 2rem;
     }
   }
 }
