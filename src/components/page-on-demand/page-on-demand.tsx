@@ -42,9 +42,8 @@ export class PageOnDemand {
           <img style={{ margin: "30px auto 0", display: "block" }} src="/images/pics/photo_7.jpg" alt="Students handing out pizzas to classmates" class="image" />
           <h1>Pre-Order</h1>
           <p>
-            Are you a non profit working on voter registration, turnout and education events? Email
-            <a href="mailto:partners@polls.pizza">partners@polls.pizza</a>
-            for more information!
+            Are you a non profit working on voter registration, turnout and education events? Email <a href="mailto:partners@polls.pizza">partners@polls.pizza</a> for more
+            information!
           </p>
         </ui-card>
       </ui-main-content>

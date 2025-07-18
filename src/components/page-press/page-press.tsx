@@ -193,20 +193,6 @@ export class PagePress {
                 If you’d like to get in touch with us for a story send an email to <a href="mailto:press@polls.pizza">press@polls.pizza</a>.
               </p>
               <p>
-                <a href="/press-release.pdf">Oct. 5, 2020 Press Release</a>
-              </p>
-              <p>
-                <a href="/downloads/press-release-2.pdf">Oct. 21, 2020 Press Release</a>
-              </p>
-              <p>
-                <a href="/downloads/press-release-3.pdf">Dec. 17, 2020 Press Release (Georgia Runoff)</a>
-              </p>
-              <p>
-                <a href="https://www.businesswire.com/news/home/20210318005632/en/Pizza-to-the-Polls-Slice-Slice-Out-Hunger-and-CORE-Team-Up-to-Bring-Pizza-to-Vaccination-Lines">
-                  Mar. 18, 2021 Press Release (Vax and Snacks)
-                </a>
-              </p>
-              <p>
                 Learn more about our story{" "}
                 <a href="/about" class="has-text-teal">
                   here

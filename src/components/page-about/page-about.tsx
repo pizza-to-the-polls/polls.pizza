@@ -80,6 +80,14 @@ export class PageAbout {
                     the year across our various programs.
                   </p>
                 </li>
+                <li>
+                  <h3>2024</h3>
+                  <p>
+                    We delivered 20,058 pizzas to 1,980 polling sites across all 50 states. Our Food Truck program served 429,200 snacks across 33 days in 6 states. Through
+                    partnerships with #iVoted Concerts, OnePhilly Connect, Detroit Votes, and ONEMKE we worked to make Democracy Delicious in Philadelphia, Milwaukee, Detroit,
+                    Atlanta, Miami and Ft. Lauderdale.
+                  </p>
+                </li>
               </ui-pizza-list>
 
               <h2>How we do it</h2>

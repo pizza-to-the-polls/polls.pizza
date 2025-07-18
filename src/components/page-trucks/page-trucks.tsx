@@ -22,9 +22,9 @@ export class PageTrucks {
                   <img src="/images/democracy-is-delicious.png" alt="Democracy is Delicious" width="200" />
                 </div>
                 <div class="highlights">
-                  <img src="/images/cities.png" alt="25 cities" />
-                  <img src="/images/staff.png" alt="Trained staff" />
-                  <img src="/images/food.png" alt="Free food" />
+                  <img src="/images/cities.png" alt="25 cities" class="highlight" />
+                  <img src="/images/staff.png" alt="Trained staff" class="highlight" />
+                  <img src="/images/food.png" alt="Free food" class="highlight" />
                 </div>
                 <p>
                   For the 2020 election season, Pizza to the Polls launched a food truck program in partnership with Uber Eats and vendors such as Milk Bar, Shake Shack, and
@@ -47,98 +47,6 @@ export class PageTrucks {
                 </div>
               </div>
               <div class="hashtag">#democracyisdelicious</div>
-              <div class="container schedule">
-                <h2>2020 Locations and Schedule</h2>
-                <ul>
-                  <li>
-                    <strong>Phoenix, AZ</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Los Angeles, CA</strong> Oct. 24, Oct. 29 - Nov. 3
-                  </li>
-                  <li>
-                    <strong>Washington, DC</strong> Oct. 30 - Nov. 3
-                  </li>
-                  <li>
-                    <strong>Miami, FL</strong> Oct. 24, Oct. 29 - Nov. 1, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Tampa, FL</strong> Oct. 24, Oct. 29 - Nov. 1, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Orlando, FL</strong> Oct. 24, Oct. 29 - Nov. 1, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Gainesville, FL</strong> Oct. 24, Oct. 29 - Oct. 31, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Atlanta, GA</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Chicago, IL</strong> Oct. 30 - Nov. 3
-                  </li>
-                  <li>
-                    <strong>Indianapolis, IN</strong> Oct. 29 - Nov. 3
-                  </li>
-                  <li>
-                    <strong>Louisville, KY</strong> Oct. 24, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Detroit, MI</strong> Oct. 24, Oct. 29 - Oct. 31, Nov.2, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Ann Arbor, MI</strong> Oct. 24, Oct. 29 - Oct. 31, Nov.2, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Minneapolis, MN</strong> Oct. 24, Oct. 29 - Nov. 3
-                  </li>
-                  <li>
-                    <strong>Charlotte, NC</strong> Oct. 24, Oct. 29 - Oct. 31, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Raleigh, NC</strong> Oct. 24, Oct. 29 - Oct. 31, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Greensboro, NC</strong> Oct. 24, Oct. 29 - Oct. 31, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Las Vegas, NV</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Reno, NV</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
-                  </li>
-                  <li>
-                    <strong>New York, NY</strong> Oct. 24, Oct. 29 - Nov. 1, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Cleveland, OH</strong> Oct. 30 - Nov. 3
-                  </li>
-                  <li>
-                    <strong>Columbus, OH</strong> Oct. 29 - Nov. 3
-                  </li>
-                  <li>
-                    <strong>Philadelphia, PA</strong> Oct. 24, Oct. 29 - Nov. 3
-                  </li>
-                  <li>
-                    <strong>Pittsburgh, PA</strong> Oct. 24, Oct. 29 - Nov. 3
-                  </li>
-                  <li>
-                    <strong>Charleston, SC</strong> Oct. 24, Oct. 29 - Oct. 31, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Nashville, TN</strong> Oct. 24, Oct. 29, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Houston, TX</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Austin, TX</strong> Oct. 24, Oct. 29, Oct. 30, Nov. 3
-                  </li>
-                  <li>
-                    <strong>Milwaukee, WI</strong> Oct. 24, Oct. 29 - Nov. 1, Nov. 3
-                  </li>
-                </ul>
-              </div>
             </ui-card>
           </ui-main-content>
         </section>

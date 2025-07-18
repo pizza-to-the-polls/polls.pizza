@@ -116,11 +116,11 @@ page-home {
         border: none;
         background-color: $light-red;
         box-shadow: none;
-        height: 2.2rem;
+        height: 3.8rem;
         font-size: 1.4rem;
 
         @media ($under-tablet) {
-          height: 1rem;
+          height: 4rem;
           font-size: 1.1rem;
         }
         @media (max-width: 400px) {
@@ -132,7 +132,8 @@ page-home {
         & {
           color: $blue;
         }
-        margin-left: 14px;
+        margin: -1rem 0px;
+        padding: 3px 40px;
       }
       &:before {
         height: 2.8rem;
@@ -140,6 +141,7 @@ page-home {
         @media ($under-tablet) {
           height: 1.3rem;
           font-size: 1.3rem;
+          margin-top: 8px;
         }
 
         font-weight: 700;
@@ -154,6 +156,7 @@ page-home {
         position: absolute;
         z-index: 1;
         margin-top: -2px;
+        pointer-events: none;
       }
     }
   }
