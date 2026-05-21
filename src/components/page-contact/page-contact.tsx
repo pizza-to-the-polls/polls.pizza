@@ -5,7 +5,7 @@ import { Component, h } from "@stencil/core";
 })
 export class PageContact {
   public componentWillLoad() {
-    document.title = `Donate | Pizza to the Polls`;
+    document.title = `Contact | Pizza to the Polls`;
   }
 
   public render() {
@@ -21,6 +21,9 @@ export class PageContact {
           </stencil-route-link>
           <hr />
           <ui-pizza-list>
+            <li>
+              If you'd like to stay in touch - <stencil-route-link url="/contact-form">sign up for our newsletter</stencil-route-link>.
+            </li>
             <li>
               If you’d like to get in touch with us for a story send an email to{" "}
               <a href="mailto:press@polls.pizza" class="has-text-teal" target="_blank" rel="noopener noreferrer">
