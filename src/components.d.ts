@@ -27,6 +27,8 @@ export namespace Components {
     }
     interface PageContact {
     }
+    interface PageContactForm {
+    }
     interface PageCrustclub {
         "history"?: RouterHistory;
     }
@@ -166,6 +168,12 @@ declare global {
     var HTMLPageContactElement: {
         prototype: HTMLPageContactElement;
         new (): HTMLPageContactElement;
+    };
+    interface HTMLPageContactFormElement extends Components.PageContactForm, HTMLStencilElement {
+    }
+    var HTMLPageContactFormElement: {
+        prototype: HTMLPageContactFormElement;
+        new (): HTMLPageContactFormElement;
     };
     interface HTMLPageCrustclubElement extends Components.PageCrustclub, HTMLStencilElement {
     }
@@ -342,6 +350,7 @@ declare global {
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
         "page-contact": HTMLPageContactElement;
+        "page-contact-form": HTMLPageContactFormElement;
         "page-crustclub": HTMLPageCrustclubElement;
         "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
@@ -391,6 +400,8 @@ declare namespace LocalJSX {
     interface PageActivity {
     }
     interface PageContact {
+    }
+    interface PageContactForm {
     }
     interface PageCrustclub {
         "history"?: RouterHistory;
@@ -507,6 +518,7 @@ declare namespace LocalJSX {
         "page-about": PageAbout;
         "page-activity": PageActivity;
         "page-contact": PageContact;
+        "page-contact-form": PageContactForm;
         "page-crustclub": PageCrustclub;
         "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
@@ -547,6 +559,7 @@ declare module "@stencil/core" {
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
             "page-contact": LocalJSX.PageContact & JSXBase.HTMLAttributes<HTMLPageContactElement>;
+            "page-contact-form": LocalJSX.PageContactForm & JSXBase.HTMLAttributes<HTMLPageContactFormElement>;
             "page-crustclub": LocalJSX.PageCrustclub & JSXBase.HTMLAttributes<HTMLPageCrustclubElement>;
             "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
