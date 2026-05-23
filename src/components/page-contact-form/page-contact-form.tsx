@@ -10,14 +10,6 @@ export class PageContact {
   }
 
   public render() {
-    const handleSubmit = (e: Event) => {
-      const checked = document.querySelector("input[id=consentCheckbox]:checked") as HTMLInputElement;
-
-      if (!checked) {
-        e.preventDefault();
-      }
-    };
-
     return (
       <ui-main-content class="page contact-form">
         <ui-card>
@@ -30,7 +22,6 @@ export class PageContact {
               action="https://pizza.us14.list-manage.com/subscribe/post?u=ff4b828d01c30e7ef1de2e24b&id=a2d940b77b&f_id=00198ae0f0"
               method="post"
               target="_blank"
-              onSubmit={handleSubmit}
             >
               <input required type="email" name="EMAIL" autoComplete="email" class="input input-value" placeholder="Your email" />
               <input
@@ -47,8 +38,8 @@ export class PageContact {
                 <input type="checkbox" id="consentCheckbox" required />
                 &nbsp; By selecting this checkbox, you consent to receive Emails and SMS text messages from Pizza to the Polls (PttP) at the phone number provided, including
                 updates, event invitations, donation requests, and voting reminders. Consent is not a condition of purchase. Message frequency varies. Message and data rates may
-                apply. Text STOP to unsubscribe.&nbsp;
-                <stencil-route-link class="" url="/privacy-policy">
+                apply. Text HELP for more information and Text STOP to unsubscribe.&nbsp;
+                <stencil-route-link class="" url="/privacy">
                   Privacy Policy
                 </stencil-route-link>
               </label>
