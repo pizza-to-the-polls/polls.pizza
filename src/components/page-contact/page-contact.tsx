@@ -22,7 +22,7 @@ export class PageContact {
           <hr />
           <ui-pizza-list>
             <li>
-              If you'd like to stay in touch - <stencil-route-link url="/contact-form">sign up for our newsletter</stencil-route-link>.
+              If you'd like to stay in touch - <stencil-route-link url="/signup-form">sign up for our newsletter</stencil-route-link>.
             </li>
             <li>
               If you’d like to get in touch with us for a story send an email to{" "}

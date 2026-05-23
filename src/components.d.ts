@@ -27,8 +27,6 @@ export namespace Components {
     }
     interface PageContact {
     }
-    interface PageContactForm {
-    }
     interface PageCrustclub {
         "history"?: RouterHistory;
     }
@@ -64,6 +62,8 @@ export namespace Components {
     }
     interface PageSession {
         "match": MatchResults;
+    }
+    interface PageSignupForm {
     }
     interface PageTrucks {
     }
@@ -169,12 +169,6 @@ declare global {
         prototype: HTMLPageContactElement;
         new (): HTMLPageContactElement;
     };
-    interface HTMLPageContactFormElement extends Components.PageContactForm, HTMLStencilElement {
-    }
-    var HTMLPageContactFormElement: {
-        prototype: HTMLPageContactFormElement;
-        new (): HTMLPageContactFormElement;
-    };
     interface HTMLPageCrustclubElement extends Components.PageCrustclub, HTMLStencilElement {
     }
     var HTMLPageCrustclubElement: {
@@ -258,6 +252,12 @@ declare global {
     var HTMLPageSessionElement: {
         prototype: HTMLPageSessionElement;
         new (): HTMLPageSessionElement;
+    };
+    interface HTMLPageSignupFormElement extends Components.PageSignupForm, HTMLStencilElement {
+    }
+    var HTMLPageSignupFormElement: {
+        prototype: HTMLPageSignupFormElement;
+        new (): HTMLPageSignupFormElement;
     };
     interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
     }
@@ -350,7 +350,6 @@ declare global {
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
         "page-contact": HTMLPageContactElement;
-        "page-contact-form": HTMLPageContactFormElement;
         "page-crustclub": HTMLPageCrustclubElement;
         "page-deliveries": HTMLPageDeliveriesElement;
         "page-donate": HTMLPageDonateElement;
@@ -365,6 +364,7 @@ declare global {
         "page-privacy": HTMLPagePrivacyElement;
         "page-report": HTMLPageReportElement;
         "page-session": HTMLPageSessionElement;
+        "page-signup-form": HTMLPageSignupFormElement;
         "page-trucks": HTMLPageTrucksElement;
         "page-vax-and-snacks": HTMLPageVaxAndSnacksElement;
         "ui-address-input": HTMLUiAddressInputElement;
@@ -401,8 +401,6 @@ declare namespace LocalJSX {
     }
     interface PageContact {
     }
-    interface PageContactForm {
-    }
     interface PageCrustclub {
         "history"?: RouterHistory;
     }
@@ -438,6 +436,8 @@ declare namespace LocalJSX {
     }
     interface PageSession {
         "match": MatchResults;
+    }
+    interface PageSignupForm {
     }
     interface PageTrucks {
     }
@@ -518,7 +518,6 @@ declare namespace LocalJSX {
         "page-about": PageAbout;
         "page-activity": PageActivity;
         "page-contact": PageContact;
-        "page-contact-form": PageContactForm;
         "page-crustclub": PageCrustclub;
         "page-deliveries": PageDeliveries;
         "page-donate": PageDonate;
@@ -533,6 +532,7 @@ declare namespace LocalJSX {
         "page-privacy": PagePrivacy;
         "page-report": PageReport;
         "page-session": PageSession;
+        "page-signup-form": PageSignupForm;
         "page-trucks": PageTrucks;
         "page-vax-and-snacks": PageVaxAndSnacks;
         "ui-address-input": UiAddressInput;
@@ -559,7 +559,6 @@ declare module "@stencil/core" {
             "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
             "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
             "page-contact": LocalJSX.PageContact & JSXBase.HTMLAttributes<HTMLPageContactElement>;
-            "page-contact-form": LocalJSX.PageContactForm & JSXBase.HTMLAttributes<HTMLPageContactFormElement>;
             "page-crustclub": LocalJSX.PageCrustclub & JSXBase.HTMLAttributes<HTMLPageCrustclubElement>;
             "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
             "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
@@ -574,6 +573,7 @@ declare module "@stencil/core" {
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
             "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-session": LocalJSX.PageSession & JSXBase.HTMLAttributes<HTMLPageSessionElement>;
+            "page-signup-form": LocalJSX.PageSignupForm & JSXBase.HTMLAttributes<HTMLPageSignupFormElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
             "page-vax-and-snacks": LocalJSX.PageVaxAndSnacks & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
             "ui-address-input": LocalJSX.UiAddressInput & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;

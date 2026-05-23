@@ -1,11 +1,11 @@
 import { newE2EPage } from "@stencil/core/testing";
 
-describe("page-contact-form", () => {
+describe("page-signup-form", () => {
   it("renders", async () => {
     const page = await newE2EPage();
-    await page.setContent("<page-contact-form></page-contact-form>");
+    await page.setContent("<page-signup-form></page-signup-form>");
 
-    const element = await page.find("page-contact-form");
+    const element = await page.find("page-signup-form");
     expect(element).toHaveClass("hydrated");
   });
 });
