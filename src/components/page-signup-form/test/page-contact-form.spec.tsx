@@ -1,0 +1,19 @@
+import { newSpecPage } from "@stencil/core/testing";
+
+import { PageSignUpForm } from "../page-signup-form";
+
+describe("page-signup-form", () => {
+  it("renders", async () => {
+    const page = await newSpecPage({
+      components: [PageSignUpForm],
+      html: `<page-signup-form></page-signup-form>`,
+    });
+    expect(page.root).toEqualHtml(`
+      <page-signup-form>
+        <mock:shadow-root>
+          <slot></slot>
+        </mock:shadow-root>
+      </page-signup-form>
+    `);
+  });
+});

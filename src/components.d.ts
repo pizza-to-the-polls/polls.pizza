@@ -63,6 +63,8 @@ export namespace Components {
     interface PageSession {
         "match": MatchResults;
     }
+    interface PageSignupForm {
+    }
     interface PageTrucks {
     }
     interface PageVaxAndSnacks {
@@ -251,6 +253,12 @@ declare global {
         prototype: HTMLPageSessionElement;
         new (): HTMLPageSessionElement;
     };
+    interface HTMLPageSignupFormElement extends Components.PageSignupForm, HTMLStencilElement {
+    }
+    var HTMLPageSignupFormElement: {
+        prototype: HTMLPageSignupFormElement;
+        new (): HTMLPageSignupFormElement;
+    };
     interface HTMLPageTrucksElement extends Components.PageTrucks, HTMLStencilElement {
     }
     var HTMLPageTrucksElement: {
@@ -356,6 +364,7 @@ declare global {
         "page-privacy": HTMLPagePrivacyElement;
         "page-report": HTMLPageReportElement;
         "page-session": HTMLPageSessionElement;
+        "page-signup-form": HTMLPageSignupFormElement;
         "page-trucks": HTMLPageTrucksElement;
         "page-vax-and-snacks": HTMLPageVaxAndSnacksElement;
         "ui-address-input": HTMLUiAddressInputElement;
@@ -427,6 +436,8 @@ declare namespace LocalJSX {
     }
     interface PageSession {
         "match": MatchResults;
+    }
+    interface PageSignupForm {
     }
     interface PageTrucks {
     }
@@ -521,6 +532,7 @@ declare namespace LocalJSX {
         "page-privacy": PagePrivacy;
         "page-report": PageReport;
         "page-session": PageSession;
+        "page-signup-form": PageSignupForm;
         "page-trucks": PageTrucks;
         "page-vax-and-snacks": PageVaxAndSnacks;
         "ui-address-input": UiAddressInput;
@@ -561,6 +573,7 @@ declare module "@stencil/core" {
             "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
             "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
             "page-session": LocalJSX.PageSession & JSXBase.HTMLAttributes<HTMLPageSessionElement>;
+            "page-signup-form": LocalJSX.PageSignupForm & JSXBase.HTMLAttributes<HTMLPageSignupFormElement>;
             "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
             "page-vax-and-snacks": LocalJSX.PageVaxAndSnacks & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
             "ui-address-input": LocalJSX.UiAddressInput & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;
