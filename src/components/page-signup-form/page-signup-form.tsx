@@ -32,9 +32,8 @@ export class PabeSignUpForm {
               />
               <label class="has-text-blue" style={{ fontSize: "0.75em", margin: "2em 0", fontWeight: "400" }}>
                 <input type="checkbox" id="consentCheckbox" required />
-                &nbsp; By selecting this checkbox, you consent to receive Emails and SMS text messages from Pizza to the Polls (PttP) at the phone number provided, including
-                updates, event invitations, donation requests, and voting reminders. Consent is not a condition of purchase. Message frequency varies. Message and data rates may
-                apply.
+                &nbsp; By selecting this checkbox, you consent to receive SMS text messages from Pizza to the Polls (PttP) at the phone number provided, including updates, event
+                invitations, donation requests, and voting reminders. Consent is not a condition of purchase. Message frequency varies. Message and data rates may apply.
                 <br />
                 <br />
                 Text HELP for more information and Text STOP to unsubscribe.&nbsp;
