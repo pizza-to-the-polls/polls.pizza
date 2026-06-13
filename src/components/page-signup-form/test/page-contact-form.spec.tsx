@@ -1,11 +1,11 @@
 import { newSpecPage } from "@stencil/core/testing";
 
-import { PageSignUpForm } from "../page-signup-form";
+import { PabeSignUpForm } from "../page-signup-form";
 
 describe("page-signup-form", () => {
   it("renders", async () => {
     const page = await newSpecPage({
-      components: [PageSignUpForm],
+      components: [PabeSignUpForm],
       html: `<page-signup-form></page-signup-form>`,
     });
     expect(page.root).toEqualHtml(`
