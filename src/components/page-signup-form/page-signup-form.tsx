@@ -4,7 +4,7 @@ import { Component, h } from "@stencil/core";
   tag: "page-signup-form",
   styleUrl: "page-signup-form.scss",
 })
-export class PabeSignUpForm {
+export class PageSignUpForm {
   public componentWillLoad() {
     document.title = `Sign Up | Pizza to the Polls`;
   }

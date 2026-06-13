@@ -11,19 +11,13 @@ describe("page-crustclub", () => {
     expect(form).not.toBeNull();
   });
 
-  it("shows an error when no amount is selected and checkout is clicked", async () => {
+  it("disables checkout when no amount is selected", async () => {
     const page = await newE2EPage();
     await page.setContent("<page-crustclub></page-crustclub>");
     await page.waitForChanges();
 
     const checkoutBtn = await page.find("#donate-form button");
-    await checkoutBtn.click();
-    await page.waitForChanges();
-
-    const errorEl = await page.find("#donation-error");
-    expect(errorEl).not.toBeNull();
-    const text = await errorEl.getProperty("textContent");
-    expect(text.toLowerCase()).toContain("select a level");
+    expect(await checkoutBtn.getProperty("disabled")).toBe(true);
   });
 
   it("selects an amount and initiates a subscription", async () => {
@@ -37,8 +31,13 @@ describe("page-crustclub", () => {
     );
     await page.waitForChanges();
 
-    const amountRadio = await page.find('input[name="level"][value="10"]');
-    await amountRadio.click();
+    await page.evaluate(() => {
+      const radio = document.querySelector('input[name="level"][value="10"]') as HTMLInputElement;
+      if (radio) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    });
     await page.waitForChanges();
 
     const checkoutBtn = await page.find("#donate-form button");

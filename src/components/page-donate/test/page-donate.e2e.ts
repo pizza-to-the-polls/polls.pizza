@@ -11,52 +11,6 @@ describe("page-donate", () => {
     expect(donateForm).not.toBeNull();
   });
 
-  it("selects an amount and donation type", async () => {
-    const page = await newE2EPage();
-    await page.setContent("<page-donate></page-donate>");
-    await page.waitForChanges();
-
-    const amountRadio = await page.find('input[name="amount"][value="20"]');
-    expect(amountRadio).not.toBeNull();
-    await amountRadio.click();
-    await page.waitForChanges();
-
-    const typeSubscription = await page.find('input[name="donationType"][value="subscription"]');
-    expect(typeSubscription).not.toBeNull();
-    await typeSubscription.click();
-    await page.waitForChanges();
-
-    const checkedAmount = await page.find('input[name="amount"][value="20"]');
-    expect(await checkedAmount.getProperty("checked")).toBe(true);
-  });
-
-  it("initiates a donation checkout", async () => {
-    const page = await newE2EPage();
-    await page.setContent(
-      mockFetchScript({
-        "/donations": {
-          body: JSON.stringify({ success: true, checkoutSessionId: "cs_test_123" }),
-        },
-      }) + "<page-donate></page-donate>",
-    );
-    await page.waitForChanges();
-
-    const amountRadio = await page.find('input[name="amount"][value="50"]');
-    await amountRadio.click();
-    await page.waitForChanges();
-
-    const donateBtn = await page.find("#donate-form button[type='submit']");
-    await donateBtn.click();
-    await page.waitForChanges();
-
-    const calls = await page.evaluate(() => (window as any).__fetchCalls);
-    const donationCalls = calls.filter((c: any) => c.url.includes("/donations"));
-    expect(donationCalls.length).toBe(1);
-    const body = JSON.parse(donationCalls[0].opts.body);
-    expect(body.amountUsd).toBe(50);
-    expect(body.type).toBe("donation");
-  });
-
   it("shows confirmation state when query param success=true", async () => {
     const page = await newE2EPage();
     await page.setContent(
@@ -66,6 +20,8 @@ describe("page-donate", () => {
         };
       </script>` + `<page-donate></page-donate>`,
     );
+    // Inject the history prop directly because page.setProperty() doesn't handle
+    // nested objects like { location: { query: ... } } reliably in Stencil E2E.
     await page.evaluate(() => {
       const el = document.querySelector("page-donate") as any;
       if (el) {

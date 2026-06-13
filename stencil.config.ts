@@ -43,4 +43,9 @@ export const config: Config = {
     safari10: true,
     shadowDomShim: true,
   },
+  // Required for headless Chromium on CI runners (GitHub Actions, Docker).
+  // For local development, these flags can be removed if you have a working Chrome/Chromium.
+  testing: {
+    browserArgs: process.env.CI ? ["--no-sandbox", "--disable-setuid-sandbox"] : [],
+  },
 };
