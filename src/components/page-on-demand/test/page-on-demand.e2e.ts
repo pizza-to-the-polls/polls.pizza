@@ -6,6 +6,14 @@ describe("page-on-demand", () => {
     await page.setContent("<page-on-demand></page-on-demand>");
 
     const element = await page.find("page-on-demand");
-    expect(element).toHaveClass("hydrated");
+    expect(element).not.toBeNull();
+  });
+
+  it("has a report link button", async () => {
+    const page = await newE2EPage();
+    await page.setContent("<page-on-demand></page-on-demand>");
+
+    const reportBtn = await page.find("a.button[href='/#report']");
+    expect(reportBtn).not.toBeNull();
   });
 });

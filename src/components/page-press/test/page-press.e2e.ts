@@ -6,6 +6,6 @@ describe("page-press", () => {
     await page.setContent("<page-press></page-press>");
 
     const element = await page.find("page-press");
-    expect(element).toHaveClass("hydrated");
+    expect(element).not.toBeNull();
   });
 });

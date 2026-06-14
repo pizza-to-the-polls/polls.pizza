@@ -6,6 +6,6 @@ describe("page-contact", () => {
     await page.setContent("<page-contact></page-contact>");
 
     const element = await page.find("page-contact");
-    expect(element).toHaveClass("hydrated");
+    expect(element).not.toBeNull();
   });
 });

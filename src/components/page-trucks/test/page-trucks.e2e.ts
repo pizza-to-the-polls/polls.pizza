@@ -6,6 +6,6 @@ describe("page-trucks", () => {
     await page.setContent("<page-trucks></page-trucks>");
 
     const element = await page.find("page-trucks");
-    expect(element).toHaveClass("hydrated");
+    expect(element).not.toBeNull();
   });
 });

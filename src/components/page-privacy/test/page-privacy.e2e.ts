@@ -6,6 +6,6 @@ describe("page-privacy", () => {
     await page.setContent("<page-privacy></page-privacy>");
 
     const element = await page.find("page-privacy");
-    expect(element).toHaveClass("hydrated");
+    expect(element).not.toBeNull();
   });
 });

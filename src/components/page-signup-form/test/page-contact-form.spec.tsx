@@ -8,12 +8,8 @@ describe("page-signup-form", () => {
       components: [PageSignUpForm],
       html: `<page-signup-form></page-signup-form>`,
     });
-    expect(page.root).toEqualHtml(`
-      <page-signup-form>
-        <mock:shadow-root>
-          <slot></slot>
-        </mock:shadow-root>
-      </page-signup-form>
-    `);
+    expect(page.root).not.toBeNull();
+    const emailInput = page.root?.querySelector('input[type="email"]');
+    expect(emailInput).not.toBeNull();
   });
 });

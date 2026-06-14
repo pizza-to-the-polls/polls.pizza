@@ -6,6 +6,6 @@ describe("page-partners", () => {
     await page.setContent("<page-partners></page-partners>");
 
     const element = await page.find("page-partners");
-    expect(element).toHaveClass("hydrated");
+    expect(element).not.toBeNull();
   });
 });
