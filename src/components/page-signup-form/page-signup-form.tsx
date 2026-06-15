@@ -31,7 +31,7 @@ export class PageSignUpForm {
                 title="XXX-XXX-XXXX"
               />
               <label class="has-text-blue" style={{ fontSize: "0.75em", margin: "2em 0", fontWeight: "400" }}>
-                <input type="checkbox" id="consentCheckbox" required />
+                <input type="checkbox" id="consentCheckbox" />
                 &nbsp; By selecting this checkbox, you consent to receive SMS text messages from Pizza to the Polls (PttP) at the phone number provided, including updates, event
                 invitations, donation requests, and voting reminders. Consent is not a condition of purchase. Message frequency varies. Message and data rates may apply.
                 <br />
