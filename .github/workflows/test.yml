@@ -58,6 +58,7 @@ jobs:
       - name: build site
         run: npm run build
         env:
+          ROOT_URL: https://next.polls.pizza
           STRIPE_PUBLIC_KEY: pk_test_ci_placeholder
           NODE_ENV: stage
           PIZZA_BASE_DOMAIN: https://base-next.polls.pizza
