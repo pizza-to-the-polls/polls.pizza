@@ -122,6 +122,13 @@ export class PageDeliveries {
   @State() private recentTrucks?: TruckInfo[];
   @State() private mapZoom: number;
   @State() private hasRecentTrucks: boolean = false;
+  @State() private isLoadingOrders: boolean = true;
+  @State() private isLoadingTrucks: boolean = true;
+  @State() private showWarmingUp: boolean = false;
+  private retryAttempts: number = 0;
+  /** PTP no longer operates food trucks; hide them if the newest truck is > 3 months old */
+  private static readonly TRUCK_VISIBILITY_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 90; // 90 days
+  private static readonly MAX_RETRY_ATTEMPTS = 5;
 
   constructor() {
     this.selectedFood = FoodChoice.all;
@@ -134,13 +141,29 @@ export class PageDeliveries {
     this.setAddressFromUrl(this.match);
 
     if (Build.isBrowser) {
-      PizzaApi.getOrders().then(orders => (this.recentOrders = orders.results));
-      PizzaApi.getTrucks(true).then(trucks => {
-        this.recentTrucks = trucks.results;
-        // Hide trucks if the newest truck is older than the visibility threshold
-        const cutoff = Date.now() - PageDeliveries.TRUCK_VISIBILITY_THRESHOLD_MS;
-        this.hasRecentTrucks = trucks.results.some(t => Number(t.createdAt) > cutoff);
-      });
+      PizzaApi.getOrders()
+        .then(orders => (this.recentOrders = orders.results))
+        .catch(() => {
+          // API layer handles errors gracefully; fallback UIs handle undefined data
+        })
+        .finally(() => {
+          this.isLoadingOrders = false;
+          this.checkWarmingUp();
+        });
+      PizzaApi.getTrucks(true)
+        .then(trucks => {
+          this.recentTrucks = trucks.results;
+          // Hide trucks if the newest truck is older than the visibility threshold
+          const cutoff = Date.now() - PageDeliveries.TRUCK_VISIBILITY_THRESHOLD_MS;
+          this.hasRecentTrucks = trucks.results.some(t => Number(t.createdAt) > cutoff);
+        })
+        .catch(() => {
+          // API layer handles errors gracefully; fallback UIs handle undefined data
+        })
+        .finally(() => {
+          this.isLoadingTrucks = false;
+          this.checkWarmingUp();
+        });
     }
   }
 
@@ -355,7 +378,20 @@ export class PageDeliveries {
           <ui-card>
             <div>
               <h3>Recent Deliveries</h3>
-              {selectedLocation != null && selectedFood === FoodChoice.trucks && locationItems.length < 1 ? (
+              {this.isLoadingOrders ? (
+                <ul>
+                  {[1, 2, 3, 4, 5].map(() => (
+                    <li class="skeleton-item">
+                      <div class="loading-line" style={{ width: "70%" }} />
+                      <div class="loading-line loading-line-sm" style={{ width: "50%" }} />
+                    </li>
+                  ))}
+                </ul>
+              ) : this.showWarmingUp ? (
+                <p class="has-text-centered">
+                  <span style={{ fontSize: "1.2em" }}>☕</span> Warming up the ovens...
+                </p>
+              ) : selectedLocation != null && selectedFood === FoodChoice.trucks && locationItems.length < 1 ? (
                 <p>
                   There are no food trucks currently at this location.
                   <br />
@@ -441,6 +477,45 @@ export class PageDeliveries {
         )}
       </Host>
     );
+  }
+
+  /**
+   * Check if both data sets have loaded. If both returned empty, trigger warming-up auto-retry.
+   */
+  private checkWarmingUp() {
+    if (!this.isLoadingOrders && !this.isLoadingTrucks) {
+      if ((this.recentOrders?.length || 0) === 0 && (this.recentTrucks?.length || 0) === 0) {
+        if (this.retryAttempts < PageDeliveries.MAX_RETRY_ATTEMPTS) {
+          this.showWarmingUp = true;
+          this.retryAttempts++;
+          setTimeout(() => {
+            this.retryLoad();
+          }, 5000);
+        }
+      }
+    }
+  }
+
+  private retryLoad() {
+    this.isLoadingOrders = true;
+    this.isLoadingTrucks = true;
+    Promise.all([
+      PizzaApi.getOrders()
+        .then(orders => (this.recentOrders = orders.results))
+        .catch(() => {
+          // API layer handles errors gracefully; fallback UIs handle undefined data
+        }),
+      PizzaApi.getTrucks(true)
+        .then(trucks => (this.recentTrucks = trucks.results))
+        .catch(() => {
+          // API layer handles errors gracefully; fallback UIs handle undefined data
+        }),
+    ]).finally(() => {
+      this.isLoadingOrders = false;
+      this.isLoadingTrucks = false;
+      this.showWarmingUp = false;
+      this.checkWarmingUp();
+    });
   }
 
   /**

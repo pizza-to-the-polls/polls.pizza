@@ -316,6 +316,16 @@ page-home {
         }
       }
     }
+
+    .delivery.loading {
+      .loading-line {
+        height: 12px;
+        background: $gray2;
+        animation: pulse 1s infinite ease-in-out;
+        border-radius: 4px;
+        margin: 8px 0;
+      }
+    }
   }
 
   .is-round {

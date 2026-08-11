@@ -18,22 +18,61 @@ import {
 
 const BASE_URL = process.env.PIZZA_BASE_DOMAIN;
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const isRetryableStatus = (status: number) => [502, 503, 504].includes(status);
+
 const baseFetch = async <T = any>(path: string, options: { [key: string]: string } = {}): Promise<(T & { isError: undefined }) | ApiError> => {
   const headers = options.headers || {};
-  const resp = await fetch(`${BASE_URL}${path}`, {
-    mode: "cors",
-    ...options,
-    headers: { "Content-Type": "application/json", ...headers },
-  });
+  const method = (options.method || "GET").toUpperCase();
+  const isRetryable = method === "GET";
+  const maxAttempts = isRetryable ? 3 : 1;
 
-  const text = await resp.text();
-  const data = JSON.parse(text, reviver);
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (attempt > 0) {
+      const delay = 1000 * Math.pow(2, attempt - 1);
+      await sleep(delay);
+    }
 
-  if (resp.status > 299) {
-    return { isError: true, status: resp.status, errors: data.errors };
+    let resp: Response;
+    try {
+      resp = await fetch(`${BASE_URL}${path}`, {
+        mode: "cors",
+        ...options,
+        headers: { "Content-Type": "application/json", ...headers },
+      });
+    } catch (e) {
+      // Network error (e.g. offline, DNS failure) — retry if allowed
+      if (isRetryable && e instanceof TypeError && attempt < maxAttempts - 1) {
+        continue;
+      }
+      return { isError: true, status: 0, errors: { network: "Service temporarily unavailable" } };
+    }
+
+    const text = await resp.text();
+
+    let data: any;
+    try {
+      data = JSON.parse(text, reviver);
+    } catch (e) {
+      // JSON.parse failed — likely an HTML error page during cold start
+      if (isRetryable && e instanceof SyntaxError && attempt < maxAttempts - 1) {
+        continue;
+      }
+      return { isError: true, status: resp.status || 0, errors: { network: "Service temporarily unavailable" } };
+    }
+
+    if (resp.status > 299) {
+      if (isRetryable && isRetryableStatus(resp.status) && attempt < maxAttempts - 1) {
+        continue;
+      }
+      return { isError: true, status: resp.status, errors: data.errors };
+    }
+
+    return data as T & { isError: undefined };
   }
 
-  return data as T & { isError: undefined };
+  return { isError: true, status: 0, errors: { network: "Service temporarily unavailable" } };
 };
 
 const reviver: (this: any, key: string, value: any) => any = (key, value) => {

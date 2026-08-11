@@ -22,18 +22,34 @@ const Delivery = ({ order }: { order: OrderDetails }) => (
   </div>
 );
 
+const SkeletonDelivery = () => (
+  <div class="delivery loading">
+    <div class="loading-line" style={{ width: "60%" }} />
+    <div class="loading-line" style={{ width: "40%" }} />
+    <div class="loading-line" style={{ width: "80%" }} />
+  </div>
+);
+
 const Deliveries = ({ orders }: { orders?: OrderDetails[] }) => (
   <div class="deliveries">
     <h3 class="has-text-red">🚐 Deliveries</h3>
     <div class="deliveries-wrapper">
-      {orders?.map(order => (
-        <Delivery order={order} />
-      ))}
+      {orders === undefined ? (
+        [1, 2, 3].map(i => <SkeletonDelivery />)
+      ) : orders.length === 0 ? (
+        <p class="has-text-gray">No recent deliveries</p>
+      ) : (
+        orders.map(order => <Delivery order={order} />)
+      )}
     </div>
-    <hr />
-    <stencil-route-link url="/activity" class="has-text-blue">
-      See more deliveries
-    </stencil-route-link>
+    {orders != null && orders.length > 0 && (
+      <>
+        <hr />
+        <stencil-route-link url="/activity" class="has-text-blue">
+          See more deliveries
+        </stencil-route-link>
+      </>
+    )}
   </div>
 );
 
