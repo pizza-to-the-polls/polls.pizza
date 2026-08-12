@@ -107,8 +107,8 @@ export class UiAddressInput {
     }
 
     const gmaps = (window as any).google;
-    if (gmaps == null) {
-      this.scheduleRetry("Google Maps API not yet loaded");
+    if (gmaps?.maps?.places?.Autocomplete == null) {
+      this.scheduleRetry("Google Maps API not yet fully loaded");
       return;
     }
 
