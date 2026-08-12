@@ -8,8 +8,8 @@
 
 ## Summary
 
-| Severity | Count | 
-|----------|-------|
+| Severity | Count |
+| -------- | ----- |
 | Critical | 1     |
 | High     | 2     |
 | Medium   | 4     |
@@ -22,6 +22,7 @@
 ### 1. Hardcoded JWT Secret Fallback (pizzabase)
 
 **Location:** `src/lib/jwt.ts:3`
+
 ```typescript
 const secret = process.env.JWT_SECRET || "shhhh";
 ```
@@ -29,6 +30,7 @@ const secret = process.env.JWT_SECRET || "shhhh";
 If `JWT_SECRET` is not set in production, **all JWTs are signed with the string `"shhhh"`**, allowing anyone to forge valid session tokens. Since PTP uses JWTs for admin session authentication (`/session` routes), this would grant unauthorized admin access.
 
 **Fix:** Remove the fallback. Crash at startup if `JWT_SECRET` is not set:
+
 ```typescript
 const secret = process.env.JWT_SECRET;
 if (!secret) throw new Error("JWT_SECRET environment variable is required");
@@ -43,10 +45,12 @@ if (!secret) throw new Error("JWT_SECRET environment variable is required");
 **npm audit result:** 60 total (3 critical, 30 high, 22 moderate, 5 low)
 
 The critical/high vulnerabilities come primarily from:
+
 - `puppeteer@^13.1.3` — several Chromium RCE vulnerabilities since resolved in newer versions
 - Various transitive dependencies of `@stencil/core@2.1.1`
 
-**Fix:** 
+**Fix:**
+
 - Upgrade puppeteer to latest (`npx npm-check-updates -u puppeteer`)
 - Upgrade `@stencil/core` to v4.x (may require migration work)
 - Run `npm audit fix` for auto-fixable issues
@@ -58,7 +62,8 @@ The critical/high vulnerabilities come primarily from:
 
 High vulnerabilities concentrated in build tooling and test dependencies. Less impactful than frontend since these are dev-only in many cases.
 
-**Fix:** 
+**Fix:**
+
 - Run `npm audit fix`
 - Upgrade `typescript` and dev tooling
 
@@ -71,6 +76,7 @@ High vulnerabilities concentrated in build tooling and test dependencies. Less i
 **Location:** pizzabase `src/app.ts`, `src/routes.ts`
 
 The following public endpoints have no rate limiting:
+
 - `POST /report` — could be spammed to create fake reports
 - `POST /upload` — uploads controller has rate limiting on S3 presigned URL generation, but it's app-level, not infrastructure-level
 - `GET /orders`, `GET /totals`, `GET /trucks` — no rate limiting on these read endpoints
@@ -84,15 +90,17 @@ There is **no `express-rate-limit` or similar middleware** in the Express app. T
 **Location:** polls.pizza (no CSP headers configured)
 
 The frontend does not set any Content-Security-Policy headers. This leaves the site vulnerable to XSS attacks even if the codebase is otherwise clean. The site loads:
+
 - Google Maps API (third-party script, necessary)
 - Stripe.js (third-party script, necessary for payments)
 - Inline scripts for initial state
 
 **Fix:** Add a CSP header that allows known third-party sources:
+
 ```
-Content-Security-Policy: default-src 'self'; 
-  script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://js.stripe.com; 
-  frame-src https://js.stripe.com; 
+Content-Security-Policy: default-src 'self';
+  script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://js.stripe.com;
+  frame-src https://js.stripe.com;
   connect-src 'self' https://base-next.polls.pizza https://api.stripe.com
 ```
 
@@ -103,6 +111,7 @@ Content-Security-Policy: default-src 'self';
 **Location:** polls.pizza `src/components/page-session/page-session.tsx`
 
 Session tokens are passed via URL route parameters (`/session/:token`). This means:
+
 - Tokens appear in browser history
 - Tokens are logged in server access logs
 - Tokens can be leaked via `Referer` headers
@@ -116,8 +125,9 @@ Session tokens are passed via URL route parameters (`/session/:token`). This mea
 The CORS middleware configuration needs verification. Check that the allowed origins are restricted to `https://polls.pizza` in production, not `*`.
 
 **Fix:** Verify `src/app.ts` reads allowed origins from environment:
+
 ```typescript
-cors({ origin: process.env.CORS_ORIGIN || "https://polls.pizza" })
+cors({ origin: process.env.CORS_ORIGIN || "https://polls.pizza" });
 ```
 
 ---
@@ -127,6 +137,7 @@ cors({ origin: process.env.CORS_ORIGIN || "https://polls.pizza" })
 ### 8. Stripe Test Key in .env.example
 
 **Location:** polls.pizza `.env.example`
+
 ```
 STRIPE_PUBLIC_KEY=pk_test_YCa5It9RFIu9vLPZSmRcTKYD
 ```
@@ -168,15 +179,18 @@ These were checked and found to be secure:
 ## Recommendations by Priority
 
 1. **Immediate (this week):**
+
    - Fix JWT secret fallback (Critical #1) — 5 minute fix
    - Run `npm audit fix` on both repos
 
 2. **Short-term (this sprint):**
+
    - Add `express-rate-limit` to pizzabase
    - Add CSP headers to polls.pizza
    - Verify production CORS origins
 
 3. **Medium-term (next sprint):**
+
    - Upgrade puppeteer and @stencil/core on frontend
    - Replace session tokens in URLs with POST-based flow
    - Rotate Stripe test key
