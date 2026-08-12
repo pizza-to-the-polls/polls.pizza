@@ -138,7 +138,7 @@ export class UiAddressInput {
           componentRestrictions: { country: "us" },
         });
 
-        this.autocomplete.addListener("place_changed", () => {
+        this.autocomplete!.addListener("place_changed", () => {
           const autocomplete = this.autocomplete!;
           const place = autocomplete.getPlace();
           this.place = place;
