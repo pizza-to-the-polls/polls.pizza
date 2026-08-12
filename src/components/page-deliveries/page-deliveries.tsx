@@ -106,6 +106,8 @@ const OrderAndTruckInfoList: FunctionalComponent<{
 export class PageDeliveries {
   /** PTP no longer operates food trucks; hide them if the newest truck is > 3 months old */
   private static readonly TRUCK_VISIBILITY_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 90; // 90 days
+  /** Bound retry attempts for the warming-up auto-retry loop */
+  private static readonly MAX_RETRY_ATTEMPTS = 5;
 
   @Prop() public history!: RouterHistory;
   @Prop() public match!: MatchResults;
@@ -126,9 +128,6 @@ export class PageDeliveries {
   @State() private isLoadingTrucks: boolean = true;
   @State() private showWarmingUp: boolean = false;
   private retryAttempts: number = 0;
-  /** PTP no longer operates food trucks; hide them if the newest truck is > 3 months old */
-  private static readonly TRUCK_VISIBILITY_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 90; // 90 days
-  private static readonly MAX_RETRY_ATTEMPTS = 5;
 
   constructor() {
     this.selectedFood = FoodChoice.all;
