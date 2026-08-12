@@ -18,14 +18,17 @@ const ReportLink = () => <stencil-route-link url="/report">Make a report</stenci
 const FoodChoices: FunctionalComponent<{
   selected: FoodChoice;
   onSelected: (option: FoodChoice) => void;
-}> = ({ selected, onSelected }) => (
+  showTrucks?: boolean;
+}> = ({ selected, onSelected, showTrucks = true }) => (
   <div class="food-choices">
     <ul>
-      {(Object.values(FoodChoice) as FoodChoice[]).map(x => (
-        <li class={{ selected: selected === x }} onClick={() => onSelected(x)}>
-          {x}
-        </li>
-      ))}
+      {(Object.values(FoodChoice) as FoodChoice[])
+        .filter(x => showTrucks || x !== FoodChoice.trucks)
+        .map(x => (
+          <li class={{ selected: selected === x }} onClick={() => onSelected(x)}>
+            {x}
+          </li>
+        ))}
     </ul>
   </div>
 );
@@ -101,6 +104,9 @@ const OrderAndTruckInfoList: FunctionalComponent<{
   shadow: false,
 })
 export class PageDeliveries {
+  /** PTP no longer operates food trucks; hide them if the newest truck is > 3 months old */
+  private static readonly TRUCK_VISIBILITY_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 90; // 90 days
+
   @Prop() public history!: RouterHistory;
   @Prop() public match!: MatchResults;
 
@@ -115,6 +121,7 @@ export class PageDeliveries {
   @State() private recentOrders?: OrderDetails[];
   @State() private recentTrucks?: TruckInfo[];
   @State() private mapZoom: number;
+  @State() private hasRecentTrucks: boolean = false;
 
   constructor() {
     this.selectedFood = FoodChoice.all;
@@ -128,7 +135,12 @@ export class PageDeliveries {
 
     if (Build.isBrowser) {
       PizzaApi.getOrders().then(orders => (this.recentOrders = orders.results));
-      PizzaApi.getTrucks(true).then(trucks => (this.recentTrucks = trucks.results));
+      PizzaApi.getTrucks(true).then(trucks => {
+        this.recentTrucks = trucks.results;
+        // Hide trucks if the newest truck is older than the visibility threshold
+        const cutoff = Date.now() - PageDeliveries.TRUCK_VISIBILITY_THRESHOLD_MS;
+        this.hasRecentTrucks = trucks.results.some(t => Number(t.createdAt) > cutoff);
+      });
     }
   }
 
@@ -144,7 +156,12 @@ export class PageDeliveries {
   public hashChanged() {
     const choice: FoodChoice | undefined = (FoodChoice as any)[window.location.hash.replace("#", "")];
     if (choice != null) {
-      this.selectedFood = choice == null ? FoodChoice.all : choice;
+      // Don't allow switching to trucks if they're hidden
+      if (choice === FoodChoice.trucks && !this.hasRecentTrucks) {
+        this.selectedFood = FoodChoice.all;
+      } else {
+        this.selectedFood = choice;
+      }
     }
   }
 
@@ -195,7 +212,9 @@ export class PageDeliveries {
   }
 
   public render() {
-    const { mapCenterPoint, mapZoom, selectedAddress, selectedFood, selectedLocation, selectedOrder } = this;
+    const { mapCenterPoint, mapZoom, selectedAddress, selectedFood: rawFood, selectedLocation, selectedOrder, hasRecentTrucks } = this;
+    // Clamp food choice: if trucks are hidden, never show truck-only view
+    const selectedFood = !hasRecentTrucks && rawFood === FoodChoice.trucks ? FoodChoice.all : rawFood;
     const now = new Date();
     const orderFilter = (order: OrderDetails | null) =>
       order == null || order.cancelledAt || selectedFood === FoodChoice.all || (selectedFood === FoodChoice.pizza && order.orderType === OrderTypes.pizzas);
@@ -244,7 +263,7 @@ export class PageDeliveries {
       .filter(orderFilter)
       .slice(0, 10)
       .map(x => ({ type: "pizza", data: x } as OrderOrTruckItem));
-    const trucks = (this.recentTrucks != null && (selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks) ? this.recentTrucks : [])
+    const trucks = (hasRecentTrucks && this.recentTrucks != null && (selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks) ? this.recentTrucks : [])
       .slice(0, 10)
       .map(x => ({ type: "truck", data: x } as OrderOrTruckItem));
 
@@ -289,7 +308,7 @@ export class PageDeliveries {
                 />
               </Fragment>
             )}
-            <FoodChoices selected={selectedFood} onSelected={x => (this.selectedFood = x)} />
+            <FoodChoices selected={selectedFood} onSelected={x => (this.selectedFood = x)} showTrucks={hasRecentTrucks} />
             <div id="deliveries-map-container" class={{ "is-single-location": selectedAddress != null }}>
               <ui-geo-map
                 center={mapCenterPoint}
@@ -307,7 +326,7 @@ export class PageDeliveries {
                     : undefined
                 }
                 trucks={
-                  selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks
+                  hasRecentTrucks && (selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks)
                     ? this.recentTrucks?.slice(0, 50).map(x => ({
                         coords: {
                           lat: parseFloat(x.location.lat),
