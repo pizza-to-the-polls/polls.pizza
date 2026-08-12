@@ -133,7 +133,13 @@ export class UiAddressInput {
       }
 
       try {
-        this.autocomplete = new gmaps.maps.places.Autocomplete(el, {
+        const PlacesAutocomplete = gmaps?.maps?.places?.Autocomplete;
+        if (PlacesAutocomplete == null) {
+          this.initializing = false;
+          this.scheduleRetry("Google Maps Places API not ready on retry");
+          return;
+        }
+        this.autocomplete = new PlacesAutocomplete(el, {
           types: ["geocode", "establishment"],
           componentRestrictions: { country: "us" },
         });
