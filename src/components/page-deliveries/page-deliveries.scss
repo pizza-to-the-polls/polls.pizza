@@ -121,4 +121,30 @@ page-deliveries {
       padding: 0.25rem 0.5rem;
     }
   }
+
+  .skeleton-item {
+    .loading-line {
+      height: 12px;
+      background: $gray2;
+      animation: pulse 1s infinite ease-in-out;
+      border-radius: 4px;
+      margin: 6px 0;
+    }
+    .loading-line-sm {
+      height: 8px;
+      width: 40%;
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    background-color: rgba(165, 165, 165, 0.2);
+  }
+  50% {
+    background-color: rgba(165, 165, 165, 0.4);
+  }
+  100% {
+    background-color: rgba(165, 165, 165, 0.2);
+  }
 }
