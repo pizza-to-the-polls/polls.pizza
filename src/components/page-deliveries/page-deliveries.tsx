@@ -104,6 +104,9 @@ const OrderAndTruckInfoList: FunctionalComponent<{
   shadow: false,
 })
 export class PageDeliveries {
+  /** PTP no longer operates food trucks; hide them if the newest truck is > 3 months old */
+  private static readonly TRUCK_VISIBILITY_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 90; // 90 days
+
   @Prop() public history!: RouterHistory;
   @Prop() public match!: MatchResults;
 
@@ -119,9 +122,6 @@ export class PageDeliveries {
   @State() private recentTrucks?: TruckInfo[];
   @State() private mapZoom: number;
   @State() private hasRecentTrucks: boolean = false;
-
-  /** PTP no longer operates food trucks; hide them if the newest truck is > 3 months old */
-  private static readonly TRUCK_VISIBILITY_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 90; // 90 days
 
   constructor() {
     this.selectedFood = FoodChoice.all;
