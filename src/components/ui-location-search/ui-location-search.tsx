@@ -19,7 +19,7 @@ export class UiLocationSearch {
     const initAutoComplete = () => {
       const autocompleteInput = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
 
-      if (!window.google || !autocompleteInput) {
+      if (!window.google?.maps?.places?.Autocomplete || !autocompleteInput) {
         return setTimeout(initAutoComplete, 10);
       }
 
