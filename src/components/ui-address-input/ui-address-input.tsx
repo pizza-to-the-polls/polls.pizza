@@ -74,6 +74,28 @@ export class UiAddressInput {
     }
   }
 
+  public render() {
+    return (
+      <ui-single-input
+        ref={(x?: HTMLUiSingleInputElement) => (this.inputElement = x)}
+        label={this.label}
+        buttonLabel={this.buttonLabel}
+        placeholder={this.placeholder}
+        name={this.name}
+        onButtonClicked={e => {
+          const evt = this.addressSelected.emit({
+            address: e.detail,
+            lat: this.place?.geometry?.location.lat() || 0,
+            lng: this.place?.geometry?.location.lng() || 0,
+          });
+          if (evt.defaultPrevented) {
+            e.preventDefault();
+          }
+        }}
+      />
+    );
+  }
+
   private initAutocomplete() {
     if (!Build.isBrowser) {
       return;
@@ -143,27 +165,5 @@ export class UiAddressInput {
     this.retryTimer = window.setTimeout(() => {
       this.initAutocomplete();
     }, RETRY_DELAY_MS);
-  }
-
-  public render() {
-    return (
-      <ui-single-input
-        ref={(x?: HTMLUiSingleInputElement) => (this.inputElement = x)}
-        label={this.label}
-        buttonLabel={this.buttonLabel}
-        placeholder={this.placeholder}
-        name={this.name}
-        onButtonClicked={e => {
-          const evt = this.addressSelected.emit({
-            address: e.detail,
-            lat: this.place?.geometry?.location.lat() || 0,
-            lng: this.place?.geometry?.location.lng() || 0,
-          });
-          if (evt.defaultPrevented) {
-            e.preventDefault();
-          }
-        }}
-      />
-    );
   }
 }
