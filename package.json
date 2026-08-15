@@ -10,8 +10,8 @@
   },
   "scripts": {
     "dev": "stencil build --dev --watch --serve",
-    "build": "npm run clean && npm run lint && stencil build --prod --no-cache --prerender",
-    "bugsnag": "bugsnag-source-maps upload-browser  --overwrite --api-key $BUGSNAG_KEY --directory dist/www --base-url https://polls.pizza",
+    "build": "npm run clean && npm run lint && stencil build --prod --no-cache --prerender && node scripts/ensure-sourcemap-links.mjs",
+    "bugsnag": "bugsnag-source-maps upload-browser --overwrite --api-key $BUGSNAG_KEY --directory dist/www --base-url ${ROOT_URL:-https://polls.pizza}",
     "clean": "rimraf dist/www",
     "start": "npm run dev",
     "fix": "npm run prettier:fix && npm run lint:fix",
