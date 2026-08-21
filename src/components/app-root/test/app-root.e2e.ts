@@ -38,9 +38,9 @@ describe("app-root component-load guard", () => {
     if (opts.recentRetry) {
       // A recent retry timestamp suppresses the "reload" fallback and makes
       // the guard choose the banner instead.
-      await page.evaluate(() => {
-        sessionStorage.setItem("pizza:chunk-retry", String(Date.now()));
-      });
+      await page.evaluate((key: string) => {
+        sessionStorage.setItem(key, String(Date.now()));
+      }, RETRY_KEY);
     }
 
     return page;
