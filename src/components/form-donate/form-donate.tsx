@@ -31,7 +31,7 @@ export class FormDonate {
     }
   }
 
-  public async donate(amount: number) {
+  private async donate(amount: number) {
     this.error = null;
     try {
       const extra: { referrer?: string; url?: string } = { referrer: this.referral };
@@ -41,11 +41,11 @@ export class FormDonate {
       await PizzaApi.postDonation(this.donationType, amount, extra);
     } catch (e) {
       console.error(e);
-      this.showError(e.message || PizzaApi.genericErrorMessage);
+      this.showError((e as Error).message || PizzaApi.genericErrorMessage);
     }
   }
 
-  public showError(error: string) {
+  private showError(error: string) {
     this.error = error;
   }
 

@@ -160,6 +160,11 @@ class PizzaApi {
         .then(function (result: any) {
           console.error(result.error.message);
           throw new Error(result.error.message);
+        })
+        .catch(function () {
+          // Floating promise: when redirectToCheckout succeeds the browser
+          // navigates away; swallow rejections so they don't surface as
+          // unhandled errors in the page.
         });
     } else {
       if (message) {

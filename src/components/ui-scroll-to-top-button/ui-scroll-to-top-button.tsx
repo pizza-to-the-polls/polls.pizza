@@ -8,8 +8,8 @@ import { debounce, scrollPageToTop } from "../../util";
   shadow: true,
 })
 export class UiScrollToTopButton {
-  public static readonly LONG_PAGE_THRESHOLD: number = 2200;
-  public static readonly SCROLL_TOP_THRESHOLD: number = 300;
+  private static readonly LONG_PAGE_THRESHOLD: number = 2200;
+  private static readonly SCROLL_TOP_THRESHOLD: number = 300;
 
   @State() private showBackToTop: boolean;
 

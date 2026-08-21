@@ -1,6 +1,4 @@
 import { Build, Component, Event, EventEmitter, h, Host, Prop, State } from "@stencil/core";
-// @ts-ignore
-import {} from "googlemaps";
 
 @Component({
   tag: "ui-location-search",
@@ -15,7 +13,7 @@ export class UiLocationSearch {
   @State() public locationName: string = "";
   @Event() public locationSelected!: EventEmitter<{ formattedAddress: string; locationName: string }>;
 
-  public componentDidRender() {
+  public componentDidLoad() {
     const initAutoComplete = () => {
       const autocompleteInput = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
 
@@ -58,7 +56,7 @@ export class UiLocationSearch {
 
         const premise = document.getElementById(`premise-${this.inputId}`) as HTMLInputElement;
         if (premise) {
-          premise.value = place.name;
+          premise.value = place.name || "";
         }
 
         // Get readable address (either name or the address; remove USA)

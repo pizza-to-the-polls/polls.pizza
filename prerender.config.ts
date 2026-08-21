@@ -1,11 +1,9 @@
 import { PrerenderConfig } from "@stencil/core";
 
 export const config: PrerenderConfig = {
-  hydrateOptions(url) {
+  hydrateOptions(_url: URL) {
     return {
       prettyHtml: true,
-      staticSite: true,
-      trailingSlash: false,
     };
   },
 };

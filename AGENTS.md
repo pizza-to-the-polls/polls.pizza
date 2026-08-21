@@ -12,7 +12,7 @@ This file contains pointers for coding agents working in this repo.
 - **TypeScript** — strict mode enabled
 - **Puppeteer** — E2E tests via `@stencil/core/testing`
 - **Prettier** — formatting
-- **tslint** — legacy linting (this project predates ESLint adoption)
+- **ESLint** — modern linting with `@stencil/eslint-plugin` and `typescript-eslint`
 - **Jest** — spec tests (used sparingly)
 - **Sass** — styles, injected globals from `styles/include/`
 - **Stripe** — payments (redirect-to-checkout flow, no elements)
@@ -20,7 +20,7 @@ This file contains pointers for coding agents working in this repo.
 ## Important Conventions
 
 1. **Always run `npm run fix` before committing.**
-   This runs prettier + tslint --fix. The `npm run ci` command enforces both.
+   This runs prettier + eslint --fix. The `npm run ci` command enforces both.
 
 2. **E2E tests are the primary test style.**
    Use `newE2EPage()` from `@stencil/core/testing`. Spec tests with `newSpecPage` exist but are rare.

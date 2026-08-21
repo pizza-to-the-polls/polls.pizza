@@ -14,7 +14,9 @@
   font-weight: 600;
   white-space: nowrap;
   text-decoration: none;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
 
   strong {
     color: inherit;

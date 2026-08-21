@@ -1,6 +1,4 @@
 import { Build, Component, Event, EventEmitter, h, Prop, Watch } from "@stencil/core";
-// @ts-ignore
-import {} from "googlemaps";
 
 import { LocationId } from "../../api";
 
@@ -90,7 +88,7 @@ export class UiGeoMap {
 
   private modifyMarkers(type: "pizza" | "truck", existingMarkers: google.maps.Marker[], newMarkers: { coords: google.maps.LatLngLiteral; id: LocationId }[]) {
     let index = 0;
-    for (let newMarker of newMarkers) {
+    for (const newMarker of newMarkers) {
       // create a new marker if we've received a location beyond our current marker count
       if (index > existingMarkers.length - 1) {
         const m = new google.maps.Marker({

@@ -4,7 +4,7 @@ import { OrderDetails } from "../../api";
 import { locationURL } from "../../util";
 import { formatDateTime } from "../../util";
 
-const capitalize = (word: string): String => `${word.slice(0, 1).toUpperCase()}${word.slice(1, word.length)}`;
+const capitalize = (word: string): string => `${word.slice(0, 1).toUpperCase()}${word.slice(1, word.length)}`;
 
 const Delivery = ({ order }: { order: OrderDetails }) => (
   <div class="delivery">

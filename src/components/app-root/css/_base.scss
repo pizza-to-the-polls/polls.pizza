@@ -37,7 +37,9 @@ body {
 a {
   color: $red;
   text-decoration: underline;
-  transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  transition:
+    color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
 
   &:not(.button) {
     font-weight: 600;
