@@ -38,7 +38,7 @@ export class PageGift {
     }
   }
 
-  public async donate(amount: number) {
+  private async donate(amount: number) {
     this.error = null;
     try {
       await PizzaApi.postDonation("donation", amount, {
@@ -48,11 +48,11 @@ export class PageGift {
       });
     } catch (e) {
       console.error(e);
-      this.showError(e.message || PizzaApi.genericErrorMessage);
+      this.showError((e as Error).message || PizzaApi.genericErrorMessage);
     }
   }
 
-  public showError(error: string) {
+  private showError(error: string) {
     this.error = error;
   }
 

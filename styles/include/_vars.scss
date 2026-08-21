@@ -93,13 +93,31 @@ $under-desktop: "max-width: 1023px";
 $under-widescreen: "max-width: 1407px";
 
 // Fonts
-$logo-font: "Fredoka", -apple-system, BlinkMacSystemFont, sans-serif;
-$header-font: "Chivo", -apple-system, BlinkMacSystemFont, sans-serif;
-$body-font: "Work Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-$body-font: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+$logo-font:
+  "Fredoka",
+  -apple-system,
+  BlinkMacSystemFont,
+  sans-serif;
+$header-font:
+  "Chivo",
+  -apple-system,
+  BlinkMacSystemFont,
+  sans-serif;
+$body-font:
+  "Work Sans",
+  -apple-system,
+  BlinkMacSystemFont,
+  sans-serif;
+$body-font:
+  "Inter",
+  -apple-system,
+  BlinkMacSystemFont,
+  sans-serif;
 
 // Element properties
 $radius: 16px; // Default border-radius
 $radius-rounded: 290486px; // Rounded border-radius
 $border-color: $gray2;
-$box-shadow: 0 0.5em 1em -0.125em rgba($black, 0.1), 0 0px 0 1px rgba($black, 0.02);
+$box-shadow:
+  0 0.5em 1em -0.125em rgba($black, 0.1),
+  0 0px 0 1px rgba($black, 0.02);

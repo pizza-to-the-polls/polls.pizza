@@ -1,5 +1,3 @@
 dist/
 src/components.d.ts
 .github
-tsconfig.json
-tslint.json

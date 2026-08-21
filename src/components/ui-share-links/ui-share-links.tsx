@@ -19,7 +19,7 @@ export class UiShareLinks {
 
     if (Build.isBrowser) {
       // Determine if `navigator.share` is supported in browser (native device sharing)
-      this.canNativeShare = navigator && navigator.share ? true : false;
+      this.canNativeShare = typeof navigator.share === "function";
     }
   }
 
@@ -43,7 +43,7 @@ export class UiShareLinks {
     };
 
     // Fallback if native sharing is not available
-    let metaDescription = document.querySelector("meta[name='description']");
+    const metaDescription = document.querySelector("meta[name='description']");
     let shareDescription = "";
     if (metaDescription) {
       shareDescription = metaDescription.getAttribute("content") || "";

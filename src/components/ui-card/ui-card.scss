@@ -83,7 +83,9 @@ ui-card {
       border-color: $blue;
       right: 0;
       z-index: 4;
-      transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
+      transition:
+        transform 0.2s ease-in-out,
+        border-color 0.2s ease-in-out;
     }
 
     &.is-active {

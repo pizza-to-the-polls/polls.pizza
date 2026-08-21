@@ -32,17 +32,17 @@ export class PageCrustclub {
     }
   }
 
-  public async donate(amount: number) {
+  private async donate(amount: number) {
     this.error = null;
     try {
       await PizzaApi.postDonation("subscription", amount, { referrer: this.referral });
     } catch (e) {
       console.error(e);
-      this.showError(e.message || PizzaApi.genericErrorMessage);
+      this.showError((e as Error).message || PizzaApi.genericErrorMessage);
     }
   }
 
-  public showError(error: string) {
+  private showError(error: string) {
     this.error = error;
   }
 

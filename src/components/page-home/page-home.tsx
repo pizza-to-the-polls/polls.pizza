@@ -70,8 +70,8 @@ export class PageHome {
                   (window?.document?.body?.clientWidth || 0) < 400
                     ? "Long line? We'll send pizza!"
                     : (window?.document?.body?.clientWidth || 0) < 600
-                    ? "Long line at polling site? We'll send pizza!"
-                    : "Long line at a polling site? Let us know where - we’ll send pizza!"
+                      ? "Long line at polling site? We'll send pizza!"
+                      : "Long line at a polling site? Let us know where - we’ll send pizza!"
                 }
                 onLocationSelected={handleLocationSelected}
                 inputId="homepage"
@@ -120,24 +120,21 @@ export class PageHome {
                 img: "/images/press/cnn.png",
                 alt: "CNN",
                 headline: "Pizza to the Polls aims to feed hungry 2020 voters stuck in long lines",
-                body:
-                  "A staple at birthday parties, bar crawls and bowling, few foods bring Americans together like pizza. And this election season, a new group aims to bring America’s favorite pie to those stuck waiting in long lines.",
+                body: "A staple at birthday parties, bar crawls and bowling, few foods bring Americans together like pizza. And this election season, a new group aims to bring America’s favorite pie to those stuck waiting in long lines.",
               },
               {
                 link: "https://www.buzzfeednews.com/article/skbaer/long-lines-election-day-2020",
                 img: "/images/press/buzzfeed.png",
                 alt: "Buzzfeed News",
                 headline: "What To Do If You’re Stuck In A Line At Your Polling Place On Election Day",
-                body:
-                  "The big neon sign is: If you are in line when polls close, you must be allowed to vote, so don’t get out of line no matter what anybody around you tells you.",
+                body: "The big neon sign is: If you are in line when polls close, you must be allowed to vote, so don’t get out of line no matter what anybody around you tells you.",
               },
               {
                 link: "https://www.oprahdaily.com/life/a34483172/pizza-to-the-polls-long-lines/",
                 img: "/images/press/oprah.png",
                 alt: "Opra",
                 headline: "Pizza to the Polls is fueling democracy—one slice at a time.",
-                body:
-                  "Picture it: You slip away from your office—or work-from-home setup—at lunchtime during early voting or on Election Day to cast your ballot, but the line at your polling site is out the door and down the block.",
+                body: "Picture it: You slip away from your office—or work-from-home setup—at lunchtime during early voting or on Election Day to cast your ballot, but the line at your polling site is out the door and down the block.",
               },
             ].map(({ img, alt, link, body, headline }) => (
               <div class="story">

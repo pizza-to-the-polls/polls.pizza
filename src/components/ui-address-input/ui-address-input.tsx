@@ -63,10 +63,6 @@ export class UiAddressInput {
     this.initAutocomplete();
   }
 
-  public componentDidRender() {
-    this.initAutocomplete();
-  }
-
   public disconnectedCallback() {
     if (this.retryTimer != null) {
       clearTimeout(this.retryTimer);
@@ -85,8 +81,8 @@ export class UiAddressInput {
         onButtonClicked={e => {
           const evt = this.addressSelected.emit({
             address: e.detail,
-            lat: this.place?.geometry?.location.lat() || 0,
-            lng: this.place?.geometry?.location.lng() || 0,
+            lat: this.place?.geometry?.location?.lat() || 0,
+            lng: this.place?.geometry?.location?.lng() || 0,
           });
           if (evt.defaultPrevented) {
             e.preventDefault();

@@ -5,17 +5,24 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { LocationSegments, MatchResults, RouterHistory } from "@stencil/router";
+import { MatchResults, RouterHistory } from "@stencil/router";
 import { LocationId } from "./api";
+export { MatchResults, RouterHistory } from "@stencil/router";
+export { LocationId } from "./api";
 export namespace Components {
     interface AppRoot {
-        "location": LocationSegments | undefined;
     }
     interface FormDonate {
         "initialAmount"?: number | null;
+        /**
+          * @default "donation"
+         */
         "initialDonationType": string;
         "redirectURL"?: string | null;
         "referral"?: string;
+        /**
+          * @default false
+         */
         "showConfirmation": boolean;
     }
     interface FormReport {
@@ -69,6 +76,10 @@ export namespace Components {
     }
     interface PageVaxAndSnacks {
     }
+    /**
+     * Auto-complete input for street addresses using the Google Maps Places API.
+     * Retries mounting if the input element or Google Maps API isn't ready yet.
+     */
     interface UiAddressInput {
         "buttonLabel": string;
         "label": string;
@@ -85,6 +96,9 @@ export namespace Components {
          */
         "scrollId"?: string;
     }
+    /**
+     * Displays a provided `value` or a loading bar if `null`-like
+     */
     interface UiDynamicText {
         "format"?: (value: any /*T*/) => string;
         "value": any | /*T*/ undefined;
@@ -99,15 +113,36 @@ export namespace Components {
     interface UiGuidelines {
     }
     interface UiLocationSearch {
+        /**
+          * @default null
+         */
         "error": string | null;
+        /**
+          * @default `${Math.round(new Date().getTime() * Math.random() * 9999)}`
+         */
         "inputId": string;
+        /**
+          * @default "ex. St. John's Library"
+         */
         "placeholder": string;
+        /**
+          * @default false
+         */
         "readOnly": boolean;
     }
+    /**
+     * Container for the main content section between the top nav and the footer (see app-root.tsx)
+     */
     interface UiMainContent {
+        /**
+          * @default "center-card"
+         */
         "pageType": "full-bleed" | "center-card" | "no-bg";
     }
     interface UiModal {
+        /**
+          * @default false
+         */
         "isActive": boolean;
     }
     interface UiPizzaList {
@@ -131,6 +166,26 @@ export namespace Components {
         "setValue": (value: string) => Promise<void>;
         "type": string;
     }
+}
+export interface UiAddressInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLUiAddressInputElement;
+}
+export interface UiGeoMapCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLUiGeoMapElement;
+}
+export interface UiLocationSearchCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLUiLocationSearchElement;
+}
+export interface UiModalCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLUiModalElement;
+}
+export interface UiSingleInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLUiSingleInputElement;
 }
 declare global {
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
@@ -271,7 +326,22 @@ declare global {
         prototype: HTMLPageVaxAndSnacksElement;
         new (): HTMLPageVaxAndSnacksElement;
     };
+    interface HTMLUiAddressInputElementEventMap {
+        "addressSelected": { address: string; lat: number; lng: number };
+    }
+    /**
+     * Auto-complete input for street addresses using the Google Maps Places API.
+     * Retries mounting if the input element or Google Maps API isn't ready yet.
+     */
     interface HTMLUiAddressInputElement extends Components.UiAddressInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLUiAddressInputElementEventMap>(type: K, listener: (this: HTMLUiAddressInputElement, ev: UiAddressInputCustomEvent<HTMLUiAddressInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLUiAddressInputElementEventMap>(type: K, listener: (this: HTMLUiAddressInputElement, ev: UiAddressInputCustomEvent<HTMLUiAddressInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLUiAddressInputElement: {
         prototype: HTMLUiAddressInputElement;
@@ -283,13 +353,31 @@ declare global {
         prototype: HTMLUiCardElement;
         new (): HTMLUiCardElement;
     };
+    /**
+     * Displays a provided `value` or a loading bar if `null`-like
+     */
     interface HTMLUiDynamicTextElement extends Components.UiDynamicText, HTMLStencilElement {
     }
     var HTMLUiDynamicTextElement: {
         prototype: HTMLUiDynamicTextElement;
         new (): HTMLUiDynamicTextElement;
     };
+    interface HTMLUiGeoMapElementEventMap {
+        "markerSelected": {
+    type: "pizza" | "truck";
+    coords: google.maps.LatLngLiteral;
+    location: LocationId;
+  };
+    }
     interface HTMLUiGeoMapElement extends Components.UiGeoMap, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLUiGeoMapElementEventMap>(type: K, listener: (this: HTMLUiGeoMapElement, ev: UiGeoMapCustomEvent<HTMLUiGeoMapElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLUiGeoMapElementEventMap>(type: K, listener: (this: HTMLUiGeoMapElement, ev: UiGeoMapCustomEvent<HTMLUiGeoMapElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLUiGeoMapElement: {
         prototype: HTMLUiGeoMapElement;
@@ -301,19 +389,44 @@ declare global {
         prototype: HTMLUiGuidelinesElement;
         new (): HTMLUiGuidelinesElement;
     };
+    interface HTMLUiLocationSearchElementEventMap {
+        "locationSelected": { formattedAddress: string; locationName: string };
+    }
     interface HTMLUiLocationSearchElement extends Components.UiLocationSearch, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLUiLocationSearchElementEventMap>(type: K, listener: (this: HTMLUiLocationSearchElement, ev: UiLocationSearchCustomEvent<HTMLUiLocationSearchElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLUiLocationSearchElementEventMap>(type: K, listener: (this: HTMLUiLocationSearchElement, ev: UiLocationSearchCustomEvent<HTMLUiLocationSearchElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLUiLocationSearchElement: {
         prototype: HTMLUiLocationSearchElement;
         new (): HTMLUiLocationSearchElement;
     };
+    /**
+     * Container for the main content section between the top nav and the footer (see app-root.tsx)
+     */
     interface HTMLUiMainContentElement extends Components.UiMainContent, HTMLStencilElement {
     }
     var HTMLUiMainContentElement: {
         prototype: HTMLUiMainContentElement;
         new (): HTMLUiMainContentElement;
     };
+    interface HTMLUiModalElementEventMap {
+        "requestClose": any;
+    }
     interface HTMLUiModalElement extends Components.UiModal, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLUiModalElementEventMap>(type: K, listener: (this: HTMLUiModalElement, ev: UiModalCustomEvent<HTMLUiModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLUiModalElementEventMap>(type: K, listener: (this: HTMLUiModalElement, ev: UiModalCustomEvent<HTMLUiModalElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLUiModalElement: {
         prototype: HTMLUiModalElement;
@@ -337,7 +450,18 @@ declare global {
         prototype: HTMLUiShareLinksElement;
         new (): HTMLUiShareLinksElement;
     };
+    interface HTMLUiSingleInputElementEventMap {
+        "buttonClicked": string;
+    }
     interface HTMLUiSingleInputElement extends Components.UiSingleInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLUiSingleInputElementEventMap>(type: K, listener: (this: HTMLUiSingleInputElement, ev: UiSingleInputCustomEvent<HTMLUiSingleInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLUiSingleInputElementEventMap>(type: K, listener: (this: HTMLUiSingleInputElement, ev: UiSingleInputCustomEvent<HTMLUiSingleInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLUiSingleInputElement: {
         prototype: HTMLUiSingleInputElement;
@@ -383,13 +507,18 @@ declare global {
 }
 declare namespace LocalJSX {
     interface AppRoot {
-        "location"?: LocationSegments | undefined;
     }
     interface FormDonate {
         "initialAmount"?: number | null;
+        /**
+          * @default "donation"
+         */
         "initialDonationType"?: string;
         "redirectURL"?: string | null;
         "referral"?: string;
+        /**
+          * @default false
+         */
         "showConfirmation"?: boolean;
     }
     interface FormReport {
@@ -443,11 +572,15 @@ declare namespace LocalJSX {
     }
     interface PageVaxAndSnacks {
     }
+    /**
+     * Auto-complete input for street addresses using the Google Maps Places API.
+     * Retries mounting if the input element or Google Maps API isn't ready yet.
+     */
     interface UiAddressInput {
         "buttonLabel"?: string;
         "label"?: string;
         "name"?: string;
-        "onAddressSelected"?: (event: CustomEvent<{ address: string; lat: number; lng: number }>) => void;
+        "onAddressSelected"?: (event: UiAddressInputCustomEvent<{ address: string; lat: number; lng: number }>) => void;
         "placeholder"?: string;
     }
     interface UiCard {
@@ -460,6 +593,9 @@ declare namespace LocalJSX {
          */
         "scrollId"?: string;
     }
+    /**
+     * Displays a provided `value` or a loading bar if `null`-like
+     */
     interface UiDynamicText {
         "format"?: (value: any /*T*/) => string;
         "value"?: any | /*T*/ undefined;
@@ -468,7 +604,7 @@ declare namespace LocalJSX {
         "center"?: google.maps.LatLngLiteral;
         "currentAddress"?: string;
         "deliveries"?: { coords: google.maps.LatLngLiteral; id: LocationId }[];
-        "onMarkerSelected"?: (event: CustomEvent<{
+        "onMarkerSelected"?: (event: UiGeoMapCustomEvent<{
     type: "pizza" | "truck";
     coords: google.maps.LatLngLiteral;
     location: LocationId;
@@ -479,18 +615,39 @@ declare namespace LocalJSX {
     interface UiGuidelines {
     }
     interface UiLocationSearch {
+        /**
+          * @default null
+         */
         "error"?: string | null;
+        /**
+          * @default `${Math.round(new Date().getTime() * Math.random() * 9999)}`
+         */
         "inputId"?: string;
-        "onLocationSelected"?: (event: CustomEvent<{ formattedAddress: string; locationName: string }>) => void;
+        "onLocationSelected"?: (event: UiLocationSearchCustomEvent<{ formattedAddress: string; locationName: string }>) => void;
+        /**
+          * @default "ex. St. John's Library"
+         */
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "readOnly"?: boolean;
     }
+    /**
+     * Container for the main content section between the top nav and the footer (see app-root.tsx)
+     */
     interface UiMainContent {
+        /**
+          * @default "center-card"
+         */
         "pageType"?: "full-bleed" | "center-card" | "no-bg";
     }
     interface UiModal {
+        /**
+          * @default false
+         */
         "isActive"?: boolean;
-        "onRequestClose"?: (event: CustomEvent<any>) => void;
+        "onRequestClose"?: (event: UiModalCustomEvent<any>) => void;
     }
     interface UiPizzaList {
         "hasIcon"?: boolean;
@@ -507,14 +664,73 @@ declare namespace LocalJSX {
         "buttonLabel"?: string;
         "label"?: string;
         "name"?: string;
-        "onButtonClicked"?: (event: CustomEvent<string>) => void;
+        "onButtonClicked"?: (event: UiSingleInputCustomEvent<string>) => void;
         "placeholder"?: string;
         "type"?: string;
     }
+
+    interface FormDonateAttributes {
+        "referral": string;
+        "showConfirmation": boolean;
+        "initialDonationType": string;
+        "initialAmount": number | null;
+        "redirectURL": string | null;
+    }
+    interface FormReportAttributes {
+        "formattedAddress": string;
+    }
+    interface UiAddressInputAttributes {
+        "label": string;
+        "buttonLabel": string;
+        "name": string;
+        "placeholder": string;
+    }
+    interface UiCardAttributes {
+        "isSmall": boolean;
+        "isCollapsible": boolean;
+        "isActive": boolean;
+        "headerText": string;
+        "scrollId": string;
+    }
+    interface UiDynamicTextAttributes {
+        "value": string;
+    }
+    interface UiGeoMapAttributes {
+        "zoom": number;
+        "currentAddress": string;
+    }
+    interface UiLocationSearchAttributes {
+        "error": string | null;
+        "readOnly": boolean;
+        "placeholder": string;
+        "inputId": string;
+    }
+    interface UiMainContentAttributes {
+        "pageType": "full-bleed" | "center-card" | "no-bg";
+    }
+    interface UiModalAttributes {
+        "isActive": boolean;
+    }
+    interface UiPizzaListAttributes {
+        "hasIcon": boolean;
+        "isBordered": boolean;
+    }
+    interface UiShareLinksAttributes {
+        "shareText": string;
+        "shareUrl": string;
+    }
+    interface UiSingleInputAttributes {
+        "label": string;
+        "buttonLabel": string;
+        "type": string;
+        "name": string;
+        "placeholder": string;
+    }
+
     interface IntrinsicElements {
         "app-root": AppRoot;
-        "form-donate": FormDonate;
-        "form-report": FormReport;
+        "form-donate": Omit<FormDonate, keyof FormDonateAttributes> & { [K in keyof FormDonate & keyof FormDonateAttributes]?: FormDonate[K] } & { [K in keyof FormDonate & keyof FormDonateAttributes as `attr:${K}`]?: FormDonateAttributes[K] } & { [K in keyof FormDonate & keyof FormDonateAttributes as `prop:${K}`]?: FormDonate[K] };
+        "form-report": Omit<FormReport, keyof FormReportAttributes> & { [K in keyof FormReport & keyof FormReportAttributes]?: FormReport[K] } & { [K in keyof FormReport & keyof FormReportAttributes as `attr:${K}`]?: FormReportAttributes[K] } & { [K in keyof FormReport & keyof FormReportAttributes as `prop:${K}`]?: FormReport[K] };
         "page-about": PageAbout;
         "page-activity": PageActivity;
         "page-contact": PageContact;
@@ -535,59 +751,69 @@ declare namespace LocalJSX {
         "page-signup-form": PageSignupForm;
         "page-trucks": PageTrucks;
         "page-vax-and-snacks": PageVaxAndSnacks;
-        "ui-address-input": UiAddressInput;
-        "ui-card": UiCard;
-        "ui-dynamic-text": UiDynamicText;
-        "ui-geo-map": UiGeoMap;
+        "ui-address-input": Omit<UiAddressInput, keyof UiAddressInputAttributes> & { [K in keyof UiAddressInput & keyof UiAddressInputAttributes]?: UiAddressInput[K] } & { [K in keyof UiAddressInput & keyof UiAddressInputAttributes as `attr:${K}`]?: UiAddressInputAttributes[K] } & { [K in keyof UiAddressInput & keyof UiAddressInputAttributes as `prop:${K}`]?: UiAddressInput[K] };
+        "ui-card": Omit<UiCard, keyof UiCardAttributes> & { [K in keyof UiCard & keyof UiCardAttributes]?: UiCard[K] } & { [K in keyof UiCard & keyof UiCardAttributes as `attr:${K}`]?: UiCardAttributes[K] } & { [K in keyof UiCard & keyof UiCardAttributes as `prop:${K}`]?: UiCard[K] };
+        "ui-dynamic-text": Omit<UiDynamicText, keyof UiDynamicTextAttributes> & { [K in keyof UiDynamicText & keyof UiDynamicTextAttributes]?: UiDynamicText[K] } & { [K in keyof UiDynamicText & keyof UiDynamicTextAttributes as `attr:${K}`]?: UiDynamicTextAttributes[K] } & { [K in keyof UiDynamicText & keyof UiDynamicTextAttributes as `prop:${K}`]?: UiDynamicText[K] };
+        "ui-geo-map": Omit<UiGeoMap, keyof UiGeoMapAttributes> & { [K in keyof UiGeoMap & keyof UiGeoMapAttributes]?: UiGeoMap[K] } & { [K in keyof UiGeoMap & keyof UiGeoMapAttributes as `attr:${K}`]?: UiGeoMapAttributes[K] } & { [K in keyof UiGeoMap & keyof UiGeoMapAttributes as `prop:${K}`]?: UiGeoMap[K] };
         "ui-guidelines": UiGuidelines;
-        "ui-location-search": UiLocationSearch;
-        "ui-main-content": UiMainContent;
-        "ui-modal": UiModal;
-        "ui-pizza-list": UiPizzaList;
+        "ui-location-search": Omit<UiLocationSearch, keyof UiLocationSearchAttributes> & { [K in keyof UiLocationSearch & keyof UiLocationSearchAttributes]?: UiLocationSearch[K] } & { [K in keyof UiLocationSearch & keyof UiLocationSearchAttributes as `attr:${K}`]?: UiLocationSearchAttributes[K] } & { [K in keyof UiLocationSearch & keyof UiLocationSearchAttributes as `prop:${K}`]?: UiLocationSearch[K] };
+        "ui-main-content": Omit<UiMainContent, keyof UiMainContentAttributes> & { [K in keyof UiMainContent & keyof UiMainContentAttributes]?: UiMainContent[K] } & { [K in keyof UiMainContent & keyof UiMainContentAttributes as `attr:${K}`]?: UiMainContentAttributes[K] } & { [K in keyof UiMainContent & keyof UiMainContentAttributes as `prop:${K}`]?: UiMainContent[K] };
+        "ui-modal": Omit<UiModal, keyof UiModalAttributes> & { [K in keyof UiModal & keyof UiModalAttributes]?: UiModal[K] } & { [K in keyof UiModal & keyof UiModalAttributes as `attr:${K}`]?: UiModalAttributes[K] } & { [K in keyof UiModal & keyof UiModalAttributes as `prop:${K}`]?: UiModal[K] };
+        "ui-pizza-list": Omit<UiPizzaList, keyof UiPizzaListAttributes> & { [K in keyof UiPizzaList & keyof UiPizzaListAttributes]?: UiPizzaList[K] } & { [K in keyof UiPizzaList & keyof UiPizzaListAttributes as `attr:${K}`]?: UiPizzaListAttributes[K] } & { [K in keyof UiPizzaList & keyof UiPizzaListAttributes as `prop:${K}`]?: UiPizzaList[K] };
         "ui-scroll-to-top-button": UiScrollToTopButton;
-        "ui-share-links": UiShareLinks;
-        "ui-single-input": UiSingleInput;
+        "ui-share-links": Omit<UiShareLinks, keyof UiShareLinksAttributes> & { [K in keyof UiShareLinks & keyof UiShareLinksAttributes]?: UiShareLinks[K] } & { [K in keyof UiShareLinks & keyof UiShareLinksAttributes as `attr:${K}`]?: UiShareLinksAttributes[K] } & { [K in keyof UiShareLinks & keyof UiShareLinksAttributes as `prop:${K}`]?: UiShareLinks[K] };
+        "ui-single-input": Omit<UiSingleInput, keyof UiSingleInputAttributes> & { [K in keyof UiSingleInput & keyof UiSingleInputAttributes]?: UiSingleInput[K] } & { [K in keyof UiSingleInput & keyof UiSingleInputAttributes as `attr:${K}`]?: UiSingleInputAttributes[K] } & { [K in keyof UiSingleInput & keyof UiSingleInputAttributes as `prop:${K}`]?: UiSingleInput[K] };
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
-            "form-donate": LocalJSX.FormDonate & JSXBase.HTMLAttributes<HTMLFormDonateElement>;
-            "form-report": LocalJSX.FormReport & JSXBase.HTMLAttributes<HTMLFormReportElement>;
-            "page-about": LocalJSX.PageAbout & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
-            "page-activity": LocalJSX.PageActivity & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
-            "page-contact": LocalJSX.PageContact & JSXBase.HTMLAttributes<HTMLPageContactElement>;
-            "page-crustclub": LocalJSX.PageCrustclub & JSXBase.HTMLAttributes<HTMLPageCrustclubElement>;
-            "page-deliveries": LocalJSX.PageDeliveries & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
-            "page-donate": LocalJSX.PageDonate & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
-            "page-faq": LocalJSX.PageFaq & JSXBase.HTMLAttributes<HTMLPageFaqElement>;
-            "page-gift": LocalJSX.PageGift & JSXBase.HTMLAttributes<HTMLPageGiftElement>;
-            "page-guidelines": LocalJSX.PageGuidelines & JSXBase.HTMLAttributes<HTMLPageGuidelinesElement>;
-            "page-home": LocalJSX.PageHome & JSXBase.HTMLAttributes<HTMLPageHomeElement>;
-            "page-instructions": LocalJSX.PageInstructions & JSXBase.HTMLAttributes<HTMLPageInstructionsElement>;
-            "page-on-demand": LocalJSX.PageOnDemand & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
-            "page-partners": LocalJSX.PagePartners & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
-            "page-press": LocalJSX.PagePress & JSXBase.HTMLAttributes<HTMLPagePressElement>;
-            "page-privacy": LocalJSX.PagePrivacy & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
-            "page-report": LocalJSX.PageReport & JSXBase.HTMLAttributes<HTMLPageReportElement>;
-            "page-session": LocalJSX.PageSession & JSXBase.HTMLAttributes<HTMLPageSessionElement>;
-            "page-signup-form": LocalJSX.PageSignupForm & JSXBase.HTMLAttributes<HTMLPageSignupFormElement>;
-            "page-trucks": LocalJSX.PageTrucks & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
-            "page-vax-and-snacks": LocalJSX.PageVaxAndSnacks & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
-            "ui-address-input": LocalJSX.UiAddressInput & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;
-            "ui-card": LocalJSX.UiCard & JSXBase.HTMLAttributes<HTMLUiCardElement>;
-            "ui-dynamic-text": LocalJSX.UiDynamicText & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
-            "ui-geo-map": LocalJSX.UiGeoMap & JSXBase.HTMLAttributes<HTMLUiGeoMapElement>;
-            "ui-guidelines": LocalJSX.UiGuidelines & JSXBase.HTMLAttributes<HTMLUiGuidelinesElement>;
-            "ui-location-search": LocalJSX.UiLocationSearch & JSXBase.HTMLAttributes<HTMLUiLocationSearchElement>;
-            "ui-main-content": LocalJSX.UiMainContent & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
-            "ui-modal": LocalJSX.UiModal & JSXBase.HTMLAttributes<HTMLUiModalElement>;
-            "ui-pizza-list": LocalJSX.UiPizzaList & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;
-            "ui-scroll-to-top-button": LocalJSX.UiScrollToTopButton & JSXBase.HTMLAttributes<HTMLUiScrollToTopButtonElement>;
-            "ui-share-links": LocalJSX.UiShareLinks & JSXBase.HTMLAttributes<HTMLUiShareLinksElement>;
-            "ui-single-input": LocalJSX.UiSingleInput & JSXBase.HTMLAttributes<HTMLUiSingleInputElement>;
+            "app-root": LocalJSX.IntrinsicElements["app-root"] & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "form-donate": LocalJSX.IntrinsicElements["form-donate"] & JSXBase.HTMLAttributes<HTMLFormDonateElement>;
+            "form-report": LocalJSX.IntrinsicElements["form-report"] & JSXBase.HTMLAttributes<HTMLFormReportElement>;
+            "page-about": LocalJSX.IntrinsicElements["page-about"] & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
+            "page-activity": LocalJSX.IntrinsicElements["page-activity"] & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
+            "page-contact": LocalJSX.IntrinsicElements["page-contact"] & JSXBase.HTMLAttributes<HTMLPageContactElement>;
+            "page-crustclub": LocalJSX.IntrinsicElements["page-crustclub"] & JSXBase.HTMLAttributes<HTMLPageCrustclubElement>;
+            "page-deliveries": LocalJSX.IntrinsicElements["page-deliveries"] & JSXBase.HTMLAttributes<HTMLPageDeliveriesElement>;
+            "page-donate": LocalJSX.IntrinsicElements["page-donate"] & JSXBase.HTMLAttributes<HTMLPageDonateElement>;
+            "page-faq": LocalJSX.IntrinsicElements["page-faq"] & JSXBase.HTMLAttributes<HTMLPageFaqElement>;
+            "page-gift": LocalJSX.IntrinsicElements["page-gift"] & JSXBase.HTMLAttributes<HTMLPageGiftElement>;
+            "page-guidelines": LocalJSX.IntrinsicElements["page-guidelines"] & JSXBase.HTMLAttributes<HTMLPageGuidelinesElement>;
+            "page-home": LocalJSX.IntrinsicElements["page-home"] & JSXBase.HTMLAttributes<HTMLPageHomeElement>;
+            "page-instructions": LocalJSX.IntrinsicElements["page-instructions"] & JSXBase.HTMLAttributes<HTMLPageInstructionsElement>;
+            "page-on-demand": LocalJSX.IntrinsicElements["page-on-demand"] & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
+            "page-partners": LocalJSX.IntrinsicElements["page-partners"] & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
+            "page-press": LocalJSX.IntrinsicElements["page-press"] & JSXBase.HTMLAttributes<HTMLPagePressElement>;
+            "page-privacy": LocalJSX.IntrinsicElements["page-privacy"] & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;
+            "page-report": LocalJSX.IntrinsicElements["page-report"] & JSXBase.HTMLAttributes<HTMLPageReportElement>;
+            "page-session": LocalJSX.IntrinsicElements["page-session"] & JSXBase.HTMLAttributes<HTMLPageSessionElement>;
+            "page-signup-form": LocalJSX.IntrinsicElements["page-signup-form"] & JSXBase.HTMLAttributes<HTMLPageSignupFormElement>;
+            "page-trucks": LocalJSX.IntrinsicElements["page-trucks"] & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
+            "page-vax-and-snacks": LocalJSX.IntrinsicElements["page-vax-and-snacks"] & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
+            /**
+             * Auto-complete input for street addresses using the Google Maps Places API.
+             * Retries mounting if the input element or Google Maps API isn't ready yet.
+             */
+            "ui-address-input": LocalJSX.IntrinsicElements["ui-address-input"] & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;
+            "ui-card": LocalJSX.IntrinsicElements["ui-card"] & JSXBase.HTMLAttributes<HTMLUiCardElement>;
+            /**
+             * Displays a provided `value` or a loading bar if `null`-like
+             */
+            "ui-dynamic-text": LocalJSX.IntrinsicElements["ui-dynamic-text"] & JSXBase.HTMLAttributes<HTMLUiDynamicTextElement>;
+            "ui-geo-map": LocalJSX.IntrinsicElements["ui-geo-map"] & JSXBase.HTMLAttributes<HTMLUiGeoMapElement>;
+            "ui-guidelines": LocalJSX.IntrinsicElements["ui-guidelines"] & JSXBase.HTMLAttributes<HTMLUiGuidelinesElement>;
+            "ui-location-search": LocalJSX.IntrinsicElements["ui-location-search"] & JSXBase.HTMLAttributes<HTMLUiLocationSearchElement>;
+            /**
+             * Container for the main content section between the top nav and the footer (see app-root.tsx)
+             */
+            "ui-main-content": LocalJSX.IntrinsicElements["ui-main-content"] & JSXBase.HTMLAttributes<HTMLUiMainContentElement>;
+            "ui-modal": LocalJSX.IntrinsicElements["ui-modal"] & JSXBase.HTMLAttributes<HTMLUiModalElement>;
+            "ui-pizza-list": LocalJSX.IntrinsicElements["ui-pizza-list"] & JSXBase.HTMLAttributes<HTMLUiPizzaListElement>;
+            "ui-scroll-to-top-button": LocalJSX.IntrinsicElements["ui-scroll-to-top-button"] & JSXBase.HTMLAttributes<HTMLUiScrollToTopButtonElement>;
+            "ui-share-links": LocalJSX.IntrinsicElements["ui-share-links"] & JSXBase.HTMLAttributes<HTMLUiShareLinksElement>;
+            "ui-single-input": LocalJSX.IntrinsicElements["ui-single-input"] & JSXBase.HTMLAttributes<HTMLUiSingleInputElement>;
         }
     }
 }

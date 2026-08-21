@@ -4,18 +4,15 @@
     "alwaysStrict": true,
     "allowJs": false,
     "composite": false,
-    "target": "es2017",
+    "target": "es2020",
     "module": "esnext",
-    "moduleResolution": "node",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es2017"
-    ],
+    "moduleResolution": "bundler",
+    "lib": ["dom", "dom.iterable", "es2020"],
     "sourceMap": true,
     "declaration": false,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
     "allowUnreachableCode": false,
     "experimentalDecorators": true,
     "noUnusedLocals": true,
@@ -23,10 +20,6 @@
     "jsx": "react",
     "jsxFactory": "h"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

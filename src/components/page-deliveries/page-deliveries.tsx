@@ -248,14 +248,14 @@ export class PageDeliveries {
       foundLocation?.orders
         .filter(orderFilter)
         .slice(0, 10)
-        .map(x => ({ type: "pizza", data: x } as OrderOrTruckItem)) || [];
+        .map(x => ({ type: "pizza", data: x }) as OrderOrTruckItem) || [];
     const locationTrucks =
       (foundLocation != null &&
         (selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks) &&
         this.recentTrucks
           ?.filter(x => x.location.id === foundLocation.id)
           .slice(0, 10)
-          .map(x => ({ type: "truck", data: x } as OrderOrTruckItem))) ||
+          .map(x => ({ type: "truck", data: x }) as OrderOrTruckItem)) ||
       [];
     const ORDER_CURRENT = Number(now) - 1000 * 60 * 60 * 2.5;
     const TRUCK_CURRENT = Number(now) - 1000 * 60 * 60 * 4;
@@ -284,10 +284,10 @@ export class PageDeliveries {
     const orders = (this.recentOrders || [])
       .filter(orderFilter)
       .slice(0, 10)
-      .map(x => ({ type: "pizza", data: x } as OrderOrTruckItem));
+      .map(x => ({ type: "pizza", data: x }) as OrderOrTruckItem);
     const trucks = (hasRecentTrucks && this.recentTrucks != null && (selectedFood === FoodChoice.all || selectedFood === FoodChoice.trucks) ? this.recentTrucks : [])
       .slice(0, 10)
-      .map(x => ({ type: "truck", data: x } as OrderOrTruckItem));
+      .map(x => ({ type: "truck", data: x }) as OrderOrTruckItem);
 
     const [currentItems, pastItems] = [...orders, ...trucks]
       .sort((l, r) => (l.data!.createdAt > r.data!.createdAt ? -1 : 1))

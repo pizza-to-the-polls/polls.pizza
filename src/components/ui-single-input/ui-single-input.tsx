@@ -1,6 +1,4 @@
 import { Component, Event, EventEmitter, h, Method, Prop, State } from "@stencil/core";
-// @ts-ignore
-import {} from "googlemaps";
 
 @Component({
   tag: "ui-single-input",

@@ -159,7 +159,9 @@
       text-decoration: none;
       color: $white;
       display: block;
-      transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
+      transition:
+        color 0.2s ease-in-out,
+        text-decoration 0.2s ease-in-out;
 
       &:hover,
       &:active,

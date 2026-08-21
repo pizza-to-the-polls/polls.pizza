@@ -11,7 +11,9 @@
     border-radius: 50%;
     border: 2px solid $teal;
     box-shadow: $box-shadow;
-    transition: border-color 0.2s ease-in-out, transform 0.3s cubic-bezier(0.65, 0.5, 0.65, 1.75);
+    transition:
+      border-color 0.2s ease-in-out,
+      transform 0.3s cubic-bezier(0.65, 0.5, 0.65, 1.75);
     cursor: pointer;
     pointer-events: none;
     transform: scale(0);
