@@ -176,7 +176,9 @@ export class FormReport {
         }
       }
 
-      this.photoUrl = `https://polls.pizza/${filePath}`;
+      // Stable permalink — pizzabase resolves it to wherever the media
+      // currently lives (processed output, or the public bucket for legacy).
+      this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${filePath}`;
     };
 
     // Has user clicked the "On-Demand Guidelines" link?
@@ -229,9 +231,8 @@ export class FormReport {
 
       if (!this.hasPhoto && !this.hasVideo) {
         this.submitError.photo = "Whoops! Can you add a photo or video of the line to your report so we can verify this is on the level?";
-      } else if (this.hasVideo) {
-        data.url = this.videoUrl;
       } else {
+        // Always submit the stable permalink, never the local blob URL.
         data.url = this.photoUrl;
       }
 
@@ -476,7 +477,15 @@ export class FormReport {
                     class={"file button-large " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + ("photo" in this.submitError ? "is-teal" : "is-teal")}
                   >
                     <label class="file-label">
-                      <input class="file-input" type="file" name="photo" id="photo" accept="image/*,video/mp4,video/quicktime,video/webm" onChange={handlePhotoChange} disabled={this.photoIsProcessing} />
+                      <input
+                        class="file-input"
+                        type="file"
+                        name="photo"
+                        id="photo"
+                        accept="image/*,video/mp4,video/quicktime,video/webm"
+                        onChange={handlePhotoChange}
+                        disabled={this.photoIsProcessing}
+                      />
                       <span class="file-cta">
                         <span class="file-label">{this.hasPhoto || this.hasVideo ? "Change media" : "Add a photo or video of the line"}</span>
                       </span>
@@ -484,7 +493,7 @@ export class FormReport {
                   </div>
                   <div class="photo-preview-container" hidden={!this.hasPhoto && !this.hasVideo}>
                     <div id="photo-preview" hidden={!this.hasPhoto}></div>
-                    <video id="video-preview" hidden={!this.hasVideo} controls style={{maxWidth: "100%", maxHeight: "200px"}}></video>
+                    <video id="video-preview" hidden={!this.hasVideo} controls style={{ maxWidth: "100%", maxHeight: "200px" }}></video>
                     <div class="delete" onClick={() => this.removePhoto()}></div>
                   </div>
                 </div>
