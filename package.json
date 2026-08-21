@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "stencil build --dev --watch --serve",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package --error-on-fail",
     "build": "npm run clean && npm run lint && stencil build --prod --no-cache --prerender && node scripts/ensure-sourcemap-links.mjs",
     "bugsnag": "bugsnag-source-maps upload-browser --overwrite --api-key $BUGSNAG_KEY --directory dist/www --base-url ${ROOT_URL:-https://polls.pizza}",
     "clean": "rimraf dist/www",
@@ -29,13 +29,13 @@
   },
   "dependencies": {
     "@bugsnag/js": "^7.25.0",
-    "@bugsnag/source-maps": "^2.3.3"
+    "@bugsnag/source-maps": "^2.3.3",
+    "@stencil/router": "^1.0.1"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.3",
     "@stencil/core": "4.43.5",
     "@stencil/eslint-plugin": "^1.4.0",
-    "@stencil/router": "^1.0.1",
     "@stencil/sass": "^2.0.4",
     "@types/google.maps": "^3.58.1",
     "@types/jest": "^29.5.14",
