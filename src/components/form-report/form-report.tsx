@@ -55,7 +55,9 @@ export class FormReport {
   @State() private locationName: string = "";
   @State() private reportType: string = "photo"; // "social" | "photo"
   @State() private hasPhoto: boolean = false;
+  @State() private hasVideo: boolean = false;
   @State() private photoUrl: string = "";
+  @State() private videoUrl: string = "";
   @State() private userClickedGuidelinesLink: boolean = true;
 
   public componentWillLoad() {
@@ -78,6 +80,7 @@ export class FormReport {
       const target = e?.target as HTMLInputElement;
       const file = (target.files as FileList)[0];
       const imagePreview = document.getElementById("photo-preview");
+      const videoPreview = document.getElementById("video-preview") as HTMLVideoElement;
 
       // Prevent submit before photo finishes processing
       this.photoIsProcessing = true;
@@ -91,12 +94,35 @@ export class FormReport {
         this.isDisabled = false;
         return false;
       }
+
+      // Client-side 50MB limit
+      if (file.size > 52_428_800) {
+        this.submitError.photo = "Whoops! That file is too large. Please upload a file under 50MB.";
+        this.photoIsProcessing = false;
+        this.isDisabled = false;
+        return false;
+      }
+
       this.submitError = {};
-      this.hasPhoto = true;
-      this.photoUrl = window.URL.createObjectURL(file);
-      // Generate file preview
-      if (imagePreview) {
-        imagePreview.style.backgroundImage = "url(" + this.photoUrl + ")";
+
+      const isVideo = file.type.startsWith("video/");
+
+      if (isVideo) {
+        this.hasPhoto = false;
+        this.hasVideo = true;
+        this.photoUrl = "";
+        this.videoUrl = window.URL.createObjectURL(file);
+        if (videoPreview) {
+          videoPreview.src = this.videoUrl;
+        }
+      } else {
+        this.hasPhoto = true;
+        this.hasVideo = false;
+        this.videoUrl = "";
+        this.photoUrl = window.URL.createObjectURL(file);
+        if (imagePreview) {
+          imagePreview.style.backgroundImage = "url(" + this.photoUrl + ")";
+        }
       }
 
       const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
@@ -123,16 +149,15 @@ export class FormReport {
     const uploadPhoto = async (file: File, address: string): Promise<void> => {
       const fileHash = await shaFile(file);
 
-      const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
+      const { filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
 
       if (!isDuplicate && presigned) {
         const formData = new FormData();
         const { url, fields } = presigned;
 
-        formData.append("ACL", "public-read");
-        formData.append("x-amz-acl", "public-read");
-        formData.append("x-amz-meta-user-id", id);
         formData.append("Content-Type", file.type);
+
+        // Note: ACL and x-amz-acl removed — backend now uses private buckets
 
         Object.entries(fields).forEach(([k, v]: [string, any]) => {
           formData.append(k, v);
@@ -151,7 +176,9 @@ export class FormReport {
         }
       }
 
-      this.photoUrl = `https://polls.pizza/${filePath}`;
+      // Stable permalink — pizzabase resolves it to wherever the media
+      // currently lives (processed output, or the public bucket for legacy).
+      this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${filePath}`;
     };
 
     // Has user clicked the "On-Demand Guidelines" link?
@@ -202,9 +229,10 @@ export class FormReport {
 
       data.reportType = this.reportType;
 
-      if (!this.hasPhoto) {
-        this.submitError.photo = "Whoops! Can you add a photo of the line to your report so we can verify this is on the level?";
+      if (!this.hasPhoto && !this.hasVideo) {
+        this.submitError.photo = "Whoops! Can you add a photo or video of the line to your report so we can verify this is on the level?";
       } else {
+        // Always submit the stable permalink, never the local blob URL.
         data.url = this.photoUrl;
       }
 
@@ -449,14 +477,23 @@ export class FormReport {
                     class={"file button-large " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + ("photo" in this.submitError ? "is-teal" : "is-teal")}
                   >
                     <label class="file-label">
-                      <input class="file-input" type="file" name="photo" id="photo" accept="image/*" onChange={handlePhotoChange} disabled={this.photoIsProcessing} />
+                      <input
+                        class="file-input"
+                        type="file"
+                        name="photo"
+                        id="photo"
+                        accept="image/*,video/mp4,video/quicktime,video/webm"
+                        onChange={handlePhotoChange}
+                        disabled={this.photoIsProcessing}
+                      />
                       <span class="file-cta">
-                        <span class="file-label">{this.hasPhoto ? "Change photo" : "Add a photo of the line"}</span>
+                        <span class="file-label">{this.hasPhoto || this.hasVideo ? "Change media" : "Add a photo or video of the line"}</span>
                       </span>
                     </label>
                   </div>
-                  <div class="photo-preview-container" hidden={!this.hasPhoto}>
-                    <div id="photo-preview"></div>
+                  <div class="photo-preview-container" hidden={!this.hasPhoto && !this.hasVideo}>
+                    <div id="photo-preview" hidden={!this.hasPhoto}></div>
+                    <video id="video-preview" hidden={!this.hasVideo} controls style={{ maxWidth: "100%", maxHeight: "200px" }}></video>
                     <div class="delete" onClick={() => this.removePhoto()}></div>
                   </div>
                 </div>
@@ -570,7 +607,7 @@ export class FormReport {
                 type="submit"
                 disabled={this.isDisabled || this.isLoading || this.photoIsProcessing}
               >
-                {this.photoIsProcessing ? "Processing photo..." : "Submit report. Feed democracy"}
+                {this.photoIsProcessing ? (this.hasVideo ? "🎬 Processing video..." : "📸 Processing photo...") : "Submit report. Feed democracy"}
               </button>
               {/* Legal */}
               <p class="agreement">
@@ -719,14 +756,20 @@ export class FormReport {
   private removePhoto() {
     const fileInput = document.getElementById("photo") as HTMLInputElement;
     const imagePreview = document.getElementById("photo-preview");
+    const videoPreview = document.getElementById("video-preview") as HTMLVideoElement;
     if (fileInput) {
       fileInput.value = "";
     }
     this.hasPhoto = false;
+    this.hasVideo = false;
     this.photoUrl = "";
+    this.videoUrl = "";
     this.clearFormError("photo");
     if (imagePreview) {
       imagePreview.style.backgroundImage = "";
+    }
+    if (videoPreview) {
+      videoPreview.src = "";
     }
     this.photoIsProcessing = false;
   }
