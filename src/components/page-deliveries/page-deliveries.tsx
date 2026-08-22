@@ -176,7 +176,7 @@ export class PageDeliveries {
 
   @Listen("hashchange", { target: "window" })
   public hashChanged() {
-    const choice: FoodChoice | undefined = (FoodChoice as any)[window.location.hash.replace("#", "")];
+    const choice: FoodChoice | undefined = FoodChoice[window.location.hash.replace("#", "") as keyof typeof FoodChoice];
     if (choice != null) {
       // Don't allow switching to trucks if they're hidden
       if (choice === FoodChoice.trucks && !this.hasRecentTrucks) {

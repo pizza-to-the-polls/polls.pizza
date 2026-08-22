@@ -92,7 +92,7 @@ const reportedChunks = new Set<string>();
 const logEvent = (event: ComponentLoadEvent): void => {
   log.push(event);
   if (typeof window !== "undefined") {
-    (window as any).__pizza_component_load_log = log;
+    window.__pizza_component_load_log = log;
   }
 };
 
@@ -176,10 +176,10 @@ const reportComponentLoadFailure = (message: string, chunkUrl: string, tag: stri
   console.error(`[pizza] Component chunk load failed: chunk=${chunkId || "unknown"} tag=${resolvedTag || "unknown"} route=${route}`, message);
 
   // Bugsnag (only when the client was started by app.ts)
-  if (typeof window !== "undefined" && (window as any).__pizza_bugsnag_started) {
+  if (typeof window !== "undefined" && window.__pizza_bugsnag_started) {
     try {
-      const bugsnag = (window as any).__pizza_bugsnag_client;
-      if (bugsnag !== undefined && typeof bugsnag.notify === "function") {
+      const bugsnag = window.__pizza_bugsnag_client as { notify?: (err: Error, options?: Record<string, unknown>) => void } | undefined;
+      if (bugsnag?.notify !== undefined) {
         bugsnag.notify(new Error(message), {
           context: resolvedTag || window.location.pathname,
           metadata: {
@@ -211,7 +211,7 @@ const reportComponentLoadFailure = (message: string, chunkUrl: string, tag: stri
 
 const applyFallback = (strategy: "reload" | "banner", chunkId: string | null): void => {
   if (strategy === "reload") {
-    const disabled = typeof window !== "undefined" && (window as any).__pizza_disable_auto_reload;
+    const disabled = typeof window !== "undefined" && window.__pizza_disable_auto_reload;
     if (!disabled) {
       try {
         sessionStorage.setItem(RETRY_KEY, String(Date.now()));
@@ -261,10 +261,10 @@ export const installComponentLoadGuard = (): void => {
   }
 
   // Guard against double-install in hot-module-reload scenarios
-  if ((window as any).__pizza_guard_installed) {
+  if (window.__pizza_guard_installed) {
     return;
   }
-  (window as any).__pizza_guard_installed = true;
+  window.__pizza_guard_installed = true;
 
   // --- window.onerror path ---
   // Catches the "s.isProxied" TypeError when it escapes connectedCallback
@@ -282,8 +282,8 @@ export const installComponentLoadGuard = (): void => {
   // the "s.isProxied" error, since connectedCallback is async and the
   // rejection escapes as an unhandled promise rejection).
   window.addEventListener("unhandledrejection", (event: PromiseRejectionEvent) => {
-    const reason: any = event.reason;
-    const msg: string = typeof reason === "string" ? reason : reason?.message || String(reason);
+    const reason: unknown = event.reason;
+    const msg: string = typeof reason === "string" ? reason : (reason as { message?: string })?.message || String(reason);
     if (isChunkLoadFailure(msg)) {
       event.preventDefault();
       const chunkUrl: string = extractChunkUrl(msg) || "";

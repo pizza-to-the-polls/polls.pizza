@@ -27,28 +27,30 @@ export class AppRoot {
     this.historyPatched = true;
 
     const track = (pathname: string) => {
-      if (typeof window !== "undefined" && typeof (window as any).gtag !== "undefined" && pathname) {
-        (window as any).gtag("config", "G-1D1KFSYN9V", { page_path: pathname });
+      if (typeof window !== "undefined" && typeof window.gtag !== "undefined" && pathname) {
+        window.gtag("config", "G-1D1KFSYN9V", { page_path: pathname });
       }
     };
 
     // Track initial page load
     track(window.location.pathname);
 
+    type HistoryStateFn = (this: History, data: unknown, unused: string, url?: string | URL | null) => void;
+
     // Monkey-patch pushState
-    const originalPushState = history.pushState.bind(history);
-    history.pushState = function (...args: any[]) {
-      (originalPushState as any)(...args);
+    const originalPushState: HistoryStateFn = history.pushState.bind(history);
+    history.pushState = function (this: History, ...args: Parameters<HistoryStateFn>) {
+      originalPushState.apply(this, args);
       track(window.location.pathname);
-      return undefined as any;
+      return undefined as void;
     };
 
     // Monkey-patch replaceState
-    const originalReplaceState = history.replaceState.bind(history);
-    history.replaceState = function (...args: any[]) {
-      (originalReplaceState as any)(...args);
+    const originalReplaceState: HistoryStateFn = history.replaceState.bind(history);
+    history.replaceState = function (this: History, ...args: Parameters<HistoryStateFn>) {
+      originalReplaceState.apply(this, args);
       track(window.location.pathname);
-      return undefined as any;
+      return undefined as void;
     };
   }
 

@@ -21,9 +21,9 @@ describe("page-donate", () => {
     // Inject the history prop directly because page.setProperty() doesn't handle
     // nested objects like { location: { query: ... } } reliably in Stencil E2E.
     await page.evaluate(() => {
-      const el = document.querySelector("page-donate") as any;
+      const el = document.querySelector("page-donate");
       if (el) {
-        el.history = (window as any).__history;
+        (el as unknown as { history?: unknown }).history = window.__history;
       }
     });
     await page.waitForChanges();

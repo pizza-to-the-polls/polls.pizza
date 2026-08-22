@@ -10,8 +10,8 @@ export default () => {
       releaseStage: process.env.NODE_ENV,
     });
     if (typeof window !== "undefined") {
-      (window as any).__pizza_bugsnag_started = true;
-      (window as any).__pizza_bugsnag_client = Bugsnag;
+      window.__pizza_bugsnag_started = true;
+      window.__pizza_bugsnag_client = Bugsnag;
     }
   }
   if (Build.isBrowser) {

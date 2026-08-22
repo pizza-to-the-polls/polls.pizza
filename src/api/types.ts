@@ -50,7 +50,7 @@ export type LocationStatus =
   | (LocationInfo & {
       notFound: undefined;
       hasTruck: boolean;
-      reports: any[];
+      reports: ReportInfo[];
       orders: OrderDetails[];
     })
   // allow us to store the results of a 404

@@ -74,8 +74,8 @@ describe("page-activity", () => {
     );
     await page.waitForChanges();
 
-    const calls = await page.evaluate(() => (window as any).__fetchCalls);
-    const orderCalls = calls.filter((c: any) => c.url.includes("/orders"));
+    const calls = await page.evaluate(() => window.__fetchCalls!);
+    const orderCalls = calls.filter(c => c.url.includes("/orders"));
     expect(orderCalls.length).toBeGreaterThan(0);
     expect(orderCalls[0].url).toContain("page=0");
   });

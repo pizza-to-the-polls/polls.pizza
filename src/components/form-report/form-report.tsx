@@ -135,7 +135,7 @@ export class FormReport {
         formData.append("x-amz-meta-user-id", id);
         formData.append("Content-Type", file.type);
 
-        Object.entries(fields).forEach(([k, v]: [string, any]) => {
+        Object.entries(fields).forEach(([k, v]: [string, string]) => {
           formData.append(k, v);
         });
 

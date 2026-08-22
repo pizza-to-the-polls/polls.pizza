@@ -1,49 +1,34 @@
 diff --git a/node_modules/@stencil/router/dist/collection/components/router/router.js b/node_modules/@stencil/router/dist/collection/components/router/router.js
-index 4281dad..bab28dd 100644
+index 4281dad..cd45675 100644
 --- a/node_modules/@stencil/router/dist/collection/components/router/router.js
 +++ b/node_modules/@stencil/router/dist/collection/components/router/router.js
-@@ -22,6 +22,19 @@ export class Router {
-     constructor() {
-         this.root = '/';
-         this.historyType = 'browser';
-+        // PATCH (polls.pizza): Stencil 3+ removed context props
-+        // (`@Prop({ context: "queue" })`), so the compiler never injects
-+        // `this.queue`, and `scrollTo()` crashes on `this.queue.write(...)`.
-+        // Shim a minimal queue. See patches/stencil-router+1.0.1.patch
-+        if (this.queue == null) {
-+            var schedule = typeof requestAnimationFrame === 'function'
-+                ? function (cb) { return requestAnimationFrame(cb); }
-+                : function (cb) { return setTimeout(cb); };
-+            this.queue = {
-+                write: schedule,
-+                read: schedule,
-+            };
-+        }
-         // A suffix to append to the page title whenever
-         // it's updated through RouteTitle
-         this.titleSuffix = '';
+@@ -45,7 +45,10 @@ export class Router {
+     }
+     scrollTo(scrollToLocation) {
+         const history = this.history;
+-        if (scrollToLocation == null || this.isServer || !history) {
++        // PATCH (issue #118): `isServer` arrives via the context API, which
++        // Stencil 4 removed, so it can't be relied on. Also bail when the
++        // queue context is absent (SSR/hydration) — scrolling is browser-only.
++        if (scrollToLocation == null || this.isServer || !history || !this.queue) {
+             return;
+         }
+         if (history.action === 'POP' && Array.isArray(history.location.scrollPosition)) {
 diff --git a/node_modules/@stencil/router/dist/collection/components/switch/switch.js b/node_modules/@stencil/router/dist/collection/components/switch/switch.js
-index 994505d..56c59cb 100644
+index 994505d..d0d577e 100644
 --- a/node_modules/@stencil/router/dist/collection/components/switch/switch.js
 +++ b/node_modules/@stencil/router/dist/collection/components/switch/switch.js
-@@ -18,6 +18,20 @@ export class RouteSwitch {
-     constructor() {
-         this.group = getUniqueId();
-         this.subscribers = [];
-+        // PATCH (polls.pizza): Stencil 3+ removed context props
-+        // (`@Prop({ context: "queue" })`), so the compiler never injects
-+        // `this.queue`, and `componentUpdated()` crashes on
-+        // `this.queue.write(...)`. Shim a minimal queue.
-+        // See patches/stencil-router+1.0.1.patch
-+        if (this.queue == null) {
-+            var schedule = typeof requestAnimationFrame === 'function'
-+                ? function (cb) { return requestAnimationFrame(cb); }
-+                : function (cb) { return setTimeout(cb); };
-+            this.queue = {
-+                write: schedule,
-+                read: schedule,
-+            };
-+        }
-     }
-     componentWillLoad() {
-         if (this.location != null) {
+@@ -61,6 +61,13 @@ export class RouteSwitch {
+         activeChild.el.match = activeChild.match;
+         activeChild.el.componentUpdated = (routeViewUpdatedOptions) => {
+             // After the new active route has completed then update visibility of routes
++            // PATCH (issue #118): Stencil 4 removed the context API, so `queue` is
++            // undefined during SSR/hydration. The visibility update below is a
++            // client-only concern (prerendered HTML only contains the active
++            // route), so no-op when the queue is absent.
++            if (!this.queue) {
++                return;
++            }
+             this.queue.write(() => {
+                 this.subscribers.forEach((child, index) => {
+                     child.el.componentUpdated = undefined;
