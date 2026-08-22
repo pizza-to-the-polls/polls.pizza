@@ -103,8 +103,7 @@ export class FormReport {
       if (addressInput.value && file) {
         try {
           await uploadPhoto(file, addressInput.value);
-        } catch (error) {
-          const errors = (error as { errors?: { fileName?: string } })?.errors;
+        } catch ({ errors }) {
           this.removePhoto();
           this.submitError.photo = errors?.fileName || "Whoops! We could not upload that photo";
         } finally {
@@ -184,7 +183,7 @@ export class FormReport {
       this.submitResponse = {};
       this.submitError = {};
       // Setup request
-      const data: { [key: string]: string } = {};
+      let data: { [key: string]: string } = {};
 
       Array.prototype.forEach.call(document.querySelectorAll("#form-report input, #form-report select"), (el: HTMLInputElement) => {
         if (el) {
@@ -275,7 +274,7 @@ export class FormReport {
       }
 
       // Setup request data
-      const requestData = {
+      let requestData = {
         address: data.address,
         url: data.url,
         waitTime: data.waitTime,
@@ -307,19 +306,18 @@ export class FormReport {
 
         // Show confirmation: *Always* required to hide form
         this.showConfirmation = true;
-      } catch (error) {
-        const errors = (error as { errors?: { [key: string]: string } })?.errors;
-        this.submitError = errors || {};
+      } catch ({ errors }) {
+        this.submitError = errors;
 
         // If invalid address, take user back to location input
-        if (errors?.address) {
+        if (errors.address) {
           this.showLocationInput = true;
           this.showConfirmation = false;
           return false;
         }
 
         // If invalid url, take user back to report step 2
-        if (errors?.url) {
+        if (errors.url) {
           this.showLocationInput = false;
           this.showConfirmation = false;
           return false;
@@ -688,7 +686,7 @@ export class FormReport {
 
   private clearFormError(field: string): void {
     // Remove field from existing errors
-    const { [field]: _remove, ...rest } = this.submitError;
+    const { [field]: remove, ...rest } = this.submitError;
     this.submitError = rest;
   }
 

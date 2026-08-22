@@ -260,8 +260,7 @@ describe("app-root component-load guard", () => {
     );
 
     await page.waitForChanges();
-    // Puppeteer 21+ removed page.waitForTimeout; wait inside the page instead.
-    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+    await page.waitForTimeout(500);
 
     // App-root should upgrade normally
     const appRoot = await page.find("app-root");

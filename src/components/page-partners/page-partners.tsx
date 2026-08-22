@@ -443,7 +443,7 @@ const partners: { img: string; name: string; url: string }[] = [
   },
 ];
 
-const nameSort = ({ name: aName }: { name: string }, { name: bName }: { name: string }) =>
+const nameSort = ({ name: aName }: { name: String }, { name: bName }: { name: String }) =>
   `${aName}`.toLowerCase().replace("the ", "") > `${bName}`.toLowerCase().replace("the ", "") ? 1 : -1;
 
 @Component({

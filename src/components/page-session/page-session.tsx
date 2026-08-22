@@ -24,7 +24,7 @@ export class PageSession {
     }
   }
 
-  private async signIn() {
+  public async signIn() {
     this.error = null;
     if (!this.token) {
       return false;
@@ -32,13 +32,12 @@ export class PageSession {
     try {
       const { redirect } = await PizzaApi.putSession(this.token);
       window.location.href = redirect;
-    } catch (error) {
-      const errors = (error as { errors?: { token?: string } })?.errors;
+    } catch ({ errors }) {
       this.showError(errors?.token || "Whoops! That didn't work. Our servers might be a little stuffed right now.");
     }
   }
 
-  private async sendEmail() {
+  public async sendEmail() {
     this.error = null;
     if (!this.email) {
       return false;
@@ -46,14 +45,13 @@ export class PageSession {
     try {
       await PizzaApi.postSession(this.email);
       this.sent = true;
-    } catch (error) {
-      const errors = (error as { errors?: { token?: string } })?.errors;
+    } catch ({ errors }) {
       this.token = null;
       this.showError(errors?.token || "Whoops! That link doesn't work.");
     }
   }
 
-  private showError(error: string) {
+  public showError(error: string) {
     this.error = error;
   }
 

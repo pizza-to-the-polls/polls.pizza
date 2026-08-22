@@ -1,7 +1,7 @@
 {
   "arrowParens": "avoid",
   "bracketSpacing": true,
-  "bracketSameLine": false,
+  "jsxBracketSameLine": false,
   "jsxSingleQuote": false,
   "quoteProps": "consistent",
   "printWidth": 180,

@@ -1,5 +1,7 @@
 import { newE2EPage } from "@stencil/core/testing";
 
+import { mockFetchScript } from "../../../testing";
+
 describe("page-donate", () => {
   it("renders the donation form", async () => {
     const page = await newE2EPage();

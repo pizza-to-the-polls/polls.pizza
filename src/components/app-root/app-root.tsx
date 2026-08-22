@@ -1,55 +1,40 @@
-import { Build, Component, h, Host } from "@stencil/core";
+import { Build } from "@stencil/core";
+import { Component, h, Host, Prop, Watch } from "@stencil/core";
+import { injectHistory, LocationSegments } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
+
+// this fixes a build error where the ga var was not found, because it is declared in index.html
+// declare var ga: any;
+
+declare global {
+  interface Window {
+    ga: any;
+  }
+}
 
 @Component({
   tag: "app-root",
   styleUrl: "app-root.scss",
 })
 export class AppRoot {
-  private historyPatched = false;
+  @Prop() public location: LocationSegments | undefined;
 
   public componentWillLoad() {
     // Ensure the backend is loaded by hitting a health check
     if (Build.isBrowser) {
       PizzaApi.getHealth();
-      this.patchHistoryForAnalytics();
     }
   }
 
-  /**
-   * Monkey-patch history.pushState / replaceState to track SPA page views
-   * in GA4 (gtag). The @stencil/router uses pushState internally for
-   * <stencil-route-link> navigation which does not fire popstate.
-   */
-  private patchHistoryForAnalytics() {
-    if (this.historyPatched) return;
-    this.historyPatched = true;
-
-    const track = (pathname: string) => {
-      if (typeof window !== "undefined" && typeof (window as any).gtag !== "undefined" && pathname) {
-        (window as any).gtag("config", "G-1D1KFSYN9V", { page_path: pathname });
+  @Watch("location") public onRouteChange(newRoute: { pathname: string }) {
+    // this conditional is here because the build's prerender phase fails without it.
+    if (typeof window !== "undefined" && typeof window.ga !== "undefined") {
+      // when the app initializes, newRoute has a blank pathname and it would run, so this conditional stops that.
+      if (newRoute.pathname) {
+        window.ga("send", "pageview", newRoute.pathname);
       }
-    };
-
-    // Track initial page load
-    track(window.location.pathname);
-
-    // Monkey-patch pushState
-    const originalPushState = history.pushState.bind(history);
-    history.pushState = function (...args: any[]) {
-      (originalPushState as any)(...args);
-      track(window.location.pathname);
-      return undefined as any;
-    };
-
-    // Monkey-patch replaceState
-    const originalReplaceState = history.replaceState.bind(history);
-    history.replaceState = function (...args: any[]) {
-      (originalReplaceState as any)(...args);
-      track(window.location.pathname);
-      return undefined as any;
-    };
+    }
   }
 
   public render() {
@@ -186,3 +171,5 @@ export class AppRoot {
     );
   }
 }
+
+injectHistory(AppRoot);
