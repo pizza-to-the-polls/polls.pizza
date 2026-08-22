@@ -100,11 +100,8 @@ export namespace Components {
      * Displays a provided `value` or a loading bar if `null`-like
      */
     interface UiDynamicText {
-        /**
-          * Optional display formatter.  This component is a generic text renderer: callers pass any value plus a lambda that knows its shape (e.g. `format={x => x.location.fullAddress}`). Typing the parameter `unknown` would force a cast at every one of the ~10 call sites, so this is an intentional, documented escape hatch.
-         */
-        "format"?: (value: any) => string;
-        "value": unknown;
+        "format"?: (value: any /*T*/) => string;
+        "value": any | /*T*/ undefined;
     }
     interface UiGeoMap {
         "center"?: google.maps.LatLngLiteral;
@@ -600,11 +597,8 @@ declare namespace LocalJSX {
      * Displays a provided `value` or a loading bar if `null`-like
      */
     interface UiDynamicText {
-        /**
-          * Optional display formatter.  This component is a generic text renderer: callers pass any value plus a lambda that knows its shape (e.g. `format={x => x.location.fullAddress}`). Typing the parameter `unknown` would force a cast at every one of the ~10 call sites, so this is an intentional, documented escape hatch.
-         */
-        "format"?: (value: any) => string;
-        "value"?: unknown;
+        "format"?: (value: any /*T*/) => string;
+        "value"?: any | /*T*/ undefined;
     }
     interface UiGeoMap {
         "center"?: google.maps.LatLngLiteral;
@@ -698,6 +692,9 @@ declare namespace LocalJSX {
         "headerText": string;
         "scrollId": string;
     }
+    interface UiDynamicTextAttributes {
+        "value": string;
+    }
     interface UiGeoMapAttributes {
         "zoom": number;
         "currentAddress": string;
@@ -756,7 +753,7 @@ declare namespace LocalJSX {
         "page-vax-and-snacks": PageVaxAndSnacks;
         "ui-address-input": Omit<UiAddressInput, keyof UiAddressInputAttributes> & { [K in keyof UiAddressInput & keyof UiAddressInputAttributes]?: UiAddressInput[K] } & { [K in keyof UiAddressInput & keyof UiAddressInputAttributes as `attr:${K}`]?: UiAddressInputAttributes[K] } & { [K in keyof UiAddressInput & keyof UiAddressInputAttributes as `prop:${K}`]?: UiAddressInput[K] };
         "ui-card": Omit<UiCard, keyof UiCardAttributes> & { [K in keyof UiCard & keyof UiCardAttributes]?: UiCard[K] } & { [K in keyof UiCard & keyof UiCardAttributes as `attr:${K}`]?: UiCardAttributes[K] } & { [K in keyof UiCard & keyof UiCardAttributes as `prop:${K}`]?: UiCard[K] };
-        "ui-dynamic-text": UiDynamicText;
+        "ui-dynamic-text": Omit<UiDynamicText, keyof UiDynamicTextAttributes> & { [K in keyof UiDynamicText & keyof UiDynamicTextAttributes]?: UiDynamicText[K] } & { [K in keyof UiDynamicText & keyof UiDynamicTextAttributes as `attr:${K}`]?: UiDynamicTextAttributes[K] } & { [K in keyof UiDynamicText & keyof UiDynamicTextAttributes as `prop:${K}`]?: UiDynamicText[K] };
         "ui-geo-map": Omit<UiGeoMap, keyof UiGeoMapAttributes> & { [K in keyof UiGeoMap & keyof UiGeoMapAttributes]?: UiGeoMap[K] } & { [K in keyof UiGeoMap & keyof UiGeoMapAttributes as `attr:${K}`]?: UiGeoMapAttributes[K] } & { [K in keyof UiGeoMap & keyof UiGeoMapAttributes as `prop:${K}`]?: UiGeoMap[K] };
         "ui-guidelines": UiGuidelines;
         "ui-location-search": Omit<UiLocationSearch, keyof UiLocationSearchAttributes> & { [K in keyof UiLocationSearch & keyof UiLocationSearchAttributes]?: UiLocationSearch[K] } & { [K in keyof UiLocationSearch & keyof UiLocationSearchAttributes as `attr:${K}`]?: UiLocationSearchAttributes[K] } & { [K in keyof UiLocationSearch & keyof UiLocationSearchAttributes as `prop:${K}`]?: UiLocationSearch[K] };
