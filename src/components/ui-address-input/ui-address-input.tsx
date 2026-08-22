@@ -102,7 +102,7 @@ export class UiAddressInput {
       return;
     }
 
-    const gmaps = (window as any).google;
+    const gmaps = window.google;
     if (gmaps?.maps?.places?.Autocomplete == null) {
       this.scheduleRetry("Google Maps API not yet fully loaded");
       return;

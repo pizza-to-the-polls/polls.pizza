@@ -45,12 +45,15 @@ export class UiLocationSearch {
           }
         });
 
-        place.address_components?.forEach((address_component: { [key: string]: any }) => {
+        place.address_components?.forEach((address_component: google.maps.GeocoderAddressComponent) => {
           const addressType: string = address_component.types[0];
           const mapping = componentForm[addressType];
           const elem = document.getElementById(`${addressType}-${this.inputId}`) as HTMLInputElement;
           if (mapping && elem) {
-            elem.value = address_component[mapping];
+            // "name" is only present on PlaceResult components, so fall back
+            // to a permissive record view of the component.
+            const record = address_component as unknown as Record<string, string | undefined>;
+            elem.value = record[mapping] as string;
           }
         });
 

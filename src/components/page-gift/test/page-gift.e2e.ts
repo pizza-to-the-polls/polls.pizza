@@ -46,10 +46,10 @@ describe("page-gift", () => {
     await checkoutBtn.click();
     await page.waitForChanges();
 
-    const calls = await page.evaluate(() => (window as any).__fetchCalls);
-    const donationCalls = calls.filter((c: any) => c.url.includes("/donations"));
+    const calls = await page.evaluate(() => window.__fetchCalls!);
+    const donationCalls = calls.filter(c => c.url.includes("/donations"));
     expect(donationCalls.length).toBe(1);
-    const body = JSON.parse(donationCalls[0].opts.body);
+    const body = JSON.parse(donationCalls[0].opts.body ?? "{}");
     expect(body.type).toBe("donation");
     expect(body.amountUsd).toBe(40);
     expect(body.giftName).toBe("Alice");
