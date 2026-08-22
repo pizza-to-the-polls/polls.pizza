@@ -15,20 +15,23 @@ index 4281dad..cd45675 100644
          }
          if (history.action === 'POP' && Array.isArray(history.location.scrollPosition)) {
 diff --git a/node_modules/@stencil/router/dist/collection/components/switch/switch.js b/node_modules/@stencil/router/dist/collection/components/switch/switch.js
-index 994505d..d0d577e 100644
+index 994505d..873d19d 100644
 --- a/node_modules/@stencil/router/dist/collection/components/switch/switch.js
 +++ b/node_modules/@stencil/router/dist/collection/components/switch/switch.js
-@@ -61,6 +61,13 @@ export class RouteSwitch {
+@@ -61,7 +61,15 @@ export class RouteSwitch {
          activeChild.el.match = activeChild.match;
          activeChild.el.componentUpdated = (routeViewUpdatedOptions) => {
              // After the new active route has completed then update visibility of routes
-+            // PATCH (issue #118): Stencil 4 removed the context API, so `queue` is
-+            // undefined during SSR/hydration. The visibility update below is a
-+            // client-only concern (prerendered HTML only contains the active
-+            // route), so no-op when the queue is absent.
-+            if (!this.queue) {
-+                return;
-+            }
-             this.queue.write(() => {
+-            this.queue.write(() => {
++            // PATCH (issue #118): Stencil 4 removed the context API, so `queue`
++            // is undefined everywhere (browser included). Fall back to running
++            // the update synchronously — skipping it entirely would leave the
++            // previous page visible and never notify the Router, breaking
++            // client-side navigation.
++            const schedule = this.queue
++                ? (fn) => this.queue.write(fn)
++                : (fn) => fn();
++            schedule(() => {
                  this.subscribers.forEach((child, index) => {
                      child.el.componentUpdated = undefined;
+                     if (index === this.activeIndex) {
