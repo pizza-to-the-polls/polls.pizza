@@ -32,10 +32,10 @@ describe("page-session", () => {
     await submitBtn.click();
     await page.waitForChanges();
 
-    const calls = await page.evaluate(() => (window as any).__fetchCalls);
-    const sessionCalls = calls.filter((c: any) => c.url.includes("/session"));
+    const calls = await page.evaluate(() => window.__fetchCalls!);
+    const sessionCalls = calls.filter(c => c.url.includes("/session"));
     expect(sessionCalls.length).toBe(1);
-    const body = JSON.parse(sessionCalls[0].opts.body);
+    const body = JSON.parse(sessionCalls[0].opts.body ?? "{}");
     expect(body.email).toBe("test@example.com");
   });
 });

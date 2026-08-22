@@ -32,7 +32,7 @@ describe("app-root component-load guard", () => {
     // Disable auto-reload so we can observe reload decisions without
     // actually navigating away from the test page.
     await page.evaluate(() => {
-      (window as any).__pizza_disable_auto_reload = true;
+      window.__pizza_disable_auto_reload = true;
     });
 
     if (opts.recentRetry) {
@@ -65,11 +65,11 @@ describe("app-root component-load guard", () => {
 
     await page.waitForChanges();
 
-    const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
+    const log = await page.evaluate(() => window.__pizza_component_load_log);
     expect(log).toBeDefined();
-    expect(log.length).toBeGreaterThanOrEqual(1);
+    expect(log!.length).toBeGreaterThanOrEqual(1);
 
-    const entry = log[0];
+    const entry = log![0];
     expect(entry.chunkId).toBe("p-188cd4da.entry.js");
     expect(entry.fallback).toBe("banner");
     expect(entry.route).toBe("/");
@@ -107,11 +107,11 @@ describe("app-root component-load guard", () => {
 
     await page.waitForChanges();
 
-    const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
+    const log = await page.evaluate(() => window.__pizza_component_load_log);
     expect(log).toBeDefined();
-    expect(log.length).toBeGreaterThanOrEqual(1);
+    expect(log!.length).toBeGreaterThanOrEqual(1);
 
-    const entry = log[0];
+    const entry = log![0];
     expect(entry.chunkId).toBe("p-abc123.entry.js");
     expect(entry.fallback).toBe("banner");
 
@@ -139,7 +139,7 @@ describe("app-root component-load guard", () => {
 
     await page.waitForChanges();
 
-    const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
+    const log = await page.evaluate(() => window.__pizza_component_load_log);
     // The guard should not have logged anything for an unrelated error.
     // (log stays undefined until the first event is recorded.)
     expect(log ?? []).toHaveLength(0);
@@ -186,10 +186,10 @@ describe("app-root component-load guard", () => {
     });
     await page.waitForChanges();
 
-    const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
-    expect(log.length).toBe(2);
-    expect(log[0].chunkId).toBe("p-deadbeef1.entry.js");
-    expect(log[1].chunkId).toBe("p-cafebabe2.entry.js");
+    const log = await page.evaluate(() => window.__pizza_component_load_log);
+    expect(log!.length).toBe(2);
+    expect(log![0].chunkId).toBe("p-deadbeef1.entry.js");
+    expect(log![1].chunkId).toBe("p-cafebabe2.entry.js");
   });
 
   // -------------------------------------------------------------------
@@ -210,9 +210,9 @@ describe("app-root component-load guard", () => {
 
     await page.waitForChanges();
 
-    const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
-    expect(log.length).toBeGreaterThanOrEqual(1);
-    expect(log[0].chunkId).toBe("p-188cd4da.js");
+    const log = await page.evaluate(() => window.__pizza_component_load_log);
+    expect(log!.length).toBeGreaterThanOrEqual(1);
+    expect(log![0].chunkId).toBe("p-188cd4da.js");
 
     const banner = await page.find("#pizza-chunk-banner-p-188cd4da\\.js");
     expect(banner).not.toBeNull();
@@ -236,11 +236,11 @@ describe("app-root component-load guard", () => {
 
     await page.waitForChanges();
 
-    const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
-    expect(log.length).toBeGreaterThanOrEqual(1);
+    const log = await page.evaluate(() => window.__pizza_component_load_log);
+    expect(log!.length).toBeGreaterThanOrEqual(1);
     // Fresh page, no prior retry recorded, still within the initial window:
     // the decision should be "reload".
-    expect(log[0].fallback).toBe("reload");
+    expect(log![0].fallback).toBe("reload");
 
     // Because auto-reload is disabled, the page should NOT have reloaded
     // (we're still here and can read the log).
@@ -268,11 +268,11 @@ describe("app-root component-load guard", () => {
     expect(appRoot).not.toBeNull();
 
     // Guard should be installed
-    const guardInstalled = await page.evaluate(() => !!(window as any).__pizza_guard_installed);
+    const guardInstalled = await page.evaluate(() => !!window.__pizza_guard_installed);
     expect(guardInstalled).toBe(true);
 
     // Log array is exposed (empty until a failure occurs)
-    const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
+    const log = await page.evaluate(() => window.__pizza_component_load_log);
     expect(log ?? []).toHaveLength(0);
   });
 });
