@@ -22,7 +22,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const isRetryableStatus = (status: number) => [502, 503, 504].includes(status);
 
-const baseFetch = async <T = unknown>(path: string, options: { [key: string]: string } = {}): Promise<(T & { isError: undefined }) | ApiError> => {
+const baseFetch = async <T = any>(path: string, options: { [key: string]: string } = {}): Promise<(T & { isError: undefined }) | ApiError> => {
   const headers = options.headers || {};
   const method = (options.method || "GET").toUpperCase();
   const isRetryable = method === "GET";
@@ -51,7 +51,7 @@ const baseFetch = async <T = unknown>(path: string, options: { [key: string]: st
 
     const text = await resp.text();
 
-    let data: unknown;
+    let data: any;
     try {
       data = JSON.parse(text, reviver);
     } catch (e) {
@@ -66,8 +66,7 @@ const baseFetch = async <T = unknown>(path: string, options: { [key: string]: st
       if (isRetryable && isRetryableStatus(resp.status) && attempt < maxAttempts - 1) {
         continue;
       }
-      const errors = (data as { errors?: Record<string, string> }).errors ?? {};
-      return { isError: true, status: resp.status, errors };
+      return { isError: true, status: resp.status, errors: data.errors };
     }
 
     return data as T & { isError: undefined };
@@ -76,7 +75,7 @@ const baseFetch = async <T = unknown>(path: string, options: { [key: string]: st
   return { isError: true, status: 0, errors: { network: "Service temporarily unavailable" } };
 };
 
-const reviver: NonNullable<Parameters<typeof JSON.parse>[1]> = (key, value) => {
+const reviver: (this: any, key: string, value: any) => any = (key, value) => {
   if (key === "createdAt" || key === "validatedAt" || key === "cancelledAt") {
     return new Date(Date.parse(value));
   }
@@ -152,16 +151,15 @@ class PizzaApi {
 
     if (success) {
       const sessionId = checkoutSessionId;
-      const stripe = window.Stripe!(process.env.STRIPE_PUBLIC_KEY ?? "");
+      const stripe: any = (window as any).Stripe(process.env.STRIPE_PUBLIC_KEY);
 
       stripe
         .redirectToCheckout({
-          sessionId: sessionId ?? "",
+          sessionId,
         })
-        .then(function (result) {
-          const message = result.error?.message ?? "Could not start checkout";
-          console.error(message);
-          throw new Error(message);
+        .then(function (result: any) {
+          console.error(result.error.message);
+          throw new Error(result.error.message);
         })
         .catch(function () {
           // Floating promise: when redirectToCheckout succeeds the browser
