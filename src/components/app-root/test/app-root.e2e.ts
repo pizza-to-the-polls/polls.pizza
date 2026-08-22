@@ -276,3 +276,49 @@ describe("app-root component-load guard", () => {
     expect(log ?? []).toHaveLength(0);
   });
 });
+
+describe("app-root client-side navigation", () => {
+  it("navigates between routes when clicking route links", async () => {
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        "/health": { body: JSON.stringify({ ok: true }) },
+        "/totals": { body: JSON.stringify({ pizzas: 0, snacks: 0, orders: 0, locations: 0 }) },
+      }) + "<app-root></app-root>",
+    );
+    await page.waitForChanges();
+
+    // The home route should be visible initially
+    const homeInitiallyVisible = await page.evaluate(() => {
+      const el = document.querySelector("page-home");
+      return el != null && (el as HTMLElement).style.display !== "none";
+    });
+    expect(homeInitiallyVisible).toBe(true);
+
+    // Click a header route link and wait for the route switch to settle
+    await page.evaluate(() => {
+      const link = document.querySelector<HTMLAnchorElement>('a[href="/about"]');
+      if (!link) throw new Error("no /about anchor found");
+      link.click();
+    });
+    await page.waitForChanges();
+
+    // URL should reflect the new route...
+    expect(await page.url()).toContain("/about");
+
+    // ...the about page must be visible
+    const aboutVisible = await page.evaluate(() => {
+      const el = document.querySelector("page-about");
+      return el != null && (el as HTMLElement).style.display !== "none";
+    });
+    expect(aboutVisible).toBe(true);
+
+    // ...and the previous page must be hidden (this is the regression guard:
+    // with the router's visibility update broken, page-home stays visible).
+    const homeHidden = await page.evaluate(() => {
+      const el = document.querySelector("page-home");
+      return el == null || (el as HTMLElement).style.display === "none";
+    });
+    expect(homeHidden).toBe(true);
+  });
+});
