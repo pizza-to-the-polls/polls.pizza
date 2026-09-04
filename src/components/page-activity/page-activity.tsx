@@ -15,7 +15,9 @@ export class PageActivity {
 
   public async componentWillLoad() {
     document.title = `Activity | Pizza to the Polls`;
-    this.loadMore();
+    this.loadMore().catch(() => {
+      this.isRefreshing = false;
+    });
   }
 
   public render() {

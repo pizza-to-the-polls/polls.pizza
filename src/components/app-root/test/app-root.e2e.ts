@@ -275,6 +275,82 @@ describe("app-root component-load guard", () => {
     const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
     expect(log ?? []).toHaveLength(0);
   });
+
+  // -------------------------------------------------------------------
+  // 8. Suppresses non-Error unhandled rejections from third-party scripts
+  // -------------------------------------------------------------------
+  it("suppresses unhandledrejection with undefined reason", async () => {
+    const page = await mountApp({ recentRetry: true });
+
+    // Dispatch an unhandledrejection with `undefined` as reason (simulates
+    // third-party scripts like Google Maps on Mobile Safari).
+    const prevented = await page.evaluate(() => {
+      const promise = new Promise(() => {
+        // never settles
+      });
+      const event = new PromiseRejectionEvent("unhandledrejection", {
+        promise,
+        reason: undefined,
+        cancelable: true,
+      });
+      window.dispatchEvent(event);
+      return event.defaultPrevented;
+    });
+
+    await page.waitForChanges();
+    expect(prevented).toBe(true);
+
+    // The guard should NOT have logged this as a component-load failure.
+    const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
+    expect(log ?? []).toHaveLength(0);
+  });
+
+  it("suppresses unhandledrejection with non-Error plain object reason", async () => {
+    const page = await mountApp({ recentRetry: true });
+
+    const prevented = await page.evaluate(() => {
+      const promise = new Promise(() => {
+        // never settles
+      });
+      const event = new PromiseRejectionEvent("unhandledrejection", {
+        promise,
+        reason: { code: "DEPRECATED" },
+        cancelable: true,
+      });
+      window.dispatchEvent(event);
+      return event.defaultPrevented;
+    });
+
+    await page.waitForChanges();
+    expect(prevented).toBe(true);
+
+    const log = await page.evaluate(() => (window as any).__pizza_component_load_log);
+    expect(log ?? []).toHaveLength(0);
+  });
+
+  it("does not suppress unhandledrejection with real Error reason", async () => {
+    const page = await mountApp({ recentRetry: true });
+
+    // Real Error rejections should pass through (our own code always
+    // throws Error objects for real failures).
+    const prevented = await page.evaluate(() => {
+      const promise = new Promise(() => {
+        // never settles
+      });
+      const event = new PromiseRejectionEvent("unhandledrejection", {
+        promise,
+        reason: new Error("Something real broke"),
+        cancelable: true,
+      });
+      window.dispatchEvent(event);
+      return event.defaultPrevented;
+    });
+
+    await page.waitForChanges();
+    // Real Error rejections must NOT be suppressed — only non-Error
+    // third-party noise.
+    expect(prevented).toBe(false);
+  });
 });
 
 describe("app-root client-side navigation", () => {

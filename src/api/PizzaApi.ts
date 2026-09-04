@@ -35,31 +35,27 @@ const baseFetch = async <T = any>(path: string, options: { [key: string]: string
     }
 
     let resp: Response;
+    let data: any;
     try {
       resp = await fetch(`${BASE_URL}${path}`, {
         mode: "cors",
         ...options,
         headers: { "Content-Type": "application/json", ...headers },
       });
+
+      const text = await resp.text();
+      data = JSON.parse(text, reviver);
     } catch (e) {
-      // Network error (e.g. offline, DNS failure) — retry if allowed
+      // Network error (e.g. offline, DNS failure, or response stream
+      // interrupted) — retry if allowed.
       if (isRetryable && e instanceof TypeError && attempt < maxAttempts - 1) {
         continue;
       }
-      return { isError: true, status: 0, errors: { network: "Service temporarily unavailable" } };
-    }
-
-    const text = await resp.text();
-
-    let data: any;
-    try {
-      data = JSON.parse(text, reviver);
-    } catch (e) {
-      // JSON.parse failed — likely an HTML error page during cold start
+      // JSON.parse failed — likely an HTML error page during cold start.
       if (isRetryable && e instanceof SyntaxError && attempt < maxAttempts - 1) {
         continue;
       }
-      return { isError: true, status: resp.status || 0, errors: { network: "Service temporarily unavailable" } };
+      return { isError: true, status: resp?.status || 0, errors: { network: "Service temporarily unavailable" } };
     }
 
     if (resp.status > 299) {

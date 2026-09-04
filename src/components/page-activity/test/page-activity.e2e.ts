@@ -79,4 +79,37 @@ describe("page-activity", () => {
     expect(orderCalls.length).toBeGreaterThan(0);
     expect(orderCalls[0].url).toContain("page=0");
   });
+
+  it("handles API failure gracefully without unhandled rejection", async () => {
+    const page = await newE2EPage();
+
+    // Collect unhandled rejections that reach the window level
+    await page.evaluate(() => {
+      (window as any).__pizza_unhandled_rejections = [];
+      window.addEventListener("unhandledrejection", (event: PromiseRejectionEvent) => {
+        (window as any).__pizza_unhandled_rejections.push(event.reason);
+      });
+    });
+
+    await page.setContent(
+      mockFetchScript({
+        "/orders": {
+          status: 500,
+          body: JSON.stringify({ errors: { server: "Internal error" } }),
+        },
+      }) + "<page-activity></page-activity>",
+    );
+    await page.waitForChanges();
+
+    // Component should render its loading state
+    const loadingContainer = await page.find("#loading-container");
+    expect(loadingContainer).not.toBeNull();
+
+    // The loadMore promise rejection should NOT create an unhandled rejection
+    // because our .catch() handler swallows it.
+    const unhandled = await page.evaluate(() => {
+      return (window as any).__pizza_unhandled_rejections || [];
+    });
+    expect(unhandled).toHaveLength(0);
+  });
 });

@@ -12,7 +12,7 @@ export class AppRoot {
   public componentWillLoad() {
     // Ensure the backend is loaded by hitting a health check
     if (Build.isBrowser) {
-      PizzaApi.getHealth();
+      PizzaApi.getHealth().catch(() => {});
       this.patchHistoryForAnalytics();
     }
   }
