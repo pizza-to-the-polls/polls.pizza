@@ -281,6 +281,11 @@ export const installComponentLoadGuard = (): void => {
   // Catches native dynamic-import rejections (the primary failure mode for
   // the "s.isProxied" error, since connectedCallback is async and the
   // rejection escapes as an unhandled promise rejection).
+  //
+  // Also suppresses non-Error rejections (undefined, null, strings,
+  // plain objects) from third-party scripts (e.g. Google Maps emitting
+  // undefined on Mobile Safari). These produce InvalidError noise in
+  // Bugsnag but are not actionable.
   window.addEventListener("unhandledrejection", (event: PromiseRejectionEvent) => {
     const reason: any = event.reason;
     const msg: string = typeof reason === "string" ? reason : reason?.message || String(reason);
@@ -288,6 +293,15 @@ export const installComponentLoadGuard = (): void => {
       event.preventDefault();
       const chunkUrl: string = extractChunkUrl(msg) || "";
       reportComponentLoadFailure(msg, chunkUrl, null);
+      return;
+    }
+
+    // Suppress non-Error rejections from third-party scripts.
+    // Our own code always throws Error objects or ApiError plain objects
+    // with structured .errors — never undefined, null, or non-Error values.
+    if (reason == null || !(reason instanceof Error)) {
+      event.preventDefault();
+      console.warn("[pizza] Suppressed unhandledrejection from third-party script:", reason);
     }
   });
 };
