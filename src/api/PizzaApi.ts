@@ -34,7 +34,7 @@ const baseFetch = async <T = any>(path: string, options: { [key: string]: string
       await sleep(delay);
     }
 
-    let resp: Response;
+    let resp: Response | undefined;
     let data: any;
     try {
       resp = await fetch(`${BASE_URL}${path}`, {
