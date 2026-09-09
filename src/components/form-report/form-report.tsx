@@ -56,6 +56,7 @@ export class FormReport {
   @State() private reportType: string = "photo"; // "social" | "photo"
   @State() private hasPhoto: boolean = false;
   @State() private photoUrl: string = "";
+  @State() private uploadId: number | null = null;
   @State() private userClickedGuidelinesLink: boolean = true;
 
   public componentWillLoad() {
@@ -127,12 +128,13 @@ export class FormReport {
       const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
 
       if (!isDuplicate && presigned) {
+        this.uploadId = id;
         const formData = new FormData();
         const { url, fields } = presigned;
 
         formData.append("ACL", "public-read");
         formData.append("x-amz-acl", "public-read");
-        formData.append("x-amz-meta-user-id", id);
+        formData.append("x-amz-meta-user-id", String(id));
         formData.append("Content-Type", file.type);
 
         Object.entries(fields).forEach(([k, v]: [string, any]) => {
@@ -275,7 +277,17 @@ export class FormReport {
       }
 
       // Setup request data
-      const requestData = {
+      const requestData: {
+        address: string;
+        url: string;
+        waitTime: string;
+        canDistribute: boolean;
+        contactRole: string;
+        contactFirstName: string;
+        contactLastName: string;
+        contact: string;
+        uploadId?: number;
+      } = {
         address: data.address,
         url: data.url,
         waitTime: data.waitTime,
@@ -285,6 +297,10 @@ export class FormReport {
         contactLastName: data.contactLastName,
         contact: data.contactPhone,
       };
+
+      if (this.uploadId) {
+        requestData.uploadId = this.uploadId;
+      }
 
       try {
         this.submitResponse = await PizzaApi.postReport(requestData);
@@ -726,6 +742,7 @@ export class FormReport {
     }
     this.hasPhoto = false;
     this.photoUrl = "";
+    this.uploadId = null;
     this.clearFormError("photo");
     if (imagePreview) {
       imagePreview.style.backgroundImage = "";
