@@ -46,8 +46,8 @@ export class UiAddressInput {
   @Event() public addressSelected!: EventEmitter<{ address: string; lat: number; lng: number }>;
 
   private inputElement?: HTMLUiSingleInputElement;
-  private place?: google.maps.places.PlaceResult;
-  private autocomplete?: google.maps.places.PlaceAutocompleteElement;
+  private place?: google.maps.places.Place;
+  private autocomplete?: any;
   private retryCount: number = 0;
   private retryTimer?: number;
   private initializing: boolean = false;
@@ -81,8 +81,8 @@ export class UiAddressInput {
         onButtonClicked={e => {
           const evt = this.addressSelected.emit({
             address: e.detail,
-            lat: this.place?.geometry?.location?.lat() || 0,
-            lng: this.place?.geometry?.location?.lng() || 0,
+            lat: (this.place as any)?.location?.lat() || 0,
+            lng: (this.place as any)?.location?.lng() || 0,
           });
           if (evt.defaultPrevented) {
             e.preventDefault();
@@ -103,7 +103,7 @@ export class UiAddressInput {
     }
 
     const gmaps = (window as any).google;
-    if (gmaps?.maps?.places?.PlaceAutocompleteElement == null) {
+    if (gmaps?.maps?.places?.BasicPlaceAutocompleteElement == null) {
       this.scheduleRetry("Google Maps API not yet fully loaded");
       return;
     }
@@ -129,19 +129,19 @@ export class UiAddressInput {
       }
 
       try {
-        const PlacesAutocompleteElement = gmaps?.maps?.places?.PlaceAutocompleteElement;
-        if (PlacesAutocompleteElement == null) {
+        const BasicPlaceAutocompleteElement = gmaps?.maps?.places?.BasicPlaceAutocompleteElement;
+        if (BasicPlaceAutocompleteElement == null) {
           this.initializing = false;
           this.scheduleRetry("Google Maps Places API not ready on retry");
           return;
         }
 
-        // Create the PlaceAutocompleteElement and wrap the input
-        const autocompleteEl = new PlacesAutocompleteElement({
+        // Create the BasicPlaceAutocompleteElement and wrap the input
+        const autocompleteEl = new BasicPlaceAutocompleteElement({
           includedRegionCodes: ["US"],
           noInputIcon: true,
           noClearButton: true,
-        }) as google.maps.places.PlaceAutocompleteElement;
+        });
 
         // Remove default Google styles so page CSS takes over
         autocompleteEl.style.cssText = "display: block; background: transparent; border: none; outline: none;";
@@ -151,11 +151,21 @@ export class UiAddressInput {
 
         this.autocomplete = autocompleteEl;
 
-        autocompleteEl.addEventListener("gmp-select", () => {
-          const place = (autocompleteEl as any).getPlace() as google.maps.places.PlaceResult;
-          this.place = place;
-          const fullAddress = place.address_components ? toFullAddress(place.address_components) : null;
-          addressInput.setValue(fullAddress ? fullAddress : place.name ? place.name : "the location");
+        autocompleteEl.addEventListener("gmp-select", (event: Event) => {
+          const place = (event as any).place;
+
+          place.fetchFields({ fields: ["displayName", "formattedAddress", "addressComponents", "location"] }).then(({ place: fetchedPlace }: any) => {
+            this.place = fetchedPlace;
+
+            // New Places API: AddressComponent has types[], shortText, longText
+            const newComponents =
+              fetchedPlace.addressComponents?.map((ac: any) => ({
+                short_name: ac.shortText || "",
+                types: ac.types,
+              })) || [];
+            const fullAddress = toFullAddress(newComponents);
+            addressInput.setValue(fullAddress ? fullAddress : fetchedPlace.displayName ? fetchedPlace.displayName : "the location");
+          });
         });
 
         this.retryCount = 0;

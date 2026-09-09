@@ -17,65 +17,73 @@ export class UiLocationSearch {
     const initAutoComplete = () => {
       const autocompleteInput = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
 
-      if (!window.google?.maps?.places?.PlaceAutocompleteElement || !autocompleteInput) {
+      const BasicPlaceAutocompleteElement = (window as any).google?.maps?.places?.BasicPlaceAutocompleteElement;
+      if (!BasicPlaceAutocompleteElement || !autocompleteInput) {
         return setTimeout(initAutoComplete, 10);
       }
 
       // Guard against re-initialization on re-renders
-      if ((autocompleteInput.parentNode as HTMLElement)?.tagName === "GMP-PLACE-AUTOCOMPLETE") {
+      if ((autocompleteInput.parentNode as HTMLElement)?.tagName === "GMP-BASIC-PLACE-AUTOCOMPLETE") {
         return;
       }
 
-      const autocomplete = new window.google.maps.places.PlaceAutocompleteElement({
+      const autocomplete = new BasicPlaceAutocompleteElement({
         includedRegionCodes: ["US"],
         noInputIcon: true,
         noClearButton: true,
       });
 
-      // Wrap the input element with the PlaceAutocompleteElement
+      // Wrap the input element with the BasicPlaceAutocompleteElement
       autocompleteInput.parentNode?.insertBefore(autocomplete, autocompleteInput);
       autocomplete.appendChild(autocompleteInput);
 
       // Remove default Google inline styles so page CSS takes over
       autocomplete.style.cssText = "display: block; background: transparent; border: none; outline: none;";
 
-      autocomplete.addEventListener("gmp-select", () => {
-        const place = (autocomplete as any).getPlace() as google.maps.places.PlaceResult;
+      autocomplete.addEventListener("gmp-select", (event: Event) => {
+        const place = (event as any).place;
 
-        const componentForm: { [key: string]: string } = {
-          street_number: "short_name",
-          route: "long_name",
-          locality: "long_name",
-          administrative_area_level_1: "short_name",
-          postal_code: "short_name",
-          premise: "name",
-        };
+        place.fetchFields({ fields: ["displayName", "formattedAddress", "addressComponents"] }).then(({ place: fetchedPlace }: any) => {
+          const componentForm: { [key: string]: string } = {
+            street_number: "short_name",
+            route: "long_name",
+            locality: "long_name",
+            administrative_area_level_1: "short_name",
+            postal_code: "short_name",
+            premise: "name",
+          };
 
-        Object.keys(componentForm).forEach(component => {
-          const elem = document.getElementById(`${component}-${this.inputId}`) as HTMLInputElement;
-          if (elem) {
-            elem.value = "";
+          Object.keys(componentForm).forEach(component => {
+            const elem = document.getElementById(`${component}-${this.inputId}`) as HTMLInputElement;
+            if (elem) {
+              elem.value = "";
+            }
+          });
+
+          // New Places API: AddressComponent has types[], shortText, longText
+          fetchedPlace.addressComponents?.forEach((ac: any) => {
+            const addressType: string = ac.types[0];
+            const mapping = componentForm[addressType];
+            const elem = document.getElementById(`${addressType}-${this.inputId}`) as HTMLInputElement;
+            if (mapping && elem) {
+              elem.value = mapping === "short_name" ? ac.shortText || "" : ac.longText || "";
+            }
+          });
+
+          const premise = document.getElementById(`premise-${this.inputId}`) as HTMLInputElement;
+          if (premise) {
+            premise.value = fetchedPlace.displayName || "";
           }
+
+          // Get readable address (either name or the address; remove USA)
+          const locationName = fetchedPlace.formattedAddress
+            ? fetchedPlace.formattedAddress.replace(/, USA/gi, "")
+            : fetchedPlace.displayName
+              ? fetchedPlace.displayName
+              : "the location";
+          const formattedAddress = fetchedPlace.formattedAddress || "";
+          this.locationSelected.emit({ locationName, formattedAddress });
         });
-
-        place.address_components?.forEach((address_component: { [key: string]: any }) => {
-          const addressType: string = address_component.types[0];
-          const mapping = componentForm[addressType];
-          const elem = document.getElementById(`${addressType}-${this.inputId}`) as HTMLInputElement;
-          if (mapping && elem) {
-            elem.value = address_component[mapping];
-          }
-        });
-
-        const premise = document.getElementById(`premise-${this.inputId}`) as HTMLInputElement;
-        if (premise) {
-          premise.value = place.name || "";
-        }
-
-        // Get readable address (either name or the address; remove USA)
-        const locationName = place.formatted_address ? place.formatted_address.replace(/, USA/gi, "") : place.name ? place.name : "the location";
-        const formattedAddress = place.formatted_address || "";
-        this.locationSelected.emit({ locationName, formattedAddress });
       });
     };
 

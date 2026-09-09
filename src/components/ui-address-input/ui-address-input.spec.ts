@@ -7,35 +7,54 @@ const tick = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 
 function basePlaceResult() {
   return {
-    formatted_address: "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA",
-    name: "The White House",
-    geometry: { location: { lat: () => 38.8977, lng: () => -77.0365 } },
-    address_components: [
-      { types: ["street_number"], short_name: "1600" },
-      { types: ["route"], short_name: "Pennsylvania Avenue NW" },
-      { types: ["locality"], short_name: "Washington" },
-      { types: ["administrative_area_level_1"], short_name: "DC" },
-      { types: ["postal_code"], short_name: "20500" },
+    displayName: "The White House",
+    formattedAddress: "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA",
+    location: { lat: () => 38.8977, lng: () => -77.0365 },
+    addressComponents: [
+      { types: ["street_number"], shortText: "1600" },
+      { types: ["route"], shortText: "Pennsylvania Avenue NW" },
+      { types: ["locality"], shortText: "Washington" },
+      { types: ["administrative_area_level_1"], shortText: "DC" },
+      { types: ["postal_code"], shortText: "20500" },
     ],
   };
 }
 
 function mockOnPage(page: any, placeResult = basePlaceResult()) {
   const wrapper = document.createElement("div");
-  Object.defineProperty(wrapper, "tagName", { value: "GMP-PLACE-AUTOCOMPLETE" });
-  (wrapper as any).getPlace = () => placeResult;
+  Object.defineProperty(wrapper, "tagName", { value: "GMP-BASIC-PLACE-AUTOCOMPLETE" });
+
+  let selectHandler: EventListener | null = null;
+  const origAddEventListener = wrapper.addEventListener.bind(wrapper);
+  wrapper.addEventListener = function (type: string, fn: EventListener) {
+    if (type === "gmp-select") {
+      selectHandler = fn;
+    }
+    return origAddEventListener(type, fn);
+  };
+
+  const placeObj = { fetchFields: () => Promise.resolve({ place: placeResult }) };
+
+  function triggerSelect(overrides?: any) {
+    if (overrides) {
+      (placeObj as any).fetchFields = () => Promise.resolve({ place: { ...placeResult, ...overrides } });
+    }
+    const event = new Event("gmp-select");
+    (event as any).place = placeObj;
+    selectHandler?.(event);
+  }
 
   (page.win as any).google = {
     maps: {
       places: {
-        PlaceAutocompleteElement: function () {
+        BasicPlaceAutocompleteElement: function () {
           return wrapper;
         } as any,
       },
     },
   };
 
-  return wrapper;
+  return { wrapper, triggerSelect };
 }
 
 async function render(html = '<ui-address-input label="Addr" button-label="Go"></ui-address-input>') {
@@ -47,15 +66,12 @@ async function render(html = '<ui-address-input label="Addr" button-label="Go"><
     supportsShadowDom: false,
   });
 
-  // newSpecPage wipes window.google — set it on page.win and re-render.
-  // The retry timer (100ms) does the actual wrapping since the child
-  // ui-single-input's internal ref may not be ready on the first attempt.
-  const wrapper = mockOnPage(page);
+  const { wrapper, triggerSelect } = mockOnPage(page);
   await page.waitForChanges();
-  await tick(300); // let the 100ms retry fire + Promise settle
+  await tick(300);
   await page.waitForChanges();
 
-  return { page, wrapper };
+  return { page, wrapper, triggerSelect };
 }
 
 beforeEach(() => {
@@ -94,10 +110,10 @@ describe("ui-address-input — init", () => {
 // ---------------------------------------------------------------------------
 describe("ui-address-input — gmp-select", () => {
   it("sets input value to full address on selection", async () => {
-    const { page, wrapper } = await render();
+    const { page, triggerSelect } = await render();
 
-    wrapper.dispatchEvent(new Event("gmp-select"));
-    await page.waitForChanges();
+    triggerSelect();
+    await tick(10);
 
     const si = page.root?.querySelector("ui-single-input") as any;
     const val = await si.getCurrentValue();
@@ -105,13 +121,13 @@ describe("ui-address-input — gmp-select", () => {
   });
 
   it("emits addressSelected with lat/lng on submit", async () => {
-    const { page, wrapper } = await render();
+    const { page, triggerSelect } = await render();
 
     const onAddr = jest.fn();
     (page.root as HTMLElement).addEventListener("addressSelected", onAddr);
 
-    wrapper.dispatchEvent(new Event("gmp-select"));
-    await page.waitForChanges();
+    triggerSelect();
+    await tick(10);
 
     (page.doc?.querySelector(".submit-button") as HTMLInputElement).click();
 
@@ -122,20 +138,19 @@ describe("ui-address-input — gmp-select", () => {
     expect(d.lng).toBe(-77.0365);
   });
 
-  it("falls back to place.name when address_components incomplete", async () => {
-    const { page, wrapper } = await render();
-    (wrapper as any).getPlace = () => ({
-      name: "The White House",
-      formatted_address: "",
-      geometry: { location: { lat: () => 0, lng: () => 0 } },
-      address_components: [{ types: ["locality"], short_name: "Washington" }],
+  it("falls back to displayName when addressComponents incomplete", async () => {
+    const { triggerSelect } = await render();
+
+    triggerSelect({
+      displayName: "The White House",
+      formattedAddress: "",
+      location: { lat: () => 0, lng: () => 0 },
+      addressComponents: [{ types: ["locality"], shortText: "Washington" }],
     });
+    await tick(10);
 
-    wrapper.dispatchEvent(new Event("gmp-select"));
-    await page.waitForChanges();
-
-    const si = page.root?.querySelector("ui-single-input") as any;
-    const val = await si.getCurrentValue();
+    const si = document.querySelector("ui-single-input") as any;
+    const val = si ? await si.getCurrentValue() : "";
     expect(val).toBe("The White House");
   });
 });
