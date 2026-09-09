@@ -47,7 +47,7 @@ export class UiAddressInput {
 
   private inputElement?: HTMLUiSingleInputElement;
   private place?: google.maps.places.PlaceResult;
-  private autocomplete?: google.maps.places.Autocomplete;
+  private autocomplete?: google.maps.places.PlaceAutocompleteElement;
   private retryCount: number = 0;
   private retryTimer?: number;
   private initializing: boolean = false;
@@ -103,7 +103,7 @@ export class UiAddressInput {
     }
 
     const gmaps = (window as any).google;
-    if (gmaps?.maps?.places?.Autocomplete == null) {
+    if (gmaps?.maps?.places?.PlaceAutocompleteElement == null) {
       this.scheduleRetry("Google Maps API not yet fully loaded");
       return;
     }
@@ -129,20 +129,30 @@ export class UiAddressInput {
       }
 
       try {
-        const PlacesAutocomplete = gmaps?.maps?.places?.Autocomplete;
-        if (PlacesAutocomplete == null) {
+        const PlacesAutocompleteElement = gmaps?.maps?.places?.PlaceAutocompleteElement;
+        if (PlacesAutocompleteElement == null) {
           this.initializing = false;
           this.scheduleRetry("Google Maps Places API not ready on retry");
           return;
         }
-        this.autocomplete = new PlacesAutocomplete(el, {
-          types: ["geocode", "establishment"],
-          componentRestrictions: { country: "us" },
-        });
 
-        this.autocomplete!.addListener("place_changed", () => {
-          const autocomplete = this.autocomplete!;
-          const place = autocomplete.getPlace();
+        // Create the PlaceAutocompleteElement and wrap the input
+        const autocompleteEl = new PlacesAutocompleteElement({
+          includedRegionCodes: ["US"],
+          noInputIcon: true,
+          noClearButton: true,
+        }) as google.maps.places.PlaceAutocompleteElement;
+
+        // Remove default Google styles so page CSS takes over
+        autocompleteEl.style.cssText = "display: block; background: transparent; border: none; outline: none;";
+
+        el.parentNode?.insertBefore(autocompleteEl, el);
+        autocompleteEl.appendChild(el);
+
+        this.autocomplete = autocompleteEl;
+
+        autocompleteEl.addEventListener("gmp-select", () => {
+          const place = (autocompleteEl as any).getPlace() as google.maps.places.PlaceResult;
           this.place = place;
           const fullAddress = place.address_components ? toFullAddress(place.address_components) : null;
           addressInput.setValue(fullAddress ? fullAddress : place.name ? place.name : "the location");

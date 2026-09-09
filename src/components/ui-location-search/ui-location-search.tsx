@@ -17,17 +17,30 @@ export class UiLocationSearch {
     const initAutoComplete = () => {
       const autocompleteInput = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
 
-      if (!window.google?.maps?.places?.Autocomplete || !autocompleteInput) {
+      if (!window.google?.maps?.places?.PlaceAutocompleteElement || !autocompleteInput) {
         return setTimeout(initAutoComplete, 10);
       }
 
-      const autocomplete = new google.maps.places.Autocomplete(autocompleteInput, {
-        types: ["geocode", "establishment"],
-        componentRestrictions: { country: "us" },
+      // Guard against re-initialization on re-renders
+      if ((autocompleteInput.parentNode as HTMLElement)?.tagName === "GMP-PLACE-AUTOCOMPLETE") {
+        return;
+      }
+
+      const autocomplete = new google.maps.places.PlaceAutocompleteElement({
+        includedRegionCodes: ["US"],
+        noInputIcon: true,
+        noClearButton: true,
       });
 
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
+      // Wrap the input element with the PlaceAutocompleteElement
+      autocompleteInput.parentNode?.insertBefore(autocomplete, autocompleteInput);
+      autocomplete.appendChild(autocompleteInput);
+
+      // Remove default Google inline styles so page CSS takes over
+      autocomplete.style.cssText = "display: block; background: transparent; border: none; outline: none;";
+
+      autocomplete.addEventListener("gmp-select", () => {
+        const place = (autocomplete as any).getPlace() as google.maps.places.PlaceResult;
 
         const componentForm: { [key: string]: string } = {
           street_number: "short_name",
