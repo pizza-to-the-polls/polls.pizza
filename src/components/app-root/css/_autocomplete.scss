@@ -1,0 +1,70 @@
+// Styles for the programmatic Places Autocomplete dropdown (see src/util/places-autocomplete.ts).
+// Lives in global styles because the dropdown is appended to document.body
+// (same approach as the legacy pac-container it replaces).
+//
+// Font sizes use px (not rem) to stay at browser-default text size regardless
+// of the page's rem scale.
+
+.gmpac-dropdown {
+  position: absolute;
+  z-index: 1000;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  font-family: inherit;
+  text-align: left;
+}
+
+.gmpac-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.4;
+  border-top: 1px solid #eee;
+  overflow: hidden;
+
+  &:first-child {
+    border-top: none;
+  }
+
+  &:hover,
+  &.gmpac-active {
+    background: #f6f6f6;
+  }
+
+  svg {
+    flex: none;
+    align-self: center;
+    width: 11px;
+    height: 15px;
+    fill: #9e9e9e;
+  }
+}
+
+.gmpac-main {
+  font-weight: 700;
+  color: #37474f;
+  white-space: nowrap;
+  flex: none;
+}
+
+.gmpac-secondary {
+  color: #616161;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gmpac-powered {
+  padding: 4px 12px;
+  text-align: right;
+  font-size: 11px;
+  color: #757575;
+  background: #fff;
+}
