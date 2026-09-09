@@ -27,7 +27,9 @@ function mockOnPage(page: any, placeResult = basePlaceResult()) {
   (page.win as any).google = {
     maps: {
       places: {
-        PlaceAutocompleteElement: function () { return wrapper; } as any,
+        PlaceAutocompleteElement: function () {
+          return wrapper;
+        } as any,
       },
     },
   };
@@ -47,8 +49,8 @@ async function render(html = '<ui-location-search input-id="t1"></ui-location-se
 
   // newSpecPage wipes window.google — set it on page.win and re-render
   const wrapper = mockOnPage(page);
-  await page.waitForChanges();  // triggers componentDidRender → initAutoComplete
-  await tick(20);               // flush setTimeout(initAutoComplete, 10)
+  await page.waitForChanges(); // triggers componentDidRender → initAutoComplete
+  await tick(20); // flush setTimeout(initAutoComplete, 10)
   await page.waitForChanges();
 
   return { page, wrapper };

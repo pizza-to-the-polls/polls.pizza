@@ -28,7 +28,9 @@ function mockOnPage(page: any, placeResult = basePlaceResult()) {
   (page.win as any).google = {
     maps: {
       places: {
-        PlaceAutocompleteElement: function () { return wrapper; } as any,
+        PlaceAutocompleteElement: function () {
+          return wrapper;
+        } as any,
       },
     },
   };
@@ -108,7 +110,6 @@ describe("ui-address-input — gmp-select", () => {
     const onAddr = jest.fn();
     (page.root as HTMLElement).addEventListener("addressSelected", onAddr);
 
-    const input = page.doc?.querySelector('input[type="text"]') as HTMLInputElement;
     wrapper.dispatchEvent(new Event("gmp-select"));
     await page.waitForChanges();
 
