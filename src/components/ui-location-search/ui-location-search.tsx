@@ -103,7 +103,7 @@ export class UiLocationSearch {
 
   public render() {
     const handleAddressChange = () => {
-      const address = document.getElementById("autocomplete-input") as HTMLInputElement;
+      const address = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
       if (address && !address.value) {
         this.locationName = "";
       }

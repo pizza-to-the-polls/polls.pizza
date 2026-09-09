@@ -63,9 +63,13 @@ export function attachPlacesAutocomplete(
       return;
     }
     const rect = input.getBoundingClientRect();
-    container.style.left = `${rect.left + window.scrollX}px`;
+    const viewportWidth = document.documentElement.clientWidth;
+    // Never let the dropdown extend past the viewport (mobile spill guard)
+    const left = Math.max(8, Math.min(rect.left + window.scrollX, viewportWidth - rect.width - 8));
+    const width = Math.min(rect.width, viewportWidth - 16);
+    container.style.left = `${left}px`;
     container.style.top = `${rect.bottom + window.scrollY + 2}px`;
-    container.style.width = `${rect.width}px`;
+    container.style.width = `${width}px`;
   };
 
   const show = () => {

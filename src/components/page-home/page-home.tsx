@@ -63,7 +63,7 @@ export class PageHome {
           </div>
         </div>
         <section class="order-pizzas">
-          <label htmlFor="autocomplete-input">
+          <label htmlFor="autocomplete-input-homepage">
             <div class="container">
               <ui-location-search
                 placeholder={
