@@ -26,7 +26,7 @@ export class UiLocationSearch {
         return;
       }
 
-      const autocomplete = new google.maps.places.PlaceAutocompleteElement({
+      const autocomplete = new window.google.maps.places.PlaceAutocompleteElement({
         includedRegionCodes: ["US"],
         noInputIcon: true,
         noClearButton: true,

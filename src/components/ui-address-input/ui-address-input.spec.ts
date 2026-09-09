@@ -3,11 +3,9 @@ import { newSpecPage } from "@stencil/core/testing";
 import { UiAddressInput } from "./ui-address-input";
 import { UiSingleInput } from "../ui-single-input/ui-single-input";
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
+const tick = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 
-function defaultPlaceResult() {
+function basePlaceResult() {
   return {
     formatted_address: "1600 Pennsylvania Avenue NW, Washington, DC 20500, USA",
     name: "The White House",
@@ -22,168 +20,121 @@ function defaultPlaceResult() {
   };
 }
 
-function mockGooglePlacesApi(getPlaceResult = defaultPlaceResult()) {
-  class FakePlaceAutocompleteElement extends HTMLElement {
-    private _listeners: Record<string, EventListener[]> = {};
+function mockOnPage(page: any, placeResult = basePlaceResult()) {
+  const wrapper = document.createElement("div");
+  Object.defineProperty(wrapper, "tagName", { value: "GMP-PLACE-AUTOCOMPLETE" });
+  (wrapper as any).getPlace = () => placeResult;
 
-    constructor(options?: any) {
-      super();
-      if (options?.includedRegionCodes) {
-        (this as any).includedRegionCodes = options.includedRegionCodes;
-      }
-    }
-
-    addEventListener(type: string, listener: EventListener) {
-      (this._listeners[type] ??= []).push(listener);
-    }
-
-    // @ts-expect-error — mock
-    getPlace() {
-      return getPlaceResult;
-    }
-
-    triggerSelect() {
-      (this._listeners["gmp-select"] ?? []).forEach(fn => fn(new Event("gmp-select")));
-    }
-  }
-
-  if (!customElements.get("gmp-place-autocomplete")) {
-    customElements.define("gmp-place-autocomplete", FakePlaceAutocompleteElement);
-  }
-
-  (window as any).google = {
+  (page.win as any).google = {
     maps: {
       places: {
-        PlaceAutocompleteElement: FakePlaceAutocompleteElement,
+        PlaceAutocompleteElement: function () { return wrapper; } as any,
       },
     },
   };
 
-  return FakePlaceAutocompleteElement;
+  return wrapper;
 }
 
-// Flush microtask queue (for Promise.resolve in getInputElement())
-async function flushMicrotasks() {
-  await new Promise<void>(resolve => setTimeout(resolve, 0));
-  jest.advanceTimersByTime(0);
-}
-
-async function renderAddressInput(html = '<ui-address-input label="Address" button-label="Go"></ui-address-input>') {
+async function render(html = '<ui-address-input label="Addr" button-label="Go"></ui-address-input>') {
   (Build as any).isBrowser = true;
+
   const page = await newSpecPage({
     components: [UiAddressInput, UiSingleInput],
     html,
     supportsShadowDom: false,
   });
+
+  // newSpecPage wipes window.google — set it on page.win and re-render.
+  // The retry timer (100ms) does the actual wrapping since the child
+  // ui-single-input's internal ref may not be ready on the first attempt.
+  const wrapper = mockOnPage(page);
   await page.waitForChanges();
-  // Flush the retry timer + microtasks from getInputElement().then(...)
-  jest.advanceTimersByTime(200);
-  await flushMicrotasks();
+  await tick(300); // let the 100ms retry fire + Promise settle
   await page.waitForChanges();
-  return page;
+
+  return { page, wrapper };
 }
 
-// ---------------------------------------------------------------------------
 beforeEach(() => {
-  jest.useFakeTimers();
   (Build as any).isBrowser = false;
   delete (window as any).google;
 });
 
-afterEach(() => {
-  jest.useRealTimers();
-});
-
 // ---------------------------------------------------------------------------
-// API readiness
-// ---------------------------------------------------------------------------
-
-describe("ui-address-input — API readiness", () => {
-  it("retries without crashing when API is not loaded", async () => {
+describe("ui-address-input — init", () => {
+  it("survives when API never loads", async () => {
     (Build as any).isBrowser = true;
-    (window as any).google = undefined;
 
     const page = await newSpecPage({
       components: [UiAddressInput, UiSingleInput],
-      html: '<ui-address-input label="Address"></ui-address-input>',
+      html: '<ui-address-input label="Addr"></ui-address-input>',
       supportsShadowDom: false,
     });
     await page.waitForChanges();
-    jest.advanceTimersByTime(200);
+    for (let i = 0; i < 5; i++) {
+      await tick(15);
+      await page.waitForChanges();
+    }
 
-    // Component renders a child ui-single-input
-    const singleInput = page.root?.querySelector("ui-single-input");
-    expect(singleInput).toBeTruthy();
+    expect(page.root?.querySelector("ui-single-input")).toBeTruthy();
   });
 
-  it("wraps input with PlaceAutocompleteElement when API becomes available", async () => {
-    const FakeEl = mockGooglePlacesApi();
-    const page = await renderAddressInput();
+  it("wraps input when API is available", async () => {
+    const { page, wrapper } = await render();
 
     const input = page.doc?.querySelector('input[type="text"]') as HTMLInputElement;
     expect(input).toBeTruthy();
-    const parent = input.parentElement as HTMLElement;
-    // Parent should be our fake PlaceAutocompleteElement, not the original <div>
-    expect(parent).toBeInstanceOf(FakeEl);
+    expect(wrapper.contains(input)).toBe(true);
   });
 });
 
 // ---------------------------------------------------------------------------
-// gmp-select → sets value and stores place for lat/lng
-// ---------------------------------------------------------------------------
+describe("ui-address-input — gmp-select", () => {
+  it("sets input value to full address on selection", async () => {
+    const { page, wrapper } = await render();
 
-describe("ui-address-input — gmp-select handling", () => {
-  it("sets input value to full address on place selection", async () => {
-    mockGooglePlacesApi();
-    const page = await renderAddressInput();
-
-    const input = page.doc?.querySelector('input[type="text"]') as HTMLInputElement;
-    expect(input).toBeTruthy();
-
-    (input.parentElement as any).triggerSelect();
+    wrapper.dispatchEvent(new Event("gmp-select"));
     await page.waitForChanges();
 
-    // The ui-single-input's value should be set to the formatted full address
-    expect(input.value).toBe("1600 Pennsylvania Avenue NW Washington DC 20500");
+    const si = page.root?.querySelector("ui-single-input") as any;
+    const val = await si.getCurrentValue();
+    expect(val).toBe("1600 Pennsylvania Avenue NW Washington DC 20500");
   });
 
-  it("emits addressSelected with lat/lng on submit click", async () => {
-    mockGooglePlacesApi();
-    const page = await renderAddressInput();
+  it("emits addressSelected with lat/lng on submit", async () => {
+    const { page, wrapper } = await render();
 
-    const onAddress = jest.fn();
-    (page.root as HTMLElement).addEventListener("addressSelected", onAddress);
+    const onAddr = jest.fn();
+    (page.root as HTMLElement).addEventListener("addressSelected", onAddr);
 
-    // Select a place first
     const input = page.doc?.querySelector('input[type="text"]') as HTMLInputElement;
-    (input.parentElement as any).triggerSelect();
+    wrapper.dispatchEvent(new Event("gmp-select"));
     await page.waitForChanges();
 
-    // Now click the submit button
-    const submitBtn = page.doc?.querySelector('.submit-button') as HTMLInputElement;
-    expect(submitBtn).toBeTruthy();
-    submitBtn.click();
+    (page.doc?.querySelector(".submit-button") as HTMLInputElement).click();
 
-    expect(onAddress).toHaveBeenCalled();
-    const detail = onAddress.mock.calls[0][0].detail;
-    expect(detail.address).toBe("1600 Pennsylvania Avenue NW Washington DC 20500");
-    expect(detail.lat).toBe(38.8977);
-    expect(detail.lng).toBe(-77.0365);
+    expect(onAddr).toHaveBeenCalled();
+    const d = onAddr.mock.calls[0][0].detail;
+    expect(d.address).toBe("1600 Pennsylvania Avenue NW Washington DC 20500");
+    expect(d.lat).toBe(38.8977);
+    expect(d.lng).toBe(-77.0365);
   });
 
-  it("falls back to place.name when address_components are incomplete", async () => {
-    mockGooglePlacesApi({
+  it("falls back to place.name when address_components incomplete", async () => {
+    const { page, wrapper } = await render();
+    (wrapper as any).getPlace = () => ({
       name: "The White House",
       formatted_address: "",
       geometry: { location: { lat: () => 0, lng: () => 0 } },
       address_components: [{ types: ["locality"], short_name: "Washington" }],
     });
-    const page = await renderAddressInput();
 
-    const input = page.doc?.querySelector('input[type="text"]') as HTMLInputElement;
-    (input.parentElement as any).triggerSelect();
+    wrapper.dispatchEvent(new Event("gmp-select"));
     await page.waitForChanges();
 
-    expect(input.value).toBe("The White House");
+    const si = page.root?.querySelector("ui-single-input") as any;
+    const val = await si.getCurrentValue();
+    expect(val).toBe("The White House");
   });
 });
