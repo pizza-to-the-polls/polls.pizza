@@ -1,4 +1,5 @@
 import { Build, Component, Event, EventEmitter, h, Prop } from "@stencil/core";
+import { attachPlacesAutocomplete, fetchPlaceDetails, PlacesAutocompleteHandle } from "../../util/places-autocomplete";
 
 const GMAPS_COMPONENT_MAPPING: { [key: string]: string } = {
   sublocality: "city",
@@ -9,6 +10,7 @@ const GMAPS_COMPONENT_MAPPING: { [key: string]: string } = {
   administrative_area_level_1: "state",
 };
 
+// New Places API AddressComponent → legacy {short_name, types} for toFullAddress
 const toFullAddress = (addressComponents: Array<{ short_name: string; types: Array<string> }>) => {
   const { city, state, zip, num, street }: { [key: string]: string } = addressComponents.reduce((obj: { [key: string]: string }, { short_name, types }) => {
     for (const type of types) {
@@ -25,11 +27,14 @@ const toFullAddress = (addressComponents: Array<{ short_name: string; types: Arr
   return `${num} ${street} ${city} ${state} ${zip}`;
 };
 
+const PLACE_FIELDS = ["displayName", "formattedAddress", "addressComponents", "location"];
+
 const MAX_RETRIES = 10;
 const RETRY_DELAY_MS = 100;
 
 /**
- * Auto-complete input for street addresses using the Google Maps Places API.
+ * Auto-complete input for street addresses using the Google Maps Places API
+ * (new programmatic API — see src/util/places-autocomplete.ts).
  * Retries mounting if the input element or Google Maps API isn't ready yet.
  */
 @Component({
@@ -46,11 +51,10 @@ export class UiAddressInput {
   @Event() public addressSelected!: EventEmitter<{ address: string; lat: number; lng: number }>;
 
   private inputElement?: HTMLUiSingleInputElement;
-  private place?: google.maps.places.Place;
-  private autocomplete?: any;
+  private place?: any;
+  private autocomplete?: PlacesAutocompleteHandle;
   private retryCount: number = 0;
   private retryTimer?: number;
-  private initializing: boolean = false;
 
   constructor() {
     this.label = "";
@@ -64,6 +68,8 @@ export class UiAddressInput {
   }
 
   public disconnectedCallback() {
+    this.autocomplete?.destroy();
+    this.autocomplete = undefined;
     if (this.retryTimer != null) {
       clearTimeout(this.retryTimer);
       this.retryTimer = undefined;
@@ -81,8 +87,8 @@ export class UiAddressInput {
         onButtonClicked={e => {
           const evt = this.addressSelected.emit({
             address: e.detail,
-            lat: (this.place as any)?.location?.lat() || 0,
-            lng: (this.place as any)?.location?.lng() || 0,
+            lat: this.place?.location?.lat() || 0,
+            lng: this.place?.location?.lng() || 0,
           });
           if (evt.defaultPrevented) {
             e.preventDefault();
@@ -92,89 +98,58 @@ export class UiAddressInput {
     );
   }
 
-  private initAutocomplete() {
-    if (!Build.isBrowser) {
-      return;
-    }
-
-    // Already initialized or currently initializing
-    if (this.autocomplete != null || this.initializing) {
+  private initAutocomplete = () => {
+    if (!Build.isBrowser || this.autocomplete) {
       return;
     }
 
     const gmaps = (window as any).google;
-    if (gmaps?.maps?.places?.BasicPlaceAutocompleteElement == null) {
+    if (gmaps?.maps?.places?.AutocompleteSuggestion == null) {
       this.scheduleRetry("Google Maps API not yet fully loaded");
       return;
     }
 
-    const { inputElement: addressInput } = this;
+    const addressInput = this.inputElement;
     if (addressInput == null) {
       this.scheduleRetry("input element ref not yet set");
       return;
     }
 
-    this.initializing = true;
-
     addressInput.getInputElement().then(el => {
       if (el == null) {
-        if (this.retryCount < MAX_RETRIES) {
-          this.initializing = false;
-          this.scheduleRetry("input element not yet mounted");
-        } else {
-          console.warn("ui-address-input: autocomplete failed to initialize — input element never mounted");
-          this.initializing = false;
-        }
+        this.scheduleRetry("input element not yet mounted");
         return;
       }
 
-      try {
-        const BasicPlaceAutocompleteElement = gmaps?.maps?.places?.BasicPlaceAutocompleteElement;
-        if (BasicPlaceAutocompleteElement == null) {
-          this.initializing = false;
-          this.scheduleRetry("Google Maps Places API not ready on retry");
-          return;
-        }
-
-        // Create the BasicPlaceAutocompleteElement and wrap the input
-        const autocompleteEl = new BasicPlaceAutocompleteElement({
-          includedRegionCodes: ["US"],
-          noInputIcon: true,
-          noClearButton: true,
-        });
-
-        // Remove default Google styles so page CSS takes over
-        autocompleteEl.style.cssText = "display: block; background: transparent; border: none; outline: none;";
-
-        el.parentNode?.insertBefore(autocompleteEl, el);
-        autocompleteEl.appendChild(el);
-
-        this.autocomplete = autocompleteEl;
-
-        autocompleteEl.addEventListener("gmp-select", (event: Event) => {
-          const place = (event as any).place;
-
-          place.fetchFields({ fields: ["displayName", "formattedAddress", "addressComponents", "location"] }).then(({ place: fetchedPlace }: any) => {
-            this.place = fetchedPlace;
-
-            // New Places API: AddressComponent has types[], shortText, longText
-            const newComponents =
-              fetchedPlace.addressComponents?.map((ac: any) => ({
-                short_name: ac.shortText || "",
-                types: ac.types,
-              })) || [];
-            const fullAddress = toFullAddress(newComponents);
-            addressInput.setValue(fullAddress ? fullAddress : fetchedPlace.displayName ? fetchedPlace.displayName : "the location");
-          });
-        });
-
-        this.retryCount = 0;
-        this.initializing = false;
-      } catch (e) {
-        console.warn("ui-address-input: failed to create autocomplete", e);
-        this.initializing = false;
-      }
+      this.autocomplete = attachPlacesAutocomplete(el, {
+        onSelect: prediction => this.handlePlaceSelected(prediction, addressInput),
+      });
+      this.retryCount = 0;
     });
+  };
+
+  private async handlePlaceSelected(prediction: any, addressInput: HTMLUiSingleInputElement) {
+    try {
+      const place = await fetchPlaceDetails(prediction, PLACE_FIELDS);
+      this.place = place;
+
+      const legacyComponents =
+        place.addressComponents?.map((ac: any) => ({
+          short_name: ac.shortText || "",
+          types: ac.types,
+        })) || [];
+      const fullAddress = toFullAddress(legacyComponents);
+
+      const value = fullAddress ? fullAddress : place.displayName ? place.displayName : "the location";
+      addressInput.setValue(value);
+
+      const el = await addressInput.getInputElement();
+      if (el) {
+        el.value = value;
+      }
+    } catch (e) {
+      console.warn("ui-address-input: failed to fetch place details", e);
+    }
   }
 
   private scheduleRetry(reason: string) {

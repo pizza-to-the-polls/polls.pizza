@@ -1,4 +1,17 @@
 import { Build, Component, Event, EventEmitter, h, Host, Prop, State } from "@stencil/core";
+import { attachPlacesAutocomplete, fetchPlaceDetails, PlacesAutocompleteHandle } from "../../util/places-autocomplete";
+
+const PLACE_FIELDS = ["displayName", "formattedAddress", "addressComponents"];
+
+// New Places API AddressComponent → legacy componentForm mapping
+const COMPONENT_FORM: { [key: string]: "short" | "long" } = {
+  street_number: "short",
+  route: "long",
+  locality: "long",
+  administrative_area_level_1: "short",
+  postal_code: "short",
+  premise: "long",
+};
 
 @Component({
   tag: "ui-location-search",
@@ -13,82 +26,78 @@ export class UiLocationSearch {
   @State() public locationName: string = "";
   @Event() public locationSelected!: EventEmitter<{ formattedAddress: string; locationName: string }>;
 
+  private autocomplete?: PlacesAutocompleteHandle;
+  private retryTimer?: number;
+
   public componentDidLoad() {
-    const initAutoComplete = () => {
-      const autocompleteInput = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
+    this.initAutocomplete();
+  }
 
-      const BasicPlaceAutocompleteElement = (window as any).google?.maps?.places?.BasicPlaceAutocompleteElement;
-      if (!BasicPlaceAutocompleteElement || !autocompleteInput) {
-        return setTimeout(initAutoComplete, 10);
-      }
+  public disconnectedCallback() {
+    this.autocomplete?.destroy();
+    this.autocomplete = undefined;
+    if (this.retryTimer != null) {
+      clearTimeout(this.retryTimer);
+      this.retryTimer = undefined;
+    }
+  }
 
-      // Guard against re-initialization on re-renders
-      if ((autocompleteInput.parentNode as HTMLElement)?.tagName === "GMP-BASIC-PLACE-AUTOCOMPLETE") {
-        return;
-      }
+  private initAutocomplete = () => {
+    if (!Build.isBrowser || this.autocomplete) {
+      return;
+    }
 
-      const autocomplete = new BasicPlaceAutocompleteElement({
-        includedRegionCodes: ["US"],
-        noInputIcon: true,
-        noClearButton: true,
+    const autocompleteInput = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
+    const placesLib = (window as any).google?.maps?.places;
+
+    if (!autocompleteInput || !placesLib?.AutocompleteSuggestion) {
+      this.retryTimer = window.setTimeout(this.initAutocomplete, 100);
+      return;
+    }
+
+    this.autocomplete = attachPlacesAutocomplete(autocompleteInput, {
+      onSelect: prediction => this.handlePlaceSelected(prediction),
+    });
+  };
+
+  private async handlePlaceSelected(prediction: any) {
+    try {
+      const place = await fetchPlaceDetails(prediction, PLACE_FIELDS);
+
+      // Clear hidden fields then fill from addressComponents
+      Object.keys(COMPONENT_FORM).forEach(component => {
+        const elem = document.getElementById(`${component}-${this.inputId}`) as HTMLInputElement;
+        if (elem) {
+          elem.value = "";
+        }
       });
 
-      // Wrap the input element with the BasicPlaceAutocompleteElement
-      autocompleteInput.parentNode?.insertBefore(autocomplete, autocompleteInput);
-      autocomplete.appendChild(autocompleteInput);
-
-      // Remove default Google inline styles so page CSS takes over
-      autocomplete.style.cssText = "display: block; background: transparent; border: none; outline: none;";
-
-      autocomplete.addEventListener("gmp-select", (event: Event) => {
-        const place = (event as any).place;
-
-        place.fetchFields({ fields: ["displayName", "formattedAddress", "addressComponents"] }).then(({ place: fetchedPlace }: any) => {
-          const componentForm: { [key: string]: string } = {
-            street_number: "short_name",
-            route: "long_name",
-            locality: "long_name",
-            administrative_area_level_1: "short_name",
-            postal_code: "short_name",
-            premise: "name",
-          };
-
-          Object.keys(componentForm).forEach(component => {
-            const elem = document.getElementById(`${component}-${this.inputId}`) as HTMLInputElement;
-            if (elem) {
-              elem.value = "";
-            }
-          });
-
-          // New Places API: AddressComponent has types[], shortText, longText
-          fetchedPlace.addressComponents?.forEach((ac: any) => {
-            const addressType: string = ac.types[0];
-            const mapping = componentForm[addressType];
-            const elem = document.getElementById(`${addressType}-${this.inputId}`) as HTMLInputElement;
-            if (mapping && elem) {
-              elem.value = mapping === "short_name" ? ac.shortText || "" : ac.longText || "";
-            }
-          });
-
-          const premise = document.getElementById(`premise-${this.inputId}`) as HTMLInputElement;
-          if (premise) {
-            premise.value = fetchedPlace.displayName || "";
-          }
-
-          // Get readable address (either name or the address; remove USA)
-          const locationName = fetchedPlace.formattedAddress
-            ? fetchedPlace.formattedAddress.replace(/, USA/gi, "")
-            : fetchedPlace.displayName
-              ? fetchedPlace.displayName
-              : "the location";
-          const formattedAddress = fetchedPlace.formattedAddress || "";
-          this.locationSelected.emit({ locationName, formattedAddress });
-        });
+      place.addressComponents?.forEach((ac: any) => {
+        const addressType: string = ac.types[0];
+        const useShort = COMPONENT_FORM[addressType] === "short";
+        const elem = document.getElementById(`${addressType}-${this.inputId}`) as HTMLInputElement;
+        if (elem) {
+          elem.value = (useShort ? ac.shortText : ac.longText) || "";
+        }
       });
-    };
 
-    if (Build.isBrowser) {
-      initAutoComplete();
+      const premise = document.getElementById(`premise-${this.inputId}`) as HTMLInputElement;
+      if (premise) {
+        premise.value = place.displayName || "";
+      }
+
+      // Get readable address (either name or the address; remove USA)
+      const locationName = place.formattedAddress ? place.formattedAddress.replace(/, USA/gi, "") : place.displayName ? place.displayName : "the location";
+      const formattedAddress = place.formattedAddress || "";
+
+      const input = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
+      if (input) {
+        input.value = locationName;
+      }
+
+      this.locationSelected.emit({ locationName, formattedAddress });
+    } catch (e) {
+      console.warn("ui-location-search: failed to fetch place details", e);
     }
   }
 

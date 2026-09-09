@@ -20,41 +20,31 @@ function basePlaceResult() {
   };
 }
 
-function mockOnPage(page: any, placeResult = basePlaceResult()) {
-  const wrapper = document.createElement("div");
-  Object.defineProperty(wrapper, "tagName", { value: "GMP-BASIC-PLACE-AUTOCOMPLETE" });
+function basePredictions() {
+  const placeResult = basePlaceResult();
+  return [
+    {
+      mainText: { text: "1600 Pennsylvania Avenue NW" },
+      secondaryText: { text: "Washington, DC, USA" },
+      toPlace: () => ({
+        fetchFields: () => Promise.resolve({ place: placeResult }),
+      }),
+    },
+  ];
+}
 
-  let selectHandler: EventListener | null = null;
-  const origAddEventListener = wrapper.addEventListener.bind(wrapper);
-  wrapper.addEventListener = function (type: string, fn: EventListener) {
-    if (type === "gmp-select") {
-      selectHandler = fn;
-    }
-    return origAddEventListener(type, fn);
-  };
-
-  const placeObj = { fetchFields: () => Promise.resolve({ place: placeResult }) };
-
-  function triggerSelect(overrides?: any) {
-    if (overrides) {
-      (placeObj as any).fetchFields = () => Promise.resolve({ place: { ...placeResult, ...overrides } });
-    }
-    const event = new Event("gmp-select");
-    (event as any).place = placeObj;
-    selectHandler?.(event);
-  }
-
+function mockOnPage(page: any, predictions = basePredictions()) {
   (page.win as any).google = {
     maps: {
       places: {
-        BasicPlaceAutocompleteElement: function () {
-          return wrapper;
-        } as any,
+        AutocompleteSessionToken: class {},
+        AutocompleteSuggestion: {
+          fetchAutocompleteSuggestions: () => Promise.resolve({ suggestions: predictions.map(p => ({ placePrediction: p })) }),
+        },
       },
     },
   };
-
-  return { wrapper, triggerSelect };
+  return predictions;
 }
 
 async function render(html = '<ui-address-input label="Addr" button-label="Go"></ui-address-input>') {
@@ -66,12 +56,12 @@ async function render(html = '<ui-address-input label="Addr" button-label="Go"><
     supportsShadowDom: false,
   });
 
-  const { wrapper, triggerSelect } = mockOnPage(page);
+  const predictions = mockOnPage(page);
   await page.waitForChanges();
-  await tick(300);
+  await tick(300); // init retry (100ms) + getInputElement promise
   await page.waitForChanges();
 
-  return { page, wrapper, triggerSelect };
+  return { page, predictions };
 }
 
 beforeEach(() => {
@@ -91,29 +81,38 @@ describe("ui-address-input — init", () => {
     });
     await page.waitForChanges();
     for (let i = 0; i < 5; i++) {
-      await tick(15);
+      await tick(120);
       await page.waitForChanges();
     }
 
     expect(page.root?.querySelector("ui-single-input")).toBeTruthy();
   });
 
-  it("wraps input when API is available", async () => {
-    const { page, wrapper } = await render();
+  it("shows suggestion dropdown after typing", async () => {
+    const { page } = await render();
 
     const input = page.doc?.querySelector('input[type="text"]') as HTMLInputElement;
-    expect(input).toBeTruthy();
-    expect(wrapper.contains(input)).toBe(true);
+    input.value = "1600 penn";
+    input.dispatchEvent(new Event("input"));
+    await tick(250);
+
+    const items = document.querySelectorAll(".gmpac-item");
+    expect(items.length).toBe(1);
   });
 });
 
 // ---------------------------------------------------------------------------
-describe("ui-address-input — gmp-select", () => {
+describe("ui-address-input — selection", () => {
   it("sets input value to full address on selection", async () => {
-    const { page, triggerSelect } = await render();
+    const { page } = await render();
 
-    triggerSelect();
-    await tick(10);
+    const input = page.doc?.querySelector('input[type="text"]') as HTMLInputElement;
+    input.value = "1600 penn";
+    input.dispatchEvent(new Event("input"));
+    await tick(250);
+
+    (document.querySelector(".gmpac-item") as HTMLElement).dispatchEvent(new Event("mousedown"));
+    await tick(20); // fetchFields + setValue
 
     const si = page.root?.querySelector("ui-single-input") as any;
     const val = await si.getCurrentValue();
@@ -121,13 +120,18 @@ describe("ui-address-input — gmp-select", () => {
   });
 
   it("emits addressSelected with lat/lng on submit", async () => {
-    const { page, triggerSelect } = await render();
+    const { page } = await render();
 
     const onAddr = jest.fn();
     (page.root as HTMLElement).addEventListener("addressSelected", onAddr);
 
-    triggerSelect();
-    await tick(10);
+    const input = page.doc?.querySelector('input[type="text"]') as HTMLInputElement;
+    input.value = "1600 penn";
+    input.dispatchEvent(new Event("input"));
+    await tick(250);
+
+    (document.querySelector(".gmpac-item") as HTMLElement).dispatchEvent(new Event("mousedown"));
+    await tick(20);
 
     (page.doc?.querySelector(".submit-button") as HTMLInputElement).click();
 
@@ -139,18 +143,36 @@ describe("ui-address-input — gmp-select", () => {
   });
 
   it("falls back to displayName when addressComponents incomplete", async () => {
-    const { triggerSelect } = await render();
+    const predictions = [
+      {
+        mainText: { text: "The White House" },
+        secondaryText: { text: "" },
+        toPlace: () => ({
+          fetchFields: () =>
+            Promise.resolve({
+              place: {
+                displayName: "The White House",
+                formattedAddress: "",
+                location: { lat: () => 0, lng: () => 0 },
+                addressComponents: [{ types: ["locality"], shortText: "Washington" }],
+              },
+            }),
+        }),
+      },
+    ];
+    const { page } = await render();
+    mockOnPage(page, predictions);
 
-    triggerSelect({
-      displayName: "The White House",
-      formattedAddress: "",
-      location: { lat: () => 0, lng: () => 0 },
-      addressComponents: [{ types: ["locality"], shortText: "Washington" }],
-    });
-    await tick(10);
+    const input = page.doc?.querySelector('input[type="text"]') as HTMLInputElement;
+    input.value = "white house";
+    input.dispatchEvent(new Event("input"));
+    await tick(250);
 
-    const si = document.querySelector("ui-single-input") as any;
-    const val = si ? await si.getCurrentValue() : "";
+    (document.querySelector(".gmpac-item") as HTMLElement).dispatchEvent(new Event("mousedown"));
+    await tick(20);
+
+    const si = page.root?.querySelector("ui-single-input") as any;
+    const val = await si.getCurrentValue();
     expect(val).toBe("The White House");
   });
 });
