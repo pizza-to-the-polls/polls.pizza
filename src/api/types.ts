@@ -147,7 +147,7 @@ export type TruckDetails = TruckInfo & {
  * /uploads
  */
 export type UploadPostResults = {
-  id: number;
+  id: number | null;
   filePath?: string;
   isDuplicate: boolean;
   presigned?: {
