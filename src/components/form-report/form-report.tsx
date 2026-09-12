@@ -127,8 +127,15 @@ export class FormReport {
 
       const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
 
-      if (!isDuplicate && presigned) {
+      // A duplicate upload still returns the original upload's id and filePath
+      // — remember it so the report links to the upload either way. Only
+      // fresh uploads carry a presigned PUT, so skip the S3 transfer for
+      // duplicates (the file is already in the bucket).
+      if (id) {
         this.uploadId = id;
+      }
+
+      if (!isDuplicate && presigned) {
         const formData = new FormData();
         const { url, fields } = presigned;
 

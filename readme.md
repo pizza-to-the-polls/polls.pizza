@@ -1,6 +1,6 @@
 # Pizza to the Polls 🍕 🗳 🇺🇸
 
-This is Pizza to the Polls HQ - it's a StencilJS site that's written in typescript and deploys to S3/Cloudfront with github actions. Yep
+This is Pizza to the Polls HQ - it's a StencilJS site that's written in typescript and deploys to S3/Cloudfront with github actions.
 
 ```bash
 npm init stencil app

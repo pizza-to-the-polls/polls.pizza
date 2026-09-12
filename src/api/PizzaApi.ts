@@ -201,7 +201,7 @@ class PizzaApi {
 
   public async postUpload(fileHash: string, fileName: string, address: string, errorHandler?: (error: ApiError) => void): Promise<UploadPostResults> {
     const result = await baseFetch<UploadPostResults>("/upload", { method: "POST", body: JSON.stringify({ fileHash, fileName, address }) });
-    return this.handleResponse(result, errorHandler) || { id: 0, isDuplicate: true };
+    return this.handleResponse(result, errorHandler) || { id: null, isDuplicate: true };
   }
 
   public async putSession(token: string, errorHandler?: (error: ApiError) => void): Promise<SessionPutResults> {
