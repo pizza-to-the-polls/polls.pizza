@@ -158,7 +158,6 @@ export class FormReport {
         const formData = new FormData();
         const { url, fields } = presigned;
 
-
         formData.append("Content-Type", file.type);
 
         // Note: ACL and x-amz-acl removed — backend now uses private buckets
