@@ -181,7 +181,10 @@ export class FormReport {
 
       // Stable permalink — pizzabase resolves it to wherever the media
       // currently lives (processed output, or the public bucket for legacy).
-      this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${filePath}`;
+      // filePath is the full storage key ("uploads/<name>"); the permalink
+      // route is /uploads/:fileName, so pass only the basename.
+      const fileName = (filePath ?? "").split("/").pop() || "";
+      this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${fileName}`;
     };
 
     // Has user clicked the "On-Demand Guidelines" link?
