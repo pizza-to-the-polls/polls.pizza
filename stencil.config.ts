@@ -35,6 +35,14 @@ export const config: Config = {
       dir: "dist/www",
       prerenderConfig: "./prerender.config.ts",
       copy: [{ src: "../public", dest: "." }],
+      // Do not let Stencil generate/inject its default service-worker
+      // registration snippet: it calls `navigator.serviceWorker.register()
+      // .then(...)` unguarded, which throws "Cannot read properties of
+      // undefined (reading 'then')" in browsers that stub out SW
+      // registration (Playwright, some privacy-hardened browsers).
+      // Cleanup for clients that already registered the old SW is handled
+      // by public/sw.js (a self-unregistering kill switch).
+      serviceWorker: false,
     },
   ],
 
