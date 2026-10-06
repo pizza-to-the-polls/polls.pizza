@@ -34,7 +34,8 @@ page-home {
         & + .button {
           margin: 1rem 0 0;
         }
-        display: block;
+        display: flex;
+        width: 100%;
       }
     }
 
