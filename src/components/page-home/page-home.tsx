@@ -49,7 +49,8 @@ export class PageHome {
               </p>
               <div class="button-group">
                 <stencil-route-link class="button button-large is-cyan" url="/report">
-                  Report a line & send a pizza
+                  Report a line
+                  <br />& send a pizza
                 </stencil-route-link>
                 <stencil-route-link class="button button-large is-teal" url="/donate">
                   Donate

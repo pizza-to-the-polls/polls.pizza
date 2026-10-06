@@ -17,8 +17,16 @@ page-home {
     }
 
     .button {
+      border-radius: 15px;
+      height: 64px;
+
+      @media ($desktop) {
+        height: 96px;
+      }
+
       & + .button {
         margin-left: 1rem;
+        padding-top: 18px;
       }
       @media (max-width: 380px) {
         & + .button {
