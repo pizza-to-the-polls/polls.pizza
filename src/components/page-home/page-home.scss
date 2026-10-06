@@ -26,7 +26,9 @@ page-home {
 
       & + .button {
         margin-left: 1rem;
-        padding-top: 18px;
+        @media ($desktop) {
+          padding-top: 18px;
+        }
       }
       @media (max-width: 380px) {
         & + .button {
