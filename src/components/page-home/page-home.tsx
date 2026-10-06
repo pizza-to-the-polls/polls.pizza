@@ -48,11 +48,12 @@ export class PageHome {
                 education, registration, and turnout.
               </p>
               <div class="button-group">
-                <stencil-route-link class="button button-large is-cyan" url="/donate">
-                  Donate now
+                <stencil-route-link class="button button-large is-cyan" url="/report">
+                  Report a line
+                  <br />& send a pizza
                 </stencil-route-link>
-                <stencil-route-link class="button button-large is-teal" url="/crustclub">
-                  Join the Crust Club
+                <stencil-route-link class="button button-large is-teal" url="/donate">
+                  Donate
                 </stencil-route-link>
                 <span class="donate-button-subtext">* All contributions are tax deductible</span>
               </div>
