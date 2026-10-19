@@ -1,13 +1,24 @@
 import Bugsnag from "@bugsnag/js";
 import { Build } from "@stencil/core";
 
-import { installComponentLoadGuard } from "./util/componentLoadGuard";
+import { installComponentLoadGuard, isThirdPartyScriptError } from "./util/componentLoadGuard";
 
 export default () => {
   if (process.env.BUGSNAG_KEY && Build.isBrowser) {
     Bugsnag.start({
       apiKey: process.env.BUGSNAG_KEY,
       releaseStage: process.env.NODE_ENV,
+      onError: event => {
+        // Bugsnag's own unhandledrejection listener fires before our
+        // componentLoadGuard suppression handler (Bugsnag.start() runs first),
+        // so third-party extension noise (e.g. DuckDuckGo's "Invalid call to
+        // runtime.sendMessage(). Tab not found.") is reported before we can
+        // preventDefault. Filter it at the source; return false discards.
+        if (event.unhandled && isThirdPartyScriptError(event.errors[0]?.errorMessage || "")) {
+          return false;
+        }
+        return true;
+      },
     });
     if (typeof window !== "undefined") {
       (window as any).__pizza_bugsnag_started = true;

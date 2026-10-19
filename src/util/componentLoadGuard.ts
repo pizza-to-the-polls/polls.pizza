@@ -12,6 +12,17 @@
 const CHUNK_URL_RE = /(?:^|\/)((?:p|app|index)-[a-f0-9]+(?:\.entry)?\.js)/i;
 const CHUNK_URL_EXTRACT_RE = /(https?:\/\/[^\s]*\/build\/(?:p|app|index)-[a-f0-9]+(?:\.entry)?\.js)/i;
 
+/**
+ * Known third-party/extension error signatures that must never reach Bugsnag.
+ *
+ * Browsers and privacy extensions inject scripts (e.g. DuckDuckGo on iOS)
+ * whose unhandled promise rejections fire on our page. Their Error objects
+ * come from another JS realm, so `instanceof Error` checks miss them, and
+ * Bugsnag's own unhandledrejection listener reports them before any of our
+ * window listeners can suppress. Match on message text instead.
+ */
+const THIRD_PARTY_ERROR_RE = /(?:runtime\.sendMessage|browser\.runtime|Tab not found)/i;
+
 const INITIAL_WINDOW_MS = 10_000;
 const RETRY_TTL_MS = 30_000;
 const RETRY_KEY = "pizza:chunk-retry";
@@ -37,6 +48,14 @@ export interface ComponentLoadEvent {
  */
 export const isChunkLoadFailure = (msg: string): boolean =>
   /isProxied/.test(msg) || /Failed to fetch dynamically imported module/i.test(msg) || (/dynamically imported/i.test(msg) && CHUNK_URL_RE.test(msg));
+
+/**
+ * Returns true when `msg` matches a known third-party/extension error
+ * signature (e.g. DuckDuckGo's "Invalid call to runtime.sendMessage().
+ * Tab not found."). Used to keep extension noise out of Bugsnag and the
+ * console without suppressing genuine app errors.
+ */
+export const isThirdPartyScriptError = (msg: string): boolean => THIRD_PARTY_ERROR_RE.test(msg);
 
 /**
  * Extracts a chunk id like `p-188cd4da` or `p-188cd4da.entry` from an error
@@ -296,10 +315,15 @@ export const installComponentLoadGuard = (): void => {
       return;
     }
 
-    // Suppress non-Error rejections from third-party scripts.
-    // Our own code always throws Error objects or ApiError plain objects
-    // with structured .errors — never undefined, null, or non-Error values.
-    if (reason == null || !(reason instanceof Error)) {
+    // Suppress rejections from third-party scripts:
+    //  - null/undefined/string/plain-object rejections (our own code always
+    //    throws Error objects or ApiError plain objects with structured
+    //    .errors — never these), and
+    //  - known extension signatures by message. Extension Errors can be
+    //    cross-realm (fail `instanceof Error`) — e.g. DuckDuckGo's
+    //    "Invalid call to runtime.sendMessage(). Tab not found." — so the
+    //    message check catches the ones instanceof misses.
+    if (reason == null || !(reason instanceof Error) || isThirdPartyScriptError(msg)) {
       event.preventDefault();
       console.warn("[pizza] Suppressed unhandledrejection from third-party script:", reason);
     }
