@@ -77,7 +77,8 @@ export namespace Components {
     interface PageVaxAndSnacks {
     }
     /**
-     * Auto-complete input for street addresses using the Google Maps Places API.
+     * Auto-complete input for street addresses using the Google Maps Places API
+     * (new programmatic API — see src/util/places-autocomplete.ts).
      * Retries mounting if the input element or Google Maps API isn't ready yet.
      */
     interface UiAddressInput {
@@ -330,7 +331,8 @@ declare global {
         "addressSelected": { address: string; lat: number; lng: number };
     }
     /**
-     * Auto-complete input for street addresses using the Google Maps Places API.
+     * Auto-complete input for street addresses using the Google Maps Places API
+     * (new programmatic API — see src/util/places-autocomplete.ts).
      * Retries mounting if the input element or Google Maps API isn't ready yet.
      */
     interface HTMLUiAddressInputElement extends Components.UiAddressInput, HTMLStencilElement {
@@ -573,7 +575,8 @@ declare namespace LocalJSX {
     interface PageVaxAndSnacks {
     }
     /**
-     * Auto-complete input for street addresses using the Google Maps Places API.
+     * Auto-complete input for street addresses using the Google Maps Places API
+     * (new programmatic API — see src/util/places-autocomplete.ts).
      * Retries mounting if the input element or Google Maps API isn't ready yet.
      */
     interface UiAddressInput {
@@ -793,7 +796,8 @@ declare module "@stencil/core" {
             "page-trucks": LocalJSX.IntrinsicElements["page-trucks"] & JSXBase.HTMLAttributes<HTMLPageTrucksElement>;
             "page-vax-and-snacks": LocalJSX.IntrinsicElements["page-vax-and-snacks"] & JSXBase.HTMLAttributes<HTMLPageVaxAndSnacksElement>;
             /**
-             * Auto-complete input for street addresses using the Google Maps Places API.
+             * Auto-complete input for street addresses using the Google Maps Places API
+             * (new programmatic API — see src/util/places-autocomplete.ts).
              * Retries mounting if the input element or Google Maps API isn't ready yet.
              */
             "ui-address-input": LocalJSX.IntrinsicElements["ui-address-input"] & JSXBase.HTMLAttributes<HTMLUiAddressInputElement>;
