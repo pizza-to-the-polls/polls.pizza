@@ -153,8 +153,11 @@ export class FormReport {
 
       const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
 
+      // Backend returns the canonical upload id on both the fresh and duplicate
+      // paths — link it either way so submit always carries uploadId.
+      this.uploadId = id;
+
       if (!isDuplicate && presigned) {
-        this.uploadId = id;
         const formData = new FormData();
         const { url, fields } = presigned;
 
