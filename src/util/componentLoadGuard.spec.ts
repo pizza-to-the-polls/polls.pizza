@@ -1,4 +1,4 @@
-import { decideFallback, extractChunkId, extractChunkUrl, isChunkLoadFailure } from "./componentLoadGuard";
+import { decideFallback, extractChunkId, extractChunkUrl, isChunkLoadFailure, isThirdPartyScriptError } from "./componentLoadGuard";
 
 // ---------------------------------------------------------------------------
 // isChunkLoadFailure
@@ -20,6 +20,30 @@ describe("isChunkLoadFailure", () => {
     expect(isChunkLoadFailure("Something else broke")).toBe(false);
     expect(isChunkLoadFailure("Uncaught ReferenceError: foo is not defined")).toBe(false);
     expect(isChunkLoadFailure("")).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// isThirdPartyScriptError
+// ---------------------------------------------------------------------------
+describe("isThirdPartyScriptError", () => {
+  it("matches DuckDuckGo extension sendMessage rejection", () => {
+    expect(isThirdPartyScriptError("Invalid call to runtime.sendMessage(). Tab not found.")).toBe(true);
+  });
+
+  it("matches browser.runtime variants", () => {
+    expect(isThirdPartyScriptError("Error: could not establish connection. browser.runtime.sendMessage failed")).toBe(true);
+    expect(isThirdPartyScriptError("Tab not found")).toBe(true);
+  });
+
+  it("is case-insensitive", () => {
+    expect(isThirdPartyScriptError("invalid call to RUNTIME.SENDMESSAGE")).toBe(true);
+  });
+
+  it("does not match our own error messages", () => {
+    expect(isThirdPartyScriptError("TypeError: undefined is not an object (evaluating 's.isProxied')")).toBe(false);
+    expect(isThirdPartyScriptError("Failed to fetch https://base.polls.pizza/orders")).toBe(false);
+    expect(isThirdPartyScriptError("")).toBe(false);
   });
 });
 
