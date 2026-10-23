@@ -259,7 +259,7 @@ const showBanner = (chunkId: string | null): void => {
   banner.id = id;
   banner.setAttribute("role", "alert");
   banner.style.cssText =
-    "position:fixed;bottom:0;left:0;right:0;background:#fa442d;color:#fff;" +
+    "position:fixed;bottom:0;left:0;right:0;background:#1565d8;color:#fff;" +
     "padding:12px 16px;text-align:center;z-index:99999;font-family:sans-serif;" +
     "font-size:14px;line-height:1.4;";
   banner.textContent = "Some content couldn't load. Please refresh the page.";

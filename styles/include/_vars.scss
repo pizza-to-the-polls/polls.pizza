@@ -1,6 +1,9 @@
 // Brand colors
-$red: #fa442d;
-$light-red: #fff5f9;
+// NOTE: "red" is now blue. Variable and class names ($red, is-red,
+// has-text-red, …) are kept as-is so nothing collides with the existing
+// $blue / is-blue (dark navy) — only the values changed.
+$red: #1565d8;
+$light-red: #eef4fb;
 $yellow: #fec62d;
 $blue: #044257;
 $cyan: #8acbd0;
