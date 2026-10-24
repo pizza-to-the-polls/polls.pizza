@@ -11,6 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Assume deploy role (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::320802729995:role/polls-pizza-deploy
+          aws-region: us-west-2
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
@@ -38,14 +44,20 @@ jobs:
 
     needs: test
 
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+    permissions:
+      id-token: write
+      contents: read
       BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
       ROOT_URL: https://polls.pizza
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Assume deploy role (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::320802729995:role/polls-pizza-deploy
+          aws-region: us-west-2
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
