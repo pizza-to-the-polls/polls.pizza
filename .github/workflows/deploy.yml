@@ -11,12 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Assume deploy role (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::320802729995:role/polls-pizza-deploy
-          aws-region: us-west-2
-
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
@@ -54,12 +48,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Assume deploy role (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::320802729995:role/polls-pizza-deploy
-          aws-region: us-west-2
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
