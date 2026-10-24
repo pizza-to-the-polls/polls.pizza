@@ -1,6 +1,7 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
 
 import { PizzaApi } from "../../api";
+import { trackEvent } from "../../util/analytics";
 
 const AMOUNTS = [5, 10, 20, 50, 100];
 
@@ -29,6 +30,7 @@ export class FormDonate {
         this.amount = AMOUNTS.includes(this.initialAmount) ? this.initialAmount : null;
       }
     }
+    trackEvent("donation_form_start");
   }
 
   private async donate(amount: number) {
@@ -39,8 +41,11 @@ export class FormDonate {
         extra.url = this.redirectURL;
       }
       await PizzaApi.postDonation(this.donationType, amount, extra);
+      trackEvent("donation_checkout_started");
     } catch (e) {
       console.error(e);
+      // Error name only — never the message text or anything user-typed.
+      trackEvent("donation_checkout_failed", { errorName: (e as Error)?.name || "Error" });
       this.showError((e as Error).message || PizzaApi.genericErrorMessage);
     }
   }
@@ -91,10 +96,12 @@ export class FormDonate {
       this.donationType = getDonationType();
     };
     const handleCheckout = (e: Event) => {
+      trackEvent("donation_submit_attempted");
       if (this.amount) {
         if (this.amount >= 0.5) {
           this.donate(this.amount);
         } else {
+          trackEvent("donation_amount_invalid");
           this.showError("Whoops! Donations must be $0.50 or greater.");
         }
       }
