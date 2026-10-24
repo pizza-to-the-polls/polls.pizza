@@ -47,6 +47,8 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
+    env:
       BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
       ROOT_URL: https://polls.pizza
 
