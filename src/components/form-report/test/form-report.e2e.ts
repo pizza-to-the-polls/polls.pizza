@@ -255,4 +255,86 @@ describe("form-report", () => {
     expect(reportBody.uploadId).toBe(UPLOAD_ID);
     expect(reportBody.url.endsWith(`/uploads/${UPLOAD_FILE_NAME}`)).toBe(true);
   });
+
+  it("recovers from S3 upload failure: network rejection clears state, re-pick duplicate links uploadId", async () => {
+    // Regression test for the 2026-10-25 feed-reports incident (upload
+    // #13320): /upload succeeds, the browser POSTs the file to the presigned
+    // S3 URL, the file lands in the bucket, but the response never makes it
+    // back and fetch rejects with a network TypeError. removePhoto() runs in
+    // the catch (nulling uploadId and clearing the preview), the volunteer
+    // re-picks the same photo, hits the duplicate path, and submits — the
+    // report must still carry the canonical uploadId and permalink.
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        "/upload": mockResponse(freshUploadResponse()),
+        // s3.example.com/put suffix-matches the presigned POST URL.
+        "s3.example.com/put": { networkError: true },
+        "/report": mockResponse(reportResponse()),
+      }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    // Pick a photo: /upload succeeds (fresh response with presigned data),
+    // but the S3 POST rejects with a network TypeError.
+    await pickPhoto(page);
+    await waitForUpload(page);
+
+    // The generic fallback error is shown (a TypeError has no errors.fileName).
+    // Step 2 has several p.help.has-text-red elements (waitTime, contactRole,
+    // photo, ...), so collect them all and assert the photo message appears.
+    const errorTexts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+        .map(p => p.textContent)
+        .join("\n"),
+    );
+    expect(errorTexts).toContain("Whoops! We could not upload that photo");
+
+    // removePhoto() cleared the preview's background image.
+    const previewBg = await page.evaluate(() => {
+      const preview = document.getElementById("photo-preview");
+      return preview ? preview.style.backgroundImage : null;
+    });
+    expect(previewBg).toBeFalsy();
+
+    // The finally block re-enabled the submit button.
+    const buttonDisabled = await page.evaluate(() => {
+      const btn = document.querySelector("#form-step-2 button[type='submit']") as HTMLButtonElement;
+      return btn ? btn.disabled : null;
+    });
+    expect(buttonDisabled).toBe(false);
+
+    // Exactly one S3 POST was recorded (the failed one).
+    const calls1 = await getFetchCalls(page);
+    const s3Calls1 = calls1.filter(c => c.url.includes("s3.example.com"));
+    expect(s3Calls1.length).toBe(1);
+
+    // Swap the /upload mock to the duplicate response — the re-pick of the
+    // same bytes produces the same hash, so the backend answers isDuplicate
+    // with the canonical id and no presigned payload.
+    await page.evaluate((payload: unknown) => {
+      (window as any).__mockResponses["/upload"] = { status: 200, body: JSON.stringify(payload) };
+    }, duplicateUploadResponse());
+    await pickPhoto(page);
+    await waitForUpload(page, 2);
+
+    // No second S3 POST: the duplicate path skips the presigned upload.
+    const calls2 = await getFetchCalls(page);
+    const s3Calls2 = calls2.filter(c => c.url.includes("s3.example.com"));
+    const uploadCalls2 = calls2.filter(c => c.url.endsWith("/upload"));
+    expect(s3Calls2.length).toBe(1);
+    expect(uploadCalls2.length).toBe(2);
+
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+
+    // The retry-after-failure round-trip produces a fully linked report.
+    const calls3 = await getFetchCalls(page);
+    const reportCalls = calls3.filter(c => c.url.endsWith("/report"));
+    expect(reportCalls.length).toBe(1);
+    expect(reportCalls[0].body).not.toBeNull();
+    const reportBody = JSON.parse(reportCalls[0].body as string);
+    expect(reportBody.uploadId).toBe(UPLOAD_ID);
+    expect(reportBody.url.endsWith(`/uploads/${UPLOAD_FILE_NAME}`)).toBe(true);
+  });
 });
