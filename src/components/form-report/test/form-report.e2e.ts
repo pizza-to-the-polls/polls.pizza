@@ -429,4 +429,46 @@ describe("form-report", () => {
     expect(reportBody.uploadId).toBe(UPLOAD_ID);
     expect(reportBody.url.endsWith(`/uploads/${UPLOAD_FILE_NAME}`)).toBe(true);
   });
+
+  // Dispatch a synthetic beforeunload on window and report whether the
+  // component's guard canceled it (the real browser dialog is driven by
+  // preventDefault + returnValue, per the hotnready demo pattern).
+  const beforeUnloadCanceled = (page: any) =>
+    page.evaluate(() => {
+      const event = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(event);
+      return event.defaultPrevented;
+    });
+
+  it("arms the beforeunload guard while an uploaded photo is unsaved, disarms on remove and submit", async () => {
+    const page = await setupPage();
+
+    // No upload yet — leaving freely, no guard.
+    expect(await beforeUnloadCanceled(page)).toBe(false);
+
+    // Fresh upload completes (bytes in the bucket) — guard armed.
+    await pickPhoto(page);
+    await waitForUpload(page);
+    expect(await beforeUnloadCanceled(page)).toBe(true);
+
+    // Removing the photo deliberately discards it — guard disarmed.
+    await removePhoto(page);
+    await page.waitForChanges();
+    expect(await beforeUnloadCanceled(page)).toBe(false);
+
+    // Re-picking the same bytes hits the duplicate path — still an
+    // uploaded photo awaiting a report, so the guard re-arms (this is
+    // the upload #13320 retry-after-failure recovery shape).
+    await page.evaluate((payload: unknown) => {
+      (window as any).__mockResponses["/upload"] = { status: 200, body: JSON.stringify(payload) };
+    }, duplicateUploadResponse());
+    await pickPhoto(page);
+    await waitForUpload(page, 2);
+    expect(await beforeUnloadCanceled(page)).toBe(true);
+
+    // Submit succeeds — the upload is linked to a report; leaving is safe.
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+    expect(await beforeUnloadCanceled(page)).toBe(false);
+  });
 });
