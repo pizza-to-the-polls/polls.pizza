@@ -77,10 +77,9 @@ jobs:
 
     permissions:
       contents: read
+      id-token: write
 
     env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
       BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
       ROOT_URL: https://next.polls.pizza
 
@@ -88,6 +87,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Assume deploy role (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::320802729995:role/polls-pizza-deploy
+          aws-region: us-west-2
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
@@ -106,13 +111,7 @@ jobs:
           BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
 
       - name: Deploy to staging
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          AWS_S3_BUCKET: ${{ secrets.DEV_BUCKET }}
-          AWS_REGION: "us-west-2"
-          SOURCE_DIR: "dist/www"
+        run: aws s3 sync dist/www s3://${{ secrets.DEV_BUCKET }} --acl public-read --follow-symlinks --delete
 
       - name: publish to bugsnag
         run: npm run bugsnag
