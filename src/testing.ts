@@ -1,4 +1,4 @@
-export const mockFetchScript = (responses: Record<string, { status?: number; body: string }>) => `
+export const mockFetchScript = (responses: Record<string, { status?: number; body?: string; networkError?: boolean }>) => `
   <script>
     // Build a mock fetch that matches URLs by suffix (or suffix + query string).
     // This avoids false positives like /orders matching /reorders.
@@ -12,8 +12,12 @@ export const mockFetchScript = (responses: Record<string, { status?: number; bod
       var urlStr = String(url);
       for (var key in window.__mockResponses) {
         if (urlStr.endsWith(key) || urlStr.includes(key + "?")) {
-          body = window.__mockResponses[key].body;
-          status = window.__mockResponses[key].status || 200;
+          var resp = window.__mockResponses[key];
+          if (resp.networkError) {
+            return new Promise(function(_, reject) { reject(new TypeError("Network request failed")); });
+          }
+          body = resp.body;
+          status = resp.status || 200;
           break;
         }
       }
