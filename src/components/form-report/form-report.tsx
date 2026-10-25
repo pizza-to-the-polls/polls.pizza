@@ -1,6 +1,7 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
 
 import { ApiError, PizzaApi, ReportPostResults } from "../../api";
+import { trackEvent } from "../../util/analytics";
 import shaFile from "../../util/shaFile";
 
 // Shared with pizzabase
@@ -62,6 +63,8 @@ export class FormReport {
   @State() private userClickedGuidelinesLink: boolean = true;
 
   public componentWillLoad() {
+    // Funnel start: the form component itself mounted (GA4 session entry).
+    trackEvent("report_form_start");
     if (this.formattedAddress) {
       this.handleLocationSelected({
         formattedAddress: this.formattedAddress,
@@ -128,8 +131,57 @@ export class FormReport {
 
       const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
       if (addressInput.value && file) {
+        // Captured from the upload response so the analytics event can carry
+        // the duplicate flag without leaking anything user-typed.
+        let uploadDuplicate = false;
+
+        const uploadPhoto = async (file: File, address: string): Promise<void> => {
+          const fileHash = await shaFile(file);
+
+          const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
+
+          uploadDuplicate = isDuplicate;
+
+          // Backend returns the canonical upload id on both the fresh and duplicate
+          // paths — link it either way so submit always carries uploadId.
+          this.uploadId = id;
+
+          if (!isDuplicate && presigned) {
+            const formData = new FormData();
+            const { url, fields } = presigned;
+
+            formData.append("Content-Type", file.type);
+
+            // Note: ACL and x-amz-acl removed — backend now uses private buckets
+
+            Object.entries(fields).forEach(([k, v]: [string, any]) => {
+              formData.append(k, v);
+            });
+
+            formData.append("file", file);
+
+            const awsReq = await fetch(url, {
+              method: "POST",
+              mode: "cors",
+              body: formData,
+            });
+            if (awsReq.status > 299) {
+              const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
+              throw awsError;
+            }
+          }
+
+          // Stable permalink — pizzabase resolves it to wherever the media
+          // currently lives (processed output, or the public bucket for legacy).
+          // filePath is the full storage key ("uploads/<name>"); the permalink
+          // route is /uploads/:fileName, so pass only the basename.
+          const fileName = (filePath ?? "").split("/").pop() || "";
+          this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${fileName}`;
+        };
+
         try {
           await uploadPhoto(file, addressInput.value);
+          trackEvent("report_photo_uploaded", { duplicate: uploadDuplicate });
         } catch (error) {
           const errors = (error as { errors?: { fileName?: string } })?.errors;
           this.removePhoto();
@@ -146,48 +198,6 @@ export class FormReport {
         this.photoIsProcessing = false;
         this.isDisabled = false;
       }
-    };
-
-    const uploadPhoto = async (file: File, address: string): Promise<void> => {
-      const fileHash = await shaFile(file);
-
-      const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
-
-      // Backend returns the canonical upload id on both the fresh and duplicate
-      // paths — link it either way so submit always carries uploadId.
-      this.uploadId = id;
-
-      if (!isDuplicate && presigned) {
-        const formData = new FormData();
-        const { url, fields } = presigned;
-
-        formData.append("Content-Type", file.type);
-
-        // Note: ACL and x-amz-acl removed — backend now uses private buckets
-
-        Object.entries(fields).forEach(([k, v]: [string, any]) => {
-          formData.append(k, v);
-        });
-
-        formData.append("file", file);
-
-        const awsReq = await fetch(url, {
-          method: "POST",
-          mode: "cors",
-          body: formData,
-        });
-        if (awsReq.status > 299) {
-          const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
-          throw awsError;
-        }
-      }
-
-      // Stable permalink — pizzabase resolves it to wherever the media
-      // currently lives (processed output, or the public bucket for legacy).
-      // filePath is the full storage key ("uploads/<name>"); the permalink
-      // route is /uploads/:fileName, so pass only the basename.
-      const fileName = (filePath ?? "").split("/").pop() || "";
-      this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${fileName}`;
     };
 
     // Has user clicked the "On-Demand Guidelines" link?
@@ -210,6 +220,7 @@ export class FormReport {
       if (this.isDisabled) {
         return false;
       }
+      trackEvent("report_submit_attempted");
 
       // Update loading
       this.isLoading = true;
@@ -297,6 +308,8 @@ export class FormReport {
 
       // Check for any errors
       if (Object.keys(this.submitError).length > 0) {
+        // Field names only — never user-typed values.
+        trackEvent("report_validation_error", { fields: Object.keys(this.submitError).join(",") });
         // Update loading
         this.isLoading = false;
         // Disable submit
@@ -338,6 +351,7 @@ export class FormReport {
 
       try {
         this.submitResponse = await PizzaApi.postReport(requestData);
+        trackEvent("report_submitted");
 
         this.submitError = {};
         this.showServerError = false;
@@ -358,6 +372,7 @@ export class FormReport {
         // Show confirmation: *Always* required to hide form
         this.showConfirmation = true;
       } catch (error) {
+        trackEvent("report_submit_failed");
         const errors = (error as { errors?: { [key: string]: string } })?.errors;
         this.submitError = errors || {};
 
@@ -739,6 +754,7 @@ export class FormReport {
     if (addressInput) {
       addressInput.value = formattedAddress;
     }
+    trackEvent("report_location_selected");
   }
 
   private handleLoadStepTwo() {
