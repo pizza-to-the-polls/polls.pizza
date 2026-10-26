@@ -160,14 +160,27 @@ export class FormReport {
 
             formData.append("file", file);
 
-            const awsReq = await fetch(url, {
-              method: "POST",
-              mode: "cors",
-              body: formData,
-            });
-            if (awsReq.status > 299) {
-              const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
-              throw awsError;
+            const RETRY_DELAYS = [200, 500, 750, 1250];
+
+            for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+              try {
+                const awsReq = await fetch(url, {
+                  method: "POST",
+                  mode: "cors",
+                  body: formData,
+                });
+                if (awsReq.status > 299) {
+                  const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
+                  throw awsError;
+                }
+                break;
+              } catch (error) {
+                if (error instanceof TypeError && attempt < RETRY_DELAYS.length) {
+                  await new Promise(resolve => setTimeout(resolve, RETRY_DELAYS[attempt]));
+                  continue;
+                }
+                throw error;
+              }
             }
           }
 
@@ -183,9 +196,14 @@ export class FormReport {
           await uploadPhoto(file, addressInput.value);
           trackEvent("report_photo_uploaded", { duplicate: uploadDuplicate });
         } catch (error) {
-          const errors = (error as { errors?: { fileName?: string } })?.errors;
           this.removePhoto();
-          this.submitError.photo = errors?.fileName || "Whoops! We could not upload that photo";
+          if (error instanceof TypeError) {
+            // Honest fallback: all S3 retries exhausted. The bytes may already be in the bucket.
+            this.submitError.photo = "Network hiccup — your photo may have already reached us. Try picking the photo again.";
+          } else {
+            const errors = (error as { errors?: { fileName?: string } })?.errors;
+            this.submitError.photo = errors?.fileName || "Whoops! We could not upload that photo";
+          }
         } finally {
           // Always reset
           this.photoIsProcessing = false;
