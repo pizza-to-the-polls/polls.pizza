@@ -18,7 +18,7 @@ export class PageReport {
         <section id="report" class="page report">
           <ui-main-content pageType="no-bg">
             <ui-card>
-              <form-report formattedAddress={this.history?.location?.query?.q} />
+              <form-report formattedAddress={this.history?.location?.query?.q} history={this.history} />
             </ui-card>
           </ui-main-content>
         </section>

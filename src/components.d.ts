@@ -27,6 +27,7 @@ export namespace Components {
     }
     interface FormReport {
         "formattedAddress"?: string;
+        "history"?: RouterHistory;
     }
     interface PageAbout {
     }
@@ -525,6 +526,7 @@ declare namespace LocalJSX {
     }
     interface FormReport {
         "formattedAddress"?: string;
+        "history"?: RouterHistory;
     }
     interface PageAbout {
     }

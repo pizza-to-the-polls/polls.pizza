@@ -429,4 +429,128 @@ describe("form-report", () => {
     expect(reportBody.uploadId).toBe(UPLOAD_ID);
     expect(reportBody.url.endsWith(`/uploads/${UPLOAD_FILE_NAME}`)).toBe(true);
   });
+
+  // Dispatch a synthetic beforeunload on window and report whether the
+  // component's guard canceled it (the real browser dialog is driven by
+  // preventDefault + returnValue, per the hotnready demo pattern).
+  const beforeUnloadCanceled = (page: any) =>
+    page.evaluate(() => {
+      const event = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(event);
+      return event.defaultPrevented;
+    });
+
+  // Install a fake stencil-router history on the component and record
+  // block()/unblock traffic, so the SPA guard wiring (route-link pushes and
+  // back/forward pops confirm while an upload is unsaved) can be asserted
+  // without mounting the real router.
+  const installFakeRouterHistory = (page: any) =>
+    page.$eval("form-report", (el: any) => {
+      const w = window as any;
+      w.__blockPrompts = [];
+      w.__unblockCalls = 0;
+      el.history = {
+        block: (prompt: unknown) => {
+          w.__blockPrompts.push(prompt);
+          return () => {
+            w.__unblockCalls++;
+          };
+        },
+      };
+    });
+
+  it("arms the beforeunload guard while an uploaded photo is unsaved, disarms on remove and submit", async () => {
+    const page = await setupPage();
+
+    // No upload yet — leaving freely, no guard.
+    expect(await beforeUnloadCanceled(page)).toBe(false);
+
+    // Fresh upload completes (bytes in the bucket) — guard armed.
+    await pickPhoto(page);
+    await waitForUpload(page);
+    expect(await beforeUnloadCanceled(page)).toBe(true);
+
+    // Removing the photo deliberately discards it — guard disarmed.
+    await removePhoto(page);
+    await page.waitForChanges();
+    expect(await beforeUnloadCanceled(page)).toBe(false);
+
+    // Re-picking the same bytes hits the duplicate path — still an
+    // uploaded photo awaiting a report, so the guard re-arms (this is
+    // the upload #13320 retry-after-failure recovery shape).
+    await page.evaluate((payload: unknown) => {
+      (window as any).__mockResponses["/upload"] = { status: 200, body: JSON.stringify(payload) };
+    }, duplicateUploadResponse());
+    await pickPhoto(page);
+    await waitForUpload(page, 2);
+    expect(await beforeUnloadCanceled(page)).toBe(true);
+
+    // Submit succeeds — the upload is linked to a report; leaving is safe.
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+    expect(await beforeUnloadCanceled(page)).toBe(false);
+  });
+
+  it("guards SPA route navigation while an uploaded photo is unsaved (stencil-router transition prompt)", async () => {
+    const page = await setupPage();
+    await installFakeRouterHistory(page);
+
+    // No upload yet — no transition prompt registered.
+    expect(await page.evaluate(() => ((window as any).__blockPrompts || []).length)).toBe(0);
+
+    // Fresh upload arms the SPA guard: one block() prompt registered.
+    await pickPhoto(page);
+    await waitForUpload(page);
+    expect(await page.evaluate(() => ((window as any).__blockPrompts || []).length)).toBe(1);
+
+    // The prompt behaves as a router blocking hook: declining the confirm
+    // returns false, which confirmTransitionTo treats as "cancel the
+    // transition" — this is what protects route-link clicks and
+    // back/forward while the photo is unsaved.
+    await page.evaluate(() => {
+      (window as any).__confirmResults = [];
+      window.confirm = (message?: string) => {
+        (window as any).__confirmResults.push(message);
+        return false;
+      };
+    });
+    const promptResult = await page.evaluate(() => {
+      const prompt = (window as any).__blockPrompts[0];
+      return typeof prompt === "function" ? prompt({ pathname: "/" }, "PUSH") : prompt;
+    });
+    expect(promptResult).toBe(false);
+    const confirmMessage = await page.evaluate(() => (window as any).__confirmResults[0]);
+    expect(confirmMessage).toContain("photo");
+
+    // Confirming returns "" (proceed) — the router treats any string as go.
+    await page.evaluate(() => {
+      (window as any).__confirmResults = [];
+      window.confirm = (message?: string) => {
+        (window as any).__confirmResults.push(message);
+        return true;
+      };
+    });
+    const promptResultConfirm = await page.evaluate(() =>
+      typeof (window as any).__blockPrompts[0] === "function" ? (window as any).__blockPrompts[0]({ pathname: "/" }, "PUSH") : (window as any).__blockPrompts[0],
+    );
+    expect(promptResultConfirm).toBe("");
+
+    // Removing the photo disarms — the prompt is unblocked.
+    await removePhoto(page);
+    await page.waitForChanges();
+    expect(await page.evaluate(() => (window as any).__unblockCalls)).toBe(1);
+
+    // Re-picking the same bytes (duplicate path) re-arms — a second prompt.
+    await page.evaluate((payload: unknown) => {
+      (window as any).__mockResponses["/upload"] = { status: 200, body: JSON.stringify(payload) };
+    }, duplicateUploadResponse());
+    await pickPhoto(page);
+    await waitForUpload(page, 2);
+    expect(await page.evaluate(() => ((window as any).__blockPrompts || []).length)).toBe(2);
+
+    // Submit succeeds — both guards disarmed.
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+    expect(await page.evaluate(() => (window as any).__unblockCalls)).toBe(2);
+  });
 });

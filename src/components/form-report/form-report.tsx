@@ -1,4 +1,5 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
+import { RouterHistory } from "@stencil/router";
 
 import { ApiError, PizzaApi, ReportPostResults } from "../../api";
 import { trackEvent } from "../../util/analytics";
@@ -13,6 +14,10 @@ const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s
 })
 export class FormReport {
   @Prop() public formattedAddress?: string;
+  // Injected by stencil-router via the routed page (page-report). The SPA
+  // route guard (see armUnsavedUploadGuard) needs it; optional because the
+  // component also renders outside a routed context (e2e, previews).
+  @Prop() public history?: RouterHistory;
 
   /**
    * *Always* required to hide form, regardless of other show booleans
@@ -190,6 +195,10 @@ export class FormReport {
           // route is /uploads/:fileName, so pass only the basename.
           const fileName = (filePath ?? "").split("/").pop() || "";
           this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${fileName}`;
+          // Bytes are in the bucket from here until submit — leaving now
+          // strands them with no report attached. Arm the guard (demo: arm()
+          // at upload-done).
+          this.armUnsavedUploadGuard();
         };
 
         try {
@@ -389,6 +398,8 @@ export class FormReport {
 
         // Show confirmation: *Always* required to hide form
         this.showConfirmation = true;
+        // Report delivered — the upload is linked; leaving is safe again.
+        this.disarmUnsavedUploadGuard();
       } catch (error) {
         trackEvent("report_submit_failed");
         const errors = (error as { errors?: { [key: string]: string } })?.errors;
@@ -811,6 +822,58 @@ export class FormReport {
     this.showLocationInput = true;
   }
 
+  /**
+   * beforeunload guard — mirrors https://hotnready.polls.pizza/beforeunload-demo/
+   *
+   * Armed from the moment an upload lands (fresh or duplicate path) until
+   * the photo/video is removed or the report submits: that window is where
+   * leaving the page strands an uploaded photo with no report attached to
+   * it. The browser's native "Leave site?" prompt covers reload/close/tab-loss.
+   */
+  private unsavedUploadGuardArmed = false;
+  private unblockRouter?: () => void;
+
+  /** Dialog copy shared by the unload and SPA-route guards. */
+  private static readonly UNSAVED_UPLOAD_GUARD_MESSAGE = "Your uploaded photo isn't attached to a report yet — leave without submitting?";
+
+  private readonly onBeforeUnload = (event: BeforeUnloadEvent) => {
+    // Chrome requires preventDefault + a non-null returnValue for the dialog.
+    event.preventDefault();
+    event.returnValue = "";
+  };
+
+  private armUnsavedUploadGuard() {
+    if (this.unsavedUploadGuardArmed) return;
+    window.addEventListener("beforeunload", this.onBeforeUnload);
+    this.unsavedUploadGuardArmed = true;
+    // SPA route guard: stencil-router swaps views client-side, so beforeunload
+    // never fires for <stencil-route-link> pushes or back/forward pops.
+    // history.block() runs every transition through the router's
+    // confirmTransitionTo — a declined POP reverts via revertPop.
+    // A function prompt is required here: a string prompt would be routed
+    // through getUserConfirmation, whose default in @stencil/router 1.0.1 has
+    // a mismatched signature ((win, message, callback) called as
+    // (message, callback)) and throws; a function prompt is called directly.
+    // Returning "" = confirmed (string, proceed); false = declined (cancel).
+    if (this.history) {
+      this.unblockRouter = this.history.block(() => (window.confirm(FormReport.UNSAVED_UPLOAD_GUARD_MESSAGE) ? "" : false) as unknown as string);
+    }
+  }
+
+  private disarmUnsavedUploadGuard() {
+    if (!this.unsavedUploadGuardArmed) return;
+    window.removeEventListener("beforeunload", this.onBeforeUnload);
+    this.unsavedUploadGuardArmed = false;
+    if (this.unblockRouter) {
+      this.unblockRouter();
+      this.unblockRouter = undefined;
+    }
+  }
+
+  disconnectedCallback() {
+    this.disarmUnsavedUploadGuard();
+  }
+
   private removePhoto() {
     const fileInput = document.getElementById("photo") as HTMLInputElement;
     const imagePreview = document.getElementById("photo-preview");
@@ -824,6 +887,8 @@ export class FormReport {
     this.uploadId = null;
     this.videoUrl = "";
     this.clearFormError("photo");
+    // Deliberately discarding the upload — nothing left to guard.
+    this.disarmUnsavedUploadGuard();
     if (imagePreview) {
       imagePreview.style.backgroundImage = "";
     }
