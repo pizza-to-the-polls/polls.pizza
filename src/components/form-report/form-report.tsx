@@ -1,4 +1,5 @@
 import { Component, h, Host, Prop, State } from "@stencil/core";
+import { RouterHistory } from "@stencil/router";
 
 import { ApiError, PizzaApi, ReportPostResults } from "../../api";
 import { trackEvent } from "../../util/analytics";
@@ -13,6 +14,10 @@ const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s
 })
 export class FormReport {
   @Prop() public formattedAddress?: string;
+  // Injected by stencil-router via the routed page (page-report). The SPA
+  // route guard (see armUnsavedUploadGuard) needs it; optional because the
+  // component also renders outside a routed context (e2e, previews).
+  @Prop() public history?: RouterHistory;
 
   /**
    * *Always* required to hide form, regardless of other show booleans
@@ -826,6 +831,10 @@ export class FormReport {
    * it. The browser's native "Leave site?" prompt covers reload/close/tab-loss.
    */
   private unsavedUploadGuardArmed = false;
+  private unblockRouter?: () => void;
+
+  /** Dialog copy shared by the unload and SPA-route guards. */
+  private static readonly UNSAVED_UPLOAD_GUARD_MESSAGE = "Your uploaded photo isn't attached to a report yet — leave without submitting?";
 
   private readonly onBeforeUnload = (event: BeforeUnloadEvent) => {
     // Chrome requires preventDefault + a non-null returnValue for the dialog.
@@ -837,12 +846,28 @@ export class FormReport {
     if (this.unsavedUploadGuardArmed) return;
     window.addEventListener("beforeunload", this.onBeforeUnload);
     this.unsavedUploadGuardArmed = true;
+    // SPA route guard: stencil-router swaps views client-side, so beforeunload
+    // never fires for <stencil-route-link> pushes or back/forward pops.
+    // history.block() runs every transition through the router's
+    // confirmTransitionTo — a declined POP reverts via revertPop.
+    // A function prompt is required here: a string prompt would be routed
+    // through getUserConfirmation, whose default in @stencil/router 1.0.1 has
+    // a mismatched signature ((win, message, callback) called as
+    // (message, callback)) and throws; a function prompt is called directly.
+    // Returning "" = confirmed (string, proceed); false = declined (cancel).
+    if (this.history) {
+      this.unblockRouter = this.history.block(() => (window.confirm(FormReport.UNSAVED_UPLOAD_GUARD_MESSAGE) ? "" : false) as unknown as string);
+    }
   }
 
   private disarmUnsavedUploadGuard() {
     if (!this.unsavedUploadGuardArmed) return;
     window.removeEventListener("beforeunload", this.onBeforeUnload);
     this.unsavedUploadGuardArmed = false;
+    if (this.unblockRouter) {
+      this.unblockRouter();
+      this.unblockRouter = undefined;
+    }
   }
 
   disconnectedCallback() {
