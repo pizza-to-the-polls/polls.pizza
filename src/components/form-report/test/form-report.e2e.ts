@@ -214,6 +214,94 @@ describe("form-report", () => {
     expect(confirmation).not.toBeNull();
   });
 
+  it("absorbs a transient S3 network error via retry backoff", async () => {
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        "/upload": mockResponse(freshUploadResponse()),
+        "/report": mockResponse(reportResponse()),
+        // First 2 S3 POSTs reject with a network TypeError; the 3rd succeeds.
+        "s3.example.com/put": { status: 200, body: "{}", networkError: 2 },
+      }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    await waitForUpload(page);
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+
+    const calls = await getFetchCalls(page);
+    const reportCalls = calls.filter(c => c.url.endsWith("/report"));
+    const s3Calls = calls.filter(c => c.url.includes("s3.example.com"));
+
+    // Three S3 POST attempts total: two network rejections + one success.
+    expect(s3Calls.length).toBe(3);
+
+    // A transient blip must not surface a user-visible error: the backoff
+    // absorbed it and the report completed normally.
+    const visibleErrors = [];
+    const errors = await page.findAll("#form-step-2 p.help.has-text-red");
+    for (const el of errors) {
+      if (await el.isVisible()) {
+        visibleErrors.push(await el.getProperty("textContent"));
+      }
+    }
+    expect(visibleErrors).toEqual([]);
+
+    // The report body carries the canonical uploadId + permalink basename.
+    expect(reportCalls.length).toBe(1);
+    expect(reportCalls[0].body).not.toBeNull();
+    const reportBody = JSON.parse(reportCalls[0].body as string);
+    expect(reportBody.uploadId).toBe(UPLOAD_ID);
+    expect(reportBody.url.endsWith(`/uploads/${UPLOAD_FILE_NAME}`)).toBe(true);
+
+    const confirmation = await page.find("#distributor-confirmation");
+    expect(confirmation).not.toBeNull();
+  });
+
+  it("shows the honest network-hiccup message after all S3 retries are exhausted", async () => {
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        "/upload": mockResponse(freshUploadResponse()),
+        "/report": mockResponse(reportResponse()),
+        // Every S3 POST rejects with a network TypeError: 5 attempts total.
+        "s3.example.com/put": { status: 200, body: "{}", networkError: 5 },
+      }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    await waitForUpload(page);
+
+    const calls = await getFetchCalls(page);
+    const s3Calls = calls.filter(c => c.url.includes("s3.example.com"));
+    expect(s3Calls.length).toBe(5);
+
+    // The honest fallback message — not the generic "could not upload" copy.
+    const errors = await page.findAll("#form-step-2 p.help.has-text-red");
+    const visibleErrorTexts = [];
+    for (const el of errors) {
+      if (await el.isVisible()) {
+        visibleErrorTexts.push(await el.getProperty("textContent"));
+      }
+    }
+    const joined = visibleErrorTexts.join(" ");
+    expect(joined).toContain("Network hiccup");
+    expect(joined).toContain("your photo may have already reached us");
+    expect(joined).not.toContain("We could not upload that photo");
+
+    // Preview cleared and the form re-enabled for a re-pick.
+    // (.photo-preview-container's `display: inline-block` SCSS rule overrides
+    // the `hidden` attribute's UA display:none, so the container itself always
+    // reports visible — assert on the inner preview element instead.)
+    const photoPreview = await page.find("#photo-preview");
+    expect(await photoPreview.isVisible()).toBe(false);
+    const submitBtn = await page.find("#form-step-2 button[type='submit']");
+    expect(await submitBtn.getProperty("disabled")).toBe(false);
+  });
+
   it("reuses the duplicate upload id on a re-picked photo and skips the second S3 POST", async () => {
     const page = await setupPage();
 
@@ -280,7 +368,8 @@ describe("form-report", () => {
     await pickPhoto(page);
     await waitForUpload(page);
 
-    // The generic fallback error is shown (a TypeError has no errors.fileName).
+    // The honest network-hiccup fallback is shown after all retries are
+    // exhausted (a network TypeError has no errors.fileName).
     // Step 2 has several p.help.has-text-red elements (waitTime, contactRole,
     // photo, ...), so collect them all and assert the photo message appears.
     const errorTexts = await page.evaluate(() =>
@@ -288,7 +377,7 @@ describe("form-report", () => {
         .map(p => p.textContent)
         .join("\n"),
     );
-    expect(errorTexts).toContain("Whoops! We could not upload that photo");
+    expect(errorTexts).toContain("Network hiccup — your photo may have already reached us. Try picking the photo again.");
 
     // removePhoto() cleared the preview's background image.
     const previewBg = await page.evaluate(() => {
@@ -304,10 +393,11 @@ describe("form-report", () => {
     });
     expect(buttonDisabled).toBe(false);
 
-    // Exactly one S3 POST was recorded (the failed one).
+    // All five S3 attempts were recorded (initial + 4 backoff retries
+    // at 200/500/750/1250ms — networkError: true rejects every call).
     const calls1 = await getFetchCalls(page);
     const s3Calls1 = calls1.filter(c => c.url.includes("s3.example.com"));
-    expect(s3Calls1.length).toBe(1);
+    expect(s3Calls1.length).toBe(5);
 
     // Swap the /upload mock to the duplicate response — the re-pick of the
     // same bytes produces the same hash, so the backend answers isDuplicate
@@ -318,11 +408,13 @@ describe("form-report", () => {
     await pickPhoto(page);
     await waitForUpload(page, 2);
 
-    // No second S3 POST: the duplicate path skips the presigned upload.
+    // No second round of S3 POSTs on the re-pick: the duplicate path skips
+    // the presigned upload — the S3 call total is unchanged from the first
+    // pick's five attempts.
     const calls2 = await getFetchCalls(page);
     const s3Calls2 = calls2.filter(c => c.url.includes("s3.example.com"));
     const uploadCalls2 = calls2.filter(c => c.url.endsWith("/upload"));
-    expect(s3Calls2.length).toBe(1);
+    expect(s3Calls2.length).toBe(5);
     expect(uploadCalls2.length).toBe(2);
 
     await fillFormAndSubmit(page);
