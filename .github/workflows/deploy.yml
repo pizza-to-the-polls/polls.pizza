@@ -73,6 +73,14 @@ jobs:
       - name: Push the site to S3
         run: aws s3 sync dist/www s3://${{ secrets.PROD_BUCKET }} --acl public-read --follow-symlinks --delete
 
+      # Set Cache-Control headers per file so HTML always revalidates and only
+      # content-hashed build assets are cached immutably. Without this, a client
+      # can run a stale build/app.js whose chunk manifest references files the
+      # next deploy deleted (see #156).
+      - name: Set Cache-Control headers
+        run: node scripts/set-cache-headers.mjs ${{ secrets.PROD_BUCKET }}
+
+
       - name: publish to bugsnag
         run: npm run bugsnag
 
