@@ -1,4 +1,5 @@
-import { Component, h, Host, Prop, State } from "@stencil/core";
+import { Component, Element, h, Host, Prop, State } from "@stencil/core";
+import { revealSlottedChildren } from "../../util/revealSlottedChildren";
 
 @Component({
   tag: "ui-card",
@@ -6,6 +7,7 @@ import { Component, h, Host, Prop, State } from "@stencil/core";
   shadow: false,
 })
 export class UiCard {
+  @Element() private host!: HTMLUiCardElement;
   @Prop() public isSmall: boolean;
   @Prop() public isCollapsible: boolean;
   @Prop() public isActive: boolean;
@@ -22,6 +24,12 @@ export class UiCard {
     this.isCollapsible = false;
     this.isActive = false;
     this.maxHeight = "";
+  }
+
+  public componentDidLoad() {
+    // Undo the Stencil scoped-SSR slot-hide that blanks prerendered content
+    // (see src/util/revealSlottedChildren.ts and issue #156).
+    revealSlottedChildren(this.host as HTMLElement);
   }
 
   public render() {
