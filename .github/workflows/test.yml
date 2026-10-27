@@ -111,7 +111,13 @@ jobs:
           BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
 
       - name: Deploy to staging
-        run: aws s3 sync dist/www s3://${{ secrets.DEV_BUCKET }} --acl public-read --follow-symlinks --delete
+        run: |
+          # Pass 1: sync everything EXCEPT build/, pruning objects that no longer exist.
+          aws s3 sync dist/www s3://${{ secrets.DEV_BUCKET }} --acl public-read --follow-symlinks --delete --exclude "build/*"
+          # Pass 2: upload build/ WITHOUT --delete so old content-hashed chunks survive.
+          # A retained chunk keeps stale HTML working, so a client holding an old page
+          # (or an old edge copy) can still boot instead of 404-ing on a preloaded chunk.
+          aws s3 sync dist/www/build s3://${{ secrets.DEV_BUCKET }}/build --acl public-read --follow-symlinks
 
       # Set Cache-Control headers per file so HTML always revalidates and only
       # content-hashed build assets are cached immutably. Without this, a client
