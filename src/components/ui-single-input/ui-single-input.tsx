@@ -1,4 +1,5 @@
-import { Component, Event, EventEmitter, h, Method, Prop, State } from "@stencil/core";
+import { Component, Element, Event, EventEmitter, h, Method, Prop, State } from "@stencil/core";
+import { revealSlottedChildren } from "../../util/revealSlottedChildren";
 
 @Component({
   tag: "ui-single-input",
@@ -6,6 +7,7 @@ import { Component, Event, EventEmitter, h, Method, Prop, State } from "@stencil
   shadow: false,
 })
 export class UiSingleInput {
+  @Element() private host!: HTMLUiSingleInputElement;
   @Prop() public label: string;
   @Prop() public buttonLabel: string;
   @Prop() public type: string;
@@ -44,6 +46,12 @@ export class UiSingleInput {
   public setValue(value: string): Promise<void> {
     this.value = value;
     return Promise.resolve();
+  }
+
+  public componentDidLoad() {
+    // Undo the Stencil scoped-SSR slot-hide that blanks prerendered content
+    // (see src/util/revealSlottedChildren.ts and issue #156).
+    revealSlottedChildren(this.host as HTMLElement);
   }
 
   public render() {

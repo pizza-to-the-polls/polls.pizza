@@ -1,4 +1,5 @@
-import { Component, Event, EventEmitter, h, Host, Prop } from "@stencil/core";
+import { Component, Element, Event, EventEmitter, h, Host, Prop } from "@stencil/core";
+import { revealSlottedChildren } from "../../util/revealSlottedChildren";
 
 @Component({
   tag: "ui-modal",
@@ -6,8 +7,15 @@ import { Component, Event, EventEmitter, h, Host, Prop } from "@stencil/core";
   shadow: false,
 })
 export class UiModal {
+  @Element() private host!: HTMLUiModalElement;
   @Prop() public isActive: boolean = false;
   @Event({ cancelable: false }) public requestClose!: EventEmitter;
+
+  public componentDidLoad() {
+    // Undo the Stencil scoped-SSR slot-hide that blanks prerendered content
+    // (see src/util/revealSlottedChildren.ts and issue #156).
+    revealSlottedChildren(this.host as HTMLElement);
+  }
 
   public render() {
     const closeModal = () => {

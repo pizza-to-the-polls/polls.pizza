@@ -1,4 +1,5 @@
-import { Component, h, Prop } from "@stencil/core";
+import { Component, Element, h, Prop } from "@stencil/core";
+import { revealSlottedChildren } from "../../util/revealSlottedChildren";
 
 /**
  * Container for the main content section between the top nav and the footer (see app-root.tsx)
@@ -9,7 +10,14 @@ import { Component, h, Prop } from "@stencil/core";
   shadow: false,
 })
 export class UiMainContent {
+  @Element() private host!: HTMLUiMainContentElement;
   @Prop() public pageType: "full-bleed" | "center-card" | "no-bg" = "center-card";
+
+  public componentDidLoad() {
+    // Undo the Stencil scoped-SSR slot-hide that blanks prerendered content
+    // (see src/util/revealSlottedChildren.ts and issue #156).
+    revealSlottedChildren(this.host as HTMLElement);
+  }
 
   public render() {
     return (

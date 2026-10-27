@@ -1,4 +1,5 @@
-import { Build, Component, h, Host, Prop, State } from "@stencil/core";
+import { Build, Component, Element, h, Host, Prop, State } from "@stencil/core";
+import { revealSlottedChildren } from "../../util/revealSlottedChildren";
 
 @Component({
   tag: "ui-share-links",
@@ -6,6 +7,7 @@ import { Build, Component, h, Host, Prop, State } from "@stencil/core";
   shadow: false,
 })
 export class UiShareLinks {
+  @Element() private host!: HTMLUiShareLinksElement;
   @Prop() public shareText: string;
   @Prop() public shareUrl: string;
   @Prop() public additionalLinks: HTMLLinkElement;
@@ -21,6 +23,12 @@ export class UiShareLinks {
       // Determine if `navigator.share` is supported in browser (native device sharing)
       this.canNativeShare = typeof navigator.share === "function";
     }
+  }
+
+  public componentDidLoad() {
+    // Undo the Stencil scoped-SSR slot-hide that blanks prerendered content
+    // (see src/util/revealSlottedChildren.ts and issue #156).
+    revealSlottedChildren(this.host as HTMLElement);
   }
 
   public render() {
