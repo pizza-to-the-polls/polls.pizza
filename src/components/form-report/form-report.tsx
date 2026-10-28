@@ -201,11 +201,44 @@ export class FormReport {
           this.armUnsavedUploadGuard();
         };
 
+        // The uploader's failure path is fully handled (inline form message),
+        // so @bugsnag/js never sees it — it only auto-reports *unhandled*
+        // errors. Notify explicitly (2026-10-28: a volunteer's recurring
+        // upload failures left no trace in Bugsnag, so the S3 fan-out it
+        // caused went undiagnosed for a day). Same window-client pattern as
+        // componentLoadGuard; PII-free metadata only — no address, no hash,
+        // no presigned URL.
+        const notifyUploadError = (error: unknown) => {
+          try {
+            if (typeof window !== "undefined" && (window as any).__pizza_bugsnag_started) {
+              const bugsnag = (window as any).__pizza_bugsnag_client;
+              if (bugsnag !== undefined && typeof bugsnag.notify === "function") {
+                bugsnag.notify(new Error(`Photo upload failed: ${(error as Error)?.message ?? String(error)}`), {
+                  context: "/report",
+                  severity: "warning",
+                  metadata: {
+                    upload: {
+                      networkRetryExhausted: error instanceof TypeError,
+                      duplicate: uploadDuplicate,
+                      uploadId: this.uploadId,
+                      s3Status: (error as { status?: number })?.status ?? null,
+                      file: { type: file.type, size: file.size },
+                    },
+                  },
+                });
+              }
+            }
+          } catch {
+            // Bugsnag failure must never cascade
+          }
+        };
+
         try {
           await uploadPhoto(file, addressInput.value);
           trackEvent("report_photo_uploaded", { duplicate: uploadDuplicate });
         } catch (error) {
           this.removePhoto();
+          notifyUploadError(error);
           if (error instanceof TypeError) {
             // Honest fallback: all S3 retries exhausted. The bytes may already be in the bucket.
             this.submitError.photo = "Network hiccup — your photo may have already reached us. Try picking the photo again.";
