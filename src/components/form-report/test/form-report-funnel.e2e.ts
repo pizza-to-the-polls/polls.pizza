@@ -159,7 +159,7 @@ describe("form-report funnel events", () => {
 
     const events = await getGtagEvents(page);
     const photoUploaded = events.find(e => e.name === "report_photo_uploaded");
-    expect(photoUploaded?.params).toEqual({ duplicate: false });
+    expect(photoUploaded?.params).toEqual({ duplicate: false, verifiedAfterFailure: false });
   });
 
   it("emits photo_uploaded with duplicate: true on a re-picked photo", async () => {
@@ -181,8 +181,59 @@ describe("form-report funnel events", () => {
     const events = await getGtagEvents(page);
     const photoUploaded = events.filter(e => e.name === "report_photo_uploaded");
     expect(photoUploaded.length).toBe(2);
-    expect(photoUploaded[0].params).toEqual({ duplicate: false });
-    expect(photoUploaded[1].params).toEqual({ duplicate: true });
+    expect(photoUploaded[0].params).toEqual({ duplicate: false, verifiedAfterFailure: false });
+    expect(photoUploaded[1].params).toEqual({ duplicate: true, verifiedAfterFailure: false });
+  });
+
+  it("completes the attach via verification after an S3 network failure — no error, canonical uploadId, funnel flags", async () => {
+    // #160: a network-failed S3 POST verified landed (the follow-up /upload
+    // answers isDuplicate with the canonical row) must complete the attach
+    // with NO user-visible error; the funnel flags keep the recovered path
+    // distinguishable from a clean upload, and submit carries the canonical
+    // upload id from the verification response.
+    const page = await newE2EPage();
+    await page.setContent(
+      gtagRecorderScript +
+        mockFetchScript({
+          // First /upload: fresh (presigned issued). Second /upload: the
+          // verification call after both S3 attempts reject.
+          "/upload": [mockResponse(freshUploadResponse()), mockResponse(duplicateUploadResponse())],
+          "s3.example.com/put": { networkError: true },
+          "/report": mockResponse(reportResponse()),
+        }) +
+        `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    await waitForUpload(page, 2);
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+
+    // No user-visible upload error: the attach completed via verification.
+    const errorTexts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+        .map(p => p.textContent)
+        .join("\n"),
+    );
+    expect(errorTexts).not.toContain("Network hiccup");
+    expect(errorTexts).not.toContain("didn't upload");
+
+    // Funnel: one photo_uploaded with the recovered path flagged.
+    const events = await getGtagEvents(page);
+    const photoUploaded = events.filter(e => e.name === "report_photo_uploaded");
+    expect(photoUploaded.length).toBe(1);
+    expect(photoUploaded[0].params).toEqual({ duplicate: true, verifiedAfterFailure: true });
+
+    // Submit carries the canonical upload id + permalink from the
+    // verification response, not the blob preview URL.
+    const reportBody = await page.evaluate(() => {
+      const calls = ((window as any).__fetchCalls || []) as { url: string; opts?: { body?: string } }[];
+      const reportCall = calls.find(c => String(c.url).endsWith("/report"));
+      return reportCall?.opts?.body ? JSON.parse(reportCall.opts.body) : null;
+    });
+    expect(reportBody.uploadId).toBe(UPLOAD_ID);
+    expect(reportBody.url.endsWith(`/uploads/${UPLOAD_FILE_NAME}`)).toBe(true);
   });
 
   it("emits submit_attempted and validation_error (field names only) on an empty submit", async () => {
