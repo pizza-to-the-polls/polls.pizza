@@ -57,3 +57,14 @@ npm run ci   # prettier + lint + test (spec + e2e)
 ```
 
 Note: E2E tests require a working Puppeteer/Chrome installation. On Apple Silicon this may need Rosetta or a compatible Chromium binary.
+
+## Agent Worktree Rule (2026-10-28)
+
+Agent sessions doing any edit/commit work in this repo must use a dedicated
+git worktree — e.g. `git worktree add ~/PizzaAgent/worktrees/polls.pizza/<topic>
+origin/master` (or the dd-agent harness's own `worktrees/polls.pizza/issue-<n>`)
+— **never the shared `~/Projects/polls.pizza` checkout**, which the operator
+and other agent sessions use concurrently. Read-only inspection (log, grep,
+tests, `gh` queries) is fine anywhere; anything that edits files, commits, or
+switches branches belongs in a worktree. (Laptop-level rule also lives in
+`~/.pi/agent/AGENTS.md` — this section keeps it binding per-repo.)
