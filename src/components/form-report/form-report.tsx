@@ -8,6 +8,20 @@ import shaFile from "../../util/shaFile";
 // Shared with pizzabase
 const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
 
+/**
+ * The S3 POST failed at the network layer on every attempt AND the follow-up
+ * verification confirmed the bytes never landed — the photo definitely did
+ * not upload. Distinct from a plain TypeError, where the request may still
+ * have reached the bucket (a fetch can fail on the response leg after the
+ * request landed) and the honest copy is "may have reached us".
+ */
+class UploadDidNotLandError extends Error {
+  constructor() {
+    super("photo upload did not land in the bucket");
+    this.name = "UploadDidNotLandError";
+  }
+}
+
 @Component({
   tag: "form-report",
   styleUrl: "form-report.scss",
@@ -139,67 +153,18 @@ export class FormReport {
         // Captured from the upload response so the analytics event can carry
         // the duplicate flag without leaking anything user-typed.
         let uploadDuplicate = false;
+        // Set when a network-failed S3 POST was verified landed (duplicate
+        // response) and the attach completed anyway — a distinct funnel flag
+        // so analytics can tell the recovered path from a clean upload.
+        let verifiedAfterFailure = false;
 
-        const uploadPhoto = async (file: File, address: string): Promise<void> => {
-          const fileHash = await shaFile(file);
-
-          const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
-
-          uploadDuplicate = isDuplicate;
-
-          // Backend returns the canonical upload id on both the fresh and duplicate
-          // paths — link it either way so submit always carries uploadId.
-          this.uploadId = id;
-
-          if (!isDuplicate && presigned) {
-            const formData = new FormData();
-            const { url, fields } = presigned;
-
-            formData.append("Content-Type", file.type);
-
-            // Note: ACL and x-amz-acl removed — backend now uses private buckets
-
-            Object.entries(fields).forEach(([k, v]: [string, any]) => {
-              formData.append(k, v);
-            });
-
-            formData.append("file", file);
-
-            const RETRY_DELAYS = [200, 500, 750, 1250];
-
-            for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
-              try {
-                const awsReq = await fetch(url, {
-                  method: "POST",
-                  mode: "cors",
-                  body: formData,
-                });
-                if (awsReq.status > 299) {
-                  const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
-                  throw awsError;
-                }
-                break;
-              } catch (error) {
-                if (error instanceof TypeError && attempt < RETRY_DELAYS.length) {
-                  await new Promise(resolve => setTimeout(resolve, RETRY_DELAYS[attempt]));
-                  continue;
-                }
-                throw error;
-              }
-            }
-          }
-
-          // Stable permalink — pizzabase resolves it to wherever the media
-          // currently lives (processed output, or the public bucket for legacy).
-          // filePath is the full storage key ("uploads/<name>"); the permalink
-          // route is /uploads/:fileName, so pass only the basename.
-          const fileName = (filePath ?? "").split("/").pop() || "";
-          this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${fileName}`;
-          // Bytes are in the bucket from here until submit — leaving now
-          // strands them with no report attached. Arm the guard (demo: arm()
-          // at upload-done).
-          this.armUnsavedUploadGuard();
-        };
+        // Network-layer failure classifier. A raw fetch rejection is a
+        // TypeError, but PizzaApi's baseFetch swallows those for POST calls
+        // and handleResponse re-throws them as ApiError objects with
+        // errors.network set — same event, different shape. Either way the
+        // request may have landed server-side, so the honest copy is
+        // "may have reached us — pick again" (the dedupe skips the S3 POST).
+        const isNetworkFailure = (e: unknown) => e instanceof TypeError || Boolean((e as ApiError)?.errors?.network);
 
         // The uploader's failure path is fully handled (inline form message),
         // so @bugsnag/js never sees it — it only auto-reports *unhandled*
@@ -218,7 +183,8 @@ export class FormReport {
                   severity: "warning",
                   metadata: {
                     upload: {
-                      networkRetryExhausted: error instanceof TypeError,
+                      networkRetryExhausted: isNetworkFailure(error),
+                      verifiedAfterFailure,
                       duplicate: uploadDuplicate,
                       uploadId: this.uploadId,
                       s3Status: (error as { status?: number })?.status ?? null,
@@ -233,14 +199,115 @@ export class FormReport {
           }
         };
 
+        const uploadPhoto = async (file: File, address: string): Promise<void> => {
+          const fileHash = await shaFile(file);
+
+          const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
+
+          uploadDuplicate = isDuplicate;
+
+          // Backend returns the canonical upload id on both the fresh and duplicate
+          // paths — link it either way so submit always carries uploadId.
+          this.uploadId = id;
+
+          // Resolved media key: the fresh path's, or the verified canonical
+          // row's when a network failure is recovered via the dedupe lookup.
+          let canonicalFilePath = filePath;
+
+          if (!isDuplicate && presigned) {
+            const formData = new FormData();
+            const { url, fields } = presigned;
+
+            formData.append("Content-Type", file.type);
+
+            // Note: ACL and x-amz-acl removed — backend now uses private buckets
+
+            Object.entries(fields).forEach(([k, v]: [string, any]) => {
+              formData.append(k, v);
+            });
+
+            formData.append("file", file);
+
+            // Cap at ONE retry. The old loop re-PUT the entire file up to 5×:
+            // a browser fetch that fails on the response leg usually landed
+            // server-side anyway, so every "retry" multiplied backend
+            // pipeline runs (2026-10-28: five concurrent runs, five feed
+            // pictures, one photo).
+            const MAX_S3_ATTEMPTS = 2;
+
+            let landed = false;
+            let lastNetworkError: unknown = null;
+            for (let attempt = 1; attempt <= MAX_S3_ATTEMPTS; attempt++) {
+              try {
+                const awsReq = await fetch(url, {
+                  method: "POST",
+                  mode: "cors",
+                  body: formData,
+                });
+                if (awsReq.status > 299) {
+                  const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
+                  throw awsError;
+                }
+                landed = true;
+                break;
+              } catch (error) {
+                if (!(error instanceof TypeError)) {
+                  // S3 answered with an error status — a definite failure,
+                  // not worth another upload.
+                  throw error;
+                }
+                // Network-layer failure: the request may have landed anyway.
+                lastNetworkError = error;
+              }
+            }
+
+            if (!landed && lastNetworkError) {
+              // Final fallback is a VERIFICATION, not another upload: the same
+              // fileHash answers whether an earlier attempt's bytes landed.
+              // A duplicate response carries the canonical row and no
+              // presigned POST, so nothing is re-uploaded either way.
+              const verify = await PizzaApi.postUpload(fileHash, file.name, address);
+              if (verify.isDuplicate) {
+                // An earlier attempt landed — adopt the canonical row and
+                // complete the attach with no user-visible error.
+                uploadDuplicate = true;
+                verifiedAfterFailure = true;
+                this.uploadId = verify.id;
+                canonicalFilePath = verify.filePath;
+                notifyUploadError(lastNetworkError);
+              } else {
+                // Verified nothing landed — a definite failure, honestly stated.
+                throw new UploadDidNotLandError();
+              }
+            }
+          }
+
+          // Stable permalink — pizzabase resolves it to wherever the media
+          // currently lives (processed output, or the public bucket for legacy).
+          // canonicalFilePath is the full storage key ("uploads/<name>"); the
+          // permalink route is /uploads/:fileName, so pass only the basename.
+          const fileName = (canonicalFilePath ?? "").split("/").pop() || "";
+          this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${fileName}`;
+          // Bytes are in the bucket from here until submit — leaving now
+          // strands them with no report attached. Arm the guard (demo: arm()
+          // at upload-done).
+          this.armUnsavedUploadGuard();
+        };
+
         try {
           await uploadPhoto(file, addressInput.value);
-          trackEvent("report_photo_uploaded", { duplicate: uploadDuplicate });
+          trackEvent("report_photo_uploaded", { duplicate: uploadDuplicate, verifiedAfterFailure });
         } catch (error) {
           this.removePhoto();
           notifyUploadError(error);
-          if (error instanceof TypeError) {
-            // Honest fallback: all S3 retries exhausted. The bytes may already be in the bucket.
+          if (error instanceof UploadDidNotLandError) {
+            // Verified the bytes never reached the bucket — say so plainly.
+            this.submitError.photo = "Whoops! We couldn't reach the photo upload service — that photo didn't upload. Please try again.";
+          } else if (isNetworkFailure(error)) {
+            // Network failure that could NOT be verified (the verification
+            // call itself failed at the network layer): the bytes may still
+            // have landed, so re-picking (which dedupes and skips the S3
+            // POST entirely) is the honest remedy.
             this.submitError.photo = "Network hiccup — your photo may have already reached us. Try picking the photo again.";
           } else {
             const errors = (error as { errors?: { fileName?: string } })?.errors;
