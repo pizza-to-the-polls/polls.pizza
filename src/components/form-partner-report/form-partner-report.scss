@@ -1,0 +1,101 @@
+form-partner-report {
+  #form-partner-report {
+    #form-step-2 {
+      h2 {
+        margin-top: 0.5rem;
+      }
+      .radio-inputs-wrap {
+        max-width: 100%;
+        overflow: scroll;
+      }
+      .radio-inputs {
+        display: flex;
+        justify-content: space-around;
+        max-width: 80%;
+        min-width: 420px;
+        label {
+          border: 1px solid $teal;
+          width: 6rem;
+          height: 6rem;
+          justify-content: center;
+          border-radius: $radius;
+          font-size: 0.875rem;
+          display: flex;
+          align-items: center;
+          text-align: center;
+          cursor: pointer;
+          padding: 8px;
+          @media ($under-tablet) {
+            width: 4rem;
+            height: 4rem;
+            font-size: 0.75rem;
+          }
+        }
+        input[type="radio"] {
+          display: none;
+          &:checked + label {
+            color: white;
+            background-color: $teal;
+          }
+        }
+      }
+
+      #file-input-button {
+        float: left;
+      }
+
+      .photo-preview-container {
+        display: inline-block;
+        position: relative;
+
+        .delete {
+          position: absolute;
+          top: 1rem;
+          right: -2rem;
+          z-index: 2;
+          cursor: pointer;
+          background-color: rgba(0, 0, 0, 0.5);
+
+          &:hover {
+            background-color: rgba(0, 0, 0, 0.75);
+          }
+        }
+
+        #photo-preview {
+          opacity: 0.85;
+          margin: 1rem 0 0 4rem;
+          width: 80px;
+          height: 80px;
+          @media ($tablet) {
+            width: 200px;
+            height: 200px;
+          }
+          border-radius: $radius;
+          background-size: cover;
+          background-position: center;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+
+  .notification.is-success {
+    border: 1px solid $teal;
+    border-radius: $radius;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    h2 {
+      margin-top: 0;
+    }
+  }
+
+  .agreement {
+    font-size: 13px;
+    margin-top: 2rem;
+
+    stencil-route-link a {
+      color: $blue;
+      text-decoration: underline;
+    }
+  }
+}
