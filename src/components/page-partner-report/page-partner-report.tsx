@@ -1,4 +1,4 @@
-import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
+import { Build, Component, h, Host, Prop, State, Watch } from "@stencil/core";
 import { RouterHistory } from "@stencil/router";
 
 import { PizzaApi } from "../../api";
@@ -29,23 +29,49 @@ export class PagePartnerReport {
   @State() private email: string = "";
   @State() private sent: boolean = false;
   @State() private requestError: string | null = null;
+  /**
+   * False until the client has resolved the session token. The prerendered
+   * (statically served) HTML shows the neutral loading placeholder — the
+   * sign-in form must not flash for magic-link visitors before hydration
+   * reads ?token=.
+   */
+  @State() private resolved: boolean = false;
 
   public componentWillLoad() {
     document.title = `Partner Reports | Pizza to the Polls`;
+    // Prerender (Build.isServer): render the loading placeholder only.
+    // localStorage and the router query don't exist yet server-side.
+    if (Build.isServer) return;
     this.resolveToken();
+    this.resolved = true;
   }
 
   // The router may attach the history prop after first render (and the
   // magic link may arrive via URL after hydration) — re-resolve on change.
   @Watch("history")
   public onHistoryChange() {
+    if (Build.isServer) return;
     this.resolveToken();
+    this.resolved = true;
+  }
+
+  /**
+   * Decode a query value that may still carry percent-encoding (some email
+   * clients and proxies re-encode the link). Throws on stray `%`, so wrap.
+   */
+  private safeDecode(value?: string): string | null {
+    if (!value) return null;
+    try {
+      return decodeURIComponent(value);
+    } catch (_e) {
+      return value;
+    }
   }
 
   private resolveToken() {
     // Magic link lands as ?token=<jwt> — persist it, then it lives in
     // localStorage for subsequent visits until it expires server-side.
-    const queryToken = (this.history?.location?.query as { token?: string } | undefined)?.token;
+    const queryToken = this.safeDecode((this.history?.location?.query as { token?: string } | undefined)?.token);
     if (queryToken) {
       try {
         window.localStorage.setItem(TOKEN_STORAGE_KEY, queryToken);
@@ -98,6 +124,24 @@ export class PagePartnerReport {
     const handleEmailInput = (e: Event) => {
       this.email = (e.target as HTMLInputElement).value;
     };
+
+    // Prerendered / pre-hydration state: a neutral placeholder, so magic-link
+    // visitors never flash the sign-in (or home) markup before the token
+    // resolves. Everything below only renders client-side once resolved.
+    if (!this.resolved) {
+      return (
+        <Host>
+          <section id="partner-report" class="page partner-report">
+            <ui-main-content pageType="no-bg">
+              <ui-card>
+                <h1 class="is-display">Partner Reports</h1>
+                <p>Loading…</p>
+              </ui-card>
+            </ui-main-content>
+          </section>
+        </Host>
+      );
+    }
 
     return (
       <Host>

@@ -61,6 +61,22 @@ describe("<page-partner-report>", () => {
     expect(stored).toEqual("fake-magic-link-token");
   });
 
+  it("decodes percent-encoded tokens the way email clients mangle links", async () => {
+    // Emailed links are encodeURIComponent'd server-side (`|` → `%7C`);
+    // some clients re-encode or pass them through undecoded. The page must
+    // normalize before storing/using.
+    const page = await setupPage("fake%7Cpayload%7Csig");
+
+    const state = await page.evaluate(() => ({
+      form: !!document.querySelector("form-partner-report"),
+      signIn: !!document.getElementById("partner-sign-in"),
+      stored: window.localStorage.getItem("ptp-partner-token"),
+    }));
+    expect(state.form).toBe(true);
+    expect(state.signIn).toBe(false);
+    expect(state.stored).toEqual("fake|payload|sig");
+  });
+
   it("requests a sign-in link via POST /partner/session on email submit", async () => {
     const page = await setupPage();
 
