@@ -220,11 +220,6 @@ export class FormPartnerReport {
       }
     };
 
-    const focusNextReport = (e: Event) => {
-      e.preventDefault();
-      document.getElementById("autocomplete-input-partner-report")?.focus();
-    };
-
     return (
       <Host>
         <div id="form-partner-report-component">
@@ -242,13 +237,7 @@ export class FormPartnerReport {
               ) : (
                 <p class="help">No one on the ground was listed, so there's no number to text — we've noted that in the record.</p>
               )}
-              <p>
-                Filing more today? The form below is cleared and ready —{" "}
-                <a href="#" class="has-text-teal" onClick={focusNextReport}>
-                  start the next report
-                </a>
-                .
-              </p>
+              <p>Filing more today? The form below is already cleared and ready for the next report.</p>
             </div>
           )}
           <form id="form-partner-report" onSubmit={handleSubmit} onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)}>
