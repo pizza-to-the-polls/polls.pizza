@@ -17,7 +17,7 @@ const partnerReportResponse = () => ({
 
 const TOKEN = "fake-partner-session-token";
 
-const setupPage = async () => {
+const setupPage = async (reportStatus?: number) => {
   const page = await newE2EPage();
   await page.setContent(
     mockFetchScript({
@@ -30,7 +30,7 @@ const setupPage = async () => {
           fields: { "key": UPLOAD_FILE_PATH, "x-amz-algorithm": "AWS4-HMAC-SHA256" },
         },
       }),
-      "/partner/report": mockResponse(partnerReportResponse()),
+      "/partner/report": reportStatus ? { status: reportStatus, body: JSON.stringify({ errors: ["Not authorized"] }) } : mockResponse(partnerReportResponse()),
     }) + `<form-partner-report token="${TOKEN}"></form-partner-report>`,
   );
   await page.waitForChanges();
@@ -38,8 +38,8 @@ const setupPage = async () => {
 };
 
 // The location search step: ui-location-search fires locationSelected on a
-// place pick; drive it directly from the DOM like other form tests do for
-// the hidden formatted_address input.
+// place pick; drive it directly from the DOM (sets the hidden
+// formatted_address input like a real selection would).
 const pickLocation = (page: any) =>
   page.evaluate(() => {
     const input = document.getElementById("formatted_address") as HTMLInputElement;
@@ -53,36 +53,65 @@ const pickLocation = (page: any) =>
     );
   });
 
-const fillAndSubmit = (page: any) =>
-  page.evaluate(() => {
+const fillAndSubmit = (page: any, contactPhone?: string) =>
+  page.evaluate((phone?: string) => {
     (document.getElementById("waitTime-one-to-two") as HTMLInputElement).checked = true;
+    if (phone) {
+      const el = document.getElementById("contactPhone") as HTMLInputElement;
+      el.value = phone;
+    }
     const form = document.getElementById("form-partner-report")!;
     form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-  });
+  }, contactPhone);
+
+const confirmationText = (page: any) => page.evaluate(() => (document.querySelector(".notification.is-success") as HTMLElement)?.innerText || "");
 
 describe("<form-partner-report>", () => {
-  it("requires a location before showing step two", async () => {
+  it("renders every field on one page at load, with partner framing", async () => {
     const page = await setupPage();
 
-    const stepTwoVisible = await page.evaluate(() => {
-      const stepTwo = document.getElementById("form-step-2")!;
-      const button = document.querySelector("#form-step-1 button") as HTMLButtonElement;
-      return { stepTwo: !stepTwo.hidden, disabled: button.disabled };
+    const state = await page.evaluate(() => ({
+      locationSearch: !!document.querySelector("ui-location-search"),
+      waitTime: !!document.getElementById("waitTime-one-to-two"),
+      photo: !!document.getElementById("photo"),
+      contactName: !!document.getElementById("contactFirstName"),
+      contactPhone: !!document.getElementById("contactPhone"),
+      submit: !!document.querySelector("#form-partner-report button[type='submit']"),
+      successHidden: !document.querySelector(".notification.is-success"),
+      intro: (document.querySelector("#form-partner-report .help") as HTMLElement)?.innerText || "",
+      addressEmphasis: !!(document.getElementById("form-partner-report") as HTMLElement)?.innerText.includes("exactly right"),
+    }));
+    expect(state.locationSearch).toBe(true);
+    expect(state.waitTime).toBe(true);
+    expect(state.photo).toBe(true);
+    expect(state.contactName).toBe(true);
+    expect(state.contactPhone).toBe(true);
+    expect(state.submit).toBe(true);
+    expect(state.successHidden).toBe(true);
+    expect(state.intro).toContain("straight to dispatch");
+    expect(state.addressEmphasis).toBe(true);
+  });
+
+  it("emphasizes the address must be exact when submitting without one", async () => {
+    const page = await setupPage();
+
+    await page.evaluate(() => {
+      const form = document.getElementById("form-partner-report")!;
+      form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
     });
-    expect(stepTwoVisible.stepTwo).toBe(false);
-    expect(stepTwoVisible.disabled).toBe(true);
+    await page.waitForChanges();
+
+    const error = await page.evaluate(() => {
+      const errors = Array.from(document.querySelectorAll(".help.has-text-red")) as HTMLElement[];
+      return errors.find(e => e.offsetParent !== null)?.innerText || "";
+    });
+    expect(error).toContain("has to be right");
   });
 
   it("submits to /partner/report with the session token and minimal fields", async () => {
     const page = await setupPage();
 
     await pickLocation(page);
-    await page.waitForChanges();
-
-    // Step 1 → step 2
-    await page.evaluate(() => {
-      (document.querySelector("#form-step-1 button") as HTMLElement).click();
-    });
     await page.waitForChanges();
 
     await fillAndSubmit(page);
@@ -101,43 +130,51 @@ describe("<form-partner-report>", () => {
     expect(body.contact).toBeUndefined();
   });
 
-  it("shows success and resets for the next report after submitting", async () => {
+  it("confirmation emphasizes received / will-text / next report, then clears the form", async () => {
     const page = await setupPage();
 
     await pickLocation(page);
     await page.waitForChanges();
-    await page.evaluate(() => {
-      (document.querySelector("#form-step-1 button") as HTMLElement).click();
-    });
+    await fillAndSubmit(page, "555-234-2345");
     await page.waitForChanges();
 
+    const text = await confirmationText(page);
+    expect(text).toContain("report received");
+    expect(text).toContain("123 Main St, Portland, OR");
+    expect(text).toContain("555-234-2345");
+    expect(text).toContain("We'll text");
+    expect(text).toContain("next report");
+
+    const state = await page.evaluate(() => ({
+      addressCleared: !((document.getElementById("formatted_address") as HTMLInputElement)?.value || ""),
+      waitTimeCleared: !(document.getElementById("waitTime-one-to-two") as HTMLInputElement)?.checked,
+      searchCleared: !((document.getElementById("autocomplete-input-partner-report") as HTMLInputElement)?.value || ""),
+    }));
+    expect(state.addressCleared).toBe(true);
+    expect(state.waitTimeCleared).toBe(true);
+    expect(state.searchCleared).toBe(true);
+  });
+
+  it("confirmation skips the text promise when no on-the-ground number was given", async () => {
+    const page = await setupPage();
+
+    await pickLocation(page);
+    await page.waitForChanges();
     await fillAndSubmit(page);
     await page.waitForChanges();
 
-    const state = await page.evaluate(() => ({
-      success: !!document.querySelector(".notification.is-success"),
-      backAtStepOne: (document.getElementById("form-step-1") as HTMLElement).hidden === false,
-    }));
-    expect(state.success).toBe(true);
-    expect(state.backAtStepOne).toBe(true);
+    const text = await confirmationText(page);
+    expect(text).toContain("report received");
+    expect(text).not.toContain("We'll text");
+    expect(text.toLowerCase()).toContain("no one on the ground was listed");
   });
 
   it("emits sessionExpired on a 401 and clears nothing itself", async () => {
-    const page = await newE2EPage();
-    await page.setContent(
-      mockFetchScript({
-        "/partner/report": { status: 401, body: JSON.stringify({ errors: ["Not authorized"] }) },
-      }) + `<form-partner-report token="${TOKEN}"></form-partner-report>`,
-    );
-    await page.waitForChanges();
+    const page = await setupPage(401);
 
     const expired = await page.spyOnEvent("sessionExpired");
 
     await pickLocation(page);
-    await page.waitForChanges();
-    await page.evaluate(() => {
-      (document.querySelector("#form-step-1 button") as HTMLElement).click();
-    });
     await page.waitForChanges();
     await fillAndSubmit(page);
     await page.waitForChanges();

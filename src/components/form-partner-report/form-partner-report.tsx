@@ -1,21 +1,25 @@
 import { Component, Event, EventEmitter, h, Host, Prop, State } from "@stencil/core";
 
 import { ApiError, PizzaApi } from "../../api";
-import shaFile from "../../util/shaFile";
-
-// Shared with pizzabase
-const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
+import { PHONE_REGEX } from "../../util/phone";
+import { uploadPhoto } from "../../util/uploadPhoto";
 
 /**
- * Trusted partner report form — private counterpart of form-report.
+ * Trusted partner report form — the partner-facing counterpart of
+ * form-report, deliberately its own component (the public form's flow is
+ * hardened for anonymous traffic and its upload path carries prod-specific
+ * verification/guard logic; see util/uploadPhoto.ts).
  *
- * Same location + wait-time flow as the public form, but:
- *  - photo/video is optional (backend attaches a Street View image of the
- *    location when the partner doesn't upload one)
- *  - on-the-ground contact name + phone are optional
- *  - submits to POST /partner/report with the magic-link session token
- *  - after a successful submit the form resets for the next report —
- *    partners file several during a shift
+ * Everything is framed around what makes a partner report different:
+ *  - submissions skip the review queue and go straight to dispatch, so the
+ *    address must be exactly right (emphasized in copy + validation)
+ *  - photo/video optional — skipped media gets a Street View image of the
+ *    location attached server-side
+ *  - on-the-ground contact info optional — needed only when someone is
+ *    actually at the line; we text that number when pizza's on the way,
+ *    and say so in the confirmation
+ *  - after submitting, the confirmation emphasizes received / will-text /
+ *    file-another, and the form is already cleared for the next report
  *
  * Emits `sessionExpired` when the token is rejected (401) so the host page
  * can drop the token and show the email sign-in step again.
@@ -33,22 +37,16 @@ export class FormPartnerReport {
   @State() private isDisabled: boolean = false;
   @State() private isLoading: boolean = false;
   @State() private photoIsProcessing: boolean = false;
-  @State() private showLocationInput: boolean = true;
-  @State() private locationName: string = "";
   @State() private hasPhoto: boolean = false;
   @State() private hasVideo: boolean = false;
   @State() private photoUrl: string = "";
   @State() private videoUrl: string = "";
   @State() private uploadId: number | null = null;
   @State() private lastSubmittedAddress: string = "";
+  @State() private lastSubmittedContact: string = "";
   @State() private showSuccess: boolean = false;
 
   public render() {
-    const handleNewLocation = (e: Event) => {
-      this.resetForm();
-      e.preventDefault();
-    };
-
     const handlePhotoChange = async (e?: Event) => {
       const target = e?.target as HTMLInputElement;
       const file = (target.files as FileList)[0];
@@ -100,7 +98,9 @@ export class FormPartnerReport {
       const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
       if (addressInput.value && file) {
         try {
-          await this.uploadPhoto(file, addressInput.value);
+          const uploaded = await uploadPhoto(file, addressInput.value);
+          this.uploadId = uploaded.uploadId;
+          this.photoUrl = uploaded.photoUrl;
         } catch (error) {
           const errors = (error as { errors?: { fileName?: string } })?.errors;
           this.removePhoto();
@@ -144,8 +144,7 @@ export class FormPartnerReport {
       });
 
       if (!data.address) {
-        this.showLocationInput = true;
-        this.submitError.address = "Whoops - we can't read that address";
+        this.submitError.address = "Whoops — pick the exact location from the search results. Your reports skip our review, so the address has to be right.";
       }
 
       if (!data.waitTime) {
@@ -175,7 +174,7 @@ export class FormPartnerReport {
         waitTime: data.waitTime,
       };
 
-      // Optional photo — the backend fills a Street View image when absent.
+      // Optional photo — the backend attaches a Street View image when absent.
       if (this.hasPhoto || this.hasVideo) {
         requestData.url = this.photoUrl;
       }
@@ -194,9 +193,10 @@ export class FormPartnerReport {
       try {
         await PizzaApi.postPartnerReport(requestData, this.token);
 
-        // Partners file several reports per shift: confirm briefly, then
-        // reset straight to a fresh location search for the next one.
+        // Partners file several reports per shift: confirm clearly, then
+        // clear the form for the next one.
         this.lastSubmittedAddress = data.address;
+        this.lastSubmittedContact = data.contactPhone || "";
         this.showSuccess = true;
         this.resetForm({ keepSuccess: true });
       } catch (error) {
@@ -213,9 +213,6 @@ export class FormPartnerReport {
         if (!errors || Object.keys(errors).length === 0) {
           this.submitError.general = "Whoops! That didn't work. Our servers might be a little stuffed right now.";
         }
-        if (errors?.address) {
-          this.showLocationInput = true;
-        }
       } finally {
         this.isLoading = false;
         this.isDisabled = false;
@@ -223,220 +220,190 @@ export class FormPartnerReport {
       }
     };
 
+    const focusNextReport = (e: Event) => {
+      e.preventDefault();
+      document.getElementById("autocomplete-input-partner-report")?.focus();
+    };
+
     return (
       <Host>
         <div id="form-partner-report-component">
           {this.showSuccess && (
             <div class="notification is-success">
-              <h2 class="is-display">Thanks — we're on it!</h2>
+              <h2 class="is-display">Got it — report received!</h2>
               <p>
-                Your report for <strong>{this.lastSubmittedAddress}</strong> has been sent straight to the team as a trusted partner report.
+                Your report for <strong>{this.lastSubmittedAddress}</strong> is with our dispatch team now. Trusted partner reports skip the review queue — they can start sending
+                pizza right away.
+              </p>
+              {this.lastSubmittedContact ? (
+                <p>
+                  We'll text <strong>{this.lastSubmittedContact}</strong> when the pizza is on its way.
+                </p>
+              ) : (
+                <p class="help">No one on the ground was listed, so there's no number to text — we've noted that in the record.</p>
+              )}
+              <p>
+                Filing more today? The form below is cleared and ready —{" "}
+                <a href="#" class="has-text-teal" onClick={focusNextReport}>
+                  start the next report
+                </a>
+                .
               </p>
             </div>
           )}
           <form id="form-partner-report" onSubmit={handleSubmit} onChange={() => (this.isDisabled = false)} onInput={() => (this.isDisabled = false)}>
-            <div id="form-step-1" hidden={!this.showLocationInput}>
-              <h2 class="is-display">Report a line</h2>
-              <div class="form-item">
-                <label class="label" htmlFor="autocomplete-input-partner-report-form">
-                  Where is the line? <span class="required">*</span>
-                </label>
-                <ui-location-search
-                  error={this.submitError.address}
-                  readOnly={!this.showLocationInput}
-                  onLocationSelected={({ detail }: CustomEvent) => {
-                    this.handleLocationSelected(detail);
-                  }}
-                  inputId="partner-report"
-                />
-                <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
-              </div>
-              <input type="hidden" name="address" id="formatted_address" />
-              <button
-                onClick={(e: Event) => {
-                  e.preventDefault();
-                  this.showLocationInput = false;
+            <h2 class="is-display">Report a line</h2>
+            <p class="help">
+              Partner reports go <strong>straight to dispatch</strong> — no review queue. That's what makes the details below matter.
+            </p>
+
+            {/* Location */}
+            <div class="form-item">
+              <label class="label" htmlFor="autocomplete-input-partner-report">
+                Where is the line? <span class="required">*</span>
+              </label>
+              <ui-location-search
+                error={this.submitError.address}
+                onLocationSelected={({ detail }: CustomEvent) => {
+                  this.handleLocationSelected(detail);
                 }}
-                class={"button is-teal is-marginless " + (!this.locationName ? "is-disabled" : "")}
-                disabled={!this.locationName}
-              >
-                Report line
-              </button>
-            </div>
-            <div id="form-step-2" hidden={this.showLocationInput}>
-              <h2 class="is-display has-text-red is-upcase">Send Pizza</h2>
-              <p>
-                <strong>
-                  Tell us about the line at <span class="has-text-red">{this.locationName ? this.locationName : "the location"}</span>.
-                </strong>
-                <br />
-                <a href="#" class="has-text-teal is-unselectable" onClick={handleNewLocation}>
-                  Change address
-                </a>
+                inputId="partner-report"
+              />
+              <span class="help">
+                <strong>The address has to be exactly right.</strong> Search for the polling place — a school, church, or library name works best — and pick it from the dropdown.
+                We trust partner reports, so an imprecise address can send pizza to the wrong place.
+              </span>
+              <p class="help has-text-red" hidden={!("address" in this.submitError)}>
+                {this.submitError.address}
               </p>
+            </div>
+            <input type="hidden" name="address" id="formatted_address" />
 
-              {/* Wait Time */}
+            {/* Wait Time */}
+            <div class="form-item">
+              <label class="label">
+                How long is the wait in line? <span class="required">*</span>
+              </label>
+              <p class="help has-text-red" hidden={!("waitTime" in this.submitError)}>
+                {this.submitError.waitTime}
+              </p>
+              <div class="radio-inputs-wrap">
+                <div class={"radio-inputs is-fullwidth " + ("waitTime" in this.submitError ? "has-error " : "")}>
+                  <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-less-than" name="waitTime" value="Less than one hour" />
+                  <label htmlFor="waitTime-less-than">Less than an hour</label>
+                  <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-one-to-two" name="waitTime" value="1-2 hours" />
+                  <label htmlFor="waitTime-one-to-two">1-2 hours</label>
+                  <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-two-to-three" name="waitTime" value="2-3 hours" />
+                  <label htmlFor="waitTime-two-to-three">2-3 hours</label>
+                  <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-three-plus" name="waitTime" value="3+ hours" />
+                  <label htmlFor="waitTime-three-plus">3+ hours</label>
+                </div>
+              </div>
+            </div>
+
+            {/* Photo — optional for partners */}
+            <div class="form-item">
+              <label class="label">Photo or video of the line</label>
+              <span class="help">
+                <strong>Optional.</strong> Great for our social posts — but don't wait on it. If you skip it, we'll attach an image of the location for the record.
+              </span>
+              <div class="clearfix">
+                <div id="file-input-button" class={"file button-large " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + "is-teal"}>
+                  <label class="file-label">
+                    <input
+                      class="file-input"
+                      type="file"
+                      name="photo"
+                      id="photo"
+                      accept="image/*,video/mp4,video/quicktime,video/webm"
+                      onChange={handlePhotoChange}
+                      disabled={this.photoIsProcessing}
+                    />
+                    <span class="file-cta">
+                      <span class="file-label">{this.hasPhoto || this.hasVideo ? "Change media" : "Add a photo or video (optional)"}</span>
+                    </span>
+                  </label>
+                </div>
+                <div class="photo-preview-container" hidden={!this.hasPhoto && !this.hasVideo}>
+                  <div id="photo-preview" hidden={!this.hasPhoto}></div>
+                  <video id="video-preview" hidden={!this.hasVideo} controls style={{ maxWidth: "100%", maxHeight: "200px" }}></video>
+                  <div class="delete" onClick={() => this.removePhoto()}></div>
+                </div>
+              </div>
+              <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
+                {this.submitError.photo}
+              </p>
+            </div>
+
+            {/* On-the-ground contact */}
+            <h3>Is someone on the ground at the line?</h3>
+            <p class="help">
+              <strong>Optional — unless someone's actually there.</strong> If they are, give us their name and number: the driver will look for them, and we'll text that number
+              when the pizza's on its way. If you're filing from off-site, leave these blank and we'll mark the report "no one on site."
+            </p>
+            <div class="form-item-group">
               <div class="form-item">
-                <label class="label">
-                  How long is the wait in line? <span class="required">*</span>
+                <label class="label" htmlFor="contactFirstName">
+                  Their name
                 </label>
-                <p class="help has-text-red" hidden={!("waitTime" in this.submitError)}>
-                  {this.submitError.waitTime}
-                </p>
-                <div class="radio-inputs-wrap">
-                  <div class={"radio-inputs is-fullwidth " + ("waitTime" in this.submitError ? "has-error " : "")}>
-                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-less-than" name="waitTime" value="Less than one hour" />
-                    <label htmlFor="waitTime-less-than">Less than an hour</label>
-                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-one-to-two" name="waitTime" value="1-2 hours" />
-                    <label htmlFor="waitTime-one-to-two">1-2 hours</label>
-                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-two-to-three" name="waitTime" value="2-3 hours" />
-                    <label htmlFor="waitTime-two-to-three">2-3 hours</label>
-                    <input type="radio" onChange={() => this.clearFormError("waitTime")} id="waitTime-three-plus" name="waitTime" value="3+ hours" />
-                    <label htmlFor="waitTime-three-plus">3+ hours</label>
-                  </div>
-                </div>
+                <input class="input" type="text" name="contactFirstName" id="contactFirstName" autoComplete="name" />
+                <span class="help">So the delivery driver can find them</span>
               </div>
-
-              {/* Photo — optional for partners */}
               <div class="form-item">
-                <label class="label">Photo or video of the line</label>
-                <span class="help">Optional — helps our social posts. If you skip it, we'll attach an image of the location for the record.</span>
-                <div class="clearfix">
-                  <div id="file-input-button" class={"file button-large " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + "is-teal"}>
-                    <label class="file-label">
-                      <input
-                        class="file-input"
-                        type="file"
-                        name="photo"
-                        id="photo"
-                        accept="image/*,video/mp4,video/quicktime,video/webm"
-                        onChange={handlePhotoChange}
-                        disabled={this.photoIsProcessing}
-                      />
-                      <span class="file-cta">
-                        <span class="file-label">{this.hasPhoto || this.hasVideo ? "Change media" : "Add a photo or video (optional)"}</span>
-                      </span>
-                    </label>
-                  </div>
-                  <div class="photo-preview-container" hidden={!this.hasPhoto && !this.hasVideo}>
-                    <div id="photo-preview" hidden={!this.hasPhoto}></div>
-                    <video id="video-preview" hidden={!this.hasVideo} controls style={{ maxWidth: "100%", maxHeight: "200px" }}></video>
-                    <div class="delete" onClick={() => this.removePhoto()}></div>
-                  </div>
-                </div>
-                <p class="help has-text-red" hidden={!("photo" in this.submitError)}>
-                  {this.submitError.photo}
+                <label class="label" htmlFor="contactPhone">
+                  Their phone number
+                </label>
+                <input
+                  class={"input " + ("contactPhone" in this.submitError ? "has-error" : "")}
+                  type="tel"
+                  name="contactPhone"
+                  id="contactPhone"
+                  autoComplete="tel-national"
+                  onInput={() => this.clearFormError("contactPhone")}
+                />
+                <span class="help">We'll text this number when the pizza's on its way</span>
+                <p class="help has-text-red" hidden={!("contactPhone" in this.submitError)}>
+                  {this.submitError.contactPhone}
                 </p>
               </div>
-
-              {/* On-the-ground contact — optional */}
-              <h3>Person on the ground (optional)</h3>
-              <div class="form-item-group">
-                <div class="form-item">
-                  <label class="label" htmlFor="contactFirstName">
-                    Their name
-                  </label>
-                  <input
-                    class={"input " + ("contactFirstName" in this.submitError ? "has-error" : "")}
-                    type="text"
-                    name="contactFirstName"
-                    id="contactFirstName"
-                    autoComplete="name"
-                  />
-                  <span class="help">So the delivery driver can find them</span>
-                </div>
-                <div class="form-item">
-                  <label class="label" htmlFor="contactPhone">
-                    Their phone number
-                  </label>
-                  <input
-                    class={"input " + ("contactPhone" in this.submitError ? "has-error" : "")}
-                    type="tel"
-                    name="contactPhone"
-                    id="contactPhone"
-                    autoComplete="tel-national"
-                    onInput={() => this.clearFormError("contactPhone")}
-                  />
-                  <span class="help">So we can let them know when the order's sent</span>
-                  <p class="help has-text-red" hidden={!("contactPhone" in this.submitError)}>
-                    {this.submitError.contactPhone}
-                  </p>
-                </div>
-              </div>
-
-              {/* Submit */}
-              <p class="help has-text-red" hidden={!("general" in this.submitError)}>
-                {this.submitError.general}
-              </p>
-              <button
-                onClick={handleSubmit}
-                class={
-                  "button is-teal is-fullwidth-mobile " + (this.isDisabled || this.isLoading || this.photoIsProcessing ? "is-disabled " : "") + (this.isLoading ? "is-loading" : "")
-                }
-                type="submit"
-                disabled={this.isDisabled || this.isLoading || this.photoIsProcessing}
-              >
-                {this.photoIsProcessing ? (this.hasVideo ? "🎬 Processing video..." : "📸 Processing photo...") : "Submit report"}
-              </button>
-              <p class="agreement">
-                <em>
-                  By submitting, you agree to receive occasional emails or text messages from Pizza to the Polls and permission to use and distribute your photo as we see fit - see
-                  our{" "}
-                  <a href="/privacy" class="has-text-blue" target="_blank">
-                    Privacy Policy
-                  </a>
-                  . You can unsubscribe at any time. For texts, message and data rates may apply. Text HELP for Info. Text STOP to quit.
-                </em>
-              </p>
             </div>
+
+            {/* Submit */}
+            <p class="help has-text-red" hidden={!("general" in this.submitError)}>
+              {this.submitError.general}
+            </p>
+            <button
+              onClick={handleSubmit}
+              class={
+                "button is-teal is-fullwidth-mobile " + (this.isDisabled || this.isLoading || this.photoIsProcessing ? "is-disabled " : "") + (this.isLoading ? "is-loading" : "")
+              }
+              type="submit"
+              disabled={this.isDisabled || this.isLoading || this.photoIsProcessing}
+            >
+              {this.photoIsProcessing ? (this.hasVideo ? "🎬 Processing video..." : "📸 Processing photo...") : "Submit report"}
+            </button>
+            <p class="agreement">
+              <em>
+                By submitting, you agree to receive occasional emails or text messages from Pizza to the Polls and permission to use and distribute your photo as we see fit - see
+                our{" "}
+                <a href="/privacy" class="has-text-blue" target="_blank">
+                  Privacy Policy
+                </a>
+                . You can unsubscribe at any time. For texts, message and data rates may apply. Text HELP for Info. Text STOP to quit.
+              </em>
+            </p>
           </form>
         </div>
       </Host>
     );
   }
 
-  private async uploadPhoto(file: File, address: string): Promise<void> {
-    const fileHash = await shaFile(file);
-
-    const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
-
-    if (!isDuplicate && presigned) {
-      this.uploadId = id;
-      const formData = new FormData();
-      const { url, fields } = presigned;
-
-      formData.append("Content-Type", file.type);
-
-      Object.entries(fields).forEach(([k, v]: [string, any]) => {
-        formData.append(k, v);
-      });
-
-      formData.append("file", file);
-
-      const awsReq = await fetch(url, {
-        method: "POST",
-        mode: "cors",
-        body: formData,
-      });
-      if (awsReq.status > 299) {
-        const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
-        throw awsError;
-      }
-    }
-
-    // Stable permalink — pizzabase resolves it to wherever the media
-    // currently lives. Pass only the basename of the storage key.
-    const fileName = (filePath ?? "").split("/").pop() || "";
-    this.photoUrl = `${process.env.PIZZA_BASE_DOMAIN}/uploads/${fileName}`;
-  }
-
-  private handleLocationSelected({ formattedAddress, locationName }: { formattedAddress: string; locationName: string }) {
-    this.locationName = locationName;
-
+  private handleLocationSelected({ formattedAddress }: { formattedAddress: string; locationName: string }) {
     const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
     if (addressInput) {
       addressInput.value = formattedAddress;
     }
+    this.clearFormError("address");
   }
 
   private clearFormError(field: string): void {
@@ -446,7 +413,6 @@ export class FormPartnerReport {
 
   private resetForm({ keepSuccess = false }: { keepSuccess?: boolean } = {}) {
     this.submitError = {};
-    this.locationName = "";
     this.photoIsProcessing = false;
     this.isLoading = false;
     this.isDisabled = false;
@@ -458,7 +424,20 @@ export class FormPartnerReport {
     if (form) {
       form.reset();
     }
-    this.showLocationInput = true;
+    // form.reset() restores inputs to their *default* values, which Stencil
+    // re-renders can pollute from the picked values — set the fields we
+    // manage directly so a fresh report truly starts clean.
+    const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
+    if (addressInput) {
+      addressInput.value = "";
+      addressInput.defaultValue = "";
+    }
+    // ui-location-search keeps its typed text in component state (light DOM
+    // but not part of this form) — clear the visible input too.
+    const searchInput = document.getElementById("autocomplete-input-partner-report") as HTMLInputElement;
+    if (searchInput) {
+      searchInput.value = "";
+    }
   }
 
   private removePhoto() {
