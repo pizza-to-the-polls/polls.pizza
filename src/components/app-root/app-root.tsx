@@ -96,6 +96,7 @@ export class AppRoot {
               <stencil-route url="/guidelines" component="page-guidelines" />
               <stencil-route url="/instructions" component="page-instructions" />
               <stencil-route url="/on-demand" component="page-on-demand" />
+              <stencil-route url="/partners/report" component="page-partner-report" />
               <stencil-route url="/partners" component="page-partners" />
               <stencil-route url="/press" component="page-press" />
               <stencil-route url="/privacy" component="page-privacy" />

@@ -22,7 +22,12 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const isRetryableStatus = (status: number) => [502, 503, 504].includes(status);
 
-const baseFetch = async <T = any>(path: string, options: { [key: string]: string } = {}): Promise<(T & { isError: undefined }) | ApiError> => {
+const baseFetch = async <T = any>(
+  path: string,
+  // Passed through to fetch — string body/method plus a headers object
+  // (e.g. Authorization for the partner session flow).
+  options: { [key: string]: any } = {},
+): Promise<(T & { isError: undefined }) | ApiError> => {
   const headers = options.headers || {};
   const method = (options.method || "GET").toUpperCase();
   const isRetryable = method === "GET";
@@ -186,6 +191,42 @@ class PizzaApi {
   ): Promise<ReportPostResults> {
     const result = await baseFetch<ReportPostResults>(`/report`, {
       body: JSON.stringify(reportData),
+      method: "POST",
+    });
+    return this.handleResponse(result, errorHandler) || { hasTruck: false, willReceive: false, alreadyOrdered: false };
+  }
+
+  public async postPartnerSession(email: string, errorHandler?: (error: ApiError) => void): Promise<void> {
+    const resp = await baseFetch<ApiSuccess>(`/partner/session`, {
+      body: JSON.stringify({ email }),
+      method: "POST",
+    });
+    this.handleResponse(resp, errorHandler);
+  }
+
+  /**
+   * Trusted partner report. Authenticated with the short-lived magic-link
+   * session token instead of a long-lived API key — see pizzabase
+   * PartnerReportsController. Photo URL and contact info are optional:
+   * the backend fills a Street View image when no media is provided.
+   */
+  public async postPartnerReport(
+    reportData: {
+      address: string;
+      url?: string;
+      waitTime: string;
+      contactRole?: string;
+      contactFirstName?: string;
+      contactLastName?: string;
+      contact?: string;
+      uploadId?: number;
+    },
+    token: string,
+    errorHandler?: (error: ApiError) => void,
+  ): Promise<ReportPostResults> {
+    const result = await baseFetch<ReportPostResults>(`/partner/report`, {
+      body: JSON.stringify(reportData),
+      headers: { Authorization: `Bearer ${token}` },
       method: "POST",
     });
     return this.handleResponse(result, errorHandler) || { hasTruck: false, willReceive: false, alreadyOrdered: false };
