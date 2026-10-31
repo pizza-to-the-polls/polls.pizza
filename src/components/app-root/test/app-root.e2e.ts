@@ -8,6 +8,37 @@ import { mockFetchScript } from "../../../testing";
  */
 const RETRY_KEY = "pizza:chunk-retry";
 
+/**
+ * Fake the Bugsnag client before <app-root> bootstraps so the component-load
+ * guard's notify call can be asserted. Mirrors @bugsnag/js v7's
+ * notify(error, onError) contract: the second argument is an onError
+ * CALLBACK, not an options object — the mock invokes it with a fake Event
+ * whose addMetadata() records into `meta` (BUG-031). Same fake as the one in
+ * form-report-funnel.e2e.ts.
+ */
+const bugsnagRecorderScript = `
+  <script>
+    window.__bugsnagNotifyCalls = [];
+    window.__pizza_bugsnag_started = true;
+    window.__pizza_bugsnag_client = {
+      notify: function(error, onError) {
+        var event = {
+          context: null,
+          severity: null,
+          meta: {},
+          addMetadata: function(section, data) {
+            this.meta[section] = data;
+          }
+        };
+        if (typeof onError === 'function') {
+          onError(event);
+        }
+        window.__bugsnagNotifyCalls.push({ message: error.message, event: event });
+      }
+    };
+  </script>
+`;
+
 describe("app-root component-load guard", () => {
   /**
    * Helper: mount <app-root> with the load guard active and auto-reload
@@ -17,15 +48,20 @@ describe("app-root component-load guard", () => {
    * with a fresh timestamp so `decideFallback` resolves to "banner" instead
    * of "reload" (the initial 10 s window would otherwise always choose
    * "reload").
+   *
+   * When `bugsnag` is true, a fake Bugsnag client is installed before the
+   * app bootstraps so the guard's notify call can be asserted.
    */
-  const mountApp = async (opts: { recentRetry?: boolean } = {}) => {
+  const mountApp = async (opts: { recentRetry?: boolean; bugsnag?: boolean } = {}) => {
     const page = await newE2EPage();
     await page.setContent(
-      mockFetchScript({
-        "/health": {
-          body: JSON.stringify({ ok: true }),
-        },
-      }) + "<app-root></app-root>",
+      (opts.bugsnag ? bugsnagRecorderScript : "") +
+        mockFetchScript({
+          "/health": {
+            body: JSON.stringify({ ok: true }),
+          },
+        }) +
+        "<app-root></app-root>",
     );
     await page.waitForChanges();
 
@@ -81,6 +117,51 @@ describe("app-root component-load guard", () => {
     // App root should still be present — no crash
     const appRoot = await page.find("app-root");
     expect(appRoot).not.toBeNull();
+  });
+
+  // -------------------------------------------------------------------
+  // 1b. Bugsnag notify uses the onError callback form (BUG-031)
+  // -------------------------------------------------------------------
+  it("reports componentLoad metadata through the notify onError callback", async () => {
+    const page = await mountApp({ recentRetry: true, bugsnag: true });
+
+    await page.evaluate(() => {
+      window.dispatchEvent(
+        new ErrorEvent("error", {
+          error: new Error("TypeError: undefined is not an object (evaluating 's.isProxied')"),
+          filename: "https://polls.pizza/build/p-188cd4da.entry.js",
+          lineno: 1,
+          message: "TypeError: undefined is not an object (evaluating 's.isProxied')",
+        }),
+      );
+    });
+
+    await page.waitForChanges();
+
+    const notifyCalls = await page.evaluate(() => ((window as any).__bugsnagNotifyCalls || []) as { message: string; event: any }[]);
+    expect(notifyCalls.length).toBe(1);
+    expect(notifyCalls[0].message).toBe("TypeError: undefined is not an object (evaluating 's.isProxied')");
+
+    // The fake Event starts with context/severity null — they can only be
+    // set if the guard passed an onError callback that the notify runner
+    // actually invoked (BUG-031: the old options-object form was silently
+    // discarded, so no context/severity/metadata ever reached Bugsnag).
+    // The app-root markup contains <main><stencil-router>…</stencil-router>,
+    // so gatherDomTags resolves the likely route tag to "stencil-router" and
+    // the Bugsnag context is that tag (the pathname is only the fallback when
+    // no route component can be identified).
+    expect(notifyCalls[0].event.context).toBe("stencil-router");
+    expect(notifyCalls[0].event.severity).toBe("error");
+
+    const metadata = notifyCalls[0].event.meta.componentLoad;
+    expect(metadata.chunkId).toBe("p-188cd4da.entry.js");
+    expect(metadata.chunkUrl).toBe("https://polls.pizza/build/p-188cd4da.entry.js");
+    expect(metadata.route).toBe("/");
+    expect(metadata.tag).toBe("stencil-router");
+    expect(metadata.url).toContain("/");
+    expect(metadata.userAgent).toBeDefined();
+    // DOM walk captures the custom elements present at failure time.
+    expect(metadata.domTags).toContain("app-root");
   });
 
   // -------------------------------------------------------------------

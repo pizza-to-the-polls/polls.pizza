@@ -199,20 +199,23 @@ const reportComponentLoadFailure = (message: string, chunkUrl: string, tag: stri
     try {
       const bugsnag = (window as any).__pizza_bugsnag_client;
       if (bugsnag !== undefined && typeof bugsnag.notify === "function") {
-        bugsnag.notify(new Error(message), {
-          context: resolvedTag || window.location.pathname,
-          metadata: {
-            componentLoad: {
-              chunkId: chunkId || "unknown",
-              chunkUrl,
-              domTags,
-              route,
-              tag: resolvedTag,
-              url: window.location.href,
-              userAgent: navigator.userAgent,
-            },
-          },
-          severity: "error",
+        // @bugsnag/js v7 notify(error, onError) takes an onError CALLBACK as
+        // the second argument — a plain options object is silently discarded
+        // by the callback runner, so the componentLoad metadata below never
+        // reached Bugsnag (BUG-031). Context, severity and metadata must all
+        // be applied to the Event object inside the callback via addMetadata().
+        bugsnag.notify(new Error(message), (event: any) => {
+          event.context = resolvedTag || window.location.pathname;
+          event.severity = "error";
+          event.addMetadata("componentLoad", {
+            chunkId: chunkId || "unknown",
+            chunkUrl,
+            domTags,
+            route,
+            tag: resolvedTag,
+            url: window.location.href,
+            userAgent: navigator.userAgent,
+          });
         });
       }
     } catch {

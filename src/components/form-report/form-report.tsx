@@ -224,19 +224,23 @@ export class FormReport {
             if (typeof window !== "undefined" && (window as any).__pizza_bugsnag_started) {
               const bugsnag = (window as any).__pizza_bugsnag_client;
               if (bugsnag !== undefined && typeof bugsnag.notify === "function") {
-                bugsnag.notify(new Error(buildUploadErrorMsg(error)), {
-                  context: "/report",
-                  severity: "warning",
-                  metadata: {
-                    upload: {
-                      networkRetryExhausted: isNetworkFailure(error),
-                      verifiedAfterFailure,
-                      duplicate: uploadDuplicate,
-                      uploadId: this.uploadId,
-                      s3Status: (error as { status?: number })?.status ?? null,
-                      file: { type: file.type, size: file.size },
-                    },
-                  },
+                // @bugsnag/js v7 notify(error, onError) takes an onError
+                // CALLBACK as the second argument — a plain options object is
+                // silently discarded by the callback runner, which is why the
+                // upload metadata below never reached Bugsnag (BUG-031).
+                // Context, severity and metadata must all be applied to the
+                // Event object inside the callback via addMetadata().
+                bugsnag.notify(new Error(buildUploadErrorMsg(error)), (event: any) => {
+                  event.context = "/report";
+                  event.severity = "warning";
+                  event.addMetadata("upload", {
+                    networkRetryExhausted: isNetworkFailure(error),
+                    verifiedAfterFailure,
+                    duplicate: uploadDuplicate,
+                    uploadId: this.uploadId,
+                    s3Status: (error as { status?: number })?.status ?? null,
+                    file: { type: file.type, size: file.size },
+                  });
                 });
               }
             }
