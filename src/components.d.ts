@@ -453,7 +453,11 @@ declare global {
         new (): HTMLUiGuidelinesElement;
     };
     interface HTMLUiLocationSearchElementEventMap {
-        "locationSelected": { formattedAddress: string; locationName: string };
+        "locationSelected": {
+    formattedAddress: string;
+    locationName: string;
+    state: string;
+  };
     }
     interface HTMLUiLocationSearchElement extends Components.UiLocationSearch, HTMLStencilElement {
         addEventListener<K extends keyof HTMLUiLocationSearchElementEventMap>(type: K, listener: (this: HTMLUiLocationSearchElement, ev: UiLocationSearchCustomEvent<HTMLUiLocationSearchElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -712,7 +716,14 @@ declare namespace LocalJSX {
           * @default `${Math.round(new Date().getTime() * Math.random() * 9999)}`
          */
         "inputId"?: string;
-        "onLocationSelected"?: (event: UiLocationSearchCustomEvent<{ formattedAddress: string; locationName: string }>) => void;
+        /**
+          * Emitted on suggestion pick. `state` is the two-letter state code from the place's addressComponents (e.g. "GA") — form-report blocks Georgia (SB 22).
+         */
+        "onLocationSelected"?: (event: UiLocationSearchCustomEvent<{
+    formattedAddress: string;
+    locationName: string;
+    state: string;
+  }>) => void;
         /**
           * @default "ex. St. John's Library"
          */

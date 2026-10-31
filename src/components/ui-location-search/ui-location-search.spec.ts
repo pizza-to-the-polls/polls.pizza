@@ -120,6 +120,53 @@ describe("ui-location-search — selection", () => {
     const d = onSel.mock.calls[0][0].detail;
     expect(d.formattedAddress).toBe("1600 Pennsylvania Avenue NW, Washington, DC 20500, USA");
     expect(d.locationName).toBe("1600 Pennsylvania Avenue NW, Washington, DC 20500");
+    expect(d.state).toBe("DC");
+  });
+
+  it("emits the state code for a Georgia place (so form-report can block it — SB 22)", async () => {
+    const georgiaPlace = {
+      displayName: "Georgia State Capitol",
+      formattedAddress: "206 Washington St SW, Atlanta, GA 30334, USA",
+      addressComponents: [
+        { types: ["street_number"], shortText: "206", longText: "206" },
+        { types: ["route"], shortText: "Washington St SW", longText: "Washington St SW" },
+        { types: ["locality"], shortText: "Atlanta", longText: "Atlanta" },
+        { types: ["administrative_area_level_1"], shortText: "GA", longText: "Georgia" },
+        { types: ["postal_code"], shortText: "30334", longText: "30334" },
+      ],
+    };
+    const prediction = {
+      mainText: { text: "Georgia State Capitol" },
+      secondaryText: { text: "Atlanta, GA, USA" },
+      toPlace: () => ({
+        fetchFields: () => Promise.resolve({ place: georgiaPlace }),
+      }),
+    };
+
+    (Build as any).isBrowser = true;
+    const page = await newSpecPage({
+      components: [UiLocationSearch],
+      html: '<ui-location-search input-id="ga1"></ui-location-search>',
+      supportsShadowDom: false,
+    });
+    mockOnPage(page, [prediction]);
+    await page.waitForChanges();
+    await tick(150);
+    await page.waitForChanges();
+
+    const onSel = jest.fn();
+    (page.root as HTMLElement).addEventListener("locationSelected", onSel);
+
+    const input = document.getElementById("autocomplete-input-ga1") as HTMLInputElement;
+    input.value = "georgia state capitol";
+    input.dispatchEvent(new Event("input"));
+    await tick(250);
+
+    (document.querySelector(".gmpac-item") as HTMLElement).dispatchEvent(new Event("mousedown"));
+    await tick(20);
+
+    expect(onSel).toHaveBeenCalledTimes(1);
+    expect(onSel.mock.calls[0][0].detail.state).toBe("GA");
   });
 
   it("falls back to displayName when formattedAddress is empty", async () => {

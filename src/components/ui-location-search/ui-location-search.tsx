@@ -24,7 +24,15 @@ export class UiLocationSearch {
   @Prop() public inputId: string = `${Math.round(new Date().getTime() * Math.random() * 9999)}`;
 
   @State() public locationName: string = "";
-  @Event() public locationSelected!: EventEmitter<{ formattedAddress: string; locationName: string }>;
+  /**
+   * Emitted on suggestion pick. `state` is the two-letter state code from the
+   * place's addressComponents (e.g. "GA") — form-report blocks Georgia (SB 22).
+   */
+  @Event() public locationSelected!: EventEmitter<{
+    formattedAddress: string;
+    locationName: string;
+    state: string;
+  }>;
 
   private autocomplete?: PlacesAutocompleteHandle;
   private retryTimer?: number;
@@ -90,12 +98,16 @@ export class UiLocationSearch {
       const locationName = place.formattedAddress ? place.formattedAddress.replace(/, USA/gi, "") : place.displayName ? place.displayName : "the location";
       const formattedAddress = place.formattedAddress || "";
 
+      // Two-letter state code ("GA", "OR", …) so consumers can act on the
+      // state — form-report blocks Georgia reports (SB 22).
+      const state = place.addressComponents?.find?.((ac: any) => ac.types?.includes("administrative_area_level_1"))?.shortText || "";
+
       const input = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
       if (input) {
         input.value = locationName;
       }
 
-      this.locationSelected.emit({ locationName, formattedAddress });
+      this.locationSelected.emit({ locationName, formattedAddress, state });
     } catch (e) {
       console.warn("ui-location-search: failed to fetch place details", e);
     }
@@ -113,7 +125,7 @@ export class UiLocationSearch {
       <Host>
         <div>
           <input
-            class={"input " + (!this.error ? "has-error" : "")}
+            class={"input " + (this.error ? "has-error" : "")}
             type="text"
             id={`autocomplete-input-${this.inputId}`}
             name="full_place"

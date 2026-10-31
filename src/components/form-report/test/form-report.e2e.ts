@@ -597,3 +597,96 @@ describe("form-report", () => {
     expect(await page.evaluate(() => (window as any).__unblockCalls)).toBe(2);
   });
 });
+
+// ─── Georgia / SB 22 ──────────────────────────────────────────────────────────
+// Georgia Senate Bill 22 (2025) makes it illegal to give food or beverages to
+// voters waiting in line at or near a polling place, so the form must block
+// Georgia locations before any photo is uploaded or report is submitted.
+
+describe("form-report — Georgia (SB 22)", () => {
+  const GA_LOCATION = {
+    formattedAddress: "206 Washington St SW, Atlanta, GA 30334, USA",
+    locationName: "Georgia State Capitol, Atlanta, GA 30334",
+    state: "GA",
+  };
+  const OR_LOCATION = {
+    formattedAddress: "123 Main St, Portland, OR 97201, USA",
+    locationName: "123 Main St, Portland, OR 97201",
+    state: "OR",
+  };
+
+  // Dispatch a locationSelected event exactly as ui-location-search does on
+  // suggestion pick (its payload carries the state code).
+  const selectLocation = (page: any, detail: { formattedAddress: string; locationName: string; state: string }) =>
+    page.$eval(
+      "ui-location-search",
+      (el: HTMLElement, d: { formattedAddress: string; locationName: string; state: string }) => {
+        el.dispatchEvent(new CustomEvent("locationSelected", { detail: d }));
+      },
+      detail,
+    );
+
+  // Visible text of the step-1 address error ("" when none is showing).
+  const getVisibleErrorText = (page: any) =>
+    page.evaluate(() => {
+      const el = document.querySelector("#form-step-1 p.help.has-text-red") as HTMLElement | null;
+      return el && !el.hidden ? el.textContent || "" : "";
+    });
+
+  it("blocks a Georgia formattedAddress (prop path) at step 1 and cites SB 22", async () => {
+    const page = await newE2EPage();
+    await page.setContent(`<form-report formatted-address="${GA_LOCATION.formattedAddress}"></form-report>`);
+    await page.waitForChanges();
+
+    // Never advances to step 2.
+    expect(await (await page.find("#form-step-2")).isVisible()).toBe(false);
+    expect(await (await page.find("#form-step-1")).isVisible()).toBe(true);
+
+    // The error is visible and cites SB 22.
+    expect(await getVisibleErrorText(page)).toContain("SB 22");
+
+    // "Report line" stays disabled — no location is selected.
+    const reportLine = await page.find("#form-step-1 button");
+    expect(await reportLine.getProperty("disabled")).toBe(true);
+
+    // The hidden address field is cleared — nothing to submit.
+    expect(await page.evaluate(() => (document.getElementById("formatted_address") as HTMLInputElement).value)).toBe("");
+  });
+
+  it("blocks a Georgia place picked in the autocomplete (event path)", async () => {
+    const page = await newE2EPage();
+    await page.setContent(mockFetchScript({ "/report": mockResponse(reportResponse()) }) + "<form-report></form-report>");
+    await page.waitForChanges();
+
+    await selectLocation(page, GA_LOCATION);
+    await page.waitForChanges();
+
+    expect(await getVisibleErrorText(page)).toContain("SB 22");
+    const reportLine = await page.find("#form-step-1 button");
+    expect(await reportLine.getProperty("disabled")).toBe(true);
+    expect(await (await page.find("#form-step-2")).isVisible()).toBe(false);
+  });
+
+  it("clears the Georgia error and lets a valid location through", async () => {
+    const page = await newE2EPage();
+    await page.setContent(mockFetchScript({ "/report": mockResponse(reportResponse()) }) + "<form-report></form-report>");
+    await page.waitForChanges();
+
+    // Georgia first — blocked with the SB 22 message.
+    await selectLocation(page, GA_LOCATION);
+    await page.waitForChanges();
+    expect(await getVisibleErrorText(page)).toContain("SB 22");
+
+    // A valid out-of-Georgia pick clears the error and enables "Report line".
+    await selectLocation(page, OR_LOCATION);
+    await page.waitForChanges();
+    expect(await getVisibleErrorText(page)).toBe("");
+    const reportLine = await page.find("#form-step-1 button");
+    expect(await reportLine.getProperty("disabled")).toBe(false);
+
+    // Advancing to step 2 works again.
+    await reportLine.click();
+    await page.waitForChanges();
+    expect(await (await page.find("#form-step-2")).isVisible()).toBe(true);
+  });
+});
