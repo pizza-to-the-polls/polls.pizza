@@ -25,6 +25,24 @@ export namespace Components {
          */
         "showConfirmation": boolean;
     }
+    /**
+     * Trusted partner report form — private counterpart of form-report.
+     * Same location + wait-time flow as the public form, but:
+     *  - photo/video is optional (backend attaches a Street View image of the
+     *    location when the partner doesn't upload one)
+     *  - on-the-ground contact name + phone are optional
+     *  - submits to POST /partner/report with the magic-link session token
+     *  - after a successful submit the form resets for the next report —
+     *    partners file several during a shift
+     * Emits `sessionExpired` when the token is rejected (401) so the host page
+     * can drop the token and show the email sign-in step again.
+     */
+    interface FormPartnerReport {
+        /**
+          * @default ""
+         */
+        "token": string;
+    }
     interface FormReport {
         "formattedAddress"?: string;
         "history"?: RouterHistory;
@@ -58,6 +76,9 @@ export namespace Components {
     interface PageInstructions {
     }
     interface PageOnDemand {
+    }
+    interface PagePartnerReport {
+        "history"?: RouterHistory;
     }
     interface PagePartners {
     }
@@ -169,6 +190,10 @@ export namespace Components {
         "type": string;
     }
 }
+export interface FormPartnerReportCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLFormPartnerReportElement;
+}
 export interface UiAddressInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLUiAddressInputElement;
@@ -201,6 +226,35 @@ declare global {
     var HTMLFormDonateElement: {
         prototype: HTMLFormDonateElement;
         new (): HTMLFormDonateElement;
+    };
+    interface HTMLFormPartnerReportElementEventMap {
+        "sessionExpired": void;
+    }
+    /**
+     * Trusted partner report form — private counterpart of form-report.
+     * Same location + wait-time flow as the public form, but:
+     *  - photo/video is optional (backend attaches a Street View image of the
+     *    location when the partner doesn't upload one)
+     *  - on-the-ground contact name + phone are optional
+     *  - submits to POST /partner/report with the magic-link session token
+     *  - after a successful submit the form resets for the next report —
+     *    partners file several during a shift
+     * Emits `sessionExpired` when the token is rejected (401) so the host page
+     * can drop the token and show the email sign-in step again.
+     */
+    interface HTMLFormPartnerReportElement extends Components.FormPartnerReport, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLFormPartnerReportElementEventMap>(type: K, listener: (this: HTMLFormPartnerReportElement, ev: FormPartnerReportCustomEvent<HTMLFormPartnerReportElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLFormPartnerReportElementEventMap>(type: K, listener: (this: HTMLFormPartnerReportElement, ev: FormPartnerReportCustomEvent<HTMLFormPartnerReportElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLFormPartnerReportElement: {
+        prototype: HTMLFormPartnerReportElement;
+        new (): HTMLFormPartnerReportElement;
     };
     interface HTMLFormReportElement extends Components.FormReport, HTMLStencilElement {
     }
@@ -279,6 +333,12 @@ declare global {
     var HTMLPageOnDemandElement: {
         prototype: HTMLPageOnDemandElement;
         new (): HTMLPageOnDemandElement;
+    };
+    interface HTMLPagePartnerReportElement extends Components.PagePartnerReport, HTMLStencilElement {
+    }
+    var HTMLPagePartnerReportElement: {
+        prototype: HTMLPagePartnerReportElement;
+        new (): HTMLPagePartnerReportElement;
     };
     interface HTMLPagePartnersElement extends Components.PagePartners, HTMLStencilElement {
     }
@@ -477,6 +537,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
         "form-donate": HTMLFormDonateElement;
+        "form-partner-report": HTMLFormPartnerReportElement;
         "form-report": HTMLFormReportElement;
         "page-about": HTMLPageAboutElement;
         "page-activity": HTMLPageActivityElement;
@@ -490,6 +551,7 @@ declare global {
         "page-home": HTMLPageHomeElement;
         "page-instructions": HTMLPageInstructionsElement;
         "page-on-demand": HTMLPageOnDemandElement;
+        "page-partner-report": HTMLPagePartnerReportElement;
         "page-partners": HTMLPagePartnersElement;
         "page-press": HTMLPagePressElement;
         "page-privacy": HTMLPagePrivacyElement;
@@ -528,6 +590,25 @@ declare namespace LocalJSX {
          */
         "showConfirmation"?: boolean;
     }
+    /**
+     * Trusted partner report form — private counterpart of form-report.
+     * Same location + wait-time flow as the public form, but:
+     *  - photo/video is optional (backend attaches a Street View image of the
+     *    location when the partner doesn't upload one)
+     *  - on-the-ground contact name + phone are optional
+     *  - submits to POST /partner/report with the magic-link session token
+     *  - after a successful submit the form resets for the next report —
+     *    partners file several during a shift
+     * Emits `sessionExpired` when the token is rejected (401) so the host page
+     * can drop the token and show the email sign-in step again.
+     */
+    interface FormPartnerReport {
+        "onSessionExpired"?: (event: FormPartnerReportCustomEvent<void>) => void;
+        /**
+          * @default ""
+         */
+        "token"?: string;
+    }
     interface FormReport {
         "formattedAddress"?: string;
         "history"?: RouterHistory;
@@ -561,6 +642,9 @@ declare namespace LocalJSX {
     interface PageInstructions {
     }
     interface PageOnDemand {
+    }
+    interface PagePartnerReport {
+        "history"?: RouterHistory;
     }
     interface PagePartners {
     }
@@ -692,6 +776,9 @@ declare namespace LocalJSX {
         "initialAmount": number | null;
         "redirectURL": string | null;
     }
+    interface FormPartnerReportAttributes {
+        "token": string;
+    }
     interface FormReportAttributes {
         "formattedAddress": string;
     }
@@ -746,6 +833,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "app-root": AppRoot;
         "form-donate": Omit<FormDonate, keyof FormDonateAttributes> & { [K in keyof FormDonate & keyof FormDonateAttributes]?: FormDonate[K] } & { [K in keyof FormDonate & keyof FormDonateAttributes as `attr:${K}`]?: FormDonateAttributes[K] } & { [K in keyof FormDonate & keyof FormDonateAttributes as `prop:${K}`]?: FormDonate[K] };
+        "form-partner-report": Omit<FormPartnerReport, keyof FormPartnerReportAttributes> & { [K in keyof FormPartnerReport & keyof FormPartnerReportAttributes]?: FormPartnerReport[K] } & { [K in keyof FormPartnerReport & keyof FormPartnerReportAttributes as `attr:${K}`]?: FormPartnerReportAttributes[K] } & { [K in keyof FormPartnerReport & keyof FormPartnerReportAttributes as `prop:${K}`]?: FormPartnerReport[K] };
         "form-report": Omit<FormReport, keyof FormReportAttributes> & { [K in keyof FormReport & keyof FormReportAttributes]?: FormReport[K] } & { [K in keyof FormReport & keyof FormReportAttributes as `attr:${K}`]?: FormReportAttributes[K] } & { [K in keyof FormReport & keyof FormReportAttributes as `prop:${K}`]?: FormReport[K] };
         "page-about": PageAbout;
         "page-activity": PageActivity;
@@ -759,6 +847,7 @@ declare namespace LocalJSX {
         "page-home": PageHome;
         "page-instructions": PageInstructions;
         "page-on-demand": PageOnDemand;
+        "page-partner-report": PagePartnerReport;
         "page-partners": PagePartners;
         "page-press": PagePress;
         "page-privacy": PagePrivacy;
@@ -787,6 +876,19 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "app-root": LocalJSX.IntrinsicElements["app-root"] & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "form-donate": LocalJSX.IntrinsicElements["form-donate"] & JSXBase.HTMLAttributes<HTMLFormDonateElement>;
+            /**
+             * Trusted partner report form — private counterpart of form-report.
+             * Same location + wait-time flow as the public form, but:
+             *  - photo/video is optional (backend attaches a Street View image of the
+             *    location when the partner doesn't upload one)
+             *  - on-the-ground contact name + phone are optional
+             *  - submits to POST /partner/report with the magic-link session token
+             *  - after a successful submit the form resets for the next report —
+             *    partners file several during a shift
+             * Emits `sessionExpired` when the token is rejected (401) so the host page
+             * can drop the token and show the email sign-in step again.
+             */
+            "form-partner-report": LocalJSX.IntrinsicElements["form-partner-report"] & JSXBase.HTMLAttributes<HTMLFormPartnerReportElement>;
             "form-report": LocalJSX.IntrinsicElements["form-report"] & JSXBase.HTMLAttributes<HTMLFormReportElement>;
             "page-about": LocalJSX.IntrinsicElements["page-about"] & JSXBase.HTMLAttributes<HTMLPageAboutElement>;
             "page-activity": LocalJSX.IntrinsicElements["page-activity"] & JSXBase.HTMLAttributes<HTMLPageActivityElement>;
@@ -800,6 +902,7 @@ declare module "@stencil/core" {
             "page-home": LocalJSX.IntrinsicElements["page-home"] & JSXBase.HTMLAttributes<HTMLPageHomeElement>;
             "page-instructions": LocalJSX.IntrinsicElements["page-instructions"] & JSXBase.HTMLAttributes<HTMLPageInstructionsElement>;
             "page-on-demand": LocalJSX.IntrinsicElements["page-on-demand"] & JSXBase.HTMLAttributes<HTMLPageOnDemandElement>;
+            "page-partner-report": LocalJSX.IntrinsicElements["page-partner-report"] & JSXBase.HTMLAttributes<HTMLPagePartnerReportElement>;
             "page-partners": LocalJSX.IntrinsicElements["page-partners"] & JSXBase.HTMLAttributes<HTMLPagePartnersElement>;
             "page-press": LocalJSX.IntrinsicElements["page-press"] & JSXBase.HTMLAttributes<HTMLPagePressElement>;
             "page-privacy": LocalJSX.IntrinsicElements["page-privacy"] & JSXBase.HTMLAttributes<HTMLPagePrivacyElement>;

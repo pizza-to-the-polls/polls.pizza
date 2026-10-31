@@ -96,6 +96,7 @@ export class AppRoot {
               <stencil-route url="/guidelines" component="page-guidelines" />
               <stencil-route url="/instructions" component="page-instructions" />
               <stencil-route url="/on-demand" component="page-on-demand" />
+              <stencil-route url="/partners/report" component="page-partner-report" />
               <stencil-route url="/partners" component="page-partners" />
               <stencil-route url="/press" component="page-press" />
               <stencil-route url="/privacy" component="page-privacy" />
@@ -117,6 +118,13 @@ export class AppRoot {
                   </li>
                   <li>
                     <stencil-route-link url="/partners">Partners</stencil-route-link>
+                  </li>
+                  {/* Hidden from humans, visible to the prerender crawler: keeps
+                      /partners/report prerendered (correct static HTML + 200 at
+                      the path) so magic-link visitors don't flash the home shell
+                      (S3 404 → index.html fallback) before the SPA boots. */}
+                  <li style={{ display: "none" }} aria-hidden="true">
+                    <stencil-route-link url="/partners/report">Partner report sign-in</stencil-route-link>
                   </li>
                   <li>
                     <stencil-route-link url="/press">Press</stencil-route-link>
