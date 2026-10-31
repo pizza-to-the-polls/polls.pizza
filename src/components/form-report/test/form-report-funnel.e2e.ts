@@ -39,6 +39,20 @@ const gtagRecorderScript = `
   </script>
 `;
 
+// Fake the Bugsnag client so notifyUploadError's headline + metadata can be
+// asserted (the component only notifies when __pizza_bugsnag_started is set).
+const bugsnagRecorderScript = `
+  <script>
+    window.__bugsnagNotifyCalls = [];
+    window.__pizza_bugsnag_started = true;
+    window.__pizza_bugsnag_client = {
+      notify: function(error, opts) {
+        window.__bugsnagNotifyCalls.push({ message: error.message, opts: opts });
+      }
+    };
+  </script>
+`;
+
 const setupPage = async () => {
   const page = await newE2EPage();
   await page.setContent(
@@ -234,6 +248,120 @@ describe("form-report funnel events", () => {
     });
     expect(reportBody.uploadId).toBe(UPLOAD_ID);
     expect(reportBody.url.endsWith(`/uploads/${UPLOAD_FILE_NAME}`)).toBe(true);
+  });
+
+  it("emits report_photo_upload_failed with reason: network when the S3 POST and the verification both fail at the network layer", async () => {
+    const page = await newE2EPage();
+    await page.setContent(
+      gtagRecorderScript +
+        mockFetchScript({
+          // First /upload: fresh (presigned issued). Second /upload: the
+          // verification call after both S3 attempts reject — it ALSO fails
+          // at the network layer, so whether the bytes landed is unverifiable.
+          "/upload": [mockResponse(freshUploadResponse()), { networkError: 1 }],
+          "s3.example.com/put": { networkError: true },
+        }) +
+        `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    await waitForUpload(page, 2);
+
+    // The honest fallback copy for an unverifiable network failure.
+    const errorTexts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+        .map(p => p.textContent)
+        .join("\n"),
+    );
+    expect(errorTexts).toContain("Network hiccup");
+
+    const events = await getGtagEvents(page);
+    const failedEvents = events.filter(e => e.name === "report_photo_upload_failed");
+    expect(failedEvents.length).toBe(1);
+    // PII-free params only: fixed-enum string, number, boolean. The raw S3
+    // TypeError never reaches the catch — baseFetch re-throws the failed
+    // verification as an ApiError with errors.network — so the network
+    // classifier (not a bare instanceof TypeError) decides the reason.
+    expect(failedEvents[0].params).toEqual({ reason: "network", status: 0, duplicate: false });
+    expect(events.filter(e => e.name === "report_photo_uploaded").length).toBe(0);
+  });
+
+  it("emits report_photo_upload_failed with reason: api_error and the HTTP status on a blocked-IP 403 from S3", async () => {
+    const page = await newE2EPage();
+    await page.setContent(
+      gtagRecorderScript +
+        bugsnagRecorderScript +
+        mockFetchScript({
+          "/upload": mockResponse(freshUploadResponse()),
+          // S3 answers 403 (blocked IP) — a definite failure, no retry.
+          "s3.example.com/put": { status: 403, body: "{}" },
+        }) +
+        `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    await waitForUpload(page);
+
+    const events = await getGtagEvents(page);
+    const failedEvents = events.filter(e => e.name === "report_photo_upload_failed");
+    expect(failedEvents.length).toBe(1);
+    // ApiError-shaped objects carry the HTTP status into the GA params.
+    expect(failedEvents[0].params).toEqual({ reason: "api_error", status: 403, duplicate: false });
+    expect(events.filter(e => e.name === "report_photo_uploaded").length).toBe(0);
+
+    // Bugsnag headline carries the status + server text instead of the old
+    // "[object Object]" (ApiError-shaped objects have no .message).
+    const notifyCalls = await page.evaluate(() => ((window as any).__bugsnagNotifyCalls || []) as { message: string; opts: any }[]);
+    expect(notifyCalls.length).toBe(1);
+    expect(notifyCalls[0].message).toBe("Photo upload failed: HTTP 403 — Whoops! That did not work - try again!");
+    // The structured metadata block is unchanged and PII-free.
+    expect(notifyCalls[0].opts.context).toBe("/report");
+    expect(notifyCalls[0].opts.metadata.upload.s3Status).toBe(403);
+    expect(notifyCalls[0].opts.metadata.upload.duplicate).toBe(false);
+    expect(notifyCalls[0].opts.metadata.upload.verifiedAfterFailure).toBe(false);
+    expect(notifyCalls[0].opts.metadata.upload.uploadId).toBe(UPLOAD_ID);
+    expect(notifyCalls[0].opts.metadata.upload.file).toEqual({ type: "image/jpeg", size: 1024 });
+
+    // The user-visible copy is the server's message, not a generic string.
+    const errorTexts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+        .map(p => p.textContent)
+        .join("\n"),
+    );
+    expect(errorTexts).toContain("Whoops! That did not work - try again!");
+  });
+
+  it("emits report_photo_upload_failed with reason: no_location when a photo is picked before a location is selected", async () => {
+    const page = await newE2EPage();
+    // No formatted-address prop: the location step stays visible and
+    // #formatted_address is empty, so the handler bails before any request.
+    await page.setContent(gtagRecorderScript + mockFetchScript({}) + `<form-report></form-report>`);
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+
+    // The no-location branch is fully synchronous; wait for the event to land
+    // in the recorder rather than on network activity (there is none).
+    const start = Date.now();
+    for (;;) {
+      const fired = await page.evaluate(() => (((window as any).__gtagCalls || []) as unknown[][]).some(call => call[1] === "report_photo_upload_failed"));
+      if (fired) break;
+      if (Date.now() - start > 5000) throw new Error("no_location failure event did not fire in time");
+      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 50)));
+    }
+    await page.waitForChanges();
+
+    const events = await getGtagEvents(page);
+    const failedEvents = events.filter(e => e.name === "report_photo_upload_failed");
+    expect(failedEvents.length).toBe(1);
+    expect(failedEvents[0].params).toEqual({ reason: "no_location" });
+    expect(events.filter(e => e.name === "report_photo_uploaded").length).toBe(0);
+
+    // The branch fires before any network request is sent.
+    const fetchCallCount = await page.evaluate(() => ((window as any).__fetchCalls || []).length);
+    expect(fetchCallCount).toBe(0);
   });
 
   it("emits submit_attempted and validation_error (field names only) on an empty submit", async () => {
