@@ -205,12 +205,26 @@ export class FormReport {
         // caused went undiagnosed for a day). Same window-client pattern as
         // componentLoadGuard; PII-free metadata only — no address, no hash,
         // no presigned URL.
+        // Build a readable Bugsnag headline. Thrown values on this path are
+        // either real Errors (TypeError, UploadDidNotLandError) or
+        // ApiError-shaped objects ({ isError, status, errors }) with no
+        // .message — String() on those used to render "[object Object]",
+        // hiding the HTTP status and server text from the error headline.
+        const buildUploadErrorMsg = (e: unknown): string => {
+          if (e instanceof Error) return `Photo upload failed: ${e.message}`;
+          const apiErr = e as { status?: number; errors?: { fileName?: string } };
+          const parts: string[] = [];
+          if (typeof apiErr.status === "number") parts.push(`HTTP ${apiErr.status}`);
+          if (apiErr.errors?.fileName) parts.push(`— ${apiErr.errors.fileName}`);
+          return parts.length > 0 ? `Photo upload failed: ${parts.join(" ")}` : `Photo upload failed: ${String(e)}`;
+        };
+
         const notifyUploadError = (error: unknown) => {
           try {
             if (typeof window !== "undefined" && (window as any).__pizza_bugsnag_started) {
               const bugsnag = (window as any).__pizza_bugsnag_client;
               if (bugsnag !== undefined && typeof bugsnag.notify === "function") {
-                bugsnag.notify(new Error(`Photo upload failed: ${(error as Error)?.message ?? String(error)}`), {
+                bugsnag.notify(new Error(buildUploadErrorMsg(error)), {
                   context: "/report",
                   severity: "warning",
                   metadata: {
@@ -330,8 +344,25 @@ export class FormReport {
           await uploadPhoto(file, addressInput.value);
           trackEvent("report_photo_uploaded", { duplicate: uploadDuplicate, verifiedAfterFailure });
         } catch (error) {
-          this.removePhoto();
+          // Notify BEFORE removePhoto() — removePhoto clears this.uploadId,
+          // and the Bugsnag metadata must link the upload row that actually
+          // failed (it may exist even when the S3 POST is what failed).
           notifyUploadError(error);
+          this.removePhoto();
+          // Funnel the failure into GA (BUG-027): previously only the success
+          // path was tracked, so upload failures were invisible in the funnel.
+          // Same classifier as the copy below: a raw TypeError from the S3 POST
+          // never reaches this catch when retries are exhausted — baseFetch
+          // swallows TypeErrors on POST calls and re-throws the verification
+          // failure as an ApiError with errors.network set — so the classifier
+          // (not a bare instanceof) decides "network"; genuine HTTP responses
+          // (blocked-IP 403s etc.) are "api_error". PII-free params only:
+          // fixed-enum string, number, boolean.
+          trackEvent("report_photo_upload_failed", {
+            reason: isNetworkFailure(error) ? "network" : "api_error",
+            status: (error as { status?: number })?.status ?? 0,
+            duplicate: uploadDuplicate,
+          });
           if (error instanceof UploadDidNotLandError) {
             // Verified the bytes never reached the bucket — say so plainly.
             this.submitError.photo = "Whoops! We couldn't reach the photo upload service — that photo didn't upload. Please try again.";
@@ -351,6 +382,10 @@ export class FormReport {
           this.isDisabled = false;
         }
       } else {
+        // No polling location selected — this fails before any network
+        // request is sent and is the most common "can't upload" report
+        // (BUG-027): track it so it finally shows up in the funnel.
+        trackEvent("report_photo_upload_failed", { reason: "no_location" });
         this.submitError.photo = "Whoops! We could not upload that photo. Try adding a link to a social media report instead.";
         this.removePhoto();
         // Always reset
