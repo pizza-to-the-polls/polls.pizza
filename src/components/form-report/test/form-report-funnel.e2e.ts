@@ -41,13 +41,27 @@ const gtagRecorderScript = `
 
 // Fake the Bugsnag client so notifyUploadError's headline + metadata can be
 // asserted (the component only notifies when __pizza_bugsnag_started is set).
+// Mirrors @bugsnag/js v7's notify(error, onError) contract: the second
+// argument is an onError CALLBACK, not an options object — the mock invokes
+// it with a fake Event whose addMetadata() records into `meta` (BUG-031).
 const bugsnagRecorderScript = `
   <script>
     window.__bugsnagNotifyCalls = [];
     window.__pizza_bugsnag_started = true;
     window.__pizza_bugsnag_client = {
-      notify: function(error, opts) {
-        window.__bugsnagNotifyCalls.push({ message: error.message, opts: opts });
+      notify: function(error, onError) {
+        var event = {
+          context: null,
+          severity: null,
+          meta: {},
+          addMetadata: function(section, data) {
+            this.meta[section] = data;
+          }
+        };
+        if (typeof onError === 'function') {
+          onError(event);
+        }
+        window.__bugsnagNotifyCalls.push({ message: error.message, event: event });
       }
     };
   </script>
@@ -313,16 +327,21 @@ describe("form-report funnel events", () => {
 
     // Bugsnag headline carries the status + server text instead of the old
     // "[object Object]" (ApiError-shaped objects have no .message).
-    const notifyCalls = await page.evaluate(() => ((window as any).__bugsnagNotifyCalls || []) as { message: string; opts: any }[]);
+    const notifyCalls = await page.evaluate(() => ((window as any).__bugsnagNotifyCalls || []) as { message: string; event: any }[]);
     expect(notifyCalls.length).toBe(1);
     expect(notifyCalls[0].message).toBe("Photo upload failed: HTTP 403 — Whoops! That did not work - try again!");
+    // BUG-031: notify() takes an onError callback — the component must apply
+    // context/severity/metadata to the Event object inside it. The fake Event
+    // starts with context/severity null, so these assertions can only pass if
+    // the callback was actually invoked and set them.
+    expect(notifyCalls[0].event.context).toBe("/report");
+    expect(notifyCalls[0].event.severity).toBe("warning");
     // The structured metadata block is unchanged and PII-free.
-    expect(notifyCalls[0].opts.context).toBe("/report");
-    expect(notifyCalls[0].opts.metadata.upload.s3Status).toBe(403);
-    expect(notifyCalls[0].opts.metadata.upload.duplicate).toBe(false);
-    expect(notifyCalls[0].opts.metadata.upload.verifiedAfterFailure).toBe(false);
-    expect(notifyCalls[0].opts.metadata.upload.uploadId).toBe(UPLOAD_ID);
-    expect(notifyCalls[0].opts.metadata.upload.file).toEqual({ type: "image/jpeg", size: 1024 });
+    expect(notifyCalls[0].event.meta.upload.s3Status).toBe(403);
+    expect(notifyCalls[0].event.meta.upload.duplicate).toBe(false);
+    expect(notifyCalls[0].event.meta.upload.verifiedAfterFailure).toBe(false);
+    expect(notifyCalls[0].event.meta.upload.uploadId).toBe(UPLOAD_ID);
+    expect(notifyCalls[0].event.meta.upload.file).toEqual({ type: "image/jpeg", size: 1024 });
 
     // The user-visible copy is the server's message, not a generic string.
     const errorTexts = await page.evaluate(() =>
