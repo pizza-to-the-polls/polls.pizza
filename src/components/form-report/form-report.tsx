@@ -373,8 +373,12 @@ export class FormReport {
             // POST entirely) is the honest remedy.
             this.submitError.photo = "Network hiccup — your photo may have already reached us. Try picking the photo again.";
           } else {
-            const errors = (error as { errors?: { fileName?: string } })?.errors;
-            this.submitError.photo = errors?.fileName || "Whoops! We could not upload that photo";
+            // Read the API's _general message first (BUG-030): blocked-IP
+            // 403s carry { errors: { _general: "Your submission was not
+            // accepted…" } } — the user must see that, not the generic
+            // "could not upload" copy that also shows for network failures.
+            const errors = (error as { errors?: { _general?: string; fileName?: string } })?.errors;
+            this.submitError.photo = errors?._general || errors?.fileName || "Whoops! We could not upload that photo";
           }
         } finally {
           // Always reset
@@ -593,6 +597,13 @@ export class FormReport {
           return false;
         }
 
+        // If the API rejected the submission wholesale (_general — e.g. a
+        // blocked-IP 403, BUG-030), keep the form visible so the general
+        // banner near the top can be read and any field errors render too.
+        if (errors?._general) {
+          return false;
+        }
+
         // Otherwise, show server error
         // Hide form
         this.showConfirmation = true;
@@ -661,6 +672,11 @@ export class FormReport {
                 <a href="#" class="has-text-teal is-unselectable" onClick={handleNewLocation}>
                   Change address
                 </a>
+              </p>
+
+              {/* General API error (e.g. blocked-IP rejection, BUG-030) */}
+              <p id="form-general-error" class="help has-text-red" hidden={!("_general" in this.submitError)}>
+                {this.submitError._general}
               </p>
 
               {/* Wait Time */}
