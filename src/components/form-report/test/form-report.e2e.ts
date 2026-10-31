@@ -473,6 +473,84 @@ describe("form-report", () => {
     expect(buttonDisabled).toBe(false);
   });
 
+  it("displays the _general API message under the photo field when /upload returns a _general error (blocked IP)", async () => {
+    // BUG-030: pizzabase 403s blocked-IP submissions with
+    // { errors: { _general: "Your submission was not accepted…" } } on
+    // /upload. The form must surface that message under the photo field —
+    // not the generic "could not upload" copy that also shows for network
+    // failures (blocked users were filing complaints about their file types).
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        "/upload": {
+          status: 403,
+          body: JSON.stringify({
+            errors: { _general: "Your submission was not accepted. If you believe this is in error, please contact us." },
+          }),
+        },
+      }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    await waitForUpload(page);
+
+    const errorTexts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+        .map(p => p.textContent)
+        .join("\n"),
+    );
+    // The _general message from the API is shown (not the generic fallback).
+    expect(errorTexts).toContain("Your submission was not accepted");
+    expect(errorTexts).not.toContain("We could not upload that photo");
+
+    // Form is re-enabled for a re-pick (same as any upload error).
+    const submitBtn = await page.find("#form-step-2 button[type='submit']");
+    expect(await submitBtn.getProperty("disabled")).toBe(false);
+  });
+
+  it("displays the _general API message as a form-level banner when /report returns a _general error (blocked IP)", async () => {
+    // BUG-030: a blocked-IP 403 on /report carries only _general in the
+    // errors map. The form must keep the form visible and render the API
+    // message in the general banner — not swap it out for the generic
+    // "servers are stuffed" server-error panel.
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        "/upload": mockResponse(freshUploadResponse()),
+        "/report": {
+          status: 403,
+          body: JSON.stringify({
+            errors: { _general: "Your submission was not accepted. If you believe this is in error, please contact us." },
+          }),
+        },
+      }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    await waitForUpload(page);
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+
+    // The general error banner is visible with the API message.
+    const generalError = await page.find("#form-general-error");
+    expect(generalError).not.toBeNull();
+    expect(await generalError.isVisible()).toBe(true);
+    const textContent = await generalError.getProperty("textContent");
+    expect(textContent).toContain("Your submission was not accepted");
+
+    // The form is still visible (NOT replaced by the generic server-error
+    // panel).
+    const step2 = await page.find("#form-step-2");
+    expect(step2).not.toBeNull();
+    expect(await step2.isVisible()).toBe(true);
+
+    // The server-error panel is NOT rendered.
+    const serverError = await page.find("#server-error");
+    expect(serverError).toBeNull();
+  });
+
   // Dispatch a synthetic beforeunload on window and report whether the
   // component's guard canceled it (the real browser dialog is driven by
   // preventDefault + returnValue, per the hotnready demo pattern).
