@@ -163,6 +163,44 @@ describe("form-report", () => {
     expect(await step2.isVisible()).toBe(true);
   });
 
+  it("refuses a Georgia address (SB 22) and never calls /report", async () => {
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        "/report": mockResponse(reportResponse()),
+      }) + `<form-report formatted-address="Hardwick Baptist Church, 124 Thomas St, Milledgeville, GA 31061, USA"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    // Stays on step 1 with the block message visible…
+    const step1 = await page.find("#form-step-1");
+    expect(await step1.isVisible()).toBe(true);
+    const step2 = await page.find("#form-step-2");
+    expect(step2).not.toBeNull();
+    expect(await step2.isVisible()).toBe(false);
+
+    const reportBtn = await page.find("#form-step-1 button");
+    expect(await reportBtn.getProperty("disabled")).toBe(true);
+
+    const msg = await page.find("#form-step-1 p.help.has-text-red");
+    expect(await msg.isVisible()).toBe(true);
+    expect(((await msg.getProperty("textContent")) as string).toLowerCase()).toContain("georgia");
+
+    // …and even a forced form submit (Enter in the search box) never
+    // reaches the report API with the blocked address.
+    await page.evaluate(() => {
+      (document.getElementById("form-report") as HTMLFormElement).dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    });
+    await page.waitForChanges();
+
+    const calls = await getFetchCalls(page);
+    expect(calls.filter(c => c.url.endsWith("/report"))).toHaveLength(0);
+    // The block message is still what the uploader sees (not the generic
+    // missing-field validation).
+    const msgAfter = await page.find("#form-step-1 p.help.has-text-red");
+    expect(((await msgAfter.getProperty("textContent")) as string).toLowerCase()).toContain("georgia");
+  });
+
   it("shows validation errors on empty submit in step 2", async () => {
     const page = await newE2EPage();
     await page.setContent('<form-report formatted-address="123 Main St"></form-report>');

@@ -9,6 +9,25 @@ import shaFile from "../../util/shaFile";
 const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
 
 /**
+ * States we cannot accept reports for at all. Georgia: SB 22 restricts
+ * providing food or beverages to voters waiting in line, so Pizza to the
+ * Polls cannot send pizza there — block at selection AND at submit so a
+ * Georgia address can never reach the report API.
+ */
+const BLOCKED_STATE_MESSAGE =
+  "Whoops — we can't send pizza to Georgia. Georgia state law (SB 22) doesn't allow providing food to voters waiting in line, so we can't accept reports for polling places there.";
+
+/**
+ * Match the state token in a Google formatted US address
+ * ("…, Milledgeville, GA 31061, USA" / "…, Atlanta, Georgia 30303") —
+ * comma-preceded and near the end, never a street/city name
+ * ("Georgia Ave NW, Washington, DC 20001").
+ */
+const BLOCKED_STATE_ADDRESS_REGEX = /,\s*(?:GA|Georgia)\b\s*(?:\d{5})?\s*(?:,|$)/;
+
+const isBlockedStateAddress = (address?: string): boolean => typeof address === "string" && BLOCKED_STATE_ADDRESS_REGEX.test(address);
+
+/**
  * The S3 POST failed at the network layer on every attempt AND the follow-up
  * verification confirmed the bytes never landed — the photo definitely did
  * not upload. Distinct from a plain TypeError, where the request may still
@@ -84,6 +103,12 @@ export class FormReport {
   public componentWillLoad() {
     // Funnel start: the form component itself mounted (GA4 session entry).
     trackEvent("report_form_start");
+    if (this.formattedAddress && isBlockedStateAddress(this.formattedAddress)) {
+      // Blocked state (SB 22): show why and stay on step 1.
+      this.submitError = { address: BLOCKED_STATE_MESSAGE };
+      trackEvent("report_location_blocked");
+      return;
+    }
     if (this.formattedAddress) {
       this.handleLocationSelected({
         formattedAddress: this.formattedAddress,
@@ -388,6 +413,21 @@ export class FormReport {
         this.submitError.address = "Whoops - we can't read that address";
       }
 
+      // Blocked state (SB 22): refuse before any other validation so the
+      // Georgia message is what the uploader sees.
+      if (isBlockedStateAddress(data.address)) {
+        trackEvent("report_location_blocked");
+        this.submitError = { address: BLOCKED_STATE_MESSAGE };
+        this.showLocationInput = true;
+        this.showConfirmation = false;
+        this.isLoading = false;
+        this.isDisabled = true;
+        document.getElementById("form-report-component")?.scrollIntoView({
+          behavior: "smooth",
+        });
+        return false;
+      }
+
       if (!data.waitTime) {
         this.submitError.waitTime = "Whoops! Can you estimate the wait time?";
       }
@@ -561,7 +601,7 @@ export class FormReport {
                   inputId="report-form"
                 />
                 <span class="help">Search by the name of the place ("St. John's Library") or street address.</span>
-                <p class="help has-text-red" hidden={"address" in this.submitError}>
+                <p class="help has-text-red" hidden={!("address" in this.submitError)}>
                   {this.submitError.address}
                 </p>
               </div>
@@ -877,6 +917,15 @@ export class FormReport {
   }
 
   private handleLocationSelected({ formattedAddress, locationName }: { formattedAddress: string; locationName: string }) {
+    if (isBlockedStateAddress(formattedAddress)) {
+      // Blocked state (SB 22): refuse the selection and keep the
+      // "Report line" button disabled so a Georgia location can
+      // never advance to step 2.
+      this.submitError = { address: BLOCKED_STATE_MESSAGE };
+      this.locationName = "";
+      trackEvent("report_location_blocked");
+      return;
+    }
     this.locationName = locationName;
 
     const addressInput = document.getElementById("formatted_address") as HTMLInputElement;
