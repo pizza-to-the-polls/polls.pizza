@@ -8,11 +8,11 @@ import { LocationId } from "../../api";
   shadow: true,
 })
 export class UiGeoMap {
-  private static readonly US_CAPITOL: google.maps.LatLngLiteral = { lat: 38.8899, lng: -77.0091 };
-  private static readonly US_CENTER: google.maps.LatLngLiteral = { lat: 39.8283, lng: -98.5795 };
-  private static readonly DEFAULT_CENTER: google.maps.LatLngLiteral = UiGeoMap.US_CENTER;
-  private static readonly DEFAULT_ZOOM = 4;
-  private static readonly SELECTED_LOCATION_ZOOM = 15;
+  public static readonly US_CAPITOL: google.maps.LatLngLiteral = { lat: 38.8899, lng: -77.0091 };
+  public static readonly US_CENTER: google.maps.LatLngLiteral = { lat: 39.8283, lng: -98.5795 };
+  public static readonly DEFAULT_CENTER: google.maps.LatLngLiteral = UiGeoMap.US_CENTER;
+  public static readonly DEFAULT_ZOOM = 4;
+  public static readonly SELECTED_LOCATION_ZOOM = 15;
 
   @Prop() public center?: google.maps.LatLngLiteral;
   @Prop() public zoom?: number;
