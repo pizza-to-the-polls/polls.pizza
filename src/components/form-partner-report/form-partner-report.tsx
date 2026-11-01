@@ -13,8 +13,9 @@ import { uploadPhoto } from "../../util/uploadPhoto";
  * Everything is framed around what makes a partner report different:
  *  - submissions skip the review queue and go straight to dispatch, so the
  *    address must be exactly right (emphasized in copy + validation)
- *  - photo/video optional — skipped media gets a Street View image of the
- *    location attached server-side
+ *  - photo/video optional — nothing is attached when absent (report media
+ *    feeds the social-post pipeline; see the note in the pizzabase
+ *    controller)
  *  - on-the-ground contact info optional — needed only when someone is
  *    actually at the line; we text that number when pizza's on the way,
  *    and say so in the confirmation
@@ -174,7 +175,7 @@ export class FormPartnerReport {
         waitTime: data.waitTime,
       };
 
-      // Optional photo — the backend attaches a Street View image when absent.
+      // Optional photo — nothing attaches when absent.
       if (this.hasPhoto || this.hasVideo) {
         requestData.url = this.photoUrl;
       }
@@ -294,7 +295,8 @@ export class FormPartnerReport {
             <div class="form-item">
               <label class="label">Photo or video of the line</label>
               <span class="help">
-                <strong>Optional.</strong> Great for our social posts — but don't wait on it. If you skip it, we'll attach an image of the location for the record.
+                <strong>Optional — and never required.</strong> Photos power our social posts, so a real shot of the line is great — but don't wait on it. If you skip it, nothing
+                is attached to the report: it goes straight to dispatch either way, and any post about it will just be text.
               </span>
               <div class="clearfix">
                 <div id="file-input-button" class={"file button-large " + (this.photoIsProcessing ? "is-loading is-disabled " : "") + "is-teal"}>
