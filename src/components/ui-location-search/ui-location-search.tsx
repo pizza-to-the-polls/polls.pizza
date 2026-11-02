@@ -26,7 +26,7 @@ export class UiLocationSearch {
   @State() public locationName: string = "";
   /**
    * Emitted on suggestion pick. `state` is the two-letter state code from the
-   * place's addressComponents (e.g. "GA") — form-report blocks Georgia (SB 22).
+   * place's addressComponents (e.g. "GA").
    */
   @Event() public locationSelected!: EventEmitter<{
     formattedAddress: string;
@@ -99,7 +99,7 @@ export class UiLocationSearch {
       const formattedAddress = place.formattedAddress || "";
 
       // Two-letter state code ("GA", "OR", …) so consumers can act on the
-      // state — form-report blocks Georgia reports (SB 22).
+      // state.
       const state = place.addressComponents?.find?.((ac: any) => ac.types?.includes("administrative_area_level_1"))?.shortText || "";
 
       const input = document.getElementById(`autocomplete-input-${this.inputId}`) as HTMLInputElement;
