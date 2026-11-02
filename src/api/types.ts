@@ -100,6 +100,13 @@ export type ReportPostResults = {
   hasTruck: boolean;
   willReceive: boolean;
   alreadyOrdered: boolean;
+  /**
+   * Auto-skip (pizzabase #391/#392): the report was pulled from the
+   * volunteer pipeline at submit. skipReason: "georgia" (SB 22 — delivery
+   * prohibited), "recent_order", or "line_under_an_hour".
+   */
+  autoSkipped?: boolean;
+  skipReason?: string | null;
 };
 
 /**

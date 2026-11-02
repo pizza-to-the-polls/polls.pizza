@@ -42,6 +42,11 @@ export class FormReport {
    */
   @State() private showFoodTruckOnSiteConfirmation: boolean = false;
   /**
+   * Georgia (SB 22): the API auto-skipped the report — show the
+   * can't-deliver-in-Georgia explanation instead of the triage panels.
+   */
+  @State() private showGeorgiaConfirmation: boolean = false;
+  /**
    * Enable to show distributor confirmation & guidelines
    */
   @State() private showDistributorConfirmation: boolean = false;
@@ -528,8 +533,13 @@ export class FormReport {
         this.submitError = {};
         this.showServerError = false;
 
-        // If truck is scheduled/on-site
-        if (this.submitResponse.hasTruck) {
+        // Georgia (SB 22): the report was recorded but auto-skipped — we
+        // legally cannot deliver food or beverages to voters in line in
+        // Georgia. Explain that instead of the triage panels (and before
+        // hasTruck/willReceive — the skip overrides everything else).
+        if (this.submitResponse.autoSkipped && this.submitResponse.skipReason === "georgia") {
+          this.showGeorgiaConfirmation = true;
+        } else if (this.submitResponse.hasTruck) {
           this.showFoodTruckOnSiteConfirmation = true;
         } else {
           if (this.submitResponse.willReceive && !this.submitResponse.alreadyOrdered) {
@@ -835,6 +845,24 @@ export class FormReport {
               </p>
             </div>
           </form>
+          {/* Georgia / SB 22 Confirmation — recorded, but delivery prohibited */}
+          {this.showConfirmation && !this.showServerError && this.showGeorgiaConfirmation && (
+            <div id="georgia-confirmation">
+              <h2 class="is-display">Thank you — your report is recorded.</h2>
+              <p>
+                <b>But we can't send pizza in Georgia.</b> Georgia Senate Bill 22 (2025) makes it illegal to provide food or beverages — free pizza included — to voters waiting in
+                line at or near a polling place. We're nonpartisan and we follow the law, so we won't organize deliveries in Georgia.
+              </p>
+              <p>
+                Your report still matters — we keep it to understand what's happening at Georgia polling places. If you're in line, hang in there, and thank you for voting. 🍕🗳️
+              </p>
+              <p>
+                <a href="#" class="has-text-teal" onClick={handleNewLocation}>
+                  Report a line in another state
+                </a>
+              </p>
+            </div>
+          )}
           {/* Food Truck at location Confirmation */}
           {this.showConfirmation && !this.showServerError && this.showFoodTruckOnSiteConfirmation && (
             <div id="food-truck-at-location-confirmation">
@@ -942,6 +970,7 @@ export class FormReport {
     this.showConfirmation = false;
     this.showServerError = false;
     this.showFoodTruckOnSiteConfirmation = false;
+    this.showGeorgiaConfirmation = false;
     this.showDistributorConfirmation = false;
     this.showSuccessfulReportConfirmation = false;
     this.showDuplicateReportConfirmation = false;
