@@ -9,30 +9,6 @@ import shaFile from "../../util/shaFile";
 const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
 
 /**
- * Georgia's Senate Bill 22 (SB 22, 2025) makes it illegal to give anything of
- * value — including food and beverages — to voters waiting in line at or
- * near a polling place, so reports from Georgia polling places cannot be
- * accepted. Mirrors GEORGIA_ERROR in pizzabase (src/lib/validator/constants.ts)
- * — keep the copy in sync.
- */
-const GEORGIA_ERROR = "Whoops! Georgia's Senate Bill 22 (SB 22) bans giving food or beverages to voters waiting in line, so we can't accept reports for polling places in Georgia.";
-
-const GEORGIA_STATE_CODE = "GA";
-
-/**
- * Google formatted addresses put the two-letter state right before the zip
- * ("206 Washington St SW, Atlanta, GA 30334, USA"). Fallback for the
- * formattedAddress prop path, where the place's addressComponents aren't
- * available to us — the API/validator is the authoritative check.
- */
-const stateFromFormattedAddress = (formattedAddress: string): string => {
-  const match = formattedAddress?.match(/,\s*([A-Za-z]{2})\s+\d{5}/);
-  return match ? match[1].toUpperCase() : "";
-};
-
-const isGeorgiaState = (state: string): boolean => state.trim().toUpperCase() === GEORGIA_STATE_CODE;
-
-/**
  * The S3 POST failed at the network layer on every attempt AND the follow-up
  * verification confirmed the bytes never landed — the photo definitely did
  * not upload. Distinct from a plain TypeError, where the request may still
@@ -103,8 +79,6 @@ export class FormReport {
    * Stencil re-renders keep it cleared.
    */
   @State() private addressInputValue: string = "";
-  /** Two-letter state of the selected location ("" until one is picked). */
-  private selectedState: string = "";
   @State() private reportType: string = "photo"; // "social" | "photo"
   @State() private hasPhoto: boolean = false;
   @State() private hasVideo: boolean = false;
@@ -457,13 +431,6 @@ export class FormReport {
       if (!data.address) {
         this.showLocationInput = true;
         this.submitError.address = "Whoops - we can't read that address";
-      }
-
-      // Georgia SB 22 — block before the POST. The API would 422 with the
-      // same error; catching it here avoids the wasted round trip.
-      if (isGeorgiaState(stateFromFormattedAddress(data.address) || this.selectedState)) {
-        this.submitError.address = GEORGIA_ERROR;
-        this.showLocationInput = true;
       }
 
       if (!data.waitTime) {
@@ -954,21 +921,7 @@ export class FormReport {
     );
   }
 
-  private handleLocationSelected({ formattedAddress, locationName, state }: { formattedAddress: string; locationName: string; state?: string }) {
-    // Prefer the state straight from the place's addressComponents; fall back
-    // to parsing the formatted address (the prop path has no components).
-    this.selectedState = state || stateFromFormattedAddress(formattedAddress);
-
-    if (isGeorgiaState(this.selectedState)) {
-      // Georgia SB 22: block the report, show the reason inline, and keep the
-      // "Report line" button disabled (locationName stays empty).
-      this.locationName = "";
-      this.addressInputValue = "";
-      this.submitError = { ...this.submitError, address: GEORGIA_ERROR };
-      trackEvent("report_location_georgia_blocked");
-      return;
-    }
-
+  private handleLocationSelected({ formattedAddress, locationName }: { formattedAddress: string; locationName: string }) {
     this.clearFormError("address");
     this.locationName = locationName;
     this.addressInputValue = formattedAddress;
@@ -976,11 +929,6 @@ export class FormReport {
   }
 
   private handleLoadStepTwo() {
-    // Georgia SB 22 — never advance past the location step for GA addresses
-    // (see handleLocationSelected).
-    if (isGeorgiaState(this.selectedState)) {
-      return;
-    }
     this.showLocationInput = false;
   }
 
@@ -1001,7 +949,6 @@ export class FormReport {
     this.submitError = {};
     this.locationName = "";
     this.addressInputValue = "";
-    this.selectedState = "";
     this.photoIsProcessing = false;
     this.userClickedGuidelinesLink = false;
     this.isLoading = false;

@@ -123,7 +123,7 @@ describe("ui-location-search — selection", () => {
     expect(d.state).toBe("DC");
   });
 
-  it("emits the state code for a Georgia place (so form-report can block it — SB 22)", async () => {
+  it("emits the state code for a Georgia place", async () => {
     const georgiaPlace = {
       displayName: "Georgia State Capitol",
       formattedAddress: "206 Washington St SW, Atlanta, GA 30334, USA",

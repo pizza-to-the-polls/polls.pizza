@@ -717,7 +717,7 @@ declare namespace LocalJSX {
          */
         "inputId"?: string;
         /**
-          * Emitted on suggestion pick. `state` is the two-letter state code from the place's addressComponents (e.g. "GA") — form-report blocks Georgia (SB 22).
+          * Emitted on suggestion pick. `state` is the two-letter state code from the place's addressComponents (e.g. "GA").
          */
         "onLocationSelected"?: (event: UiLocationSearchCustomEvent<{
     formattedAddress: string;
