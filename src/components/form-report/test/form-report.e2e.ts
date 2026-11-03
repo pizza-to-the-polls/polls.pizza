@@ -764,6 +764,61 @@ describe("form-report", () => {
     expect(buttonDisabled).toBe(false);
   });
 
+  it("shows the server's address message and reopens the location picker when /upload returns 422 errors.address (BUG-038)", async () => {
+    // BUG-038: a locality-only / partial-match Places pick is rejected by
+    // the backend at upload time (HTTP 422 errors.address). The user must
+    // see the server's user-facing copy in the photo error slot — not the
+    // generic "We could not upload that photo" — and the location picker
+    // must reopen so they can re-pick a more precise place immediately.
+    const addressMessage = "Whoops! We couldn't verify that address. Try searching again for a valid location.";
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        "/upload": { status: 422, body: JSON.stringify({ errors: { address: addressMessage } }) },
+        "/report": mockResponse(reportResponse()),
+      }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    await waitForPhotoError(page, "We couldn't verify that address");
+
+    // (a) The photo error slot shows the server's address message verbatim,
+    //     not the generic "We could not upload that photo" copy.
+    const errorTexts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+        .filter(p => !(p as HTMLElement).hidden)
+        .map(p => p.textContent)
+        .join("\n"),
+    );
+    expect(errorTexts).toContain("We couldn't verify that address");
+    expect(errorTexts).toContain("Try searching again for a valid location");
+    expect(errorTexts).not.toContain("We could not upload that photo");
+
+    // (b) The location picker reopened (same pattern as the submit-time
+    //     errors.address branch): step 1 visible, step 2 hidden.
+    const step1 = await page.find("#form-step-1");
+    expect(step1).not.toBeNull();
+    expect(await step1.isVisible()).toBe(true);
+    const step2 = await page.find("#form-step-2");
+    expect(step2).not.toBeNull();
+    expect(await step2.isVisible()).toBe(false);
+
+    // removePhoto() ran before the branch: media state is cleared (no
+    // stranded preview, no uploadId) so a re-pick + re-pick-address flow
+    // starts clean and the previously hard-blocked submit is unlocked.
+    const previewBg = await page.evaluate(() => {
+      const preview = document.getElementById("photo-preview");
+      return preview ? preview.style.backgroundImage : null;
+    });
+    expect(previewBg).toBeFalsy();
+
+    // The failure was an /upload 422; no /report was ever attempted.
+    const calls = await getFetchCalls(page);
+    expect(calls.filter(c => c.url.endsWith("/upload")).length).toBe(1);
+    expect(calls.filter(c => c.url.endsWith("/report")).length).toBe(0);
+  });
+
   // Dispatch a synthetic beforeunload on window and report whether the
   // component's guard canceled it (the real browser dialog is driven by
   // preventDefault + returnValue, per the hotnready demo pattern).
