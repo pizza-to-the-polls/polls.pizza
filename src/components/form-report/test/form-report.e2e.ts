@@ -32,12 +32,22 @@ const duplicateUploadResponse = () => ({
 // #distributor-confirmation panel renders after submit).
 const reportResponse = () => ({ hasTruck: false, willReceive: true, alreadyOrdered: false });
 
-const setupPage = async () => {
+// Georgia (SB 22) report response: recorded but auto-skipped (pizzabase
+// #392) — the #georgia-confirmation panel should render instead.
+const georgiaReportResponse = () => ({
+  hasTruck: false,
+  willReceive: false,
+  alreadyOrdered: false,
+  autoSkipped: true,
+  skipReason: "georgia",
+});
+
+const setupPage = async (report: unknown = reportResponse()) => {
   const page = await newE2EPage();
   await page.setContent(
     mockFetchScript({
       "/upload": mockResponse(freshUploadResponse()),
-      "/report": mockResponse(reportResponse()),
+      "/report": mockResponse(report),
     }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
   );
   await page.waitForChanges();
@@ -212,6 +222,29 @@ describe("form-report", () => {
 
     const confirmation = await page.find("#distributor-confirmation");
     expect(confirmation).not.toBeNull();
+  });
+
+  it("shows the Georgia SB 22 explanation when the report is auto-skipped as georgia", async () => {
+    const page = await setupPage(georgiaReportResponse());
+
+    await pickPhoto(page);
+    await waitForUpload(page);
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+
+    // The Georgia panel renders with the SB 22 explanation...
+    const georgia = await page.find("#georgia-confirmation");
+    expect(georgia).not.toBeNull();
+    expect(await georgia.isVisible()).toBe(true);
+    const georgiaText = (await georgia.getProperty("textContent")).toLowerCase();
+    expect(georgiaText).toContain("senate bill 22");
+    expect(georgiaText).toContain("can't send pizza");
+
+    // ...and none of the triage panels do (auto-skip overrides hasTruck /
+    // willReceive / duplicate alike).
+    for (const id of ["#distributor-confirmation", "#food-truck-at-location-confirmation", "#duplicate-report-confirmation", "#watchdog-confirmation"]) {
+      expect(await page.find(id)).toBeNull();
+    }
   });
 
   it("absorbs a transient S3 network error via the single retry", async () => {
