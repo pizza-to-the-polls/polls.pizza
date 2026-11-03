@@ -4,6 +4,7 @@ import { RouterHistory } from "@stencil/router";
 import { ApiError, PizzaApi, ReportPostResults } from "../../api";
 import { trackEvent } from "../../util/analytics";
 import shaFile from "../../util/shaFile";
+import uploadFileName from "../../util/uploadFileName";
 
 // Shared with pizzabase
 const PHONE_REGEX = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
@@ -264,7 +265,12 @@ export class FormReport {
 
           const fileHash = await shaFile(bytes);
 
-          const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
+          // Synthesize an allowed extension when the OS hands us a valid file
+          // with one the server rejects (BUG-040: .jfif is a real JPEG).
+          // Used for BOTH postUpload calls so dedupe stays consistent.
+          const safeName = uploadFileName(file);
+
+          const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, safeName, address);
 
           uploadDuplicate = isDuplicate;
 
@@ -283,7 +289,10 @@ export class FormReport {
             // File handle (BUG-036).
             const postToS3 = async (target: { url: string; fields: { [key: string]: string } }) => {
               const formData = new FormData();
-              const uploadFile = new File([bytes], file.name, { type: file.type });
+              // Materialize from the already-read bytes under the synthesized
+              // name (BUG-040) — never re-read the (possibly stale) picked
+              // File handle in the presigned POST (BUG-036).
+              const uploadFile = new File([bytes], safeName, { type: file.type });
 
               formData.append("Content-Type", uploadFile.type);
 
@@ -335,7 +344,7 @@ export class FormReport {
               // fileHash answers whether an earlier attempt's bytes landed.
               // A duplicate response carries the canonical row and no
               // presigned POST, so nothing is re-uploaded either way.
-              const verify = await PizzaApi.postUpload(fileHash, file.name, address);
+              const verify = await PizzaApi.postUpload(fileHash, safeName, address);
               if (verify.isDuplicate) {
                 // An earlier attempt landed — adopt the canonical row and
                 // complete the attach with no user-visible error.

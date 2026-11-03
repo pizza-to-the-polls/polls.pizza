@@ -276,6 +276,37 @@ describe("form-report funnel events", () => {
     expect(photoUploaded[1].params).toEqual({ duplicate: true, verifiedAfterFailure: false });
   });
 
+  it("synthesizes an allowed extension for a .jfif JPEG before POST /upload (BUG-040)", async () => {
+    const page = await setupPage();
+
+    // Windows hands users real JPEGs named .jfif; that extension isn't in the
+    // server allowlist, so the client must rename it from file.type —
+    // otherwise a perfectly valid photo is rejected with a 422.
+    await pickPhoto(page, "IMG_1234.jfif");
+    await waitForUpload(page);
+
+    const uploadBodies = await page.evaluate(() => {
+      const calls = ((window as any).__fetchCalls || []) as { url: string; opts?: { body?: string } }[];
+      return calls.filter(c => String(c.url).endsWith("/upload")).map(c => (c.opts?.body ? JSON.parse(c.opts.body) : null));
+    });
+    expect(uploadBodies.length).toBeGreaterThanOrEqual(1);
+    expect(uploadBodies[0].fileName).toBe("IMG_1234.jpg");
+  });
+
+  it("passes an already-allowed extension through to POST /upload unchanged (BUG-040)", async () => {
+    const page = await setupPage();
+
+    await pickPhoto(page, UPLOAD_FILE_NAME);
+    await waitForUpload(page);
+
+    const uploadBodies = await page.evaluate(() => {
+      const calls = ((window as any).__fetchCalls || []) as { url: string; opts?: { body?: string } }[];
+      return calls.filter(c => String(c.url).endsWith("/upload")).map(c => (c.opts?.body ? JSON.parse(c.opts.body) : null));
+    });
+    expect(uploadBodies.length).toBeGreaterThanOrEqual(1);
+    expect(uploadBodies[0].fileName).toBe(UPLOAD_FILE_NAME);
+  });
+
   it("completes the attach via verification after an S3 network failure — no error, canonical uploadId, funnel flags", async () => {
     // #160: a network-failed S3 POST verified landed (the follow-up /upload
     // answers isDuplicate with the canonical row) must complete the attach

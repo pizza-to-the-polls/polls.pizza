@@ -1,5 +1,6 @@
 import { ApiError, PizzaApi } from "../api";
 import shaFile from "./shaFile";
+import uploadFileName from "./uploadFileName";
 
 export type UploadedPhoto = { uploadId: number | null; photoUrl: string };
 
@@ -16,7 +17,11 @@ export type UploadedPhoto = { uploadId: number | null; photoUrl: string };
 export const uploadPhoto = async (file: File, address: string): Promise<UploadedPhoto> => {
   const fileHash = await shaFile(file);
 
-  const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
+  // Synthesize an allowed extension when the OS hands us a valid file with
+  // one the server rejects (BUG-040: .jfif is a real JPEG).
+  const safeName = uploadFileName(file);
+
+  const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, safeName, address);
 
   let uploadId: number | null = null;
   if (!isDuplicate && presigned) {
