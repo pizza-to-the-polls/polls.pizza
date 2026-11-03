@@ -26,14 +26,21 @@ export namespace Components {
         "showConfirmation": boolean;
     }
     /**
-     * Trusted partner report form — private counterpart of form-report.
-     * Same location + wait-time flow as the public form, but:
-     *  - photo/video is optional (backend attaches a Street View image of the
-     *    location when the partner doesn't upload one)
-     *  - on-the-ground contact name + phone are optional
-     *  - submits to POST /partner/report with the magic-link session token
-     *  - after a successful submit the form resets for the next report —
-     *    partners file several during a shift
+     * Trusted partner report form — the partner-facing counterpart of
+     * form-report, deliberately its own component (the public form's flow is
+     * hardened for anonymous traffic and its upload path carries prod-specific
+     * verification/guard logic; see util/uploadPhoto.ts).
+     * Everything is framed around what makes a partner report different:
+     *  - submissions skip the review queue and go straight to dispatch, so the
+     *    address must be exactly right (emphasized in copy + validation)
+     *  - photo/video optional — nothing is attached when absent (report media
+     *    feeds the social-post pipeline; see the note in the pizzabase
+     *    controller)
+     *  - on-the-ground contact info optional — needed only when someone is
+     *    actually at the line; we text that number when pizza's on the way,
+     *    and say so in the confirmation
+     *  - after submitting, the confirmation emphasizes received / will-text /
+     *    file-another, and the form is already cleared for the next report
      * Emits `sessionExpired` when the token is rejected (401) so the host page
      * can drop the token and show the email sign-in step again.
      */
@@ -231,14 +238,21 @@ declare global {
         "sessionExpired": void;
     }
     /**
-     * Trusted partner report form — private counterpart of form-report.
-     * Same location + wait-time flow as the public form, but:
-     *  - photo/video is optional (backend attaches a Street View image of the
-     *    location when the partner doesn't upload one)
-     *  - on-the-ground contact name + phone are optional
-     *  - submits to POST /partner/report with the magic-link session token
-     *  - after a successful submit the form resets for the next report —
-     *    partners file several during a shift
+     * Trusted partner report form — the partner-facing counterpart of
+     * form-report, deliberately its own component (the public form's flow is
+     * hardened for anonymous traffic and its upload path carries prod-specific
+     * verification/guard logic; see util/uploadPhoto.ts).
+     * Everything is framed around what makes a partner report different:
+     *  - submissions skip the review queue and go straight to dispatch, so the
+     *    address must be exactly right (emphasized in copy + validation)
+     *  - photo/video optional — nothing is attached when absent (report media
+     *    feeds the social-post pipeline; see the note in the pizzabase
+     *    controller)
+     *  - on-the-ground contact info optional — needed only when someone is
+     *    actually at the line; we text that number when pizza's on the way,
+     *    and say so in the confirmation
+     *  - after submitting, the confirmation emphasizes received / will-text /
+     *    file-another, and the form is already cleared for the next report
      * Emits `sessionExpired` when the token is rejected (401) so the host page
      * can drop the token and show the email sign-in step again.
      */
@@ -591,14 +605,21 @@ declare namespace LocalJSX {
         "showConfirmation"?: boolean;
     }
     /**
-     * Trusted partner report form — private counterpart of form-report.
-     * Same location + wait-time flow as the public form, but:
-     *  - photo/video is optional (backend attaches a Street View image of the
-     *    location when the partner doesn't upload one)
-     *  - on-the-ground contact name + phone are optional
-     *  - submits to POST /partner/report with the magic-link session token
-     *  - after a successful submit the form resets for the next report —
-     *    partners file several during a shift
+     * Trusted partner report form — the partner-facing counterpart of
+     * form-report, deliberately its own component (the public form's flow is
+     * hardened for anonymous traffic and its upload path carries prod-specific
+     * verification/guard logic; see util/uploadPhoto.ts).
+     * Everything is framed around what makes a partner report different:
+     *  - submissions skip the review queue and go straight to dispatch, so the
+     *    address must be exactly right (emphasized in copy + validation)
+     *  - photo/video optional — nothing is attached when absent (report media
+     *    feeds the social-post pipeline; see the note in the pizzabase
+     *    controller)
+     *  - on-the-ground contact info optional — needed only when someone is
+     *    actually at the line; we text that number when pizza's on the way,
+     *    and say so in the confirmation
+     *  - after submitting, the confirmation emphasizes received / will-text /
+     *    file-another, and the form is already cleared for the next report
      * Emits `sessionExpired` when the token is rejected (401) so the host page
      * can drop the token and show the email sign-in step again.
      */
@@ -877,14 +898,21 @@ declare module "@stencil/core" {
             "app-root": LocalJSX.IntrinsicElements["app-root"] & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "form-donate": LocalJSX.IntrinsicElements["form-donate"] & JSXBase.HTMLAttributes<HTMLFormDonateElement>;
             /**
-             * Trusted partner report form — private counterpart of form-report.
-             * Same location + wait-time flow as the public form, but:
-             *  - photo/video is optional (backend attaches a Street View image of the
-             *    location when the partner doesn't upload one)
-             *  - on-the-ground contact name + phone are optional
-             *  - submits to POST /partner/report with the magic-link session token
-             *  - after a successful submit the form resets for the next report —
-             *    partners file several during a shift
+             * Trusted partner report form — the partner-facing counterpart of
+             * form-report, deliberately its own component (the public form's flow is
+             * hardened for anonymous traffic and its upload path carries prod-specific
+             * verification/guard logic; see util/uploadPhoto.ts).
+             * Everything is framed around what makes a partner report different:
+             *  - submissions skip the review queue and go straight to dispatch, so the
+             *    address must be exactly right (emphasized in copy + validation)
+             *  - photo/video optional — nothing is attached when absent (report media
+             *    feeds the social-post pipeline; see the note in the pizzabase
+             *    controller)
+             *  - on-the-ground contact info optional — needed only when someone is
+             *    actually at the line; we text that number when pizza's on the way,
+             *    and say so in the confirmation
+             *  - after submitting, the confirmation emphasizes received / will-text /
+             *    file-another, and the form is already cleared for the next report
              * Emits `sessionExpired` when the token is rejected (401) so the host page
              * can drop the token and show the email sign-in step again.
              */

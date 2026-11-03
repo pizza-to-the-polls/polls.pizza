@@ -90,6 +90,106 @@ const pickPhoto = (page: any, name = UPLOAD_FILE_NAME) =>
     input.dispatchEvent(new Event("change", { bubbles: true }));
   }, name);
 
+// Pick a photo whose bytes the browser refuses to serve (BUG-036): patch
+// Blob.prototype.arrayBuffer to reject ONCE with a real DOMException, build a
+// real File from real bytes, and dispatch the change event. The change
+// handler reads the bytes synchronously within dispatchEvent (uploadPhoto's
+// first await), so the prototype can be restored in the same evaluate — the
+// stub can't leak into the re-pick below even if an assertion fails later.
+const pickUnreadablePhoto = (page: any, name = UPLOAD_FILE_NAME, domName = "NotReadableError") =>
+  page.evaluate(
+    (params: { fileName: string; domName: string }) => {
+      const original = Blob.prototype.arrayBuffer;
+      let rejected = false;
+      Blob.prototype.arrayBuffer = function (this: Blob) {
+        if (!rejected) {
+          rejected = true;
+          return Promise.reject(
+            new DOMException(
+              "The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.",
+              params.domName,
+            ),
+          );
+        }
+        return original.call(this);
+      };
+      try {
+        const input = document.getElementById("photo") as HTMLInputElement;
+        const dt = new DataTransfer();
+        dt.items.add(new File([new Uint8Array(1024)], params.fileName, { type: "image/jpeg" }));
+        Object.assign(input, { files: dt.files });
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      } finally {
+        Blob.prototype.arrayBuffer = original;
+      }
+    },
+    { fileName: name, domName },
+  );
+
+// Wait for a photo error message to become visible. Poll the step-2 error
+// paragraphs (the submit button is enabled at initial render, so the message
+// is the reliable completion signal). Same 10s polling pattern as
+// waitForUpload.
+const waitForPhotoError = async (page: any, needle: string) => {
+  const start = Date.now();
+  for (;;) {
+    const found = await page.evaluate((needle: string) => {
+      const paragraphs = Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red")) as HTMLParagraphElement[];
+      return paragraphs.some(p => !p.hidden && (p.textContent || "").includes(needle));
+    }, needle);
+    if (found) break;
+    if (Date.now() - start > 10000) throw new Error(`photo error message "${needle}" did not appear in time`);
+    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 100)));
+  }
+  await page.waitForChanges();
+};
+
+// Shared body of the BUG-036 read-failure scenario, parameterized over the
+// DOMException name (Chrome/Android/Windows: NotReadableError; legacy iOS:
+// SecurityError).
+const readFailureScenario = async (domName: string) => {
+  const page = await setupPage();
+
+  await pickUnreadablePhoto(page, UPLOAD_FILE_NAME, domName);
+  await waitForPhotoError(page, "couldn't read that photo");
+
+  // The actionable re-pick copy — not the generic "Whoops!" message.
+  const errorTexts = await page.evaluate(() =>
+    Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+      .filter(p => !p.hidden)
+      .map(p => p.textContent)
+      .join("\n"),
+  );
+  expect(errorTexts).toContain("We couldn't read that photo");
+  expect(errorTexts).toContain("iCloud or Google Photos");
+  expect(errorTexts).toContain("save it to your device first, then pick it again");
+  expect(errorTexts).not.toContain("We could not upload that photo");
+
+  // The dead handle was released: removePhoto() reset the input so a re-pick
+  // forces the OS to re-acquire the file.
+  const inputState = await page.evaluate(() => {
+    const input = document.getElementById("photo") as HTMLInputElement;
+    return { value: input.value, files: input.files ? input.files.length : 0 };
+  });
+  expect(inputState.value).toBe("");
+  expect(inputState.files).toBe(0);
+
+  // The failure is client-local: no request ever left the page (matches the
+  // live Bugsnag metadata uploadId: null, s3Status: null).
+  const fetchCallCount = await page.evaluate(() => ((window as any).__fetchCalls || []).length);
+  expect(fetchCallCount).toBe(0);
+
+  // After the reset, re-picking the same file name with readable bytes
+  // succeeds and the form remains submittable end-to-end.
+  await pickPhoto(page);
+  await waitForUpload(page);
+  await fillFormAndSubmit(page);
+  await waitForSubmit(page);
+
+  const confirmation = await page.find("#distributor-confirmation");
+  expect(confirmation).not.toBeNull();
+};
+
 // The .delete button is an absolutely-positioned div without intrinsic size,
 // so Puppeteer's real-mouse click can't find a clickable point — use a DOM
 // click instead (still fires Stencil's onClick handler).
@@ -174,6 +274,79 @@ const getFetchCalls = (page: any) =>
   ) as Promise<RecordedCall[]>;
 
 describe("form-report", () => {
+  it("shows the actionable re-pick message and stays submittable when the photo read fails with NotReadableError (BUG-036)", async () => {
+    await readFailureScenario("NotReadableError");
+  });
+
+  it("shows the actionable re-pick message and stays submittable when the photo read fails with SecurityError (BUG-036 legacy iOS)", async () => {
+    await readFailureScenario("SecurityError");
+  });
+
+  it("reads the picked file exactly once and reuses the bytes for the hash and the S3 body", async () => {
+    // Regression lock for BUG-036: the picked File handle is read exactly
+    // once, at pick time. The hash and the presigned S3 body must both
+    // consume that in-memory buffer — any second read of the (possibly
+    // stale) handle rejects with NotReadableError and fails the upload.
+    const page = await setupPage();
+
+    await page.evaluate(() => {
+      const original = Blob.prototype.arrayBuffer;
+      const w = window as any;
+      w.__arrayBufferReads = 0;
+      w.__originalArrayBuffer = original;
+      Blob.prototype.arrayBuffer = function (this: Blob) {
+        w.__arrayBufferReads++;
+        if (w.__arrayBufferReads === 1) {
+          return original.call(this);
+        }
+        return Promise.reject(
+          new DOMException(
+            "The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.",
+            "NotReadableError",
+          ),
+        );
+      };
+    });
+
+    await pickPhoto(page);
+    // If any code re-read the handle, this would time out: the second read
+    // rejects and the upload fails with the read-failure error.
+    await waitForUpload(page);
+
+    const reads = await page.evaluate(() => (window as any).__arrayBufferReads);
+    expect(reads).toBe(1);
+
+    // The /upload body's fileHash equals the SHA-256 of the fixture bytes —
+    // hashed from the same in-memory buffer the pick produced.
+    const expectedHash = await page.evaluate(async () => {
+      const hashBuffer = await crypto.subtle.digest("SHA-256", new Uint8Array(1024));
+      return Array.from(new Uint8Array(hashBuffer))
+        .map(b => ("00" + b.toString(16)).slice(-2))
+        .join("");
+    });
+    const calls = await getFetchCalls(page);
+    const uploadCalls = calls.filter(c => c.url.endsWith("/upload"));
+    expect(uploadCalls.length).toBe(1);
+    const uploadBody = JSON.parse(uploadCalls[0].body as string);
+    expect(uploadBody.fileHash).toBe(expectedHash);
+
+    // The presigned S3 POST carried a File rebuilt from the buffer — same
+    // name, type and size as the picked file, without re-reading the handle.
+    const s3File = await page.evaluate(() => {
+      const calls = ((window as any).__fetchCalls || []) as { url: string; opts?: { body?: unknown } }[];
+      const s3Call = calls.find(c => String(c.url).includes("s3.example.com"));
+      const body = s3Call?.opts?.body as FormData | undefined;
+      const file = body ? (body.get("file") as File | null) : null;
+      return file ? { name: file.name, size: file.size, type: file.type } : null;
+    });
+    expect(s3File).toEqual({ name: UPLOAD_FILE_NAME, size: 1024, type: "image/jpeg" });
+
+    // Restore the prototype (each test gets a fresh page, but be tidy).
+    await page.evaluate(() => {
+      Blob.prototype.arrayBuffer = (window as any).__originalArrayBuffer;
+    });
+  });
+
   it("renders step 1 initially", async () => {
     const page = await newE2EPage();
     await page.setContent("<form-report></form-report>");
