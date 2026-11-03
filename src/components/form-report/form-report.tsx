@@ -396,8 +396,20 @@ export class FormReport {
             // POST entirely) is the honest remedy.
             this.submitError.photo = "Network hiccup — your photo may have already reached us. Try picking the photo again.";
           } else {
-            const errors = (error as { errors?: { fileName?: string } })?.errors;
-            this.submitError.photo = errors?.fileName || "Whoops! We could not upload that photo";
+            const errors = (error as { errors?: { fileName?: string; address?: string } })?.errors;
+            if (errors?.address) {
+              // BUG-038: the backend rejected the address (HTTP 422
+              // errors.address — a locality-only or partial-match Places
+              // pick). Show the server's user-facing copy verbatim instead
+              // of the generic "could not upload" message, and reopen the
+              // location picker (same pattern as the submit-time
+              // errors.address branch in handleSubmit) so the user can
+              // immediately re-pick a more precise place.
+              this.submitError.photo = errors.address;
+              this.showLocationInput = true;
+            } else {
+              this.submitError.photo = errors?.fileName || "Whoops! We could not upload that photo";
+            }
           }
         } finally {
           // Always reset
