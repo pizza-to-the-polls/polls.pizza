@@ -28,6 +28,33 @@ const duplicateUploadResponse = () => ({
   isDuplicate: true,
 });
 
+// BUG-032 re-presign verify response (BUG-039): the hash matched an existing
+// upload row whose raw S3 object was MISSING (the bytes never landed), so the
+// backend reset the row and re-presigned the SAME key — same id + filePath,
+// fresh presigned POST. The distinct URL + "reissued" policy field prove the
+// client used the verify response's payload, not a stale copy of the original
+// presign (mockFetchScript matches by URL suffix, so a distinct URL also lets
+// the test keep the initial presigned entry failing while the re-presign
+// entry succeeds).
+const rePresignedUploadResponse = () => ({
+  id: UPLOAD_ID,
+  filePath: UPLOAD_FILE_PATH,
+  isDuplicate: false,
+  presigned: {
+    url: "https://s3.example.com/reput",
+    fields: { "key": UPLOAD_FILE_PATH, "x-amz-algorithm": "AWS4-HMAC-SHA256", "policy": "reissued" },
+  },
+});
+
+// Honest fallback: verification found the row but offered no re-presign
+// (older backend / non-recoverable shape) — the client must still throw
+// UploadDidNotLandError.
+const noPresignedUploadResponse = () => ({
+  id: UPLOAD_ID,
+  filePath: UPLOAD_FILE_PATH,
+  isDuplicate: false,
+});
+
 // Report response: no truck on site, report will receive pizza (so the
 // #distributor-confirmation panel renders after submit).
 const reportResponse = () => ({ hasTruck: false, willReceive: true, alreadyOrdered: false });
@@ -718,9 +745,11 @@ describe("form-report", () => {
     const page = await newE2EPage();
     await page.setContent(
       mockFetchScript({
-        // Both /upload calls answer fresh (not a duplicate): the row exists
-        // but the bytes did not land.
-        "/upload": mockResponse(freshUploadResponse()),
+        // First /upload: fresh (presigned issued). Second /upload: the
+        // verification call answers isDuplicate: false with NO presigned
+        // fields — the bytes never landed and the backend offered no BUG-032
+        // re-presign, so the client must throw UploadDidNotLandError.
+        "/upload": [mockResponse(freshUploadResponse()), mockResponse(noPresignedUploadResponse())],
         "s3.example.com/put": { networkError: true },
         "/report": mockResponse(reportResponse()),
       }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
@@ -749,6 +778,172 @@ describe("form-report", () => {
     expect(errorTexts).toContain("that photo didn't upload. Please try again.");
     expect(errorTexts).not.toContain("may have already reached us");
     expect(errorTexts).not.toContain("We could not upload that photo");
+
+    // removePhoto() cleared the preview and the finally block re-enabled
+    // the submit button for a re-pick.
+    const previewBg = await page.evaluate(() => {
+      const preview = document.getElementById("photo-preview");
+      return preview ? preview.style.backgroundImage : null;
+    });
+    expect(previewBg).toBeFalsy();
+    const buttonDisabled = await page.evaluate(() => {
+      const btn = document.querySelector("#form-step-2 button[type='submit']") as HTMLButtonElement;
+      return btn ? btn.disabled : null;
+    });
+    expect(buttonDisabled).toBe(false);
+  });
+
+  it("re-POSTs the in-memory bytes to the BUG-032 re-presigned URL and completes the attach (BUG-039)", async () => {
+    // BUG-039: after both S3 attempts fail at the network layer, the
+    // verification /upload can answer isDuplicate: false PLUS a fresh
+    // presigned POST for the same key (pizzabase BUG-032: the row exists but
+    // its raw S3 object is missing, so the backend re-presigns it). The
+    // client must re-POST the already-read bytes against that offer and
+    // complete the attach — not throw UploadDidNotLandError.
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        // First /upload: fresh (presigned issued). Second /upload: the
+        // verification call after both S3 attempts reject — BUG-032 shape:
+        // not a duplicate, but a re-presigned POST for the same key.
+        "/upload": [mockResponse(freshUploadResponse()), mockResponse(rePresignedUploadResponse())],
+        // The initial presigned POST always fails at the network layer...
+        "s3.example.com/put": { networkError: true },
+        // ...but the re-presigned POST succeeds on the first attempt.
+        "s3.example.com/reput": { status: 200, body: "{}" },
+        "/report": mockResponse(reportResponse()),
+      }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    // BUG-036 on the recovery path: fail any SECOND read of the picked
+    // handle — the re-POST body must come from the in-memory bytes.
+    await page.evaluate(() => {
+      const original = Blob.prototype.arrayBuffer;
+      const w = window as any;
+      w.__arrayBufferReads = 0;
+      w.__originalArrayBuffer = original;
+      Blob.prototype.arrayBuffer = function (this: Blob) {
+        w.__arrayBufferReads++;
+        if (w.__arrayBufferReads === 1) {
+          return original.call(this);
+        }
+        return Promise.reject(
+          new DOMException(
+            "The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.",
+            "NotReadableError",
+          ),
+        );
+      };
+    });
+
+    await pickPhoto(page);
+    // Upload sequence: /upload (fresh) → 2× failed S3 POST → /upload
+    // (verify, re-presign) → 1× successful re-POST. Two /upload calls total.
+    await waitForUpload(page, 2);
+
+    await page.evaluate(() => {
+      Blob.prototype.arrayBuffer = (window as any).__originalArrayBuffer;
+    });
+
+    const calls = await getFetchCalls(page);
+    // Exactly 2 /upload calls (initial + verify) — no extra verification.
+    expect(calls.filter(c => c.url.endsWith("/upload")).length).toBe(2);
+    // The initial presigned POST stayed bounded at 2 attempts.
+    expect(calls.filter(c => c.url.includes("s3.example.com/put")).length).toBe(2);
+    // The re-presigned POST succeeded on the first attempt.
+    expect(calls.filter(c => c.url.includes("s3.example.com/reput")).length).toBe(1);
+
+    // The picked File handle was read exactly once — the re-POST body was
+    // rebuilt from the in-memory bytes, never from a second handle read.
+    const reads = await page.evaluate(() => (window as any).__arrayBufferReads);
+    expect(reads).toBe(1);
+
+    // The re-POST carried the verify response's fields (the "reissued"
+    // policy marker proves the client used verify.presigned, not the stale
+    // original presign) and a File rebuilt from the original bytes.
+    const rePost = await page.evaluate(() => {
+      const calls = ((window as any).__fetchCalls || []) as { url: string; opts?: { body?: unknown } }[];
+      const reput = calls.find(c => String(c.url).includes("s3.example.com/reput"));
+      const body = reput?.opts?.body as FormData | undefined;
+      const file = body ? (body.get("file") as File | null) : null;
+      return {
+        policy: body ? body.get("policy") : null,
+        key: body ? body.get("key") : null,
+        file: file ? { name: file.name, size: file.size, type: file.type } : null,
+      };
+    });
+    expect(rePost).toEqual({
+      policy: "reissued",
+      key: UPLOAD_FILE_PATH,
+      file: { name: UPLOAD_FILE_NAME, size: 1024, type: "image/jpeg" },
+    });
+
+    // No user-visible upload error: the recovery completed the attach.
+    const errorTexts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+        .map(p => p.textContent)
+        .join("\n"),
+    );
+    expect(errorTexts).not.toContain("Network hiccup");
+    expect(errorTexts).not.toContain("didn't upload");
+
+    // The unsaved-upload guard armed: the re-POSTed bytes are in the bucket
+    // with no report attached yet, so leaving now would strand them.
+    const guardCanceled = await page.evaluate(() => {
+      const event = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(event);
+      return event.defaultPrevented;
+    });
+    expect(guardCanceled).toBe(true);
+
+    // The report carries the verify row's id + permalink basename.
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+
+    const reportCalls = (await getFetchCalls(page)).filter(c => c.url.endsWith("/report"));
+    expect(reportCalls.length).toBe(1);
+    expect(reportCalls[0].body).not.toBeNull();
+    const reportBody = JSON.parse(reportCalls[0].body as string);
+    expect(reportBody.uploadId).toBe(UPLOAD_ID);
+    expect(reportBody.url.endsWith(`/uploads/${UPLOAD_FILE_NAME}`)).toBe(true);
+  });
+
+  it("states a definite failure when the re-presigned attempts are also exhausted (BUG-039)", async () => {
+    // The verify response offers the BUG-032 re-presign, but both re-POST
+    // attempts fail at the network layer too — the honest UploadDidNotLand
+    // copy and the removePhoto() cleanup must apply exactly as today.
+    const page = await newE2EPage();
+    await page.setContent(
+      mockFetchScript({
+        "/upload": [mockResponse(freshUploadResponse()), mockResponse(rePresignedUploadResponse())],
+        "s3.example.com/put": { networkError: true },
+        "s3.example.com/reput": { networkError: true },
+        "/report": mockResponse(reportResponse()),
+      }) + `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    // Two /upload calls: initial + verify (the re-POST is not an /upload).
+    await waitForUpload(page, 2);
+
+    const calls = await getFetchCalls(page);
+    expect(calls.filter(c => c.url.endsWith("/upload")).length).toBe(2);
+    // Both S3 POSTs ran their bounded 2 attempts.
+    expect(calls.filter(c => c.url.includes("s3.example.com/put")).length).toBe(2);
+    expect(calls.filter(c => c.url.includes("s3.example.com/reput")).length).toBe(2);
+    // No report was submitted — the attach failed.
+    expect(calls.filter(c => c.url.endsWith("/report")).length).toBe(0);
+
+    // The definite-failure copy — not the "may have reached us" hint.
+    const errorTexts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+        .map(p => p.textContent)
+        .join("\n"),
+    );
+    expect(errorTexts).toContain("that photo didn't upload. Please try again.");
+    expect(errorTexts).not.toContain("may have already reached us");
 
     // removePhoto() cleared the preview and the finally block re-enabled
     // the submit button for a re-pick.

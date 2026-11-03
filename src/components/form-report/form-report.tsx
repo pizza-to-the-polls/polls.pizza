@@ -178,6 +178,10 @@ export class FormReport {
         // response) and the attach completed anyway — a distinct funnel flag
         // so analytics can tell the recovered path from a clean upload.
         let verifiedAfterFailure = false;
+        // Set only on the BUG-032 re-presign recovery (BUG-039): verification
+        // found the upload row but its raw S3 object was missing, and the
+        // backend re-presigned the same key so the bytes could be re-POSTed.
+        let rePresignedRecovery = false;
 
         // Network-layer failure classifier. A raw fetch rejection is a
         // TypeError, but PizzaApi's baseFetch swallows those for POST calls
@@ -232,6 +236,7 @@ export class FormReport {
                   event.addMetadata("upload", {
                     networkRetryExhausted: isNetworkFailure(error),
                     verifiedAfterFailure,
+                    rePresignedRecovery,
                     duplicate: uploadDuplicate,
                     uploadId: this.uploadId,
                     s3Status: (error as { status?: number })?.status ?? null,
@@ -272,55 +277,58 @@ export class FormReport {
           let canonicalFilePath = filePath;
 
           if (!isDuplicate && presigned) {
-            const formData = new FormData();
-            const { url, fields } = presigned;
+            // Shared by the initial presigned POST and the BUG-032 re-presign
+            // offer (BUG-039): always materializes the body from the
+            // already-read bytes — never re-reads the (possibly stale) picked
+            // File handle (BUG-036).
+            const postToS3 = async (target: { url: string; fields: { [key: string]: string } }) => {
+              const formData = new FormData();
+              const uploadFile = new File([bytes], file.name, { type: file.type });
 
-            // Materialize from the already-read bytes — never re-read the
-            // (possibly stale) picked File handle in the presigned POST.
-            const uploadFile = new File([bytes], file.name, { type: file.type });
+              formData.append("Content-Type", uploadFile.type);
 
-            formData.append("Content-Type", uploadFile.type);
+              // Note: ACL and x-amz-acl removed — backend now uses private buckets
 
-            // Note: ACL and x-amz-acl removed — backend now uses private buckets
+              Object.entries(target.fields).forEach(([k, v]) => {
+                formData.append(k, v);
+              });
 
-            Object.entries(fields).forEach(([k, v]: [string, any]) => {
-              formData.append(k, v);
-            });
+              formData.append("file", uploadFile);
 
-            formData.append("file", uploadFile);
+              // Cap at ONE retry. The old loop re-PUT the entire file up to 5×:
+              // a browser fetch that fails on the response leg usually landed
+              // server-side anyway, so every "retry" multiplied backend
+              // pipeline runs (2026-10-28: five concurrent runs, five feed
+              // pictures, one photo).
+              const MAX_S3_ATTEMPTS = 2;
 
-            // Cap at ONE retry. The old loop re-PUT the entire file up to 5×:
-            // a browser fetch that fails on the response leg usually landed
-            // server-side anyway, so every "retry" multiplied backend
-            // pipeline runs (2026-10-28: five concurrent runs, five feed
-            // pictures, one photo).
-            const MAX_S3_ATTEMPTS = 2;
-
-            let landed = false;
-            let lastNetworkError: unknown = null;
-            for (let attempt = 1; attempt <= MAX_S3_ATTEMPTS; attempt++) {
-              try {
-                const awsReq = await fetch(url, {
-                  method: "POST",
-                  mode: "cors",
-                  body: formData,
-                });
-                if (awsReq.status > 299) {
-                  const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
-                  throw awsError;
+              let lastNetworkError: unknown = null;
+              for (let attempt = 1; attempt <= MAX_S3_ATTEMPTS; attempt++) {
+                try {
+                  const awsReq = await fetch(target.url, {
+                    method: "POST",
+                    mode: "cors",
+                    body: formData,
+                  });
+                  if (awsReq.status > 299) {
+                    const awsError: ApiError = { isError: true, status: awsReq.status, errors: { fileName: "Whoops! That did not work - try again!" } };
+                    throw awsError;
+                  }
+                  return { landed: true, lastNetworkError: null };
+                } catch (error) {
+                  if (!(error instanceof TypeError)) {
+                    // S3 answered with an error status — a definite failure,
+                    // not worth another upload.
+                    throw error;
+                  }
+                  // Network-layer failure: the request may have landed anyway.
+                  lastNetworkError = error;
                 }
-                landed = true;
-                break;
-              } catch (error) {
-                if (!(error instanceof TypeError)) {
-                  // S3 answered with an error status — a definite failure,
-                  // not worth another upload.
-                  throw error;
-                }
-                // Network-layer failure: the request may have landed anyway.
-                lastNetworkError = error;
               }
-            }
+              return { landed: false, lastNetworkError };
+            };
+
+            const { landed, lastNetworkError } = await postToS3(presigned);
 
             if (!landed && lastNetworkError) {
               // Final fallback is a VERIFICATION, not another upload: the same
@@ -336,6 +344,24 @@ export class FormReport {
                 this.uploadId = verify.id;
                 canonicalFilePath = verify.filePath;
                 notifyUploadError(lastNetworkError);
+              } else if (verify.presigned?.url) {
+                // BUG-032/BUG-039: the row exists but its raw S3 object is
+                // missing (the bytes never landed) — the backend reset the
+                // row and re-presigned the SAME key. Re-POST the in-memory
+                // bytes against the re-presigned POST (same bounded loop,
+                // same retry semantics), then adopt the re-presigned row.
+                const retry = await postToS3(verify.presigned);
+                if (retry.landed) {
+                  verifiedAfterFailure = true;
+                  rePresignedRecovery = true;
+                  this.uploadId = verify.id;
+                  canonicalFilePath = verify.filePath;
+                  notifyUploadError(lastNetworkError);
+                } else {
+                  // Re-presigned attempts exhausted — a definite failure,
+                  // honestly stated (same copy as no re-presign offer).
+                  throw new UploadDidNotLandError();
+                }
               } else {
                 // Verified nothing landed — a definite failure, honestly stated.
                 throw new UploadDidNotLandError();
