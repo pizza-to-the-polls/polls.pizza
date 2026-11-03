@@ -156,7 +156,7 @@ const readFailureScenario = async (domName: string) => {
   // The actionable re-pick copy — not the generic "Whoops!" message.
   const errorTexts = await page.evaluate(() =>
     Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
-      .filter(p => !p.hidden)
+      .filter(p => !(p as HTMLElement).hidden)
       .map(p => p.textContent)
       .join("\n"),
   );
