@@ -187,6 +187,13 @@ export class FormReport {
         // "may have reached us — pick again" (the dedupe skips the S3 POST).
         const isNetworkFailure = (e: unknown) => e instanceof TypeError || Boolean((e as ApiError)?.errors?.network);
 
+        // Client-local read failure (BUG-036): the OS/picker handed the page a
+        // File reference it then can't serve — cloud-backed photos (iCloud
+        // "optimize storage" placeholders, Google Photos cloud picker,
+        // OneDrive placeholders) or files rewritten between pick and read.
+        // Chrome/Android/Windows report it as NotReadableError; legacy iOS
+        // uses SecurityError. Both throw before any network request is sent.
+        const isReadFailure = (e: unknown) => typeof DOMException !== "undefined" && e instanceof DOMException && (e.name === "NotReadableError" || e.name === "SecurityError");
         // The uploader's failure path is fully handled (inline form message),
         // so @bugsnag/js never sees it — it only auto-reports *unhandled*
         // errors. Notify explicitly (2026-10-28: a volunteer's recurring
@@ -228,6 +235,10 @@ export class FormReport {
                     duplicate: uploadDuplicate,
                     uploadId: this.uploadId,
                     s3Status: (error as { status?: number })?.status ?? null,
+                    // DOMException name for client-local failures (BUG-036:
+                    // NotReadableError / SecurityError); null for ApiError
+                    // -shaped objects and network TypeErrors.
+                    domException: (error as DOMException)?.name ?? null,
                     file: { type: file.type, size: file.size },
                   });
                 });
@@ -239,7 +250,14 @@ export class FormReport {
         };
 
         const uploadPhoto = async (file: File, address: string): Promise<void> => {
-          const fileHash = await shaFile(file);
+          // Read the picked handle exactly once, first thing (BUG-036):
+          // cloud-backed photos (iCloud "optimize storage", Google Photos,
+          // OneDrive placeholders) can hand back a File the OS refuses to
+          // serve later. Hash and S3 body both consume these in-memory bytes,
+          // so nothing ever re-reads the possibly-stale File handle.
+          const bytes = await file.arrayBuffer();
+
+          const fileHash = await shaFile(bytes);
 
           const { id, filePath, isDuplicate, presigned } = await PizzaApi.postUpload(fileHash, file.name, address);
 
@@ -257,7 +275,11 @@ export class FormReport {
             const formData = new FormData();
             const { url, fields } = presigned;
 
-            formData.append("Content-Type", file.type);
+            // Materialize from the already-read bytes — never re-read the
+            // (possibly stale) picked File handle in the presigned POST.
+            const uploadFile = new File([bytes], file.name, { type: file.type });
+
+            formData.append("Content-Type", uploadFile.type);
 
             // Note: ACL and x-amz-acl removed — backend now uses private buckets
 
@@ -265,7 +287,7 @@ export class FormReport {
               formData.append(k, v);
             });
 
-            formData.append("file", file);
+            formData.append("file", uploadFile);
 
             // Cap at ONE retry. The old loop re-PUT the entire file up to 5×:
             // a browser fetch that fails on the response leg usually landed
@@ -356,7 +378,15 @@ export class FormReport {
             status: (error as { status?: number })?.status ?? 0,
             duplicate: uploadDuplicate,
           });
-          if (error instanceof UploadDidNotLandError) {
+          if (isReadFailure(error)) {
+            // BUG-036: the browser refused to serve the picked file (iCloud
+            // / Google Photos cloud placeholder, or the file changed on
+            // disk). removePhoto() above already cleared #photo.value, so a
+            // re-pick forces the OS to re-acquire the file. Actionable copy
+            // instead of the generic "Whoops!" — the fix is on the user's
+            // device, not in the upload pipeline.
+            this.submitError.photo = "We couldn't read that photo — if it's in iCloud or Google Photos, save it to your device first, then pick it again.";
+          } else if (error instanceof UploadDidNotLandError) {
             // Verified the bytes never reached the bucket — say so plainly.
             this.submitError.photo = "Whoops! We couldn't reach the photo upload service — that photo didn't upload. Please try again.";
           } else if (isNetworkFailure(error)) {

@@ -107,6 +107,55 @@ const removePhoto = (page: any) =>
     (document.querySelector(".photo-preview-container .delete") as HTMLElement).click();
   });
 
+// Pick a photo whose bytes the browser refuses to serve (BUG-036): patch
+// Blob.prototype.arrayBuffer to reject ONCE with a real DOMException, then
+// restore the prototype inside the same evaluate (same technique as
+// form-report.e2e.ts).
+const pickUnreadablePhoto = (page: any, name = UPLOAD_FILE_NAME, domName = "NotReadableError") =>
+  page.evaluate(
+    (params: { fileName: string; domName: string }) => {
+      const original = Blob.prototype.arrayBuffer;
+      let rejected = false;
+      Blob.prototype.arrayBuffer = function (this: Blob) {
+        if (!rejected) {
+          rejected = true;
+          return Promise.reject(
+            new DOMException(
+              "The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.",
+              params.domName,
+            ),
+          );
+        }
+        return original.call(this);
+      };
+      try {
+        const input = document.getElementById("photo") as HTMLInputElement;
+        const dt = new DataTransfer();
+        dt.items.add(new File([new Uint8Array(1024)], params.fileName, { type: "image/jpeg" }));
+        Object.assign(input, { files: dt.files });
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      } finally {
+        Blob.prototype.arrayBuffer = original;
+      }
+    },
+    { fileName: name, domName },
+  );
+
+// Wait for a photo error message to become visible (10s polling pattern).
+const waitForPhotoError = async (page: any, needle: string) => {
+  const start = Date.now();
+  for (;;) {
+    const found = await page.evaluate((needle: string) => {
+      const paragraphs = Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red")) as HTMLParagraphElement[];
+      return paragraphs.some(p => !p.hidden && (p.textContent || "").includes(needle));
+    }, needle);
+    if (found) break;
+    if (Date.now() - start > 10000) throw new Error(`photo error message "${needle}" did not appear in time`);
+    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 100)));
+  }
+  await page.waitForChanges();
+};
+
 const waitForUpload = async (page: any, minUploadCalls = 1) => {
   const start = Date.now();
   for (;;) {
@@ -341,6 +390,8 @@ describe("form-report funnel events", () => {
     expect(notifyCalls[0].event.meta.upload.duplicate).toBe(false);
     expect(notifyCalls[0].event.meta.upload.verifiedAfterFailure).toBe(false);
     expect(notifyCalls[0].event.meta.upload.uploadId).toBe(UPLOAD_ID);
+    // ApiError-shaped failures carry no DOMException name (BUG-036 field).
+    expect(notifyCalls[0].event.meta.upload.domException).toBeNull();
     expect(notifyCalls[0].event.meta.upload.file).toEqual({ type: "image/jpeg", size: 1024 });
 
     // The user-visible copy is the server's message, not a generic string.
@@ -350,6 +401,51 @@ describe("form-report funnel events", () => {
         .join("\n"),
     );
     expect(errorTexts).toContain("Whoops! That did not work - try again!");
+  });
+
+  it("notifies Bugsnag with domException: NotReadableError and null upload/S3 fields when the picked photo cannot be read (BUG-036)", async () => {
+    const page = await newE2EPage();
+    await page.setContent(
+      gtagRecorderScript +
+        bugsnagRecorderScript +
+        mockFetchScript({
+          "/upload": mockResponse(freshUploadResponse()),
+          "/report": mockResponse(reportResponse()),
+        }) +
+        `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    // BUG-036: a cloud-backed pick (iCloud "optimize storage", Google
+    // Photos, OneDrive placeholders) hands the page a File the OS refuses
+    // to serve — the read fails client-local, before any network I/O.
+    await pickUnreadablePhoto(page);
+    await waitForPhotoError(page, "couldn't read that photo");
+
+    const notifyCalls = await page.evaluate(() => ((window as any).__bugsnagNotifyCalls || []) as { message: string; event: any }[]);
+    expect(notifyCalls.length).toBe(1);
+    // The headline carries the browser's spec message — the exact text seen
+    // in the live Bugsnag error 6ae7b8560f9ccb2e94166a94.
+    expect(notifyCalls[0].message).toBe(
+      "Photo upload failed: The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.",
+    );
+    // Mirrors the live event metadata: client-local failure, nothing reached
+    // the network, and the new domException field names the DOMException.
+    expect(notifyCalls[0].event.meta.upload.domException).toBe("NotReadableError");
+    expect(notifyCalls[0].event.meta.upload.uploadId).toBeNull();
+    expect(notifyCalls[0].event.meta.upload.s3Status).toBeNull();
+    expect(notifyCalls[0].event.meta.upload.networkRetryExhausted).toBe(false);
+    expect(notifyCalls[0].event.meta.upload.duplicate).toBe(false);
+    expect(notifyCalls[0].event.meta.upload.verifiedAfterFailure).toBe(false);
+    expect(notifyCalls[0].event.meta.upload.file).toEqual({ type: "image/jpeg", size: 1024 });
+
+    // The funnel recorded the drop-off (the read failure falls into the
+    // existing api_error bucket — GA misclassification is a known,
+    // deliberately out-of-scope follow-up; Bugsnag carries the real signal).
+    const events = await getGtagEvents(page);
+    const failedEvents = events.filter(e => e.name === "report_photo_upload_failed");
+    expect(failedEvents.length).toBe(1);
+    expect(events.filter(e => e.name === "report_photo_uploaded").length).toBe(0);
   });
 
   it("emits report_photo_upload_failed with reason: no_location when a photo is picked before a location is selected", async () => {
