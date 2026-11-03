@@ -19,6 +19,20 @@ export default [
       "stencil/required-jsdoc": "off",
       "stencil/ban-exported-const-enums": "off",
       "react/jsx-no-bind": "off",
+      // Both rules match ALL property/method definitions with no
+      // `node.static` check, and their --fix autofix rewrites `public` →
+      // `private` — including on static class *constants* that other
+      // modules import (page-deliveries.tsx → UiGeoMap.DEFAULT_ZOOM & co).
+      // `npm run fix` then silently lands the breakage; the prod build
+      // (stencil build --prod, a CI gate) is what catches it. PR #176's
+      // first CI run failed exactly this way. The rules' intent —
+      // undecorated *instance* members on a component should be private —
+      // is already covered by decorator usage here (@Prop/@State/… are
+      // exempt by design), so nothing real is lost. No upstream fix as of
+      // @stencil/eslint-plugin@1.4.0 (latest). Re-enable when the plugin
+      // grows static-awareness.
+      "stencil/own-props-must-be-private": "off",
+      "stencil/own-methods-must-be-private": "off",
     },
   },
 ];
