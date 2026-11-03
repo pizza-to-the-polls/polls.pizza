@@ -25,6 +25,20 @@ const duplicateUploadResponse = () => ({
   isDuplicate: true,
 });
 
+// BUG-032 re-presign verify response (BUG-039): the row exists but its raw
+// S3 object is missing — same id + filePath, fresh presigned POST for the
+// same key (distinct URL + "reissued" field marker, same technique as
+// form-report.e2e.ts).
+const rePresignedUploadResponse = () => ({
+  id: UPLOAD_ID,
+  filePath: UPLOAD_FILE_PATH,
+  isDuplicate: false,
+  presigned: {
+    url: "https://s3.example.com/reput",
+    fields: { "key": UPLOAD_FILE_PATH, "x-amz-algorithm": "AWS4-HMAC-SHA256", "policy": "reissued" },
+  },
+});
+
 const reportResponse = () => ({ hasTruck: false, willReceive: true, alreadyOrdered: false });
 
 // Record gtag calls in-page so we can assert the funnel events after the fact.
@@ -304,6 +318,80 @@ describe("form-report funnel events", () => {
 
     // Submit carries the canonical upload id + permalink from the
     // verification response, not the blob preview URL.
+    const reportBody = await page.evaluate(() => {
+      const calls = ((window as any).__fetchCalls || []) as { url: string; opts?: { body?: string } }[];
+      const reportCall = calls.find(c => String(c.url).endsWith("/report"));
+      return reportCall?.opts?.body ? JSON.parse(reportCall.opts.body) : null;
+    });
+    expect(reportBody.uploadId).toBe(UPLOAD_ID);
+    expect(reportBody.url.endsWith(`/uploads/${UPLOAD_FILE_NAME}`)).toBe(true);
+  });
+
+  it("flags rePresignedRecovery on the BUG-032 re-presign recovery path in GA and Bugsnag (BUG-039)", async () => {
+    // BUG-039: when the verification answers isDuplicate: false PLUS a fresh
+    // presigned POST for the same key, the client re-POSTs the bytes and
+    // completes the attach. The funnel must keep using report_photo_uploaded
+    // (with verifiedAfterFailure: true, duplicate: false) and the Bugsnag
+    // metadata must distinguish this recovery from the duplicate adoption
+    // via rePresignedRecovery.
+    const page = await newE2EPage();
+    await page.setContent(
+      gtagRecorderScript +
+        bugsnagRecorderScript +
+        mockFetchScript({
+          // First /upload: fresh (presigned issued). Second /upload: the
+          // verification call after both S3 attempts reject — BUG-032 shape.
+          "/upload": [mockResponse(freshUploadResponse()), mockResponse(rePresignedUploadResponse())],
+          "s3.example.com/put": { networkError: true },
+          "s3.example.com/reput": { status: 200, body: "{}" },
+          "/report": mockResponse(reportResponse()),
+        }) +
+        `<form-report formatted-address="123 Main St, Portland, OR"></form-report>`,
+    );
+    await page.waitForChanges();
+
+    await pickPhoto(page);
+    await waitForUpload(page, 2);
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+
+    // No user-visible upload error: the recovery completed the attach.
+    const errorTexts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll("#form-step-2 p.help.has-text-red"))
+        .map(p => p.textContent)
+        .join("\n"),
+    );
+    expect(errorTexts).not.toContain("Network hiccup");
+    expect(errorTexts).not.toContain("didn't upload");
+
+    // GA: the existing report_photo_uploaded event carries the recovery
+    // flags — no new event name.
+    const events = await getGtagEvents(page);
+    const photoUploaded = events.filter(e => e.name === "report_photo_uploaded");
+    expect(photoUploaded.length).toBe(1);
+    expect(photoUploaded[0].params).toEqual({ duplicate: false, verifiedAfterFailure: true });
+    expect(events.filter(e => e.name === "report_photo_upload_failed").length).toBe(0);
+
+    // Bugsnag: notifyUploadError(lastNetworkError) fired once for the
+    // original network failure — the headline reports it, and the upload
+    // metadata distinguishes the re-presign recovery.
+    const notifyCalls = await page.evaluate(() => ((window as any).__bugsnagNotifyCalls || []) as { message: string; event: any }[]);
+    expect(notifyCalls.length).toBe(1);
+    expect(notifyCalls[0].message).toBe("Photo upload failed: Failed to fetch");
+    expect(notifyCalls[0].event.context).toBe("/report");
+    expect(notifyCalls[0].event.severity).toBe("warning");
+    expect(notifyCalls[0].event.meta.upload.verifiedAfterFailure).toBe(true);
+    expect(notifyCalls[0].event.meta.upload.rePresignedRecovery).toBe(true);
+    expect(notifyCalls[0].event.meta.upload.duplicate).toBe(false);
+    expect(notifyCalls[0].event.meta.upload.uploadId).toBe(UPLOAD_ID);
+    expect(notifyCalls[0].event.meta.upload.networkRetryExhausted).toBe(true);
+    expect(notifyCalls[0].event.meta.upload.s3Status).toBeNull();
+    // The notified error is the raw network TypeError — its .name lands in
+    // the domException field (same semantics as the duplicate recovery path).
+    expect(notifyCalls[0].event.meta.upload.domException).toBe("TypeError");
+    expect(notifyCalls[0].event.meta.upload.file).toEqual({ type: "image/jpeg", size: 1024 });
+
+    // Submit carries the re-presigned row's id + permalink basename.
     const reportBody = await page.evaluate(() => {
       const calls = ((window as any).__fetchCalls || []) as { url: string; opts?: { body?: string } }[];
       const reportCall = calls.find(c => String(c.url).endsWith("/report"));
