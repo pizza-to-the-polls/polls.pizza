@@ -66,6 +66,31 @@ const fillAndSubmit = (page: any, contactPhone?: string) =>
 
 const confirmationText = (page: any) => page.evaluate(() => (document.querySelector(".notification.is-success") as HTMLElement)?.innerText || "");
 
+// Pick a photo by building a real File in-browser and dispatching the native
+// change event (same technique as form-report's e2e tests).
+const pickPhoto = (page: any, name = UPLOAD_FILE_NAME) =>
+  page.evaluate((fileName: string) => {
+    const input = document.getElementById("photo") as HTMLInputElement;
+    const dt = new DataTransfer();
+    dt.items.add(new File([new Uint8Array(1024)], fileName, { type: "image/jpeg" }));
+    Object.assign(input, { files: dt.files });
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }, name);
+
+const waitForUpload = async (page: any) => {
+  const start = Date.now();
+  for (;;) {
+    const done = await page.evaluate(() => {
+      const calls = ((window as any).__fetchCalls || []) as { url: string }[];
+      return calls.some(c => String(c.url).endsWith("/upload"));
+    });
+    if (done) break;
+    if (Date.now() - start > 10000) throw new Error("photo upload did not finish in time");
+    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 100)));
+  }
+  await page.waitForChanges();
+};
+
 describe("<form-partner-report>", () => {
   it("renders every field on one page at load, with partner framing", async () => {
     const page = await setupPage();
@@ -128,6 +153,26 @@ describe("<form-partner-report>", () => {
     expect(body.waitTime).toEqual("1-2 hours");
     expect(body.url).toBeUndefined();
     expect(body.contact).toBeUndefined();
+  });
+
+  it("synthesizes an allowed extension for a .jfif JPEG before POST /upload (BUG-040)", async () => {
+    const page = await setupPage();
+
+    // The partner form uploads through util/uploadPhoto, which must get the
+    // same client-side extension fallback as the public form: Windows hands
+    // users real JPEGs named .jfif, which the server's extension allowlist
+    // would otherwise reject with a 422.
+    await pickLocation(page);
+    await page.waitForChanges();
+    await pickPhoto(page, "IMG_1234.jfif");
+    await waitForUpload(page);
+
+    const uploadBodies = await page.evaluate(() => {
+      const calls = ((window as any).__fetchCalls || []) as { url: string; opts?: { body?: string } }[];
+      return calls.filter(c => String(c.url).endsWith("/upload")).map(c => (c.opts?.body ? JSON.parse(c.opts.body) : null));
+    });
+    expect(uploadBodies.length).toBe(1);
+    expect(uploadBodies[0].fileName).toBe("IMG_1234.jpg");
   });
 
   it("confirmation emphasizes received / will-text / next report, then clears the form", async () => {
