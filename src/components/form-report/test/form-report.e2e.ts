@@ -42,6 +42,26 @@ const georgiaReportResponse = () => ({
   skipReason: "georgia",
 });
 
+// Auto-skip (pizzabase #391): pizza already ordered for this location within
+// the last hour — the #recent-order-confirmation panel should render.
+const recentOrderReportResponse = () => ({
+  hasTruck: false,
+  willReceive: false,
+  alreadyOrdered: false,
+  autoSkipped: true,
+  skipReason: "recent_order",
+});
+
+// Auto-skip (pizzabase #391): the reported line is under an hour — the
+// #line-under-an-hour-confirmation panel should render with the re-report ask.
+const lineUnderAnHourReportResponse = () => ({
+  hasTruck: false,
+  willReceive: false,
+  alreadyOrdered: false,
+  autoSkipped: true,
+  skipReason: "line_under_an_hour",
+});
+
 const setupPage = async (report: unknown = reportResponse()) => {
   const page = await newE2EPage();
   await page.setContent(
@@ -240,9 +260,74 @@ describe("form-report", () => {
     expect(georgiaText).toContain("senate bill 22");
     expect(georgiaText).toContain("can't send pizza");
 
-    // ...and none of the triage panels do (auto-skip overrides hasTruck /
-    // willReceive / duplicate alike).
-    for (const id of ["#distributor-confirmation", "#food-truck-at-location-confirmation", "#duplicate-report-confirmation", "#watchdog-confirmation"]) {
+    // ...and none of the triage panels or other skip panels do (auto-skip
+    // overrides hasTruck / willReceive / duplicate alike).
+    for (const id of [
+      "#distributor-confirmation",
+      "#food-truck-at-location-confirmation",
+      "#duplicate-report-confirmation",
+      "#watchdog-confirmation",
+      "#recent-order-confirmation",
+      "#line-under-an-hour-confirmation",
+    ]) {
+      expect(await page.find(id)).toBeNull();
+    }
+  });
+
+  it("shows the pizza-on-the-way explanation when the report is auto-skipped as recent_order", async () => {
+    const page = await setupPage(recentOrderReportResponse());
+
+    await pickPhoto(page);
+    await waitForUpload(page);
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+
+    // The recent-order panel renders with the already-ordered explanation...
+    const recentOrder = await page.find("#recent-order-confirmation");
+    expect(recentOrder).not.toBeNull();
+    expect(await recentOrder.isVisible()).toBe(true);
+    const recentOrderText = (await recentOrder.getProperty("textContent")).toLowerCase();
+    expect(recentOrderText).toContain("already on the way");
+    expect(recentOrderText).toContain("within the last hour");
+
+    // ...and none of the triage panels or other skip panels do.
+    for (const id of [
+      "#distributor-confirmation",
+      "#food-truck-at-location-confirmation",
+      "#duplicate-report-confirmation",
+      "#watchdog-confirmation",
+      "#georgia-confirmation",
+      "#line-under-an-hour-confirmation",
+    ]) {
+      expect(await page.find(id)).toBeNull();
+    }
+  });
+
+  it("shows the re-report ask when the report is auto-skipped as line_under_an_hour", async () => {
+    const page = await setupPage(lineUnderAnHourReportResponse());
+
+    await pickPhoto(page);
+    await waitForUpload(page);
+    await fillFormAndSubmit(page);
+    await waitForSubmit(page);
+
+    // The under-an-hour panel renders with the submit-again explanation...
+    const underAnHour = await page.find("#line-under-an-hour-confirmation");
+    expect(underAnHour).not.toBeNull();
+    expect(await underAnHour.isVisible()).toBe(true);
+    const underAnHourText = (await underAnHour.getProperty("textContent")).toLowerCase();
+    expect(underAnHourText).toContain("over an hour");
+    expect(underAnHourText).toContain("submit a new report");
+
+    // ...and none of the triage panels or other skip panels do.
+    for (const id of [
+      "#distributor-confirmation",
+      "#food-truck-at-location-confirmation",
+      "#duplicate-report-confirmation",
+      "#watchdog-confirmation",
+      "#georgia-confirmation",
+      "#recent-order-confirmation",
+    ]) {
       expect(await page.find(id)).toBeNull();
     }
   });

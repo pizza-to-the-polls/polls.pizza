@@ -47,6 +47,16 @@ export class FormReport {
    */
   @State() private showGeorgiaConfirmation: boolean = false;
   /**
+   * Auto-skip (recent_order): pizza was already ordered for this location
+   * within the last hour — explain that instead of the triage panels.
+   */
+  @State() private showRecentOrderConfirmation: boolean = false;
+  /**
+   * Auto-skip (line_under_an_hour): the reported line is under an hour —
+   * ask the submitter to re-report once it passes one.
+   */
+  @State() private showLineUnderAnHourConfirmation: boolean = false;
+  /**
    * Enable to show distributor confirmation & guidelines
    */
   @State() private showDistributorConfirmation: boolean = false;
@@ -528,17 +538,25 @@ export class FormReport {
 
       try {
         this.submitResponse = await PizzaApi.postReport(requestData);
-        trackEvent("report_submitted");
+        // Auto-skipped reports carry the backend's reason (pizzabase #391/
+        // #392) so the funnel can be broken down by skip type.
+        trackEvent("report_submitted", this.submitResponse.autoSkipped ? { skipReason: this.submitResponse.skipReason || "unknown" } : undefined);
 
         this.submitError = {};
         this.showServerError = false;
 
-        // Georgia (SB 22): the report was recorded but auto-skipped — we
-        // legally cannot deliver food or beverages to voters in line in
-        // Georgia. Explain that instead of the triage panels (and before
-        // hasTruck/willReceive — the skip overrides everything else).
+        // Auto-skip (pizzabase #391/#392): the report was recorded but pulled
+        // from the volunteer pipeline — explain why instead of showing the
+        // triage panels (before hasTruck/willReceive — a skip overrides
+        // everything else). georgia: SB 22, we legally cannot deliver in
+        // Georgia. recent_order: pizza already ordered here within the hour.
+        // line_under_an_hour: too short for pizza — re-report once it grows.
         if (this.submitResponse.autoSkipped && this.submitResponse.skipReason === "georgia") {
           this.showGeorgiaConfirmation = true;
+        } else if (this.submitResponse.autoSkipped && this.submitResponse.skipReason === "recent_order") {
+          this.showRecentOrderConfirmation = true;
+        } else if (this.submitResponse.autoSkipped && this.submitResponse.skipReason === "line_under_an_hour") {
+          this.showLineUnderAnHourConfirmation = true;
         } else if (this.submitResponse.hasTruck) {
           this.showFoodTruckOnSiteConfirmation = true;
         } else {
@@ -863,6 +881,38 @@ export class FormReport {
               </p>
             </div>
           )}
+          {/* Recent-order auto-skip Confirmation — pizza already ordered here within the hour */}
+          {this.showConfirmation && !this.showServerError && this.showRecentOrderConfirmation && (
+            <div id="recent-order-confirmation">
+              <h2 class="is-display">Good news — pizza is already on the way!</h2>
+              <p>
+                <b>
+                  We ordered pizza for <span class="is-dotted">{this.locationName ? this.locationName : "this location"}</span> within the last hour, so hang tight — another report
+                  isn't needed right now.
+                </b>{" "}
+                Your report is recorded, and it helps us keep an eye on how long the line lasts.
+              </p>
+              <p>If the line outlasts the pies, submit a fresh report and we'll send more.</p>
+              <h3>Can you help support our work?</h3>
+              <form-donate redirectURL={`https://${document.location.host}/donate`} />
+            </div>
+          )}
+          {/* Line-under-an-hour auto-skip Confirmation — too short for pizza (yet) */}
+          {this.showConfirmation && !this.showServerError && this.showLineUnderAnHourConfirmation && (
+            <div id="line-under-an-hour-confirmation">
+              <h2 class="is-display">Thank you — your report is recorded.</h2>
+              <p>
+                <b>We send pizza once a line's wait is over an hour.</b> At under an hour, this line doesn't need backup yet, so we'll hold off for now.
+              </p>
+              <p>
+                If the wait grows past an hour, just
+                <a href="#" class="has-text-teal" onClick={handleNewLocation}>
+                  submit a new report
+                </a>{" "}
+                for the same location and we'll get pizza on the way. 🍕
+              </p>
+            </div>
+          )}
           {/* Food Truck at location Confirmation */}
           {this.showConfirmation && !this.showServerError && this.showFoodTruckOnSiteConfirmation && (
             <div id="food-truck-at-location-confirmation">
@@ -971,6 +1021,8 @@ export class FormReport {
     this.showServerError = false;
     this.showFoodTruckOnSiteConfirmation = false;
     this.showGeorgiaConfirmation = false;
+    this.showRecentOrderConfirmation = false;
+    this.showLineUnderAnHourConfirmation = false;
     this.showDistributorConfirmation = false;
     this.showSuccessfulReportConfirmation = false;
     this.showDuplicateReportConfirmation = false;
